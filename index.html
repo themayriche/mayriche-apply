@@ -928,15 +928,19 @@ async function loadConfig(){
     }
     
     // Load app_config for lists
-    const cfgRes = await sb.from('app_config').select('key, value_text, value_json');
+    const cfgRes = await sb.from('app_config').select('key, value');
     if(cfgRes.data){
       const cfg = {};
-      cfgRes.data.forEach(c => { cfg[c.key] = c.value_json || c.value_text; });
-      if(cfg.apply_nationalities) NATIONALITIES = Array.isArray(cfg.apply_nationalities) ? cfg.apply_nationalities : JSON.parse(cfg.apply_nationalities);
-      if(cfg.apply_countries) COUNTRIES = Array.isArray(cfg.apply_countries) ? cfg.apply_countries : JSON.parse(cfg.apply_countries);
-      if(cfg.apply_local_areas) LOCAL_AREAS = Array.isArray(cfg.apply_local_areas) ? cfg.apply_local_areas : JSON.parse(cfg.apply_local_areas);
-      if(cfg.apply_travel_destinations) TRAVEL_DESTINATIONS = Array.isArray(cfg.apply_travel_destinations) ? cfg.apply_travel_destinations : JSON.parse(cfg.apply_travel_destinations);
-      if(cfg.apply_languages) LANGUAGES = Array.isArray(cfg.apply_languages) ? cfg.apply_languages : JSON.parse(cfg.apply_languages);
+      cfgRes.data.forEach(c => {
+        // value is TEXT — try to parse as JSON, fallback to string
+        try { cfg[c.key] = JSON.parse(c.value); }
+        catch(e){ cfg[c.key] = c.value; }
+      });
+      if(cfg.apply_nationalities) NATIONALITIES = Array.isArray(cfg.apply_nationalities) ? cfg.apply_nationalities : [];
+      if(cfg.apply_countries) COUNTRIES = Array.isArray(cfg.apply_countries) ? cfg.apply_countries : [];
+      if(cfg.apply_local_areas) LOCAL_AREAS = Array.isArray(cfg.apply_local_areas) ? cfg.apply_local_areas : [];
+      if(cfg.apply_travel_destinations) TRAVEL_DESTINATIONS = Array.isArray(cfg.apply_travel_destinations) ? cfg.apply_travel_destinations : [];
+      if(cfg.apply_languages) LANGUAGES = Array.isArray(cfg.apply_languages) ? cfg.apply_languages : [];
     }
     return true;
   } catch(e){
@@ -1583,28 +1587,30 @@ async function submitApplication(){
 
   btn.textContent = 'Saving application...';
 
-  // ═══ INSERT APPLICATION TO DEDICATED TABLE ═══
-  const applicationRow = {
+  // ═══ SAVE TO `ladies` TABLE (stage='Just Applied') ═══
+  // This makes the application appear automatically in MC OS → Ladies → Applications tab
+  // Approve flow: stage changes to 'Active' → she appears in Directory
+  const ladyRow = {
+    // Application metadata
     application_ref: applicationRef,
-    status: 'pending',
+    application_date: new Date().toISOString(),
+    stage: 'Just Applied',
+    availability_status: 'Inactive',  // Until you review and approve
     
-    full_name: formData.fullname.trim(),
+    // Identity — these will be visible in MC OS Profile
+    lady_name: formData.fullname.trim(),
     work_name: formData.workname.trim(),
-    email: formData.email.trim(),
-    phone: formData.phone.trim(),
-    date_of_birth: dob,
+    profile_nickname: formData.workname.trim(),
     age: age,
+    date_of_birth: dob,
+    birth_month: new Date(dob).toLocaleDateString('en-US',{month:'long'}),
+    birth_year: formData.dob_y,
     nationality: formData.nationality,
-    city: formData.city,
-    country: formData.country,
-    instagram: formData.ig || null,
+    country_residence: formData.country,
+    local_area: formData.local_area,
+    in_house_address: formData.inhouse_address||null,
     
-    right_to_work: formData.rtw,
-    uk_bank: formData.uk_bank || null,
-    english_level: formData.english,
-    self_employed: formData.self_emp || null,
-    languages: formData.languages,
-    
+    // Physical
     height_cm: parseInt(formData.height)||null,
     weight_kg: parseInt(formData.weight)||null,
     body_type: formData.body,
@@ -1615,58 +1621,100 @@ async function submitApplication(){
     breast_type: formData.breast_type || null,
     profile_age: parseInt(formData.profile_age)||null,
     
+    // Experience
     years_experience: formData.years,
-    heard_from: formData.heard || null,
-    training: formData.training || null,
-    previous_experience: formData.prev_exp || null,
-    photoshoot_status: formData.photoshoot || null,
-    diplomas: formData.diplomas || null,
+    languages: formData.languages.join(', '),
     
-    local_area: formData.local_area,
-    inhouse_address: formData.inhouse_address || null,
+    // Contact
+    email: formData.email.trim(),
+    phone: formData.phone.trim(),
+    social_media: formData.ig || null,
+    
+    // Emergency
+    em_c_name: formData.em_name || null,
+    em_c_rel: formData.em_rel || null,
+    em_c_phone: formData.em_phone || null,
+    emergency_contact: formData.em_phone || null,
+    
+    // Work preferences
     provide_inhouse: formData.inhouse,
     provide_mobile: formData.mobile,
-    airport_bookings: formData.airport || null,
-    mobile_30min: formData.mobile_30 || null,
-    late_hours: formData.late_hours || null,
-    abroad_locations: formData.abroad,
-    travel_other: formData.travel_other || null,
+    open_to_travel: formData.abroad.length>0 ? 'Yes - '+formData.abroad.join(', ') : (formData.travel_other||'No'),
     
-    services: formData.services,
-    addons: formData.addons,
-    starting_rate: parseFloat(formData.rate)||null,
-    currently_with_other_agency: formData.competing || null,
-    duration_preferences: formData.dur_pref,
-    
-    days_per_week: formData.days_week,
+    // Availability
     availability_schedule: formData.availability,
-    availability_notes: formData.avail_notes || null,
+    availability_notes: (formData.days_week ? formData.days_week + (formData.avail_notes ? ' · '+formData.avail_notes : '') : formData.avail_notes) || null,
     
-    emergency_name: formData.em_name || null,
-    emergency_relationship: formData.em_rel || null,
-    emergency_phone: formData.em_phone || null,
+    // Rate
+    current_rate: formData.rate ? '£'+formData.rate : null,
     
-    file_selfie_kyc: uploadedPaths.selfie,
-    file_fullbody: uploadedPaths.fullbody,
-    file_utility_bill: uploadedPaths.utility,
-    file_diploma: uploadedPaths.diploma,
-    file_portfolio: uploadedPaths.portfolio,
-    file_video_intro: uploadedPaths.video,
+    // Files (Storage paths)
+    file_selfie_kyc: uploadedPaths.selfie || null,
+    file_fullbody: uploadedPaths.fullbody || null,
+    file_utility_bill: uploadedPaths.utility || null,
+    file_diploma: uploadedPaths.diploma || null,
+    file_portfolio: uploadedPaths.portfolio || [],
+    file_video_intro: uploadedPaths.video || null,
+    profile_photo_url: uploadedPaths.fullbody || null,  // Main profile photo
     
-    consent_age: formData.consents.age,
-    consent_gdpr: formData.consents.gdpr,
-    consent_nda: formData.consents.nda,
-    consent_photo: formData.consents.photo,
-    consent_terms: formData.consents.terms,
+    // Consents (all 5 required)
+    gdpr_signed: formData.consents.gdpr ? 'Yes' : 'Not yet',
+    nda_signed: formData.consents.nda ? 'Acknowledged' : 'Not yet',
+    consent_form: formData.consents.terms ? 'Yes' : 'Not yet',
+    consent_age_verified: formData.consents.age,
+    consent_photo_release: formData.consents.photo,
     
-    user_agent: navigator.userAgent.slice(0, 500),
-    referrer: document.referrer.slice(0, 500)
+    // All other application data bundled as rich detail
+    special_requests: [
+      formData.training ? 'Training: '+formData.training : '',
+      formData.prev_exp ? 'Experience: '+formData.prev_exp : '',
+      formData.services.length>0 ? 'Services: '+formData.services.join(', ') : '',
+      formData.addons.length>0 ? 'Add-ons: '+formData.addons.join(', ') : '',
+      formData.rate ? 'Starting rate (60min): £'+formData.rate : '',
+      formData.competing ? 'Other agencies: '+formData.competing : '',
+      formData.avail_notes ? 'Availability notes: '+formData.avail_notes : '',
+      formData.rtw ? 'Right to work UK: '+formData.rtw : '',
+      formData.uk_bank ? 'UK bank: '+formData.uk_bank : '',
+      formData.english ? 'English: '+formData.english : '',
+      formData.self_emp ? 'Self-employed: '+formData.self_emp : '',
+      formData.photoshoot ? 'Photoshoot: '+formData.photoshoot : '',
+      formData.diplomas ? 'Diplomas: '+formData.diplomas : '',
+      formData.days_week ? 'Days/week: '+formData.days_week : '',
+      formData.mobile_30 ? 'Mobile 30+min: '+formData.mobile_30 : '',
+      formData.late_hours ? 'Late nights/weekends: '+formData.late_hours : '',
+      formData.airport ? 'Airport bookings: '+formData.airport : '',
+      formData.heard ? 'Heard from: '+formData.heard : '',
+    ].filter(Boolean).join(' | ')||null,
+    
+    // Services as structured data (for filtering in MC OS)
+    services_offered: formData.services,
+    addons_offered: formData.addons,
+    duration_preferences: formData.dur_pref,
+    starting_rate: parseFloat(formData.rate)||null,
+    
+    // Link to owner
+    user_id: '155edca8-551d-4516-891e-33e2348d638c'
   };
 
   try {
     if(!sb) throw new Error('Database not connected');
-    const r = await sb.from('applications').insert([applicationRow]).select();
+    const r = await sb.from('ladies').insert([ladyRow]).select();
     if(r.error) throw r.error;
+
+    // ═══ SEND CONFIRMATION EMAIL ═══
+    btn.textContent = 'Sending confirmation email...';
+    try {
+      await sendConfirmationEmail(formData.email, formData.fullname, applicationRef);
+    } catch(e){
+      console.warn('Email send failed (non-critical):', e);
+    }
+
+    // ═══ NOTIFY OWNER (via notifications table for real-time MC OS badge) ═══
+    try {
+      await notifyOwner(applicationRef, formData.fullname, formData.workname);
+    } catch(e){
+      console.warn('Notify owner failed (non-critical):', e);
+    }
 
     localStorage.removeItem('mayriche_apply_draft');
     document.getElementById('successRef').textContent = applicationRef;
@@ -1678,6 +1726,55 @@ async function submitApplication(){
     showToast('Submit failed: '+e.message, 'error');
     btn.disabled = false;
     btn.textContent = 'Submit Application';
+  }
+}
+
+// ═══════════ SEND CONFIRMATION EMAIL ═══════════
+// Uses Supabase Edge Function 'send-apply-email' (creează după SQL)
+async function sendConfirmationEmail(toEmail, fullName, appRef){
+  if(!sb || !toEmail) return;
+  try {
+    const res = await sb.functions.invoke('send-apply-email', {
+      body: {
+        to: toEmail,
+        name: fullName,
+        application_ref: appRef
+      }
+    });
+    console.log('✅ Confirmation email sent:', res);
+  } catch(e){
+    // Fallback: Insert to email_queue table for later processing
+    try {
+      await sb.from('email_queue').insert({
+        to_email: toEmail,
+        template: 'apply_confirmation',
+        template_data: { name: fullName, application_ref: appRef },
+        status: 'pending'
+      });
+      console.log('📧 Email queued for sending');
+    } catch(e2){
+      console.warn('Email queue insert failed:', e2);
+    }
+  }
+}
+
+// ═══════════ NOTIFY OWNER (triggers badge in MC OS) ═══════════
+async function notifyOwner(appRef, fullName, workName){
+  if(!sb) return;
+  try {
+    await sb.from('notifications').insert({
+      user_id: '155edca8-551d-4516-891e-33e2348d638c',
+      type: 'new_application',
+      title: 'New application received',
+      message: fullName + (workName ? ' (as '+workName+')' : '') + ' has submitted an application',
+      link_to: '/ladies/applications',
+      reference: appRef,
+      read: false,
+      priority: 'high'
+    });
+    console.log('✅ Owner notified');
+  } catch(e){
+    console.warn('Notify fail:', e);
   }
 }
 
