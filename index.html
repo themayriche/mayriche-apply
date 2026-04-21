@@ -1142,6 +1142,34 @@ document.addEventListener('DOMContentLoaded', async function(){
   updateProgress();
   updateLiveDateTime();
   setInterval(updateLiveDateTime, 1000);
+  
+  // ═══ AUTO-SAVE DRAFT every 10 seconds (silent, no toast) ═══
+  // Protects from network drops / browser crashes / accidental close
+  setInterval(function(){
+    // Only save if form has any data
+    if(formData.fullname || formData.email || formData.phone){
+      try {
+        const d = {...formData};
+        delete d.files; delete d.video;
+        d.savedAt = new Date().toISOString();
+        localStorage.setItem('mayriche_apply_draft', JSON.stringify(d));
+        console.log('[Auto-save] Draft saved at', new Date().toLocaleTimeString());
+      } catch(e){ console.warn('[Auto-save] fail:', e); }
+    }
+  }, 10000);
+  
+  // ═══ SAVE ON PAGE CLOSE / REFRESH ═══
+  // Last-chance save before user leaves
+  window.addEventListener('beforeunload', function(e){
+    if(formData.fullname || formData.email || formData.phone){
+      try {
+        const d = {...formData};
+        delete d.files; delete d.video;
+        d.savedAt = new Date().toISOString();
+        localStorage.setItem('mayriche_apply_draft', JSON.stringify(d));
+      } catch(ex){}
+    }
+  });
 });
 
 function populateDropdown(id, items){
