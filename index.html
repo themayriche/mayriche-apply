@@ -4,1250 +4,258 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Apply — Mayriche</title>
-<meta name="description" content="Private application for Mayriche — London's premium therapeutic wellness collaboration.">
+<meta name="description" content="Private application form — confidential and secure.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
-  /* MOS identical palette */
-  --bg:#faf8f6;
-  --card:#fff;
-  --tx:#2d2418;
-  --tx2:#8b7355;
-  --mt:#a68b6b;
-  --brd:rgba(139,115,85,.08);
-  --brd2:rgba(139,115,85,.18);
-  --sf:#f0ebe5;
-  --wm:#f9f6f2;
-  --ac:#8b7355;
-  --acL:#c4a882;
-  --acP:#d4c4ae;
-  --gn:#5d8c72;
-  --gnB:rgba(93,140,114,.1);
-  --rd:#c06060;
-  --am:#b8923e;
-  --amB:rgba(184,146,62,.1);
-  --bl:#6a89b0;
-  --blB:rgba(106,137,176,.1);
-  --fd:'Cormorant Garamond',serif;
-  --fb:'DM Sans',system-ui,sans-serif;
-  --r:12px;
-  --rs:8px;
+  --bg:#faf8f6;--card:#fff;--tx:#2d2418;--tx2:#8b7355;--mt:#a68b6b;
+  --brd:rgba(139,115,85,.08);--brd2:rgba(139,115,85,.18);
+  --sf:#f0ebe5;--wm:#f9f6f2;
+  --ac:#8b7355;--acL:#c4a882;--acP:#d4c4ae;
+  --gn:#5d8c72;--gnB:rgba(93,140,114,.1);
+  --rd:#c06060;--am:#b8923e;--amB:rgba(184,146,62,.1);
+  --bl:#6a89b0;--blB:rgba(106,137,176,.1);
+  --fd:'Cormorant Garamond',serif;--fb:'DM Sans',system-ui,sans-serif;
+  --r:12px;--rs:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{
-  background:var(--bg);
-  color:var(--tx);
-  font-family:var(--fb);
-  font-size:13px;
-  line-height:1.55;
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
-body{
-  background:
-    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10), transparent 70%),
-    radial-gradient(ellipse 60% 40% at 15% 50%, rgba(139,115,85,.04), transparent 70%),
-    var(--bg);
-  padding-bottom:60px;
-}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-thumb{background:var(--acP);border-radius:10px}
+html,body{background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:13px;line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10), transparent 70%),radial-gradient(ellipse 60% 40% at 15% 50%, rgba(139,115,85,.04), transparent 70%),var(--bg);padding-bottom:60px;}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--acP);border-radius:10px}
 
-/* ─────────── HEADER / HERO ─────────── */
-.hero{
-  text-align:center;
-  padding:56px 20px 32px;
-  animation:fadeDown .9s cubic-bezier(.22,.61,.36,1);
-}
-.hero-logo{
-  font-family:var(--fd);
-  font-size:48px;
-  font-weight:500;
-  letter-spacing:.24em;
-  color:var(--tx);
-  margin-bottom:6px;
-}
-.hero-sub{
-  font-size:10px;
-  letter-spacing:.42em;
-  color:var(--ac);
-  text-transform:uppercase;
-  font-weight:500;
-  margin-bottom:18px;
-}
+.hero{text-align:center;padding:56px 20px 32px;animation:fadeDown .9s cubic-bezier(.22,.61,.36,1)}
+.hero-logo{font-family:var(--fd);font-size:48px;font-weight:500;letter-spacing:.24em;color:var(--tx);margin-bottom:6px;}
+.hero-sub{font-size:10px;letter-spacing:.42em;color:var(--ac);text-transform:uppercase;font-weight:500;margin-bottom:18px;}
 
-/* ─────────── SECURITY BADGES ─────────── */
-.sec-strip{
-  max-width:960px;
-  margin:0 auto 28px;
-  padding:0 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:stretch;
-  gap:8px;
-  flex-wrap:nowrap;
-  animation:fadeUp .7s .15s both;
-}
-.sec-badge{
-  flex:1;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  padding:9px 10px;
-  background:var(--card);
-  border:1px solid var(--brd2);
-  border-radius:40px;
-  font-size:9.5px;
-  color:var(--ac);
-  letter-spacing:.08em;
-  font-weight:600;
-  transition:all .2s;
-  text-align:center;
-  white-space:nowrap;
-  text-transform:uppercase;
-}
-.sec-badge:hover{
-  border-color:var(--ac);
-  color:var(--tx);
-  transform:translateY(-1px);
-  box-shadow:0 3px 10px rgba(139,115,85,.08);
-}
+.sec-strip{max-width:960px;margin:0 auto 28px;padding:0 20px;display:flex;justify-content:space-between;align-items:stretch;gap:8px;flex-wrap:nowrap;animation:fadeUp .7s .15s both;}
+.sec-badge{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 10px;background:var(--card);border:1px solid var(--brd2);border-radius:40px;font-size:9.5px;color:var(--ac);letter-spacing:.08em;font-weight:600;transition:all .2s;text-align:center;white-space:nowrap;text-transform:uppercase;}
+.sec-badge:hover{border-color:var(--ac);color:var(--tx);transform:translateY(-1px);box-shadow:0 3px 10px rgba(139,115,85,.08);}
 .sec-badge svg{color:var(--ac);flex-shrink:0}
-@media(max-width:900px){
-  .sec-strip{flex-wrap:wrap;justify-content:center}
-  .sec-badge{flex:0 0 auto}
-}
+@media(max-width:900px){.sec-strip{flex-wrap:wrap;justify-content:center}.sec-badge{flex:0 0 auto}}
 
-.safe-badge{
-  margin-left:auto;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:5px 11px;
-  background:var(--card);
-  border:1px solid var(--brd2);
-  border-radius:20px;
-  font-size:9.5px;
-  color:var(--ac);
-  letter-spacing:.08em;
-  font-weight:600;
-  text-transform:uppercase;
-  position:relative;
-}
-.safe-badge svg{
-  color:var(--ac);
-  position:absolute;
-  left:11px;
-  transition:opacity .4s ease;
-}
-.safe-badge span{
-  padding-left:16px;
-}
-.safe-badge .locker-open{
-  opacity:1;
-  animation:lockOpen 3s ease-in-out infinite;
-}
-.safe-badge .locker-closed{
-  opacity:0;
-  animation:lockClosed 3s ease-in-out infinite;
-}
-@keyframes lockOpen{
-  0%,45%{opacity:1}
-  50%,95%{opacity:0}
-  100%{opacity:1}
-}
-@keyframes lockClosed{
-  0%,45%{opacity:0}
-  50%,95%{opacity:1}
-  100%{opacity:0}
-}
+.safe-badge{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:var(--card);border:1px solid var(--brd2);border-radius:20px;font-size:9.5px;color:var(--ac);letter-spacing:.08em;font-weight:600;text-transform:uppercase;position:relative;}
+.safe-badge svg{color:var(--ac);position:absolute;left:11px;transition:opacity .4s ease;}
+.safe-badge span{padding-left:16px;}
+.safe-badge .locker-open{opacity:1;animation:lockOpen 3s ease-in-out infinite;}
+.safe-badge .locker-closed{opacity:0;animation:lockClosed 3s ease-in-out infinite;}
+@keyframes lockOpen{0%,45%{opacity:1}50%,95%{opacity:0}100%{opacity:1}}
+@keyframes lockClosed{0%,45%{opacity:0}50%,95%{opacity:1}100%{opacity:0}}
 
-/* ─────────── CONTAINER ─────────── */
-.wrap{
-  max-width:960px;
-  margin:0 auto;
-  padding:0 20px;
-}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px;}
 
-/* ─────────── STICKY PROGRESS BAR ─────────── */
-.progress-wrap{
-  position:sticky;
-  top:12px;
-  z-index:50;
-  margin-bottom:22px;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  border:1px solid var(--brd);
-  border-radius:var(--r);
-  padding:14px 20px;
-  box-shadow:0 4px 20px rgba(139,115,85,.06);
-  animation:fadeIn .6s .3s both;
-}
-.prog-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.prog-step{
-  font-size:10px;
-  letter-spacing:.28em;
-  color:var(--mt);
-  text-transform:uppercase;
-  font-weight:500;
-}
+.progress-wrap{position:sticky;top:12px;z-index:50;margin-bottom:22px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--brd);border-radius:var(--r);padding:14px 20px;box-shadow:0 4px 20px rgba(139,115,85,.06);animation:fadeIn .6s .3s both;}
+.prog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
+.prog-step{font-size:10px;letter-spacing:.28em;color:var(--mt);text-transform:uppercase;font-weight:500;}
 .prog-step b{color:var(--ac);font-weight:600}
-.prog-pct{
-  display:flex;
-  align-items:baseline;
-  gap:6px;
-}
-.prog-pct-num{
-  font-family:var(--fd);
-  font-size:28px;
-  font-weight:500;
-  color:var(--tx);
-  line-height:1;
-}
-.prog-pct-lbl{
-  font-size:9.5px;
-  letter-spacing:.28em;
-  color:var(--ac);
-  text-transform:uppercase;
-  font-weight:600;
-}
-.prog-bar{
-  height:3px;
-  background:rgba(139,115,85,.08);
-  border-radius:2px;
-  overflow:hidden;
-  position:relative;
-}
-.prog-fill{
-  height:100%;
-  background:linear-gradient(90deg,var(--ac),var(--acL),var(--acP));
-  border-radius:2px;
-  transition:width .6s cubic-bezier(.22,.61,.36,1);
-  position:relative;
-  overflow:hidden;
-}
-.prog-fill::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
-  animation:shimmer 2.4s infinite;
-}
-@keyframes shimmer{
-  0%{transform:translateX(-100%)}
-  100%{transform:translateX(200%)}
-}
-.prog-sections{
-  display:flex;
-  gap:14px;
-  margin-top:10px;
-  font-size:9.5px;
-  color:var(--mt);
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  flex-wrap:wrap;
-  font-weight:500;
-}
+.prog-pct{display:flex;align-items:baseline;gap:6px;}
+.prog-pct-num{font-family:var(--fd);font-size:28px;font-weight:500;color:var(--tx);line-height:1;}
+.prog-pct-lbl{font-size:9.5px;letter-spacing:.28em;color:var(--ac);text-transform:uppercase;font-weight:600;}
+.prog-bar{height:3px;background:rgba(139,115,85,.08);border-radius:2px;overflow:hidden;position:relative;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--acL),var(--acP));border-radius:2px;transition:width .6s cubic-bezier(.22,.61,.36,1);position:relative;overflow:hidden;}
+.prog-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:shimmer 2.4s infinite;}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+.prog-sections{display:flex;gap:14px;margin-top:10px;font-size:9.5px;color:var(--mt);letter-spacing:.1em;text-transform:uppercase;flex-wrap:wrap;font-weight:500;}
 .prog-sec{display:flex;align-items:center;gap:5px}
 .prog-sec.done{color:var(--gn)}
 .prog-sec.partial{color:var(--am)}
-.prog-sec-dot{
-  width:6px;height:6px;border-radius:50%;
-  background:rgba(139,115,85,.18);
-  transition:all .3s;
-}
+.prog-sec-dot{width:6px;height:6px;border-radius:50%;background:rgba(139,115,85,.18);transition:all .3s;}
 .prog-sec.done .prog-sec-dot{background:var(--gn);box-shadow:0 0 6px rgba(93,140,114,.4)}
 .prog-sec.partial .prog-sec-dot{background:var(--am)}
 
-/* ─────────── STEPPER ─────────── */
-.stepper{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:0;
-  margin-bottom:28px;
-  flex-wrap:wrap;
-}
-.step{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 16px;
-  cursor:pointer;
-  opacity:.5;
-  transition:all .3s cubic-bezier(.22,.61,.36,1);
-  user-select:none;
-}
-.step:hover{opacity:.85}
-.step.active{opacity:1}
-.step.done{opacity:.75}
-.step-num{
-  width:28px;height:28px;
-  border-radius:50%;
-  border:1px solid var(--brd2);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--fd);
-  font-size:13px;
-  font-weight:600;
-  color:var(--ac);
-  background:var(--card);
-  transition:all .3s;
-}
-.step.active .step-num{
-  background:var(--ac);
-  color:var(--card);
-  border-color:var(--ac);
-  box-shadow:0 0 0 4px rgba(139,115,85,.1), 0 4px 14px rgba(139,115,85,.2);
-}
-.step.done .step-num{
-  background:var(--gn);
-  color:var(--card);
-  border-color:var(--gn);
-}
-.step.done .step-num::before{
-  content:"✓";
-  font-family:var(--fb);
-  font-size:12px;
-}
+.stepper{display:flex;justify-content:center;align-items:center;gap:0;margin-bottom:28px;flex-wrap:wrap;}
+.step{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;opacity:.5;transition:all .3s cubic-bezier(.22,.61,.36,1);user-select:none;}
+.step:hover{opacity:.85}.step.active{opacity:1}.step.done{opacity:.75}
+.step-num{width:28px;height:28px;border-radius:50%;border:1px solid var(--brd2);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;font-weight:600;color:var(--ac);background:var(--card);transition:all .3s;}
+.step.active .step-num{background:var(--ac);color:var(--card);border-color:var(--ac);box-shadow:0 0 0 4px rgba(139,115,85,.1),0 4px 14px rgba(139,115,85,.2);}
+.step.done .step-num{background:var(--gn);color:var(--card);border-color:var(--gn);}
+.step.done .step-num::before{content:"✓";font-family:var(--fb);font-size:12px;}
 .step.done .step-num span{display:none}
-.step-lbl{
-  font-size:10.5px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:var(--mt);
-  font-weight:500;
-}
+.step-lbl{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--mt);font-weight:500;}
 .step.active .step-lbl{color:var(--tx);font-weight:600}
-.step-div{
-  width:40px;
-  height:1px;
-  background:linear-gradient(90deg,var(--brd2),transparent);
-  margin:0 4px;
-}
+.step-div{width:40px;height:1px;background:linear-gradient(90deg,var(--brd2),transparent);margin:0 4px;}
 
-/* ─────────── CARDS ─────────── */
-.card{
-  background:var(--card);
-  border:1px solid var(--brd);
-  border-radius:var(--r);
-  padding:28px 32px;
-  margin-bottom:18px;
-  position:relative;
-  animation:fadeUp .5s cubic-bezier(.22,.61,.36,1) both;
-  box-shadow:0 2px 10px rgba(139,115,85,.03);
-}
-.card-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  padding-bottom:22px;
-  border-bottom:1px solid var(--brd);
-  margin-bottom:22px;
-  gap:20px;
-  flex-wrap:wrap;
-}
-.card-t{
-  font-family:var(--fd);
-  font-size:30px;
-  font-weight:500;
-  letter-spacing:.01em;
-  color:var(--tx);
-  margin-bottom:4px;
-}
-.card-s{
-  font-size:12px;
-  color:var(--mt);
-  letter-spacing:.02em;
-}
-.card-head-icon{
-  width:44px;height:44px;
-  border-radius:10px;
-  background:linear-gradient(135deg,rgba(196,168,130,.12),rgba(139,115,85,.06));
-  border:1px solid var(--brd2);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--ac);
-  flex-shrink:0;
-}
+.card{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:28px 32px;margin-bottom:18px;position:relative;animation:fadeUp .5s cubic-bezier(.22,.61,.36,1) both;box-shadow:0 2px 10px rgba(139,115,85,.03);}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:22px;border-bottom:1px solid var(--brd);margin-bottom:22px;gap:20px;flex-wrap:wrap;}
+.card-t{font-family:var(--fd);font-size:30px;font-weight:500;letter-spacing:.01em;color:var(--tx);margin-bottom:4px;}
+.card-s{font-size:12px;color:var(--mt);letter-spacing:.02em;}
+.card-head-icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,rgba(196,168,130,.12),rgba(139,115,85,.06));border:1px solid var(--brd2);display:flex;align-items:center;justify-content:center;color:var(--ac);flex-shrink:0;}
 
-/* Section (with icon, replacing dash line) */
-.sec{
-  margin-bottom:24px;
-  padding-bottom:22px;
-  border-bottom:1px solid var(--brd);
-}
+.sec{margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--brd);}
 .sec:last-child{border:0;padding-bottom:0;margin-bottom:0}
-.sec-head{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:16px;
-}
-.sec-icon{
-  width:24px;height:24px;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--ac);
-  flex-shrink:0;
-}
-.sec-t{
-  font-family:var(--fd);
-  font-size:19px;
-  font-weight:500;
-  color:var(--tx);
-  letter-spacing:.01em;
-}
-.sec-note{
-  font-size:10.5px;
-  color:var(--mt);
-  margin-left:auto;
-  font-style:italic;
-  letter-spacing:.02em;
-}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sec-icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--ac);flex-shrink:0;}
+.sec-t{font-family:var(--fd);font-size:19px;font-weight:500;color:var(--tx);letter-spacing:.01em;}
+.sec-note{font-size:10.5px;color:var(--mt);margin-left:auto;font-style:italic;letter-spacing:.02em;}
 
-/* ─────────── FORM FIELDS ─────────── */
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-  margin-bottom:14px;
-}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;}
 .row-3{grid-template-columns:1fr 1fr 1fr}
 .row-1{grid-template-columns:1fr}
-@media(max-width:680px){
-  .row,.row-3{grid-template-columns:1fr}
-}
+@media(max-width:680px){.row,.row-3{grid-template-columns:1fr}}
 
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-.field-lbl{
-  font-size:9.5px;
-  letter-spacing:.2em;
-  color:var(--mt);
-  text-transform:uppercase;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field-lbl{font-size:9.5px;letter-spacing:.2em;color:var(--mt);text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:6px;}
 .field-lbl .req{color:var(--ac)}
-.field-lbl .lock{opacity:.5}
-.field-hint{
-  font-size:10.5px;
-  color:var(--mt);
-  font-style:italic;
-  letter-spacing:.02em;
-  line-height:1.4;
-}
-.inp,.sel,.txa{
-  background:var(--bg);
-  border:1px solid var(--brd);
-  border-radius:var(--rs);
-  padding:10px 12px;
-  color:var(--tx);
-  font-family:var(--fb);
-  font-size:13px;
-  transition:all .2s;
-  width:100%;
-  outline:none;
-}
+.field-hint{font-size:10.5px;color:var(--mt);font-style:italic;letter-spacing:.02em;line-height:1.4;}
+.inp,.sel,.txa{background:var(--bg);border:1px solid var(--brd);border-radius:var(--rs);padding:10px 12px;color:var(--tx);font-family:var(--fb);font-size:13px;transition:all .2s;width:100%;outline:none;}
 .inp::placeholder,.txa::placeholder{color:var(--mt);opacity:.55}
-.inp:focus,.sel:focus,.txa:focus{
-  border-color:var(--ac);
-  background:var(--card);
-  box-shadow:0 0 0 3px rgba(139,115,85,.08);
-}
-.sel{
-  appearance:none;
-  -webkit-appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b7355' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;
-  background-position:right 14px center;
-  padding-right:32px;
-  cursor:pointer;
-}
+.inp:focus,.sel:focus,.txa:focus{border-color:var(--ac);background:var(--card);box-shadow:0 0 0 3px rgba(139,115,85,.08);}
+.sel{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b7355' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:32px;cursor:pointer;}
 .sel option{background:var(--card);color:var(--tx)}
 .txa{resize:vertical;min-height:80px;font-family:var(--fb)}
+.dob-grid{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:8px;}
 
-/* DOB picker */
-.dob-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1.2fr;
-  gap:8px;
-}
-
-/* Pills */
-.pill-group{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-}
-.pill{
-  padding:8px 16px;
-  background:var(--card);
-  border:1px solid var(--brd2);
-  border-radius:var(--rs);
-  color:var(--tx2);
-  font-size:12px;
-  font-family:var(--fb);
-  cursor:pointer;
-  transition:all .2s;
-  letter-spacing:.02em;
-  font-weight:500;
-}
+.pill-group{display:flex;gap:6px;flex-wrap:wrap;}
+.pill{padding:8px 16px;background:var(--card);border:1px solid var(--brd2);border-radius:var(--rs);color:var(--tx2);font-size:12px;font-family:var(--fb);cursor:pointer;transition:all .2s;letter-spacing:.02em;font-weight:500;}
 .pill:hover{border-color:var(--ac);color:var(--tx)}
-.pill.active{
-  background:var(--ac);
-  color:var(--card);
-  border-color:var(--ac);
-}
+.pill.active{background:var(--ac);color:var(--card);border-color:var(--ac);}
 
-/* Multi-tag input (languages) */
-.tag-wrap{
-  border:1px solid var(--brd);
-  border-radius:var(--rs);
-  padding:8px;
-  background:var(--bg);
-  min-height:42px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  align-items:center;
-  transition:all .2s;
-  cursor:text;
-}
-.tag-wrap:focus-within{
-  border-color:var(--ac);
-  background:var(--card);
-  box-shadow:0 0 0 3px rgba(139,115,85,.08);
-}
-.tag{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:4px 10px;
-  background:var(--sf);
-  border:1px solid var(--brd2);
-  border-radius:14px;
-  font-size:11.5px;
-  color:var(--tx);
-}
-.tag-x{
-  width:14px;height:14px;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;
-  color:var(--mt);
-  font-size:10px;
-  font-weight:700;
-}
+.tag-wrap{border:1px solid var(--brd);border-radius:var(--rs);padding:8px;background:var(--bg);min-height:42px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;transition:all .2s;cursor:text;}
+.tag-wrap:focus-within{border-color:var(--ac);background:var(--card);box-shadow:0 0 0 3px rgba(139,115,85,.08);}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--sf);border:1px solid var(--brd2);border-radius:14px;font-size:11.5px;color:var(--tx);}
+.tag-x{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mt);font-size:10px;font-weight:700;}
 .tag-x:hover{background:var(--rd);color:var(--card)}
-.tag-add{
-  background:transparent;
-  border:none;
-  padding:4px 8px;
-  font-size:11.5px;
-  font-family:var(--fb);
-  color:var(--ac);
-  cursor:pointer;
-  font-weight:500;
-}
 
-/* Checkboxes (areas, services, abroad) */
-.chk-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:6px;
-}
-.chk{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  padding:8px 12px;
-  background:var(--card);
-  border:1px solid var(--brd);
-  border-radius:var(--rs);
-  cursor:pointer;
-  transition:all .2s;
-  font-size:12px;
-  color:var(--tx2);
-  user-select:none;
-}
+.chk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;}
+.chk{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);cursor:pointer;transition:all .2s;font-size:12px;color:var(--tx2);user-select:none;}
 .chk:hover{border-color:var(--acL);color:var(--tx)}
-.chk.checked{
-  background:rgba(93,140,114,.04);
-  border-color:var(--gn);
-  color:var(--tx);
-  font-weight:500;
-}
-.chk-box{
-  width:15px;height:15px;
-  border:1.5px solid var(--brd2);
-  border-radius:3px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-  background:var(--card);
-  transition:all .2s;
-}
-.chk.checked .chk-box{
-  background:var(--gn);
-  border-color:var(--gn);
-}
-.chk-box svg{
-  width:10px;height:10px;
-  color:var(--card);
-  opacity:0;
-}
+.chk.checked{background:rgba(93,140,114,.04);border-color:var(--gn);color:var(--tx);font-weight:500;}
+.chk-box{width:15px;height:15px;border:1.5px solid var(--brd2);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--card);transition:all .2s;}
+.chk.checked .chk-box{background:var(--gn);border-color:var(--gn);}
+.chk-box svg{width:10px;height:10px;color:var(--card);opacity:0;}
 .chk.checked .chk-box svg{opacity:1}
 
-/* Work-name suggestions */
-.wn-sug{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-  margin-top:8px;
-}
-.wn-sug-btn{
-  padding:6px 14px;
-  background:var(--card);
-  border:1px solid var(--brd2);
-  border-radius:14px;
-  color:var(--ac);
-  font-size:12px;
-  font-family:var(--fd);
-  font-weight:500;
-  letter-spacing:.03em;
-  cursor:pointer;
-  transition:all .2s;
-}
+.wn-sug{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.wn-sug-btn{padding:6px 14px;background:var(--card);border:1px solid var(--brd2);border-radius:14px;color:var(--ac);font-size:12px;font-family:var(--fd);font-weight:500;letter-spacing:.03em;cursor:pointer;transition:all .2s;}
 .wn-sug-btn:hover{background:var(--ac);color:var(--card);border-color:var(--ac)}
-.wn-status{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-size:10.5px;
-  margin-top:4px;
-  font-weight:500;
-  letter-spacing:.02em;
-}
-.wn-status.ok{color:var(--gn)}
-.wn-status.err{color:var(--rd)}
+.wn-status{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;margin-top:4px;font-weight:500;letter-spacing:.02em;}
+.wn-status.ok{color:var(--gn)}.wn-status.err{color:var(--rd)}
 
-/* Availability calendar */
-.avail-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:5px;
-  margin-bottom:12px;
-}
-.avail-day{
-  padding:10px 4px;
-  background:var(--card);
-  border:1px solid var(--brd);
-  border-radius:var(--rs);
-  text-align:center;
-  cursor:pointer;
-  transition:all .2s;
-  min-height:100px;
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-}
+.avail-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px;}
+.avail-day{padding:10px 4px;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);text-align:center;cursor:pointer;transition:all .2s;min-height:100px;display:flex;flex-direction:column;gap:5px;}
 .avail-day:hover{border-color:var(--acL)}
-.avail-day.off{
-  background:var(--sf);
-  opacity:.7;
-}
-.avail-day.on{
-  background:rgba(93,140,114,.04);
-  border-color:var(--gn);
-}
-.avail-day-lbl{
-  font-size:10px;
-  color:var(--mt);
-  letter-spacing:.2em;
-  text-transform:uppercase;
-  font-weight:600;
-}
-.avail-day-hrs{
-  font-family:var(--fd);
-  font-size:13px;
-  color:var(--tx);
-  font-weight:500;
-}
+.avail-day.off{background:var(--sf);opacity:.7;}
+.avail-day.on{background:rgba(93,140,114,.04);border-color:var(--gn);}
+.avail-day-lbl{font-size:10px;color:var(--mt);letter-spacing:.2em;text-transform:uppercase;font-weight:600;}
+.avail-day-hrs{font-family:var(--fd);font-size:13px;color:var(--tx);font-weight:500;}
 .avail-day.off .avail-day-hrs{color:var(--mt);font-style:italic}
-.avail-toggle{
-  font-size:9.5px;
-  color:var(--ac);
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  cursor:pointer;
-  margin-top:auto;
-}
-.time-inputs{
-  display:flex;
-  gap:4px;
-  align-items:center;
-  margin-top:4px;
-}
-.time-inputs input{
-  flex:1;
-  padding:4px 6px;
-  border:1px solid var(--brd);
-  border-radius:4px;
-  font-size:11px;
-  text-align:center;
-  background:var(--card);
-  color:var(--tx);
-  font-family:var(--fb);
-}
+.avail-toggle{font-size:9.5px;color:var(--ac);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-top:auto;}
+.time-inputs{display:flex;gap:4px;align-items:center;margin-top:4px;}
+.time-inputs input{flex:1;padding:4px 6px;border:1px solid var(--brd);border-radius:4px;font-size:11px;text-align:center;background:var(--card);color:var(--tx);font-family:var(--fb);}
 .time-inputs input:focus{outline:none;border-color:var(--ac)}
 .time-sep{font-size:10px;color:var(--mt)}
-@media(max-width:680px){
-  .avail-grid{grid-template-columns:repeat(2,1fr)}
-}
+@media(max-width:680px){.avail-grid{grid-template-columns:repeat(2,1fr)}}
 
-/* Service cards */
-.svc-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:10px;
-}
-.svc-grid.addons-2col{
-  grid-template-columns:1fr 1fr;
-}
-@media(max-width:680px){
-  .svc-grid.addons-2col{grid-template-columns:1fr}
-}
-.svc{
-  position:relative;
-  padding:14px 16px;
-  background:var(--card);
-  border:1px solid var(--brd);
-  border-radius:var(--r);
-  cursor:pointer;
-  transition:all .2s;
-}
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.svc-grid.addons-2col{grid-template-columns:1fr 1fr;}
+@media(max-width:680px){.svc-grid.addons-2col{grid-template-columns:1fr}}
+.svc{position:relative;padding:14px 16px;background:var(--card);border:1px solid var(--brd);border-radius:var(--r);cursor:pointer;transition:all .2s;}
 .svc:hover{border-color:var(--acL);transform:translateY(-1px);box-shadow:0 4px 12px rgba(139,115,85,.06)}
-.svc.checked{
-  background:linear-gradient(180deg,rgba(93,140,114,.04),transparent);
-  border-color:var(--gn);
-}
-.svc-check{
-  position:absolute;
-  top:12px;right:12px;
-  width:18px;height:18px;
-  border:1.5px solid var(--brd2);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--card);
-  transition:all .2s;
-}
-.svc.checked .svc-check{
-  background:var(--gn);
-  border-color:var(--gn);
-}
-.svc-check svg{
-  width:10px;height:10px;
-  color:var(--card);
-  opacity:0;
-}
+.svc.checked{background:linear-gradient(180deg,rgba(93,140,114,.04),transparent);border-color:var(--gn);}
+.svc-check{position:absolute;top:12px;right:12px;width:18px;height:18px;border:1.5px solid var(--brd2);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);transition:all .2s;}
+.svc.checked .svc-check{background:var(--gn);border-color:var(--gn);}
+.svc-check svg{width:10px;height:10px;color:var(--card);opacity:0;}
 .svc.checked .svc-check svg{opacity:1}
-.svc-name{
-  font-family:var(--fd);
-  font-size:17px;
-  font-weight:500;
-  color:var(--tx);
-  margin-bottom:2px;
-}
-.svc-desc{
-  font-size:10.5px;
-  color:var(--mt);
-  letter-spacing:.02em;
-  line-height:1.4;
-}
+.svc-name{font-family:var(--fd);font-size:17px;font-weight:500;color:var(--tx);margin-bottom:2px;}
+.svc-desc{font-size:10.5px;color:var(--mt);letter-spacing:.02em;line-height:1.4;}
 
-/* Upload tiles */
 .upload-list{display:flex;flex-direction:column;gap:8px}
-.upload{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:14px 18px;
-  border:1px dashed var(--brd2);
-  border-radius:var(--rs);
-  transition:all .2s;
-  cursor:pointer;
-  background:var(--card);
-}
+.upload{display:flex;align-items:center;gap:14px;padding:14px 18px;border:1px dashed var(--brd2);border-radius:var(--rs);transition:all .2s;cursor:pointer;background:var(--card);}
 .upload:hover{border-color:var(--ac);background:var(--wm)}
-.upload.done{
-  border-style:solid;
-  border-color:var(--gn);
-  background:rgba(93,140,114,.03);
-}
-.upload-icon{
-  width:38px;height:38px;
-  border-radius:8px;
-  background:var(--sf);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--ac);
-  flex-shrink:0;
-}
+.upload.done{border-style:solid;border-color:var(--gn);background:rgba(93,140,114,.03);}
+.upload-icon{width:38px;height:38px;border-radius:8px;background:var(--sf);display:flex;align-items:center;justify-content:center;color:var(--ac);flex-shrink:0;}
 .upload.done .upload-icon{background:rgba(93,140,114,.1);color:var(--gn)}
 .upload-info{flex:1}
-.upload-ttl{
-  font-size:13px;
-  color:var(--tx);
-  margin-bottom:2px;
-  font-weight:500;
-  letter-spacing:.01em;
-}
-.upload-h{
-  font-size:10.5px;
-  color:var(--mt);
-  letter-spacing:.02em;
-}
-.upload-btn{
-  padding:7px 14px;
-  background:transparent;
-  border:1px solid var(--ac);
-  border-radius:6px;
-  color:var(--ac);
-  font-size:10.5px;
-  font-family:var(--fb);
-  font-weight:600;
-  letter-spacing:.14em;
-  cursor:pointer;
-  text-transform:uppercase;
-  transition:all .2s;
-}
+.upload-ttl{font-size:13px;color:var(--tx);margin-bottom:2px;font-weight:500;letter-spacing:.01em;}
+.upload-h{font-size:10.5px;color:var(--mt);letter-spacing:.02em;}
+.upload-btn{padding:7px 14px;background:transparent;border:1px solid var(--ac);border-radius:6px;color:var(--ac);font-size:10.5px;font-family:var(--fb);font-weight:600;letter-spacing:.14em;cursor:pointer;text-transform:uppercase;transition:all .2s;}
 .upload-btn:hover{background:var(--ac);color:var(--card)}
 .upload.done .upload-btn{color:var(--gn);border-color:var(--gn)}
 .upload.done .upload-btn:hover{background:var(--gn);color:var(--card)}
 
-/* Selfie KYC preview box */
-.selfie-box{
-  padding:18px;
-  border:2px dashed var(--acL);
-  border-radius:var(--r);
-  background:linear-gradient(180deg,rgba(196,168,130,.04),transparent);
-  text-align:center;
-  margin-bottom:12px;
-}
-.selfie-icon{
-  width:54px;height:54px;
-  border-radius:50%;
-  background:var(--card);
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 12px;
-  color:var(--ac);
-  border:1px solid var(--acL);
-}
-.selfie-t{
-  font-family:var(--fd);
-  font-size:20px;
-  font-weight:500;
-  color:var(--tx);
-  margin-bottom:4px;
-}
-.selfie-s{
-  font-size:11.5px;
-  color:var(--mt);
-  margin-bottom:14px;
-  line-height:1.5;
-  max-width:460px;
-  margin-left:auto;
-  margin-right:auto;
-}
+.selfie-box{padding:18px;border:2px dashed var(--acL);border-radius:var(--r);background:linear-gradient(180deg,rgba(196,168,130,.04),transparent);text-align:center;margin-bottom:12px;}
+.selfie-icon{width:54px;height:54px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--ac);border:1px solid var(--acL);}
+.selfie-t{font-family:var(--fd);font-size:20px;font-weight:500;color:var(--tx);margin-bottom:4px;}
+.selfie-s{font-size:11.5px;color:var(--mt);margin-bottom:14px;line-height:1.5;max-width:460px;margin-left:auto;margin-right:auto;}
 
-/* Video box */
-.video-box{
-  border:2px dashed var(--acL);
-  border-radius:var(--r);
-  padding:24px;
-  text-align:center;
-  background:linear-gradient(180deg,rgba(196,168,130,.05),transparent);
-}
-.video-box.done{
-  border-style:solid;
-  background:rgba(93,140,114,.04);
-  border-color:var(--gn);
-}
-.video-icon{
-  width:48px;height:48px;
-  border-radius:50%;
-  background:var(--card);
-  border:1px solid var(--acL);
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 12px;
-  color:var(--ac);
-}
+.video-box{border:2px dashed var(--acL);border-radius:var(--r);padding:24px;text-align:center;background:linear-gradient(180deg,rgba(196,168,130,.05),transparent);}
+.video-box.done{border-style:solid;background:rgba(93,140,114,.04);border-color:var(--gn);}
+.video-icon{width:48px;height:48px;border-radius:50%;background:var(--card);border:1px solid var(--acL);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--ac);}
 .video-box.done .video-icon{border-color:var(--gn);color:var(--gn)}
-.video-box-ttl{
-  font-family:var(--fd);
-  font-size:20px;
-  color:var(--tx);
-  margin-bottom:4px;
-  font-weight:500;
-}
-.video-box-sub{
-  font-size:11.5px;
-  color:var(--mt);
-  margin-bottom:14px;
-  font-style:italic;
-  line-height:1.5;
-}
-.video-benefit{
-  display:inline-block;
-  padding:4px 10px;
-  background:rgba(196,168,130,.1);
-  border-radius:14px;
-  font-size:10px;
-  color:var(--ac);
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  font-weight:600;
-  margin-bottom:12px;
-}
-#videoPreview{
-  max-width:100%;
-  width:260px;
-  border-radius:var(--rs);
-  margin:0 auto 14px;
-  display:block;
-}
+.video-box-ttl{font-family:var(--fd);font-size:20px;color:var(--tx);margin-bottom:4px;font-weight:500;}
+.video-box-sub{font-size:11.5px;color:var(--mt);margin-bottom:14px;font-style:italic;line-height:1.5;}
+.video-benefit{display:inline-block;padding:4px 10px;background:rgba(196,168,130,.1);border-radius:14px;font-size:10px;color:var(--ac);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:12px;}
+#videoPreview{max-width:100%;width:260px;border-radius:var(--rs);margin:0 auto 14px;display:block;}
 
-/* Consent list */
 .consent-list{display:flex;flex-direction:column;gap:8px}
-.consent{
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  padding:14px 16px;
-  border:1px solid var(--brd);
-  border-radius:var(--rs);
-  cursor:pointer;
-  transition:all .2s;
-  background:var(--card);
-}
+.consent{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--brd);border-radius:var(--rs);cursor:pointer;transition:all .2s;background:var(--card);}
 .consent:hover{border-color:var(--acL)}
-.consent.checked{
-  background:rgba(93,140,114,.03);
-  border-color:var(--gn);
-}
-.consent-box{
-  width:18px;height:18px;
-  border:1.5px solid var(--brd2);
-  border-radius:4px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-  margin-top:1px;
-  background:var(--card);
-  transition:all .2s;
-}
-.consent.checked .consent-box{
-  background:var(--gn);
-  border-color:var(--gn);
-}
-.consent-box svg{
-  width:11px;height:11px;
-  color:var(--card);
-  opacity:0;
-}
+.consent.checked{background:rgba(93,140,114,.03);border-color:var(--gn);}
+.consent-box{width:18px;height:18px;border:1.5px solid var(--brd2);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;background:var(--card);transition:all .2s;}
+.consent.checked .consent-box{background:var(--gn);border-color:var(--gn);}
+.consent-box svg{width:11px;height:11px;color:var(--card);opacity:0;}
 .consent.checked .consent-box svg{opacity:1}
-.consent-text{
-  flex:1;
-  font-size:12.5px;
-  color:var(--tx);
-  line-height:1.55;
-}
+.consent-text{flex:1;font-size:12.5px;color:var(--tx);line-height:1.55;}
 .consent-text b{color:var(--tx);font-weight:600}
 
-/* Summary */
-.summary-card{
-  background:linear-gradient(180deg,rgba(196,168,130,.04),rgba(139,115,85,.02));
-  border:1px solid var(--brd2);
-  border-radius:var(--r);
-  padding:22px 26px;
-  margin-top:18px;
-}
-.summary-t{
-  font-family:var(--fd);
-  font-size:22px;
-  color:var(--tx);
-  margin-bottom:14px;
-  font-weight:500;
-  letter-spacing:.01em;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.summary-row{
-  display:flex;
-  justify-content:space-between;
-  padding:7px 0;
-  font-size:12px;
-  border-bottom:1px solid var(--brd);
-  gap:16px;
-}
+.summary-card{background:linear-gradient(180deg,rgba(196,168,130,.04),rgba(139,115,85,.02));border:1px solid var(--brd2);border-radius:var(--r);padding:22px 26px;margin-top:18px;}
+.summary-t{font-family:var(--fd);font-size:22px;color:var(--tx);margin-bottom:14px;font-weight:500;letter-spacing:.01em;display:flex;align-items:center;gap:10px;}
+.summary-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12px;border-bottom:1px solid var(--brd);gap:16px;}
 .summary-row:last-child{border:0}
 .summary-key{color:var(--mt);letter-spacing:.05em}
 .summary-val{color:var(--tx);text-align:right;font-weight:500;max-width:60%}
 
-/* Actions */
-.actions{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  margin-top:26px;
-  flex-wrap:wrap;
-}
+.actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap;}
 .actions-left,.actions-right{display:flex;gap:10px;flex-wrap:wrap}
-.btn{
-  padding:12px 28px;
-  background:transparent;
-  border:1px solid var(--ac);
-  border-radius:var(--rs);
-  color:var(--ac);
-  font-size:11px;
-  letter-spacing:.2em;
-  cursor:pointer;
-  text-transform:uppercase;
-  font-family:var(--fb);
-  font-weight:600;
-  transition:all .25s cubic-bezier(.22,.61,.36,1);
-  min-width:130px;
-}
-.btn:hover{
-  background:var(--ac);
-  color:var(--card);
-  box-shadow:0 6px 20px rgba(139,115,85,.2);
-  transform:translateY(-1px);
-}
-.btn-primary{
-  background:var(--ac);
-  color:var(--card);
-}
-.btn-primary:hover{
-  background:#6d5a43;
-  border-color:#6d5a43;
-}
-.btn-ghost{
-  border-color:var(--brd2);
-  color:var(--mt);
-}
-.btn-ghost:hover{
-  background:var(--sf);
-  color:var(--tx);
-  border-color:var(--ac);
-  box-shadow:none;
-  transform:none;
-}
+.btn{padding:12px 28px;background:transparent;border:1px solid var(--ac);border-radius:var(--rs);color:var(--ac);font-size:11px;letter-spacing:.2em;cursor:pointer;text-transform:uppercase;font-family:var(--fb);font-weight:600;transition:all .25s cubic-bezier(.22,.61,.36,1);min-width:130px;}
+.btn:hover{background:var(--ac);color:var(--card);box-shadow:0 6px 20px rgba(139,115,85,.2);transform:translateY(-1px);}
+.btn-primary{background:var(--ac);color:var(--card);}
+.btn-primary:hover{background:#6d5a43;border-color:#6d5a43;}
+.btn-ghost{border-color:var(--brd2);color:var(--mt);}
+.btn-ghost:hover{background:var(--sf);color:var(--tx);border-color:var(--ac);box-shadow:none;transform:none;}
 
-/* Resume banner */
-.resume-banner{
-  background:linear-gradient(90deg,rgba(196,168,130,.12),rgba(196,168,130,.03));
-  border:1px solid var(--acL);
-  border-radius:var(--r);
-  padding:14px 20px;
-  margin-bottom:18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:14px;
-  flex-wrap:wrap;
-  animation:fadeIn .6s;
-}
+.resume-banner{background:linear-gradient(90deg,rgba(196,168,130,.12),rgba(196,168,130,.03));border:1px solid var(--acL);border-radius:var(--r);padding:14px 20px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;animation:fadeIn .6s;}
 .resume-msg{font-size:12px;color:var(--tx);letter-spacing:.01em}
 .resume-msg b{color:var(--tx);font-weight:600}
 .resume-actions{display:flex;gap:8px}
-.resume-btn{
-  padding:7px 14px;
-  font-size:10px;
-  letter-spacing:.14em;
-  background:transparent;
-  border:1px solid var(--brd2);
-  border-radius:6px;
-  color:var(--tx2);
-  cursor:pointer;
-  text-transform:uppercase;
-  font-family:var(--fb);
-  font-weight:600;
-  transition:all .2s;
-}
+.resume-btn{padding:7px 14px;font-size:10px;letter-spacing:.14em;background:transparent;border:1px solid var(--brd2);border-radius:6px;color:var(--tx2);cursor:pointer;text-transform:uppercase;font-family:var(--fb);font-weight:600;transition:all .2s;}
 .resume-btn:hover{border-color:var(--ac);color:var(--tx)}
 .resume-btn.primary{background:var(--ac);color:var(--card);border-color:var(--ac)}
 
-/* Success overlay */
-.success-overlay{
-  position:fixed;inset:0;
-  background:rgba(250,248,246,.96);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-  z-index:200;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .6s;
-}
+.success-overlay{position:fixed;inset:0;background:rgba(250,248,246,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .6s;}
 .success-overlay.visible{opacity:1;pointer-events:auto}
-.success-card{
-  max-width:560px;
-  text-align:center;
-  transform:translateY(20px);
-  opacity:0;
-  transition:all .8s .2s cubic-bezier(.22,.61,.36,1);
-}
+.success-card{max-width:560px;text-align:center;transform:translateY(20px);opacity:0;transition:all .8s .2s cubic-bezier(.22,.61,.36,1);}
 .success-overlay.visible .success-card{transform:translateY(0);opacity:1}
-.success-mark{
-  width:86px;height:86px;
-  border:1px solid var(--ac);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 28px;
-  position:relative;
-  background:var(--card);
-}
-.success-mark::after{
-  content:"";
-  position:absolute;
-  inset:-8px;
-  border:1px solid rgba(139,115,85,.2);
-  border-radius:50%;
-}
+.success-mark{width:86px;height:86px;border:1px solid var(--ac);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;position:relative;background:var(--card);}
+.success-mark::after{content:"";position:absolute;inset:-8px;border:1px solid rgba(139,115,85,.2);border-radius:50%;}
 .success-mark svg{color:var(--ac);stroke-width:1.5}
-.success-t{
-  font-family:var(--fd);
-  font-size:48px;
-  color:var(--tx);
-  margin-bottom:14px;
-  font-weight:500;
-  letter-spacing:.01em;
-}
-.success-sub{
-  font-size:13px;
-  color:var(--mt);
-  line-height:1.8;
-  margin-bottom:28px;
-  letter-spacing:.02em;
-  max-width:440px;
-  margin-left:auto;
-  margin-right:auto;
-}
-.success-ref{
-  display:inline-block;
-  padding:10px 22px;
-  background:var(--card);
-  border:1px solid var(--brd2);
-  border-radius:var(--rs);
-  font-family:var(--fd);
-  font-size:16px;
-  letter-spacing:.22em;
-  color:var(--tx);
-}
+.success-t{font-family:var(--fd);font-size:48px;color:var(--tx);margin-bottom:14px;font-weight:500;letter-spacing:.01em;}
+.success-sub{font-size:13px;color:var(--mt);line-height:1.8;margin-bottom:28px;letter-spacing:.02em;max-width:440px;margin-left:auto;margin-right:auto;}
+.success-ref{display:inline-block;padding:10px 22px;background:var(--card);border:1px solid var(--brd2);border-radius:var(--rs);font-family:var(--fd);font-size:16px;letter-spacing:.22em;color:var(--tx);}
 
-/* Toast */
-.toast{
-  position:fixed;
-  top:20px;right:20px;
-  padding:14px 22px;
-  background:var(--card);
-  border:1px solid var(--ac);
-  border-radius:var(--rs);
-  color:var(--tx);
-  font-size:12.5px;
-  box-shadow:0 10px 30px rgba(139,115,85,.15);
-  z-index:100;
-  transform:translateX(400px);
-  transition:transform .4s cubic-bezier(.22,.61,.36,1);
-  max-width:340px;
-  font-weight:500;
-}
+.toast{position:fixed;top:20px;right:20px;padding:14px 22px;background:var(--card);border:1px solid var(--ac);border-radius:var(--rs);color:var(--tx);font-size:12.5px;box-shadow:0 10px 30px rgba(139,115,85,.15);z-index:100;transform:translateX(400px);transition:transform .4s cubic-bezier(.22,.61,.36,1);max-width:340px;font-weight:500;}
 .toast.visible{transform:translateX(0)}
 .toast.success{border-color:var(--gn)}
 .toast.error{border-color:var(--rd)}
 
-/* Footer note */
-.footnote{
-  text-align:center;
-  font-size:10.5px;
-  color:var(--mt);
-  letter-spacing:.04em;
-  padding:16px 20px 0;
-  font-style:italic;
-  line-height:1.7;
-}
+.footnote{text-align:center;font-size:10.5px;color:var(--mt);letter-spacing:.04em;padding:16px 20px 0;font-style:italic;line-height:1.7;}
 
-/* Animations */
-@keyframes fadeDown{
-  from{opacity:0;transform:translateY(-20px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(14px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes fadeIn{
-  from{opacity:0}
-  to{opacity:1}
-}
-
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 input[type="file"]{display:none}
 
-.submission-stamp{
-  text-align:center;
-  padding:18px 20px;
-  margin:18px 0 8px;
-  background:linear-gradient(180deg,rgba(196,168,130,.06),rgba(139,115,85,.02));
-  border:1px solid var(--brd2);
-  border-radius:var(--r);
-}
-.stamp-label{
-  font-size:9.5px;
-  color:var(--mt);
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  font-weight:600;
-  margin-bottom:6px;
-}
-.stamp-value{
-  font-family:var(--fd);
-  font-size:20px;
-  font-weight:500;
-  color:var(--tx);
-  letter-spacing:.04em;
-}
+.submission-stamp{text-align:center;padding:18px 20px;margin:18px 0 8px;background:linear-gradient(180deg,rgba(196,168,130,.06),rgba(139,115,85,.02));border:1px solid var(--brd2);border-radius:var(--r);}
+.stamp-label{font-size:9.5px;color:var(--mt);letter-spacing:.28em;text-transform:uppercase;font-weight:600;margin-bottom:6px;}
+.stamp-value{font-family:var(--fd);font-size:20px;font-weight:500;color:var(--tx);letter-spacing:.04em;}
+.opt-note{display:inline-block;padding:2px 8px;background:var(--sf);border-radius:10px;font-size:9.5px;color:var(--mt);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-left:6px;}
 
-.opt-note{
-  display:inline-block;
-  padding:2px 8px;
-  background:var(--sf);
-  border-radius:10px;
-  font-size:9.5px;
-  color:var(--mt);
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  font-weight:600;
-  margin-left:6px;
-}
+/* Upload progress bar */
+.upload-prog{height:3px;background:var(--sf);border-radius:2px;overflow:hidden;margin-top:6px;display:none;}
+.upload-prog.active{display:block}
+.upload-prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--acL));width:0%;transition:width .2s;}
 </style>
 </head>
 <body>
@@ -1320,39 +328,21 @@ input[type="file"]{display:none}
 
   <!-- Stepper -->
   <div class="stepper">
-    <div class="step active" data-step="1" onclick="goStep(1)">
-      <div class="step-num"><span>1</span></div>
-      <div class="step-lbl">About You</div>
-    </div>
+    <div class="step active" data-step="1" onclick="goStep(1)"><div class="step-num"><span>1</span></div><div class="step-lbl">About You</div></div>
     <div class="step-div"></div>
-    <div class="step" data-step="2" onclick="goStep(2)">
-      <div class="step-num"><span>2</span></div>
-      <div class="step-lbl">Profile</div>
-    </div>
+    <div class="step" data-step="2" onclick="goStep(2)"><div class="step-num"><span>2</span></div><div class="step-lbl">Profile</div></div>
     <div class="step-div"></div>
-    <div class="step" data-step="3" onclick="goStep(3)">
-      <div class="step-num"><span>3</span></div>
-      <div class="step-lbl">Work</div>
-    </div>
+    <div class="step" data-step="3" onclick="goStep(3)"><div class="step-num"><span>3</span></div><div class="step-lbl">Work</div></div>
     <div class="step-div"></div>
-    <div class="step" data-step="4" onclick="goStep(4)">
-      <div class="step-num"><span>4</span></div>
-      <div class="step-lbl">Documents</div>
-    </div>
+    <div class="step" data-step="4" onclick="goStep(4)"><div class="step-num"><span>4</span></div><div class="step-lbl">Documents</div></div>
   </div>
 
   <!-- ═══════════ STEP 1: ABOUT YOU ═══════════ -->
   <div class="card" id="step1">
     <div class="card-head">
-      <div>
-        <div class="card-t">About You</div>
-        <div class="card-s">Personal information. Strictly confidential.</div>
-      </div>
-      <div class="card-head-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 016-6h4a6 6 0 016 6v2"/></svg>
-      </div>
+      <div><div class="card-t">About You</div><div class="card-s">Personal information. Strictly confidential.</div></div>
+      <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 016-6h4a6 6 0 016 6v2"/></svg></div>
     </div>
-
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 016-6h4a6 6 0 016 6v2"/></svg></div>
@@ -1380,20 +370,7 @@ input[type="file"]{display:none}
         </div>
         <div class="field">
           <label class="field-lbl">Nationality <span class="req">*</span></label>
-          <select class="sel" id="f_nationality" data-sec="personal">
-            <option value="">Select...</option>
-            <option>British</option><option>Brazilian</option><option>Romanian</option>
-            <option>Portuguese</option><option>Spanish</option><option>Italian</option>
-            <option>French</option><option>Polish</option><option>Ukrainian</option>
-            <option>Russian</option><option>Hungarian</option><option>Bulgarian</option>
-            <option>Colombian</option><option>Venezuelan</option><option>Argentinian</option>
-            <option>Mexican</option><option>American</option><option>Canadian</option>
-            <option>Australian</option><option>Chinese</option><option>Japanese</option>
-            <option>Korean</option><option>Thai</option><option>Vietnamese</option>
-            <option>Filipino</option><option>Indian</option><option>Iranian</option>
-            <option>Turkish</option><option>Moroccan</option><option>Egyptian</option>
-            <option>Nigerian</option><option>South African</option><option>Other</option>
-          </select>
+          <select class="sel" id="f_nationality" data-sec="personal"><option value="">Select...</option></select>
         </div>
       </div>
       <div class="row">
@@ -1403,17 +380,7 @@ input[type="file"]{display:none}
         </div>
         <div class="field">
           <label class="field-lbl">Country of Residence <span class="req">*</span></label>
-          <select class="sel" id="f_country" data-sec="personal">
-            <option value="">Select...</option>
-            <option>United Kingdom</option><option>Ireland</option><option>France</option>
-            <option>Germany</option><option>Spain</option><option>Italy</option>
-            <option>Portugal</option><option>Netherlands</option><option>Belgium</option>
-            <option>Switzerland</option><option>Austria</option><option>Romania</option>
-            <option>Poland</option><option>Greece</option>
-            <option>United States</option><option>Canada</option>
-            <option>Australia</option><option>Brazil</option><option>UAE</option>
-            <option>Other</option>
-          </select>
+          <select class="sel" id="f_country" data-sec="personal"><option value="">Select...</option></select>
         </div>
       </div>
       <div class="row">
@@ -1466,10 +433,8 @@ input[type="file"]{display:none}
           <label class="field-lbl">English Level <span class="req">*</span></label>
           <select class="sel" id="f_english" data-sec="personal">
             <option value="">Select...</option>
-            <option>Fluent</option>
-            <option>Conversational</option>
-            <option>Basic</option>
-            <option>None — learning</option>
+            <option>Fluent</option><option>Conversational</option>
+            <option>Basic</option><option>None — learning</option>
           </select>
         </div>
         <div class="field">
@@ -1485,71 +450,39 @@ input[type="file"]{display:none}
 
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5l9 7 9-7"/><path d="M3 5v14h18V5"/><path d="M8 10v4"/><path d="M16 10v4"/></svg></div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5l9 7 9-7"/><path d="M3 5v14h18V5"/></svg></div>
         <div class="sec-t">Languages</div>
       </div>
       <div class="field">
         <label class="field-lbl">Languages Spoken <span class="req">*</span></label>
         <div class="field-hint" style="margin-bottom:6px">Select all languages you speak</div>
         <div class="tag-wrap" id="langWrap" onclick="document.getElementById('langSelect').focus()">
-          <select class="sel" id="langSelect" style="border:0;background:transparent;flex:1;min-width:140px;padding:4px;width:auto;box-shadow:none" onchange="addLang(this.value);this.value=''">
-            <option value="">+ Add language</option>
-            <option>English (native)</option><option>English (fluent)</option><option>English (conversational)</option><option>English (basic)</option>
-            <option>Portuguese (native)</option><option>Portuguese (fluent)</option>
-            <option>Spanish (native)</option><option>Spanish (fluent)</option>
-            <option>French (native)</option><option>French (fluent)</option>
-            <option>Italian (native)</option><option>Italian (fluent)</option>
-            <option>German (native)</option><option>German (fluent)</option>
-            <option>Russian (native)</option><option>Russian (fluent)</option>
-            <option>Romanian (native)</option><option>Romanian (fluent)</option>
-            <option>Polish (native)</option><option>Polish (fluent)</option>
-            <option>Mandarin</option><option>Japanese</option><option>Korean</option>
-            <option>Arabic</option><option>Turkish</option><option>Greek</option>
-            <option>Dutch</option><option>Swedish</option><option>Hebrew</option>
-            <option>Thai</option><option>Vietnamese</option>
-          </select>
+          <select class="sel" id="langSelect" style="border:0;background:transparent;flex:1;min-width:140px;padding:4px;width:auto;box-shadow:none" onchange="addLang(this.value);this.value=''"><option value="">+ Add language</option></select>
         </div>
       </div>
     </div>
 
     <div class="actions">
-      <div class="actions-left">
-        <button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button>
-      </div>
-      <div class="actions-right">
-        <button class="btn btn-primary" onclick="goStep(2)">Continue →</button>
-      </div>
+      <div class="actions-left"><button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button></div>
+      <div class="actions-right"><button class="btn btn-primary" onclick="goStep(2)">Continue →</button></div>
     </div>
   </div>
 
   <!-- ═══════════ STEP 2: PROFESSIONAL PROFILE ═══════════ -->
   <div class="card" id="step2" style="display:none">
     <div class="card-head">
-      <div>
-        <div class="card-t">Professional Profile</div>
-        <div class="card-s">Your physical attributes and experience.</div>
-      </div>
-      <div class="card-head-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.35 4.76L20 8.63l-4 3.9.94 5.47L12 15.5l-4.94 2.5L8 12.53 4 8.63l5.65-1.87L12 2z"/></svg>
-      </div>
+      <div><div class="card-t">Professional Profile</div><div class="card-s">Your physical attributes and experience.</div></div>
+      <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.35 4.76L20 8.63l-4 3.9.94 5.47L12 15.5l-4.94 2.5L8 12.53 4 8.63l5.65-1.87L12 2z"/></svg></div>
     </div>
-
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 016-6h4a6 6 0 016 6v2"/></svg></div>
         <div class="sec-t">Physical</div>
       </div>
       <div class="row-3">
-        <div class="field">
-          <label class="field-lbl">Height (cm) <span class="req">*</span></label>
-          <input type="number" class="inp" id="f_height" placeholder="170" min="140" max="210" data-sec="physical">
-        </div>
-        <div class="field">
-          <label class="field-lbl">Weight (kg) <span class="req">*</span></label>
-          <input type="number" class="inp" id="f_weight" placeholder="60" min="40" max="120" data-sec="physical">
-        </div>
-        <div class="field">
-          <label class="field-lbl">Body Type <span class="req">*</span></label>
+        <div class="field"><label class="field-lbl">Height (cm) <span class="req">*</span></label><input type="number" class="inp" id="f_height" placeholder="170" min="140" max="210" data-sec="physical"></div>
+        <div class="field"><label class="field-lbl">Weight (kg) <span class="req">*</span></label><input type="number" class="inp" id="f_weight" placeholder="60" min="40" max="120" data-sec="physical"></div>
+        <div class="field"><label class="field-lbl">Body Type <span class="req">*</span></label>
           <select class="sel" id="f_body" data-sec="physical">
             <option value="">Select...</option>
             <option>Slim</option><option>Slim & Fit</option>
@@ -1561,107 +494,56 @@ input[type="file"]{display:none}
         </div>
       </div>
       <div class="row-3">
-        <div class="field">
-          <label class="field-lbl">Dress Size (UK)</label>
-          <select class="sel" id="f_dress">
-            <option value="">Select...</option>
-            <option>4</option><option>6</option><option>8</option>
-            <option>10</option><option>12</option><option>14</option><option>16</option>
-          </select>
+        <div class="field"><label class="field-lbl">Dress Size (UK)</label>
+          <select class="sel" id="f_dress"><option value="">Select...</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>14</option><option>16</option></select>
         </div>
-        <div class="field">
-          <label class="field-lbl">Eye Colour</label>
-          <select class="sel" id="f_eye">
-            <option value="">Select...</option>
-            <option>Blue</option><option>Green</option><option>Hazel</option>
-            <option>Brown</option><option>Dark brown</option><option>Grey</option>
-          </select>
+        <div class="field"><label class="field-lbl">Eye Colour</label>
+          <select class="sel" id="f_eye"><option value="">Select...</option><option>Blue</option><option>Green</option><option>Hazel</option><option>Brown</option><option>Dark brown</option><option>Grey</option></select>
         </div>
-        <div class="field">
-          <label class="field-lbl">Hair Colour</label>
-          <select class="sel" id="f_hair">
-            <option value="">Select...</option>
-            <option>Blonde</option><option>Light brown</option><option>Brunette</option>
-            <option>Dark brown</option><option>Black</option><option>Red</option>
-            <option>Dark red</option><option>Auburn</option><option>Other</option>
-          </select>
+        <div class="field"><label class="field-lbl">Hair Colour</label>
+          <select class="sel" id="f_hair"><option value="">Select...</option><option>Blonde</option><option>Light brown</option><option>Brunette</option><option>Dark brown</option><option>Black</option><option>Red</option><option>Dark red</option><option>Auburn</option><option>Other</option></select>
         </div>
       </div>
       <div class="row-3">
-        <div class="field">
-          <label class="field-lbl">Breast Size</label>
-          <input type="text" class="inp" id="f_breast" placeholder="e.g. 34C">
+        <div class="field"><label class="field-lbl">Breast Size</label><input type="text" class="inp" id="f_breast" placeholder="e.g. 34C"></div>
+        <div class="field"><label class="field-lbl">Breast Type</label>
+          <select class="sel" id="f_breast_type"><option value="">Select...</option><option>Natural</option><option>Enhanced</option></select>
         </div>
-        <div class="field">
-          <label class="field-lbl">Breast Type</label>
-          <select class="sel" id="f_breast_type">
-            <option value="">Select...</option>
-            <option>Natural</option><option>Enhanced</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="field-lbl">Profile Age</label>
-          <input type="number" class="inp" id="f_profile_age" placeholder="e.g. 25" min="18" max="55">
-          <div class="field-hint">Age you'd like to appear as</div>
-        </div>
+        <div class="field"><label class="field-lbl">Profile Age</label><input type="number" class="inp" id="f_profile_age" placeholder="e.g. 25" min="18" max="55"><div class="field-hint">Age you'd like to appear as</div></div>
       </div>
     </div>
-
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.35 4.76L20 8.63l-4 3.9.94 5.47L12 15.5l-4.94 2.5L8 12.53 4 8.63l5.65-1.87L12 2z"/></svg></div>
         <div class="sec-t">Experience & Training</div>
       </div>
       <div class="row">
-        <div class="field">
-          <label class="field-lbl">Years of Experience <span class="req">*</span></label>
-          <select class="sel" id="f_years" data-sec="experience">
-            <option value="">Select...</option>
-            <option>No prior experience</option>
-            <option>0 – 1 year</option>
-            <option>1 – 3 years</option>
-            <option>3 – 5 years</option>
-            <option>5 – 10 years</option>
-            <option>10+ years</option>
-          </select>
+        <div class="field"><label class="field-lbl">Years of Experience <span class="req">*</span></label>
+          <select class="sel" id="f_years" data-sec="experience"><option value="">Select...</option><option>No prior experience</option><option>0 – 1 year</option><option>1 – 3 years</option><option>3 – 5 years</option><option>5 – 10 years</option><option>10+ years</option></select>
         </div>
-        <div class="field">
-          <label class="field-lbl">How did you hear about us?</label>
-          <select class="sel" id="f_heard">
-            <option value="">Select...</option>
-            <option>Instagram</option>
-            <option>Referral from a friend</option>
-            <option>Google search</option>
-            <option>Agency contact</option>
-            <option>Website</option>
-            <option>Other</option>
-          </select>
+        <div class="field"><label class="field-lbl">How did you hear about us?</label>
+          <select class="sel" id="f_heard"><option value="">Select...</option><option>Instagram</option><option>Referral from a friend</option><option>Google search</option><option>Agency contact</option><option>Website</option><option>Other</option></select>
         </div>
       </div>
       <div class="row-1">
-        <div class="field">
-          <label class="field-lbl">Training & Certifications <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_training" placeholder="e.g. Tantric Massage Diploma (Lisbon, 2022), Deep Tissue Certification (London, 2023), 200h Yoga Teacher Training..."></textarea>
-          <div class="field-hint">List any formal training, certifications, or diplomas. You can upload copies in Step 4.</div>
+        <div class="field"><label class="field-lbl">Training & Certifications <span class="opt-note">Optional</span></label>
+          <textarea class="txa" id="f_training" placeholder="List any formal training, certifications, or diplomas..."></textarea>
         </div>
       </div>
       <div class="row-1">
-        <div class="field">
-          <label class="field-lbl">Previous Experience <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_prev_exp" placeholder="Briefly describe your experience — where you've worked, what you specialize in, your approach..."></textarea>
+        <div class="field"><label class="field-lbl">Previous Experience <span class="opt-note">Optional</span></label>
+          <textarea class="txa" id="f_prev_exp" placeholder="Briefly describe your experience..."></textarea>
         </div>
       </div>
       <div class="row">
-        <div class="field">
-          <label class="field-lbl">Professional photoshoot?</label>
+        <div class="field"><label class="field-lbl">Professional photoshoot?</label>
           <div class="pill-group" data-pill="photoshoot">
             <div class="pill" data-val="Yes I have">Yes I have</div>
             <div class="pill" data-val="No but willing">No but willing to invest</div>
             <div class="pill" data-val="Not interested">Not interested</div>
           </div>
         </div>
-        <div class="field">
-          <label class="field-lbl">Diplomas/Courses?</label>
+        <div class="field"><label class="field-lbl">Diplomas/Courses?</label>
           <div class="pill-group" data-pill="diplomas">
             <div class="pill" data-val="Yes">Yes</div>
             <div class="pill" data-val="No">No</div>
@@ -1669,74 +551,47 @@ input[type="file"]{display:none}
         </div>
       </div>
     </div>
-
     <div class="actions">
-      <div class="actions-left">
-        <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
-      </div>
-      <div class="actions-right">
-        <button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button>
-        <button class="btn btn-primary" onclick="goStep(3)">Continue →</button>
-      </div>
+      <div class="actions-left"><button class="btn btn-ghost" onclick="goStep(1)">← Back</button></div>
+      <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button><button class="btn btn-primary" onclick="goStep(3)">Continue →</button></div>
     </div>
   </div>
 
   <!-- ═══════════ STEP 3: WORK & AVAILABILITY ═══════════ -->
   <div class="card" id="step3" style="display:none">
     <div class="card-head">
-      <div>
-        <div class="card-t">Work & Availability</div>
-        <div class="card-s">Services, location, and schedule.</div>
-      </div>
-      <div class="card-head-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      </div>
+      <div><div class="card-t">Work & Availability</div><div class="card-s">Services, location, and schedule.</div></div>
+      <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
     </div>
-
-    <!-- Work Name (with AI suggestions) -->
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div>
         <div class="sec-t">Work Name</div>
-        <span class="sec-note">We'll suggest names based on yours — all unique in our database</span>
+        <span class="sec-note">We'll verify uniqueness</span>
       </div>
       <div class="row-1">
         <div class="field">
           <label class="field-lbl">Preferred Work Name <span class="opt-note">We Verify Uniqueness</span></label>
           <input type="text" class="inp" id="f_workname" placeholder="Type your choice or pick a suggestion below" oninput="checkWorkName()">
           <div class="wn-status" id="wnStatus" style="display:none"></div>
-          <div class="field-hint">The name clients will see on your profile. Must be unique — we'll help you find one available.</div>
+          <div class="field-hint">The name clients will see on your profile. Must be unique.</div>
           <div class="wn-sug" id="wnSuggestions"></div>
         </div>
       </div>
     </div>
-
-    <!-- Working area -->
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <div class="sec-t">Your Working Area</div>
-        <span class="sec-note">Where you live / can work from</span>
       </div>
       <div class="field">
         <label class="field-lbl">Local Area in London <span class="req">*</span></label>
-        <select class="sel" id="f_local_area" data-sec="work">
-          <option value="">Select your area...</option>
-          <option>Mayfair</option><option>Marylebone</option><option>Chelsea</option>
-          <option>Kensington</option><option>Knightsbridge</option><option>Belgravia</option>
-          <option>Notting Hill</option><option>Paddington</option><option>Earls Court</option>
-          <option>Fitzrovia</option><option>Soho</option><option>Covent Garden</option>
-          <option>Bayswater</option><option>South Kensington</option><option>St Johns Wood</option>
-          <option>Hampstead</option><option>Canary Wharf</option><option>City of London</option>
-          <option>Shoreditch</option><option>Other London area</option>
-          <option>Outside London</option>
-        </select>
+        <select class="sel" id="f_local_area" data-sec="work"><option value="">Select your area...</option></select>
       </div>
       <div class="row-1" style="margin-top:14px">
         <div class="field">
-          <label class="field-lbl">In-house Address <span class="opt-note">Required if you offer in-house</span></label>
-          <input type="text" class="inp" id="f_inhouse_address" placeholder="e.g. 5 White Horse Street, Mayfair, London W1J 7LQ">
-          <div class="field-hint">Your full address where clients come for in-house bookings. Kept strictly confidential.</div>
+          <label class="field-lbl">In-house Address <span class="opt-note">If you offer in-house</span></label>
+          <input type="text" class="inp" id="f_inhouse_address" placeholder="Full address (kept confidential)">
         </div>
       </div>
       <div class="row-3" style="margin-top:14px">
@@ -1746,7 +601,6 @@ input[type="file"]{display:none}
             <div class="pill" data-val="Yes">Yes</div>
             <div class="pill" data-val="No">No</div>
           </div>
-          <div class="field-hint">You have a space where clients can come</div>
         </div>
         <div class="field">
           <label class="field-lbl">Provide Mobile? <span class="req">*</span></label>
@@ -1754,7 +608,6 @@ input[type="file"]{display:none}
             <div class="pill" data-val="Yes">Yes</div>
             <div class="pill" data-val="No">No</div>
           </div>
-          <div class="field-hint">You travel to clients</div>
         </div>
         <div class="field">
           <label class="field-lbl">Airport Bookings?</label>
@@ -1766,10 +619,10 @@ input[type="file"]{display:none}
       </div>
       <div class="row">
         <div class="field">
-          <label class="field-lbl">Mobile bookings 30+ min away?</label>
+          <label class="field-lbl">Mobile 30+ min away?</label>
           <div class="pill-group" data-pill="mobile_30">
             <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="Depends on distance">Depends</div>
+            <div class="pill" data-val="Depends">Depends</div>
             <div class="pill" data-val="No">No</div>
           </div>
         </div>
@@ -1777,38 +630,29 @@ input[type="file"]{display:none}
           <label class="field-lbl">Late nights & weekends?</label>
           <div class="pill-group" data-pill="late_hours">
             <div class="pill" data-val="Yes always">Yes always</div>
-            <div class="pill" data-val="With advance notice">Advance notice</div>
+            <div class="pill" data-val="Advance notice">Advance notice</div>
             <div class="pill" data-val="No">No</div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Available Abroad -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div>
-        <div class="sec-t">Available Abroad</div>
-        <span class="sec-note">Select destinations you can travel to</span>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20"/></svg></div>
+        <div class="sec-t">Available for Travel</div>
       </div>
-      <div class="field-hint" style="margin-bottom:10px">
-        Some ladies work 6 months in London, 6 months in Ibiza, etc. Select all destinations you're open to.
-      </div>
+      <div class="field-hint" style="margin-bottom:10px">Select all destinations you're open to.</div>
       <div class="chk-grid" id="abroadGrid"></div>
       <div class="row-1" style="margin-top:14px">
-        <div class="field">
-          <label class="field-lbl">Other Travel Preferences <span class="opt-note">Optional</span></label>
-          <input type="text" class="inp" id="f_travel_other" placeholder="e.g. 'Summer in Mykonos, winter in Courchevel, open to other destinations with notice...'">
+        <div class="field"><label class="field-lbl">Other Travel Notes <span class="opt-note">Optional</span></label>
+          <input type="text" class="inp" id="f_travel_other" placeholder="Additional travel preferences...">
         </div>
       </div>
     </div>
-
-    <!-- Pricing & Terms -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6" stroke-linecap="round"/></svg></div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
         <div class="sec-t">Pricing & Terms</div>
-        <span class="sec-note">Starting rate &amp; preferences</span>
       </div>
       <div class="row">
         <div class="field">
@@ -1829,81 +673,52 @@ input[type="file"]{display:none}
         </div>
       </div>
       <div class="row-1" style="margin-top:14px">
-        <div class="field">
-          <label class="field-lbl">Duration Preferences <span class="opt-note">Select all that apply</span></label>
+        <div class="field"><label class="field-lbl">Duration Preferences <span class="opt-note">Select all</span></label>
           <div class="chk-grid" id="durationGrid" style="margin-top:4px"></div>
         </div>
       </div>
     </div>
-
-    <!-- Services -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6 2 2 6 2 12s4 10 10 10 10-4 10-10S18 2 12 2z"/><path d="M12 6v6l4 2"/></svg></div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6 2 2 6 2 12s4 10 10 10 10-4 10-10S18 2 12 2z"/></svg></div>
         <div class="sec-t">Services You Offer</div>
         <span class="sec-note">Select all that apply</span>
       </div>
       <div class="svc-grid" id="servicesGrid" data-sec="services"></div>
-
       <div style="margin-top:20px">
         <label class="field-lbl" style="margin-bottom:10px;display:block">Add-ons / Extras <span class="opt-note">Optional</span></label>
         <div class="svc-grid addons-2col" id="addonsGrid"></div>
       </div>
     </div>
-
-    <!-- Availability Schedule -->
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <div class="sec-t">Weekly Availability</div>
-        <span class="sec-note">Click a day to toggle on/off. Set your preferred hours.</span>
       </div>
       <div class="row-1" style="margin-bottom:16px">
-        <div class="field">
-          <label class="field-lbl">How many days per week? <span class="req">*</span></label>
-          <select class="sel" id="f_days_week" data-sec="availability">
-            <option value="">Select...</option>
-            <option>1-2 days a week</option>
-            <option>3-4 days a week</option>
-            <option>5 days a week</option>
-            <option>6-7 days a week</option>
-            <option>Occasionally (on request only)</option>
-          </select>
+        <div class="field"><label class="field-lbl">How many days per week? <span class="req">*</span></label>
+          <select class="sel" id="f_days_week" data-sec="availability"><option value="">Select...</option><option>1-2 days a week</option><option>3-4 days a week</option><option>5 days a week</option><option>6-7 days a week</option><option>Occasionally (on request only)</option></select>
         </div>
       </div>
       <div class="avail-grid" id="availGrid"></div>
       <div class="row-1" style="margin-top:10px">
-        <div class="field">
-          <label class="field-lbl">Special Notes about Availability <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_avail_notes" placeholder="e.g. 'I prefer 48h advance notice, limited weekends due to other commitments...'"></textarea>
+        <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
+          <textarea class="txa" id="f_avail_notes" placeholder="e.g. 'I prefer 48h advance notice...'"></textarea>
         </div>
       </div>
     </div>
-
     <div class="actions">
-      <div class="actions-left">
-        <button class="btn btn-ghost" onclick="goStep(2)">← Back</button>
-      </div>
-      <div class="actions-right">
-        <button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button>
-        <button class="btn btn-primary" onclick="goStep(4)">Continue →</button>
-      </div>
+      <div class="actions-left"><button class="btn btn-ghost" onclick="goStep(2)">← Back</button></div>
+      <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button><button class="btn btn-primary" onclick="goStep(4)">Continue →</button></div>
     </div>
   </div>
 
   <!-- ═══════════ STEP 4: DOCUMENTS ═══════════ -->
   <div class="card" id="step4" style="display:none">
     <div class="card-head">
-      <div>
-        <div class="card-t">Documents & Consent</div>
-        <div class="card-s">Final step. Verify identity and confirm agreements.</div>
-      </div>
-      <div class="card-head-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
+      <div><div class="card-t">Documents & Consent</div><div class="card-s">Final step. Verify identity and confirm agreements.</div></div>
+      <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
     </div>
-
-    <!-- Video Intro -->
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
@@ -1912,135 +727,94 @@ input[type="file"]{display:none}
       </div>
       <div class="video-box" id="videoBox">
         <video id="videoPreview" controls style="display:none"></video>
-        <div class="video-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-        </div>
+        <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         <div class="video-benefit">Reviewed 3× faster</div>
         <div class="video-box-ttl" id="videoTtl">30–60 second introduction</div>
-        <div class="video-box-sub" id="videoSub">A short video lets us see your personality and presentation.<br>Most ladies who submit a video are approved in under 24 hours.</div>
+        <div class="video-box-sub" id="videoSub">A short video lets us see your personality.<br>Most ladies who submit a video are approved in under 24 hours.</div>
         <button class="btn btn-primary" onclick="document.getElementById('videoUpload').click()" style="min-width:auto">Upload Video</button>
+        <div class="upload-prog" id="prog_video"><div class="upload-prog-fill"></div></div>
       </div>
       <input type="file" id="videoUpload" accept="video/*" onchange="handleVideoUpload(event)">
     </div>
-
-    <!-- KYC Selfie -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M7 21v-2a5 5 0 0 1 10 0v2"/></svg></div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/></svg></div>
         <div class="sec-t">Identity Verification (KYC)</div>
       </div>
       <div class="selfie-box">
-        <div class="selfie-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-        </div>
+        <div class="selfie-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
         <div class="selfie-t">Selfie Holding Your ID</div>
-        <div class="selfie-s">Take a photo of yourself holding your passport or driving licence next to your face. This is used to verify your identity — we don't collect or store your ID data.</div>
-        <button class="btn" onclick="document.getElementById('file_selfie').click()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          Upload Selfie + ID
-        </button>
+        <div class="selfie-s">Photo of yourself holding passport or driving licence next to your face. Encrypted and strictly confidential.</div>
+        <button class="btn" onclick="document.getElementById('file_selfie').click()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>Upload Selfie + ID</button>
       </div>
       <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
       <div id="selfieStatus" style="text-align:center;margin-top:8px"></div>
+      <div class="upload-prog" id="prog_selfie"><div class="upload-prog-fill"></div></div>
     </div>
-
-    <!-- Additional Documents -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>
         <div class="sec-t">Supporting Documents</div>
-        <span class="sec-note">Optional — can send via WhatsApp later</span>
+        <span class="sec-note">Optional</span>
       </div>
       <div class="upload-list">
         <div class="upload" id="upl_utility" onclick="document.getElementById('file_utility').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-          <div class="upload-info">
-            <div class="upload-ttl">Proof of Address</div>
-            <div class="upload-h">Utility bill or bank statement · Last 3 months</div>
-          </div>
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">Proof of Address</div><div class="upload-h">Utility bill or bank statement</div></div>
           <button class="upload-btn">Upload</button>
         </div>
         <input type="file" id="file_utility" accept="image/*,application/pdf" onchange="handleFileUpload(event,'utility')">
+        <div class="upload-prog" id="prog_utility"><div class="upload-prog-fill"></div></div>
 
         <div class="upload" id="upl_diploma" onclick="document.getElementById('file_diploma').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7l9 5 9-5-9-5z"/><path d="M3 17l9 5 9-5"/><path d="M3 12l9 5 9-5"/></svg></div>
-          <div class="upload-info">
-            <div class="upload-ttl">Diploma / Certification</div>
-            <div class="upload-h">Optional · Any training certificates</div>
-          </div>
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7l9 5 9-5-9-5z"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">Diploma / Certification</div><div class="upload-h">Optional · Any training certificates</div></div>
           <button class="upload-btn">Upload</button>
         </div>
         <input type="file" id="file_diploma" accept="image/*,application/pdf" onchange="handleFileUpload(event,'diploma')">
+        <div class="upload-prog" id="prog_diploma"><div class="upload-prog-fill"></div></div>
 
         <div class="upload" id="upl_portfolio" onclick="document.getElementById('file_portfolio').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
-          <div class="upload-info">
-            <div class="upload-ttl">Professional Photoshoot</div>
-            <div class="upload-h">Optional · Up to 5 photos from your professional portfolio</div>
-          </div>
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">Professional Portfolio</div><div class="upload-h">Optional · Up to 5 photos</div></div>
           <button class="upload-btn">Upload</button>
         </div>
         <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')">
+        <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
       </div>
     </div>
-
-    <!-- Full-body photo -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/><path d="M5 12h14"/><path d="M8 21h8"/></svg></div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/><path d="M5 12h14"/></svg></div>
         <div class="sec-t">Full-Body Photo</div>
-        <span class="sec-note">For verification — this is how we see you</span>
       </div>
       <div class="selfie-box">
-        <div class="selfie-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/><path d="M5 12h14"/></svg>
-        </div>
+        <div class="selfie-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/></svg></div>
         <div class="selfie-t">Clear Full-Body Photo</div>
-        <div class="selfie-s">
-          <strong style="color:var(--tx)">What we need:</strong> Not in attire — <strong style="color:var(--ac)">lingerie with a robe on top</strong> is perfect.<br>
-          <strong style="color:var(--rd);font-weight:600">No filter. No face-editing apps. Natural lighting preferred.</strong><br>
-          <span style="font-size:10.5px;opacity:.85">This photo is private and used only to confirm your presentation during review.</span>
-        </div>
-        <button class="btn" onclick="document.getElementById('file_fullbody').click()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/></svg>
-          Upload Full-Body Photo
-        </button>
+        <div class="selfie-s"><strong style="color:var(--tx)">What we need:</strong> <strong style="color:var(--ac)">lingerie with a robe on top</strong> is perfect.<br><strong style="color:var(--rd);font-weight:600">No filter. No face-editing. Natural lighting.</strong></div>
+        <button class="btn" onclick="document.getElementById('file_fullbody').click()">Upload Full-Body Photo</button>
       </div>
       <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
       <div id="fullbodyStatus" style="text-align:center;margin-top:8px"></div>
+      <div class="upload-prog" id="prog_fullbody"><div class="upload-prog-fill"></div></div>
     </div>
-
-    <!-- Emergency Contact -->
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
         <div class="sec-t">Emergency Contact</div>
-        <span class="sec-note">Optional but recommended for your safety</span>
+        <span class="sec-note">Optional but recommended</span>
       </div>
       <div class="row-3">
-        <div class="field">
-          <label class="field-lbl">Contact Name</label>
-          <input type="text" class="inp" id="f_em_name">
+        <div class="field"><label class="field-lbl">Contact Name</label><input type="text" class="inp" id="f_em_name"></div>
+        <div class="field"><label class="field-lbl">Relationship</label>
+          <select class="sel" id="f_em_rel"><option value="">Select...</option><option>Partner</option><option>Parent</option><option>Sibling</option><option>Close friend</option><option>Other family</option><option>Other</option></select>
         </div>
-        <div class="field">
-          <label class="field-lbl">Relationship</label>
-          <select class="sel" id="f_em_rel">
-            <option value="">Select...</option>
-            <option>Partner</option><option>Parent</option><option>Sibling</option>
-            <option>Close friend</option><option>Other family</option><option>Other</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="field-lbl">Phone</label>
-          <input type="tel" class="inp" id="f_em_phone" placeholder="+44 7...">
-        </div>
+        <div class="field"><label class="field-lbl">Phone</label><input type="tel" class="inp" id="f_em_phone" placeholder="+44 7..."></div>
       </div>
     </div>
-
-    <!-- Consent -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v7c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v7c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/></svg></div>
         <div class="sec-t">Consent & Agreements</div>
       </div>
       <div class="consent-list">
@@ -2050,7 +824,7 @@ input[type="file"]{display:none}
         </div>
         <div class="consent" data-consent="gdpr" data-sec="consent">
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="consent-text">I consent to <b>data storage and processing</b> in accordance with GDPR regulations.</div>
+          <div class="consent-text">I consent to <b>data storage and processing</b> in accordance with GDPR.</div>
         </div>
         <div class="consent" data-consent="nda" data-sec="consent">
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -2058,7 +832,7 @@ input[type="file"]{display:none}
         </div>
         <div class="consent" data-consent="photo" data-sec="consent">
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="consent-text">I consent to <b>professional photography</b> if I proceed with collaboration.</div>
+          <div class="consent-text">I consent to <b>professional photography</b> if I proceed.</div>
         </div>
         <div class="consent" data-consent="terms" data-sec="consent">
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -2066,22 +840,14 @@ input[type="file"]{display:none}
         </div>
       </div>
     </div>
-
     <div class="submission-stamp">
       <div class="stamp-label">Application Date & Time</div>
       <div class="stamp-value" id="liveDateTime">—</div>
     </div>
-
     <div class="footnote">By submitting, you confirm all information is accurate. We'll contact you within 24–48 hours via WhatsApp or email.</div>
-
     <div class="actions">
-      <div class="actions-left">
-        <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
-      </div>
-      <div class="actions-right">
-        <button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button>
-        <button class="btn btn-primary" id="submitBtn" onclick="submitApplication()">Submit Application</button>
-      </div>
+      <div class="actions-left"><button class="btn btn-ghost" onclick="goStep(3)">← Back</button></div>
+      <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button><button class="btn btn-primary" id="submitBtn" onclick="submitApplication()">Submit Application</button></div>
     </div>
   </div>
 
@@ -2091,83 +857,47 @@ input[type="file"]{display:none}
 <div class="success-overlay" id="successOverlay">
   <div class="success-card" style="max-width:620px;text-align:left">
     <div style="text-align:center;margin-bottom:22px">
-      <div class="success-mark" style="margin-bottom:18px">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
-      </div>
+      <div class="success-mark" style="margin-bottom:18px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
       <div class="success-t">Thank you</div>
-      <div class="success-sub">Your application has been received. We review every submission personally and will be in touch within 24–48 hours via WhatsApp or email.</div>
+      <div class="success-sub">Your application has been received. We'll be in touch within 24–48 hours.</div>
       <div class="success-ref" id="successRef">—</div>
     </div>
-
-    <!-- Summary inside success overlay -->
     <div class="summary-card" style="max-height:50vh;overflow-y:auto">
-      <div class="summary-t">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
-        Application Summary
-      </div>
+      <div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>
       <div id="summaryContent"></div>
     </div>
-
-    <!-- Action buttons -->
     <div class="actions" style="margin-top:20px;justify-content:center">
-      <button class="btn btn-ghost" onclick="downloadPdf()">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download PDF
-      </button>
-      <button class="btn btn-ghost" onclick="emailMe()">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        Email to me
-      </button>
+      <button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button>
       <button class="btn btn-primary" onclick="location.reload()">Close</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-// MAYRICHE — APPLICATION FORM v4 FINAL
+// MAYRICHE APPLY — Privacy-Safe + Storage Upload + Full Persistence
 // ═══════════════════════════════════════════════════════════════
+
+// Config — safe to expose (anon key is public, URL is needed)
 const SUPABASE_URL = 'https://tmbkfekyxwdveenwybwd.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_S1wVHbPnfJ6OYh9nevhw8Q_czsAmpV-';
-const CEO_UID = '155edca8-551d-4516-891e-33e2348d638c';
 
 let sb = null;
 try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } 
 catch(e){ console.warn('Supabase init failed', e); }
 
-// ─────────── DATA ───────────
-const ABROAD_LOCATIONS = [
-  'Ibiza','Paris','Monaco','Dubai','Marrakech',
-  'St Tropez','Courchevel','Geneva','Mykonos','Cannes',
-  'Saint-Moritz','Other'
-];
-const SERVICES = [
-  {name:'Classic Tantric Massage', desc:'Sensual, mindful energy work'},
-  {name:'Dark Tantra Massage', desc:'Intense, transformative experience'},
-  {name:'Couples Tantric Massage', desc:'Partner tantric journey'},
-  {name:'Female Tantric Massage', desc:'For female clients'},
-  {name:'Nuru Massage', desc:'Body-to-body with specialist gel'},
-  {name:'Candle Oil Massage', desc:'Warm oil, sensual touch'},
-  {name:'Aqua Massage', desc:'Water-based sensual massage'},
-  {name:'Prostate Massage', desc:'Therapeutic intimate massage'},
-  {name:'Mutual Touching Massage', desc:'Shared sensory experience'},
-  {name:'Deep Tissue Massage', desc:'Therapeutic muscle work'},
-  {name:'Swedish / Deep Tissue', desc:'Classic technique with depth'},
-  {name:'Hot Stone Massage', desc:'Heated stone therapy'},
-  {name:'Aromatherapy Massage', desc:'Essential oils + relaxation'},
-  {name:'Oriental Head Massage', desc:'Indian-style head/scalp massage'}
-];
-const ADDONS = [
-  {name:'Champagne', desc:'Premium bottle service'},
-  {name:'Overnight stays', desc:'Up to 12 hours'},
-  {name:'Dinner dates', desc:'Social companionship'},
-  {name:'Weekend bookings', desc:'Extended sessions'},
-  {name:'Travel companion', desc:'Short trips'},
-  {name:'Mutual massage', desc:'Both partners'}
-];
+// ─────────── DYNAMIC DATA (loaded from Supabase) ───────────
+let NATIONALITIES = [];
+let COUNTRIES = [];
+let LOCAL_AREAS = [];
+let TRAVEL_DESTINATIONS = [];
+let LANGUAGES = [];
+let SERVICES = [];
+let ADDONS = [];
+
+// Static UI constants (not business-specific)
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DURATIONS = ['30 min','60 min','90 min','120 min','3 hours','Overnight','Weekend'];
 const WORK_NAME_POOL = [
@@ -2178,6 +908,74 @@ const WORK_NAME_POOL = [
   'Gigi','Hazel','Isla','Jade','Kate','Lexi','Maya','Nora',
   'Opal','Pia','Ruby','Sage','Tara','Uma','Vera','Wren'
 ];
+
+// Load config from Supabase app_config table (privacy-safe)
+async function loadConfig(){
+  if(!sb) return false;
+  try {
+    // Load services — try business_services table (from MC OS phase 3E)
+    const svcRes = await sb.from('business_services')
+      .select('service_id, name, description, is_extension')
+      .is('deleted_at', null);
+    if(svcRes.data && svcRes.data.length > 0){
+      // Unique by name (some services exist per-brand)
+      const seen = new Set();
+      svcRes.data.forEach(s => {
+        if(seen.has(s.name)) return;
+        seen.add(s.name);
+        (s.is_extension ? ADDONS : SERVICES).push({name: s.name, desc: s.description || ''});
+      });
+    }
+    
+    // Load app_config for lists
+    const cfgRes = await sb.from('app_config').select('key, value_text, value_json');
+    if(cfgRes.data){
+      const cfg = {};
+      cfgRes.data.forEach(c => { cfg[c.key] = c.value_json || c.value_text; });
+      if(cfg.apply_nationalities) NATIONALITIES = Array.isArray(cfg.apply_nationalities) ? cfg.apply_nationalities : JSON.parse(cfg.apply_nationalities);
+      if(cfg.apply_countries) COUNTRIES = Array.isArray(cfg.apply_countries) ? cfg.apply_countries : JSON.parse(cfg.apply_countries);
+      if(cfg.apply_local_areas) LOCAL_AREAS = Array.isArray(cfg.apply_local_areas) ? cfg.apply_local_areas : JSON.parse(cfg.apply_local_areas);
+      if(cfg.apply_travel_destinations) TRAVEL_DESTINATIONS = Array.isArray(cfg.apply_travel_destinations) ? cfg.apply_travel_destinations : JSON.parse(cfg.apply_travel_destinations);
+      if(cfg.apply_languages) LANGUAGES = Array.isArray(cfg.apply_languages) ? cfg.apply_languages : JSON.parse(cfg.apply_languages);
+    }
+    return true;
+  } catch(e){
+    console.warn('[Config] load fail:', e);
+    return false;
+  }
+}
+
+// Fallback defaults (generic, privacy-safe)
+function applyFallbackDefaults(){
+  if(NATIONALITIES.length === 0){
+    NATIONALITIES = ['British','Brazilian','Romanian','Portuguese','Spanish','Italian','French','Polish','Ukrainian','Russian','Hungarian','Bulgarian','Colombian','Venezuelan','Argentinian','Mexican','American','Canadian','Australian','Chinese','Japanese','Korean','Thai','Vietnamese','Filipino','Indian','Iranian','Turkish','Moroccan','Egyptian','Nigerian','South African','Other'];
+  }
+  if(COUNTRIES.length === 0){
+    COUNTRIES = ['United Kingdom','Ireland','France','Germany','Spain','Italy','Portugal','Netherlands','Belgium','Switzerland','Austria','Romania','Poland','Greece','United States','Canada','Australia','Brazil','UAE','Other'];
+  }
+  if(LOCAL_AREAS.length === 0){
+    LOCAL_AREAS = ['Central','North','South','East','West','Other area','Outside main city'];
+  }
+  if(TRAVEL_DESTINATIONS.length === 0){
+    TRAVEL_DESTINATIONS = ['Destination 1','Destination 2','Destination 3','Destination 4','Destination 5','Other'];
+  }
+  if(LANGUAGES.length === 0){
+    LANGUAGES = ['English (native)','English (fluent)','English (conversational)','English (basic)','Portuguese (native)','Portuguese (fluent)','Spanish (native)','Spanish (fluent)','French (native)','French (fluent)','Italian (native)','Italian (fluent)','German (native)','German (fluent)','Russian (native)','Russian (fluent)','Romanian (native)','Romanian (fluent)','Polish (native)','Polish (fluent)','Mandarin','Japanese','Korean','Arabic','Turkish','Greek','Dutch','Swedish','Hebrew','Thai','Vietnamese'];
+  }
+  if(SERVICES.length === 0){
+    // Generic fallback — overridden by DB
+    SERVICES = [
+      {name:'Service 1', desc:''},
+      {name:'Service 2', desc:''}
+    ];
+  }
+  if(ADDONS.length === 0){
+    ADDONS = [
+      {name:'Add-on 1', desc:''},
+      {name:'Add-on 2', desc:''}
+    ];
+  }
+}
 
 // ─────────── STATE ───────────
 let curStep = 1;
@@ -2204,29 +1002,29 @@ let formData = {
   video:null,
 };
 
-// Section requirements
 const SEC_REQ = {
-  personal: 7,    // fullname, dob(x3), nationality, city, country, phone, email = 8 but dob counts as 1
-  physical: 3,    // height, weight, body
-  experience: 1,  // years
-  work: 4,        // workname, local_area, inhouse, mobile (+ rate)
-  services: 1,    // at least 1 service
-  availability: 1, // at least 1 day
-  documents: 1,   // selfie OR any
-  consent: 5,     // all
+  personal: 7, physical: 3, experience: 1, work: 4,
+  services: 1, availability: 1, documents: 1, consent: 5
 };
 
 // ═══════════ INIT ═══════════
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', async function(){
+  await loadConfig();
+  applyFallbackDefaults();
   
+  populateDropdown('f_nationality', NATIONALITIES);
+  populateDropdown('f_country', COUNTRIES);
+  populateDropdown('f_local_area', LOCAL_AREAS);
+  populateLangDropdown();
+
   // Abroad grid
   const abr = document.getElementById('abroadGrid');
-  ABROAD_LOCATIONS.forEach(loc=>{
+  TRAVEL_DESTINATIONS.forEach(loc => {
     const el = document.createElement('div');
     el.className = 'chk';
     el.dataset.loc = loc;
     el.innerHTML = '<div class="chk-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>'+loc+'</span>';
-    el.addEventListener('click', ()=>{
+    el.addEventListener('click', () => {
       el.classList.toggle('checked');
       const idx = formData.abroad.indexOf(loc);
       if(idx >= 0) formData.abroad.splice(idx,1);
@@ -2238,12 +1036,12 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // Services grid
   const svcG = document.getElementById('servicesGrid');
-  SERVICES.forEach(s=>{
+  SERVICES.forEach(s => {
     const el = document.createElement('div');
     el.className = 'svc';
     el.dataset.svc = s.name;
     el.innerHTML = '<div class="svc-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="svc-name">'+s.name+'</div><div class="svc-desc">'+s.desc+'</div>';
-    el.addEventListener('click', ()=>{
+    el.addEventListener('click', () => {
       el.classList.toggle('checked');
       const idx = formData.services.indexOf(s.name);
       if(idx >= 0) formData.services.splice(idx,1);
@@ -2255,12 +1053,12 @@ document.addEventListener('DOMContentLoaded', function(){
   
   // Add-ons grid
   const addG = document.getElementById('addonsGrid');
-  ADDONS.forEach(a=>{
+  ADDONS.forEach(a => {
     const el = document.createElement('div');
     el.className = 'svc';
     el.dataset.addon = a.name;
     el.innerHTML = '<div class="svc-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="svc-name">'+a.name+'</div><div class="svc-desc">'+a.desc+'</div>';
-    el.addEventListener('click', ()=>{
+    el.addEventListener('click', () => {
       el.classList.toggle('checked');
       const idx = formData.addons.indexOf(a.name);
       if(idx >= 0) formData.addons.splice(idx,1);
@@ -2269,14 +1067,14 @@ document.addEventListener('DOMContentLoaded', function(){
     addG.appendChild(el);
   });
 
-  // Duration checkboxes
+  // Duration
   const durG = document.getElementById('durationGrid');
-  DURATIONS.forEach(d=>{
+  DURATIONS.forEach(d => {
     const el = document.createElement('div');
     el.className = 'chk';
     el.dataset.dur = d;
     el.innerHTML = '<div class="chk-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>'+d+'</span>';
-    el.addEventListener('click', ()=>{
+    el.addEventListener('click', () => {
       el.classList.toggle('checked');
       const idx = formData.dur_pref.indexOf(d);
       if(idx >= 0) formData.dur_pref.splice(idx,1);
@@ -2285,9 +1083,9 @@ document.addEventListener('DOMContentLoaded', function(){
     durG.appendChild(el);
   });
 
-  // Availability grid
+  // Availability
   const avG = document.getElementById('availGrid');
-  DAYS.forEach(day=>{
+  DAYS.forEach(day => {
     formData.availability[day] = {enabled:false, from:'', to:''};
     const cell = document.createElement('div');
     cell.className = 'avail-day off';
@@ -2301,25 +1099,25 @@ document.addEventListener('DOMContentLoaded', function(){
         '<input type="time" value="23:00" onchange="event.stopPropagation();setAvailTime(\''+day+'\',\'to\',this.value)" onclick="event.stopPropagation()">'+
       '</div>'+
       '<div class="avail-toggle">Toggle</div>';
-    cell.addEventListener('click', ()=>toggleDay(day));
+    cell.addEventListener('click', () => toggleDay(day));
     avG.appendChild(cell);
   });
 
   // Standard inputs
-  document.querySelectorAll('.inp:not(#langSelect), .sel:not(#langSelect), .txa').forEach(el=>{
+  document.querySelectorAll('.inp:not(#langSelect), .sel:not(#langSelect), .txa').forEach(el => {
     const key = el.id.replace('f_','');
-    el.addEventListener('input', ()=>{
+    el.addEventListener('input', () => {
       formData[key] = el.value;
       updateProgress();
     });
   });
 
   // Pill groups
-  document.querySelectorAll('.pill-group').forEach(grp=>{
+  document.querySelectorAll('.pill-group').forEach(grp => {
     const key = grp.dataset.pill;
-    grp.querySelectorAll('.pill').forEach(p=>{
-      p.addEventListener('click', ()=>{
-        grp.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+    grp.querySelectorAll('.pill').forEach(p => {
+      p.addEventListener('click', () => {
+        grp.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
         p.classList.add('active');
         formData[key] = p.dataset.val;
         updateProgress();
@@ -2328,8 +1126,8 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   // Consents
-  document.querySelectorAll('.consent').forEach(c=>{
-    c.addEventListener('click', ()=>{
+  document.querySelectorAll('.consent').forEach(c => {
+    c.addEventListener('click', () => {
       c.classList.toggle('checked');
       formData.consents[c.dataset.consent] = c.classList.contains('checked');
       updateProgress();
@@ -2342,6 +1140,30 @@ document.addEventListener('DOMContentLoaded', function(){
   setInterval(updateLiveDateTime, 1000);
 });
 
+function populateDropdown(id, items){
+  const sel = document.getElementById(id);
+  if(!sel) return;
+  const first = sel.querySelector('option');
+  sel.innerHTML = '';
+  if(first) sel.appendChild(first);
+  items.forEach(item => {
+    const opt = document.createElement('option');
+    opt.textContent = item;
+    sel.appendChild(opt);
+  });
+}
+
+function populateLangDropdown(){
+  const sel = document.getElementById('langSelect');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">+ Add language</option>';
+  LANGUAGES.forEach(l => {
+    const opt = document.createElement('option');
+    opt.textContent = l;
+    sel.appendChild(opt);
+  });
+}
+
 // ═══════════ LIVE DATE/TIME ═══════════
 function updateLiveDateTime(){
   const el = document.getElementById('liveDateTime');
@@ -2349,14 +1171,8 @@ function updateLiveDateTime(){
   const now = new Date();
   const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const day = days[now.getDay()];
-  const date = now.getDate();
-  const month = months[now.getMonth()];
-  const year = now.getFullYear();
-  const hours = String(now.getHours()).padStart(2,'0');
-  const minutes = String(now.getMinutes()).padStart(2,'0');
-  const seconds = String(now.getSeconds()).padStart(2,'0');
-  el.textContent = day+', '+date+' '+month+' '+year+' · '+hours+':'+minutes+':'+seconds;
+  el.textContent = days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear()+' · '+
+    String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
 }
 
 // ═══════════ LANGUAGES ═══════════
@@ -2367,16 +1183,15 @@ function addLang(val){
   updateProgress();
 }
 function removeLang(val){
-  formData.languages = formData.languages.filter(l=>l !== val);
+  formData.languages = formData.languages.filter(l => l !== val);
   renderLangs();
   updateProgress();
 }
 function renderLangs(){
   const wrap = document.getElementById('langWrap');
-  // Remove existing tags (keep select)
-  wrap.querySelectorAll('.tag').forEach(t=>t.remove());
+  wrap.querySelectorAll('.tag').forEach(t => t.remove());
   const sel = document.getElementById('langSelect');
-  formData.languages.forEach(l=>{
+  formData.languages.forEach(l => {
     const tag = document.createElement('span');
     tag.className = 'tag';
     tag.innerHTML = l+' <span class="tag-x" onclick="event.stopPropagation();removeLang(\''+l.replace(/'/g,"\\'")+'\')">×</span>';
@@ -2413,34 +1228,26 @@ function setAvailTime(day, kind, val){
   cell.querySelector('.avail-day-hrs').textContent = (d.from||'09:00')+' – '+(d.to||'23:00');
 }
 
-// ═══════════ WORK NAME — AI SUGGESTIONS ═══════════
+// ═══════════ WORK NAME SUGGESTIONS ═══════════
 let takenNames = [];
 async function loadTakenNames(){
   if(!sb) return;
   try {
     const r = await sb.from('ladies').select('work_name');
-    if(r.data) takenNames = r.data.map(x=>x.work_name).filter(Boolean).map(n=>n.toLowerCase());
+    if(r.data) takenNames = r.data.map(x => x.work_name).filter(Boolean).map(n => n.toLowerCase());
   } catch(e){ console.warn('Load taken names failed', e); }
 }
 function generateSuggestions(baseName){
   const taken = new Set(takenNames);
   const firstName = (baseName || formData.fullname || '').trim().split(/\s+/)[0] || '';
   const suggestions = new Set();
-  // Try variations of firstName
   if(firstName){
-    const variations = [
-      firstName,
-      firstName.slice(0,-1),
-      firstName+'a',
-      firstName+'ie',
-      firstName.slice(0,3)+'ly',
-    ];
-    variations.forEach(v=>{
+    const variations = [firstName, firstName.slice(0,-1), firstName+'a', firstName+'ie', firstName.slice(0,3)+'ly'];
+    variations.forEach(v => {
       v = v.charAt(0).toUpperCase() + v.slice(1).toLowerCase();
       if(v.length >= 3 && !taken.has(v.toLowerCase())) suggestions.add(v);
     });
   }
-  // Fill with pool
   for(const name of WORK_NAME_POOL){
     if(suggestions.size >= 5) break;
     if(!taken.has(name.toLowerCase())) suggestions.add(name);
@@ -2453,17 +1260,12 @@ async function checkWorkName(){
   formData.workname = val;
   const stEl = document.getElementById('wnStatus');
   if(takenNames.length === 0) await loadTakenNames();
-
-  if(!val){
-    stEl.style.display='none';
-    renderSuggestions();
-    return;
-  }
+  if(!val){ stEl.style.display='none'; renderSuggestions(); return; }
   const isTaken = takenNames.includes(val.toLowerCase());
   stEl.style.display='inline-flex';
   if(isTaken){
     stEl.className='wn-status err';
-    stEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Already taken — try a suggestion below';
+    stEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Already taken';
   } else {
     stEl.className='wn-status ok';
     stEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Available';
@@ -2474,11 +1276,11 @@ function renderSuggestions(){
   const el = document.getElementById('wnSuggestions');
   const sugs = generateSuggestions(formData.workname);
   el.innerHTML = '';
-  sugs.forEach(s=>{
+  sugs.forEach(s => {
     const btn = document.createElement('button');
     btn.className = 'wn-sug-btn';
     btn.textContent = s;
-    btn.onclick = ()=>{
+    btn.onclick = () => {
       document.getElementById('f_workname').value = s;
       formData.workname = s;
       checkWorkName();
@@ -2505,33 +1307,24 @@ function goStep(n){
 // ═══════════ PROGRESS ═══════════
 function updateProgress(){
   const s = { personal:0, physical:0, experience:0, work:0, services:0, availability:0, documents:0, consent:0 };
-  // Personal
-  ['fullname','nationality','city','country','phone','email'].forEach(k=>{ if(formData[k]&&formData[k].trim()) s.personal++; });
+  ['fullname','nationality','city','country','phone','email'].forEach(k => { if(formData[k]&&formData[k].trim()) s.personal++; });
   if(formData.dob_d && formData.dob_m && formData.dob_y) s.personal++;
-  if(formData.languages.length>0) s.personal++; // counts as personal bonus
-  // Physical
+  if(formData.languages.length>0) s.personal++;
   if(formData.height) s.physical++;
   if(formData.weight) s.physical++;
   if(formData.body) s.physical++;
-  // Experience
   if(formData.years) s.experience++;
-  // Work
   if(formData.workname && formData.workname.trim()) s.work++;
   if(formData.local_area) s.work++;
   if(formData.inhouse) s.work++;
   if(formData.mobile) s.work++;
-  // Services
   if(formData.services.length>0) s.services++;
-  // Availability
-  const anyDay = Object.values(formData.availability).some(d=>d.enabled);
+  const anyDay = Object.values(formData.availability).some(d => d.enabled);
   if(anyDay) s.availability++;
-  // Documents
   if(formData.files.selfie || formData.files.utility || formData.files.portfolio.length>0) s.documents++;
-  // Consent
-  s.consent = Object.values(formData.consents).filter(v=>v).length;
+  s.consent = Object.values(formData.consents).filter(v => v).length;
 
-  // Update section dots
-  Object.keys(s).forEach(k=>{
+  Object.keys(s).forEach(k => {
     const el = document.querySelector('[data-sec="'+k+'"]');
     if(!el) return;
     el.classList.remove('done','partial');
@@ -2540,9 +1333,8 @@ function updateProgress(){
     else if(s[k] > 0) el.classList.add('partial');
   });
 
-  // Overall %
-  const totalReq = Object.values(SEC_REQ).reduce((a,b)=>a+b,0);
-  const totalGot = Object.keys(s).reduce((a,k)=>a+Math.min(s[k], SEC_REQ[k]),0);
+  const totalReq = Object.values(SEC_REQ).reduce((a,b) => a+b, 0);
+  const totalGot = Object.keys(s).reduce((a,k) => a+Math.min(s[k], SEC_REQ[k]), 0);
   const pct = Math.round((totalGot / totalReq) * 100);
   document.getElementById('progPct').textContent = pct;
   document.getElementById('progFill').style.width = pct + '%';
@@ -2552,23 +1344,23 @@ function updateProgress(){
 }
 
 // ═══════════ FILE UPLOAD ═══════════
-async function handleFileUpload(ev, kind){
+function handleFileUpload(ev, kind){
   const files = ev.target.files;
   if(!files || files.length===0) return;
   if(kind === 'portfolio'){
     formData.files.portfolio = Array.from(files).slice(0,5);
     const el = document.getElementById('upl_portfolio');
     el.classList.add('done');
-    el.querySelector('.upload-ttl').textContent = 'Professional Photoshoot · '+formData.files.portfolio.length+' uploaded';
+    el.querySelector('.upload-ttl').textContent = 'Professional Portfolio · '+formData.files.portfolio.length+' selected';
     el.querySelector('.upload-btn').textContent = 'Replace';
   } else if(kind === 'selfie'){
     formData.files.selfie = files[0];
     document.getElementById('selfieStatus').innerHTML = 
-      '<span style="color:var(--gn);font-size:11.5px;font-weight:600;letter-spacing:.02em">✓ Identity verification photo uploaded · '+files[0].name+'</span>';
+      '<span style="color:var(--gn);font-size:11.5px;font-weight:600">✓ Selected: '+files[0].name+'</span>';
   } else if(kind === 'fullbody'){
     formData.files.fullbody = files[0];
     document.getElementById('fullbodyStatus').innerHTML = 
-      '<span style="color:var(--gn);font-size:11.5px;font-weight:600;letter-spacing:.02em">✓ Full-body photo uploaded · '+files[0].name+'</span>';
+      '<span style="color:var(--gn);font-size:11.5px;font-weight:600">✓ Selected: '+files[0].name+'</span>';
   } else {
     formData.files[kind] = files[0];
     const el = document.getElementById('upl_'+kind);
@@ -2595,202 +1387,34 @@ function handleVideoUpload(ev){
   document.getElementById('videoBox').classList.add('done');
   document.getElementById('videoTtl').textContent = 'Video ready';
   document.getElementById('videoSub').textContent = file.name+' · '+Math.round(file.size/1024/1024*10)/10+'MB';
-  showToast('Video ready to submit', 'success');
+  showToast('Video selected', 'success');
 }
 
 // ═══════════ SUMMARY ═══════════
 function renderSummary(){
   const dob = formData.dob_d&&formData.dob_m&&formData.dob_y ? formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0') : '—';
-  const daysOn = Object.keys(formData.availability).filter(d=>formData.availability[d].enabled);
-  const filesCount = (formData.files.selfie?1:0)+(formData.files.utility?1:0)+(formData.files.diploma?1:0)+formData.files.portfolio.length+(formData.video?1:0);
+  const daysOn = Object.keys(formData.availability).filter(d => formData.availability[d].enabled);
+  const filesCount = (formData.files.selfie?1:0)+(formData.files.utility?1:0)+(formData.files.diploma?1:0)+formData.files.portfolio.length+(formData.video?1:0)+(formData.files.fullbody?1:0);
   
   let html = '';
   html += row('Name', formData.fullname||'—');
   html += row('Work Name', formData.workname||'—');
   html += row('Date of Birth', dob);
-  html += row('Nationality · Location', (formData.nationality||'—')+' · '+(formData.city||'—')+', '+(formData.country||'—'));
+  html += row('Location', (formData.city||'—')+', '+(formData.country||'—'));
   html += row('Contact', (formData.phone||'—')+' · '+(formData.email||'—'));
   html += row('Languages', formData.languages.length>0?formData.languages.join(', '):'—');
   html += row('Physical', (formData.height?formData.height+'cm':'—')+' · '+(formData.weight?formData.weight+'kg':'—')+' · '+(formData.body||'—'));
   html += row('Experience', formData.years||'—');
-  html += row('Working from', formData.local_area||'—');
-  html += row('Services', 'In-house: '+(formData.inhouse||'—')+' · Mobile: '+(formData.mobile||'—'));
-  html += row('Services offered', formData.services.length>0?formData.services.join(', '):'—');
-  html += row('Starting rate (60min)', formData.rate?'£'+formData.rate:'—');
-  html += row('Available abroad', formData.abroad.length>0?formData.abroad.join(', '):'—');
-  html += row('Availability', daysOn.length>0?daysOn.length+' days/week: '+daysOn.join(', '):'—');
+  html += row('Services', formData.services.length+' selected');
+  html += row('Starting rate', formData.rate?'£'+formData.rate:'—');
+  html += row('Availability', daysOn.length>0?daysOn.length+' days/week':'—');
   html += row('Documents', filesCount+' file(s) uploaded');
-  html += row('Consents', Object.values(formData.consents).filter(v=>v).length+' / 5 accepted');
+  html += row('Consents', Object.values(formData.consents).filter(v=>v).length+' / 5');
   document.getElementById('summaryContent').innerHTML = html;
   function row(k,v){ return '<div class="summary-row"><span class="summary-key">'+k+'</span><span class="summary-val">'+v+'</span></div>'; }
 }
 
-// ═══════════ DOWNLOAD PDF ═══════════
-function downloadPdf(){
-  const ref = window.__lastAppRef || 'APP';
-  const name = formData.fullname || 'Application';
-  const dob = formData.dob_d&&formData.dob_m&&formData.dob_y ? formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0') : '—';
-  const daysOn = Object.keys(formData.availability).filter(d=>formData.availability[d].enabled);
-
-  // Open print-ready window
-  const w = window.open('', '_blank');
-  const css = `
-    body{font-family:'Cormorant Garamond',Georgia,serif;color:#2d2418;background:#faf8f6;padding:40px;line-height:1.5;max-width:780px;margin:0 auto}
-    h1{font-size:38px;font-weight:500;letter-spacing:.24em;text-align:center;margin:0 0 4px}
-    h2{font-size:11px;letter-spacing:.42em;text-align:center;text-transform:uppercase;color:#8b7355;margin:0 0 30px;font-weight:500;font-family:'DM Sans',sans-serif}
-    h3{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:.3em;color:#8b7355;text-transform:uppercase;margin:24px 0 10px;font-weight:600;border-bottom:1px solid rgba(139,115,85,.15);padding-bottom:6px}
-    table{width:100%;border-collapse:collapse;font-family:'DM Sans',sans-serif;font-size:12px;margin-bottom:16px}
-    td{padding:7px 4px;border-bottom:1px solid rgba(139,115,85,.08);vertical-align:top}
-    td:first-child{color:#8b7355;width:35%;letter-spacing:.05em}
-    td:last-child{color:#2d2418;font-weight:500;text-align:right}
-    .ref{text-align:center;padding:12px 20px;background:#fff;border:1px solid #c4a882;border-radius:8px;display:inline-block;margin:0 auto 20px;letter-spacing:.22em;font-size:14px}
-    .ref-wrap{text-align:center}
-    .footer{margin-top:40px;padding-top:20px;border-top:1px solid rgba(139,115,85,.15);text-align:center;font-family:'DM Sans',sans-serif;font-size:10px;color:#a68b6b;letter-spacing:.04em}
-    @media print{body{background:#fff}}
-  `;
-  const rows = [
-    ['Name', formData.fullname||'—'],
-    ['Work Name', formData.workname||'—'],
-    ['Date of Birth', dob],
-    ['Nationality', formData.nationality||'—'],
-    ['Location', (formData.city||'—')+', '+(formData.country||'—')],
-    ['Phone (WhatsApp)', formData.phone||'—'],
-    ['Email', formData.email||'—'],
-    ['Instagram', formData.ig||'—'],
-    ['Right to work UK', formData.rtw||'—'],
-    ['English Level', formData.english||'—'],
-    ['UK Bank Account', formData.uk_bank||'—'],
-    ['Self-Employed', formData.self_emp||'—'],
-    ['Languages', formData.languages.length>0?formData.languages.join(', '):'—'],
-  ];
-  const physRows = [
-    ['Height · Weight', (formData.height?formData.height+'cm':'—')+' · '+(formData.weight?formData.weight+'kg':'—')],
-    ['Body Type', formData.body||'—'],
-    ['Dress Size', formData.dress||'—'],
-    ['Eye · Hair Colour', (formData.eye||'—')+' · '+(formData.hair||'—')],
-    ['Breast Size · Type', (formData.breast||'—')+' · '+(formData.breast_type||'—')],
-    ['Profile Age', formData.profile_age||'—'],
-    ['Years of Experience', formData.years||'—'],
-    ['Training/Certifications', formData.training||'—'],
-    ['Previous Experience', formData.prev_exp||'—'],
-    ['Professional Photoshoot', formData.photoshoot||'—'],
-    ['Diplomas', formData.diplomas||'—'],
-  ];
-  const workRows = [
-    ['Local Area', formData.local_area||'—'],
-    ['In-house Address', formData.inhouse_address||'—'],
-    ['Provide In-house', formData.inhouse||'—'],
-    ['Provide Mobile', formData.mobile||'—'],
-    ['Airport Bookings', formData.airport||'—'],
-    ['Mobile 30+ min', formData.mobile_30||'—'],
-    ['Late nights/weekends', formData.late_hours||'—'],
-    ['Starting Rate (60min)', formData.rate?'£'+formData.rate:'—'],
-    ['Currently with other agencies', formData.competing||'—'],
-    ['Duration Preferences', formData.dur_pref.length>0?formData.dur_pref.join(', '):'—'],
-    ['Services Offered', formData.services.length>0?formData.services.join(', '):'—'],
-    ['Add-ons', formData.addons.length>0?formData.addons.join(', '):'—'],
-    ['Available Abroad', formData.abroad.length>0?formData.abroad.join(', '):'—'],
-    ['Days per week', formData.days_week||'—'],
-    ['Availability', daysOn.length>0?daysOn.map(d=>d+': '+formData.availability[d].from+'–'+formData.availability[d].to).join(' | '):'—'],
-    ['Special Notes', formData.avail_notes||'—'],
-  ];
-  const emerRows = [
-    ['Emergency Contact', formData.em_name||'—'],
-    ['Relationship', formData.em_rel||'—'],
-    ['Emergency Phone', formData.em_phone||'—'],
-  ];
-  function tbl(arr){ return '<table>'+arr.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>'; }
-  w.document.write('<!DOCTYPE html><html><head><title>Mayriche Application — '+name+'</title>'+
-    '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">'+
-    '<style>'+css+'</style></head><body>'+
-    '<h1>MAYRICHE</h1><h2>Application Form</h2>'+
-    '<div class="ref-wrap"><div class="ref">'+ref+'</div></div>'+
-    '<h3>Personal Information</h3>'+tbl(rows)+
-    '<h3>Professional Profile</h3>'+tbl(physRows)+
-    '<h3>Work & Availability</h3>'+tbl(workRows)+
-    '<h3>Emergency Contact</h3>'+tbl(emerRows)+
-    '<div class="footer">Submitted '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' · Strictly Confidential · Mayriche Business</div>'+
-    '</body></html>');
-  w.document.close();
-  setTimeout(()=>w.print(), 500);
-}
-
-// ═══════════ EMAIL ME ═══════════
-function emailMe(){
-  const ref = window.__lastAppRef || 'APP';
-  const name = formData.fullname || '—';
-  const subject = 'Your Mayriche Application — '+ref;
-  const daysOn = Object.keys(formData.availability).filter(d=>formData.availability[d].enabled);
-  const dob = formData.dob_d&&formData.dob_m&&formData.dob_y ? formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0') : '—';
-  
-  const body = [
-    'MAYRICHE — Application Summary',
-    '================================',
-    '',
-    'Reference: '+ref,
-    'Submitted: '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),
-    '',
-    '--- PERSONAL ---',
-    'Name: '+name,
-    'Work Name: '+(formData.workname||'—'),
-    'Date of Birth: '+dob,
-    'Nationality: '+(formData.nationality||'—'),
-    'Location: '+(formData.city||'—')+', '+(formData.country||'—'),
-    'Phone: '+(formData.phone||'—'),
-    'Email: '+(formData.email||'—'),
-    'Instagram: '+(formData.ig||'—'),
-    'Languages: '+(formData.languages.length>0?formData.languages.join(', '):'—'),
-    'Right to work UK: '+(formData.rtw||'—'),
-    'English: '+(formData.english||'—'),
-    'UK Bank: '+(formData.uk_bank||'—'),
-    'Self-Employed: '+(formData.self_emp||'—'),
-    '',
-    '--- PHYSICAL ---',
-    'Height/Weight: '+(formData.height?formData.height+'cm':'—')+' / '+(formData.weight?formData.weight+'kg':'—'),
-    'Body Type: '+(formData.body||'—'),
-    'Eye/Hair: '+(formData.eye||'—')+' / '+(formData.hair||'—'),
-    'Breast: '+(formData.breast||'—')+' '+(formData.breast_type||''),
-    'Profile Age: '+(formData.profile_age||'—'),
-    '',
-    '--- EXPERIENCE ---',
-    'Years: '+(formData.years||'—'),
-    'Training: '+(formData.training||'—'),
-    'Previous Experience: '+(formData.prev_exp||'—'),
-    'Professional Photoshoot: '+(formData.photoshoot||'—'),
-    'Diplomas: '+(formData.diplomas||'—'),
-    '',
-    '--- WORK & AVAILABILITY ---',
-    'Local Area: '+(formData.local_area||'—'),
-    'In-house Address: '+(formData.inhouse_address||'—'),
-    'Provide In-house: '+(formData.inhouse||'—'),
-    'Provide Mobile: '+(formData.mobile||'—'),
-    'Airport: '+(formData.airport||'—'),
-    'Mobile 30+ min: '+(formData.mobile_30||'—'),
-    'Late nights/weekends: '+(formData.late_hours||'—'),
-    'Starting rate (60min): '+(formData.rate?'£'+formData.rate:'—'),
-    'Other agencies: '+(formData.competing||'—'),
-    'Duration preferences: '+(formData.dur_pref.length>0?formData.dur_pref.join(', '):'—'),
-    'Services: '+(formData.services.length>0?formData.services.join(', '):'—'),
-    'Add-ons: '+(formData.addons.length>0?formData.addons.join(', '):'—'),
-    'Available abroad: '+(formData.abroad.length>0?formData.abroad.join(', '):'—'),
-    'Days per week: '+(formData.days_week||'—'),
-    'Schedule: '+(daysOn.length>0?daysOn.map(d=>d+' '+formData.availability[d].from+'-'+formData.availability[d].to).join(' | '):'—'),
-    'Notes: '+(formData.avail_notes||'—'),
-    '',
-    '--- EMERGENCY CONTACT ---',
-    'Name: '+(formData.em_name||'—'),
-    'Relationship: '+(formData.em_rel||'—'),
-    'Phone: '+(formData.em_phone||'—'),
-    '',
-    '---',
-    'Strictly Confidential · Mayriche Business'
-  ].join('\n');
-  
-  const mailto = 'mailto:'+encodeURIComponent(formData.email||'')+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-  window.location.href = mailto;
-}
-
-// ═══════════ DRAFT ═══════════
+// ═══════════ DRAFT (local cache only — form in progress) ═══════════
 function saveDraft(){
   const d = {...formData};
   delete d.files; delete d.video;
@@ -2803,11 +1427,11 @@ function loadDraft(){
     const raw = localStorage.getItem('mayriche_apply_draft');
     if(!raw) return;
     const d = JSON.parse(raw);
-    Object.keys(d).forEach(k=>{
+    Object.keys(d).forEach(k => {
       if(k === 'savedAt') return;
       if(k === 'consents'){
         formData.consents = d.consents||{};
-        Object.keys(formData.consents).forEach(c=>{
+        Object.keys(formData.consents).forEach(c => {
           if(formData.consents[c]) document.querySelector('[data-consent="'+c+'"]')?.classList.add('checked');
         });
       } else if(k === 'languages'){
@@ -2815,24 +1439,17 @@ function loadDraft(){
         renderLangs();
       } else if(k === 'abroad'){
         formData.abroad = d.abroad||[];
-        formData.abroad.forEach(loc=>{
-          document.querySelector('[data-loc="'+loc+'"]')?.classList.add('checked');
-        });
+        formData.abroad.forEach(loc => document.querySelector('[data-loc="'+loc+'"]')?.classList.add('checked'));
       } else if(k === 'services'){
         formData.services = d.services||[];
-        formData.services.forEach(sv=>{
-          document.querySelector('[data-svc="'+sv+'"]')?.classList.add('checked');
-        });
+        formData.services.forEach(sv => document.querySelector('[data-svc="'+sv+'"]')?.classList.add('checked'));
       } else if(k === 'addons'){
         formData.addons = d.addons||[];
-        formData.addons.forEach(a=>{
-          document.querySelector('[data-addon="'+a+'"]')?.classList.add('checked');
-        });
+        formData.addons.forEach(a => document.querySelector('[data-addon="'+a+'"]')?.classList.add('checked'));
       } else if(k === 'availability'){
         formData.availability = d.availability||{};
-        Object.keys(formData.availability).forEach(day=>{
+        Object.keys(formData.availability).forEach(day => {
           if(formData.availability[day].enabled){
-            // Re-trigger toggle UI
             const cell = document.querySelector('[data-day="'+day+'"]');
             if(cell){
               cell.classList.remove('off');
@@ -2874,6 +1491,34 @@ function checkDraft(){
   } catch(e){}
 }
 
+// ═══════════ STORAGE UPLOAD (to Supabase Storage) ═══════════
+async function uploadFileToStorage(file, appRef, fileType, index){
+  if(!sb || !file) return null;
+  try {
+    const ext = file.name.split('.').pop().toLowerCase();
+    const safeName = index !== undefined ? fileType+'_'+index+'.'+ext : fileType+'.'+ext;
+    const path = appRef+'/'+safeName;
+    const res = await sb.storage.from('applications').upload(path, file, {
+      cacheControl: '3600',
+      upsert: true
+    });
+    if(res.error) throw res.error;
+    console.log('[Storage] Uploaded:', path);
+    return path;
+  } catch(e){
+    console.warn('[Storage] Upload fail for '+fileType+':', e);
+    return null;
+  }
+}
+
+function showUploadProgress(kind, pct){
+  const el = document.getElementById('prog_'+kind);
+  if(!el) return;
+  el.classList.add('active');
+  el.querySelector('.upload-prog-fill').style.width = pct+'%';
+  if(pct >= 100) setTimeout(() => el.classList.remove('active'), 800);
+}
+
 // ═══════════ SUBMIT ═══════════
 async function submitApplication(){
   const required = ['fullname','nationality','city','country','phone','email','rtw','english','height','weight','body','years','workname','local_area','inhouse','mobile','rate','days_week'];
@@ -2886,96 +1531,142 @@ async function submitApplication(){
   if(!formData.dob_d||!formData.dob_m||!formData.dob_y){ showToast('Enter date of birth','error'); return; }
   if(formData.languages.length===0){ showToast('Select at least one language','error'); return; }
   if(formData.services.length===0){ showToast('Select at least one service','error'); return; }
-  const anyDay = Object.values(formData.availability).some(d=>d.enabled);
+  const anyDay = Object.values(formData.availability).some(d => d.enabled);
   if(!anyDay){ showToast('Set availability for at least one day','error'); return; }
-  const allConsents = Object.values(formData.consents).every(v=>v);
+  const allConsents = Object.values(formData.consents).every(v => v);
   if(!allConsents){ showToast('Please accept all consents','error'); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = 'Submitting...';
+  btn.textContent = 'Uploading files...';
 
   const applicationRef = 'APP-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
   const dob = formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0');
   const age = calculateAge(dob);
 
-  const row = {
-    lady_name: formData.fullname.trim(),
+  // ═══ UPLOAD FILES TO SUPABASE STORAGE ═══
+  const uploadedPaths = {};
+  
+  if(formData.files.selfie){
+    showUploadProgress('selfie', 50);
+    uploadedPaths.selfie = await uploadFileToStorage(formData.files.selfie, applicationRef, 'selfie_kyc');
+    showUploadProgress('selfie', 100);
+  }
+  if(formData.files.fullbody){
+    showUploadProgress('fullbody', 50);
+    uploadedPaths.fullbody = await uploadFileToStorage(formData.files.fullbody, applicationRef, 'fullbody');
+    showUploadProgress('fullbody', 100);
+  }
+  if(formData.files.utility){
+    showUploadProgress('utility', 50);
+    uploadedPaths.utility = await uploadFileToStorage(formData.files.utility, applicationRef, 'utility');
+    showUploadProgress('utility', 100);
+  }
+  if(formData.files.diploma){
+    showUploadProgress('diploma', 50);
+    uploadedPaths.diploma = await uploadFileToStorage(formData.files.diploma, applicationRef, 'diploma');
+    showUploadProgress('diploma', 100);
+  }
+  uploadedPaths.portfolio = [];
+  for(let i=0; i<formData.files.portfolio.length; i++){
+    showUploadProgress('portfolio', (i / formData.files.portfolio.length) * 100);
+    const path = await uploadFileToStorage(formData.files.portfolio[i], applicationRef, 'portfolio', i);
+    if(path) uploadedPaths.portfolio.push(path);
+  }
+  showUploadProgress('portfolio', 100);
+  if(formData.video){
+    btn.textContent = 'Uploading video...';
+    showUploadProgress('video', 50);
+    uploadedPaths.video = await uploadFileToStorage(formData.video, applicationRef, 'video_intro');
+    showUploadProgress('video', 100);
+  }
+
+  btn.textContent = 'Saving application...';
+
+  // ═══ INSERT APPLICATION TO DEDICATED TABLE ═══
+  const applicationRow = {
+    application_ref: applicationRef,
+    status: 'pending',
+    
+    full_name: formData.fullname.trim(),
     work_name: formData.workname.trim(),
-    profile_nickname: formData.workname.trim(),
-    stage: 'Just Applied',
-    availability_status: 'Inactive',
-    age: age,
+    email: formData.email.trim(),
+    phone: formData.phone.trim(),
     date_of_birth: dob,
-    birth_month: new Date(dob).toLocaleDateString('en-US',{month:'long'}),
-    birth_year: formData.dob_y,
+    age: age,
     nationality: formData.nationality,
-    country_residence: formData.country,
-    local_area: formData.local_area,
-    in_house_address: formData.inhouse_address||null,
-    languages: formData.languages.join(', '),
-    years_experience: formData.years,
+    city: formData.city,
+    country: formData.country,
+    instagram: formData.ig || null,
+    
+    right_to_work: formData.rtw,
+    uk_bank: formData.uk_bank || null,
+    english_level: formData.english,
+    self_employed: formData.self_emp || null,
+    languages: formData.languages,
+    
     height_cm: parseInt(formData.height)||null,
     weight_kg: parseInt(formData.weight)||null,
     body_type: formData.body,
-    breast_size: formData.breast||null,
-    breast_type: formData.breast_type||null,
-    eye_colour: formData.eye||null,
-    hair_colour: formData.hair||null,
-    dress_size: formData.dress||null,
+    dress_size: formData.dress || null,
+    eye_colour: formData.eye || null,
+    hair_colour: formData.hair || null,
+    breast_size: formData.breast || null,
+    breast_type: formData.breast_type || null,
     profile_age: parseInt(formData.profile_age)||null,
-    email: formData.email,
-    phone: formData.phone,
-    social_media: formData.ig||null,
-    em_c_name: formData.em_name||null,
-    em_c_rel: formData.em_rel||null,
-    em_c_phone: formData.em_phone||null,
-    emergency_contact: formData.em_phone||null,
+    
+    years_experience: formData.years,
+    heard_from: formData.heard || null,
+    training: formData.training || null,
+    previous_experience: formData.prev_exp || null,
+    photoshoot_status: formData.photoshoot || null,
+    diplomas: formData.diplomas || null,
+    
+    local_area: formData.local_area,
+    inhouse_address: formData.inhouse_address || null,
     provide_inhouse: formData.inhouse,
     provide_mobile: formData.mobile,
-    open_to_travel: formData.abroad.length>0?'Yes - '+formData.abroad.join(', '):formData.travel_other||'No',
-    special_requests: [
-      formData.training?'Training: '+formData.training:'',
-      formData.prev_exp?'Experience: '+formData.prev_exp:'',
-      formData.services.length>0?'Services: '+formData.services.join(', '):'',
-      formData.addons.length>0?'Add-ons: '+formData.addons.join(', '):'',
-      formData.rate?'Starting rate (60min): £'+formData.rate:'',
-      formData.competing?'Other agencies: '+formData.competing:'',
-      formData.avail_notes?'Availability notes: '+formData.avail_notes:'',
-      formData.rtw?'Right to work UK: '+formData.rtw:'',
-      formData.uk_bank?'UK bank: '+formData.uk_bank:'',
-      formData.english?'English: '+formData.english:'',
-      formData.self_emp?'Self-employed: '+formData.self_emp:'',
-      formData.photoshoot?'Photoshoot: '+formData.photoshoot:'',
-      formData.diplomas?'Diplomas: '+formData.diplomas:'',
-      formData.days_week?'Days/week: '+formData.days_week:'',
-      formData.mobile_30?'Mobile 30+min: '+formData.mobile_30:'',
-      formData.late_hours?'Late nights/weekends: '+formData.late_hours:'',
-      formData.airport?'Airport bookings: '+formData.airport:'',
-    ].filter(Boolean).join(' | ')||null,
+    airport_bookings: formData.airport || null,
+    mobile_30min: formData.mobile_30 || null,
+    late_hours: formData.late_hours || null,
+    abroad_locations: formData.abroad,
+    travel_other: formData.travel_other || null,
+    
+    services: formData.services,
+    addons: formData.addons,
+    starting_rate: parseFloat(formData.rate)||null,
+    currently_with_other_agency: formData.competing || null,
+    duration_preferences: formData.dur_pref,
+    
+    days_per_week: formData.days_week,
     availability_schedule: formData.availability,
-    availability_notes: (formData.days_week ? formData.days_week + (formData.avail_notes ? ' · '+formData.avail_notes : '') : formData.avail_notes)||null,
-    current_rate: formData.rate?'£'+formData.rate:null,
-    application_ref: applicationRef,
-    application_date: new Date().toISOString(),
-    gdpr_signed: formData.consents.gdpr?'Yes':'Not yet',
-    nda_signed: formData.consents.nda?'Acknowledged':'Not yet',
-    consent_form: formData.consents.terms?'Yes':'Not yet',
-    user_id: CEO_UID,
+    availability_notes: formData.avail_notes || null,
+    
+    emergency_name: formData.em_name || null,
+    emergency_relationship: formData.em_rel || null,
+    emergency_phone: formData.em_phone || null,
+    
+    file_selfie_kyc: uploadedPaths.selfie,
+    file_fullbody: uploadedPaths.fullbody,
+    file_utility_bill: uploadedPaths.utility,
+    file_diploma: uploadedPaths.diploma,
+    file_portfolio: uploadedPaths.portfolio,
+    file_video_intro: uploadedPaths.video,
+    
+    consent_age: formData.consents.age,
+    consent_gdpr: formData.consents.gdpr,
+    consent_nda: formData.consents.nda,
+    consent_photo: formData.consents.photo,
+    consent_terms: formData.consents.terms,
+    
+    user_agent: navigator.userAgent.slice(0, 500),
+    referrer: document.referrer.slice(0, 500)
   };
 
   try {
     if(!sb) throw new Error('Database not connected');
-    const r = await sb.from('ladies').insert([row]).select();
+    const r = await sb.from('applications').insert([applicationRow]).select();
     if(r.error) throw r.error;
-
-    console.log('Files to upload (implement Storage later):', {
-      selfie: formData.files.selfie?.name,
-      utility: formData.files.utility?.name,
-      diploma: formData.files.diploma?.name,
-      portfolio: formData.files.portfolio.map(f=>f.name),
-      video: formData.video?.name,
-    });
 
     localStorage.removeItem('mayriche_apply_draft');
     document.getElementById('successRef').textContent = applicationRef;
@@ -2996,12 +1687,17 @@ function calculateAge(dob){
   return Math.floor((Date.now()-d.getTime()) / (365.25*24*60*60*1000));
 }
 
+function downloadPdf(){
+  const ref = window.__lastAppRef || 'APP';
+  window.print();
+}
+
 // ═══════════ TOAST ═══════════
 function showToast(msg, type){
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = 'toast visible '+(type||'');
-  setTimeout(()=>t.classList.remove('visible'), 3400);
+  setTimeout(() => t.classList.remove('visible'), 3400);
 }
 </script>
 
