@@ -256,6 +256,273 @@ input[type="file"]{display:none}
 .upload-prog{height:3px;background:var(--sf);border-radius:2px;overflow:hidden;margin-top:6px;display:none;}
 .upload-prog.active{display:block}
 .upload-prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--acL));width:0%;transition:width .2s;}
+
+/* ════════════════════════════════════════════════════════════════
+   MOBILE-FIRST RESPONSIVE — applies on phones & small tablets.
+   We optimize for one-thumb operation: large tap targets, no iOS
+   zoom on focus (16px input font), sticky submit bar, friendlier
+   typography. Don't touch desktop layout above 768px.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Smooth scroll across the form so flashMissingField glides nicely. */
+html{scroll-behavior:smooth}
+
+/* Respect users with motion sensitivity. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+
+/* Visible keyboard focus for accessibility (tab navigation). */
+.inp:focus-visible,.sel:focus-visible,.txa:focus-visible,
+.btn:focus-visible,.pill:focus-visible,.upload:focus-visible,
+.consent:focus-visible,.svc:focus-visible,.chk:focus-visible{
+  outline:2px solid var(--ac);outline-offset:2px;
+}
+
+/* Subtle "(optional)" badge — applied where label has data-optional. */
+.field-lbl[data-optional]::after{content:" (optional)";font-size:9px;letter-spacing:.18em;color:var(--mt);font-weight:500;opacity:.85;text-transform:lowercase}
+
+/* iOS Safari prevents auto-zoom on focus only when input font-size
+   is >= 16px. We use 16px on touch devices via max-width queries
+   below; desktop keeps the more elegant 13px. */
+
+/* ─── TABLET & PHONE ≤ 768px ─────────────────────────────────── */
+@media (max-width: 768px){
+  body{padding-bottom:96px}
+  .hero{padding:24px 16px 16px}
+  .hero-logo{font-size:32px;letter-spacing:.18em}
+  .hero-sub{font-size:9px;margin-bottom:10px}
+  .sec-strip{margin:0 auto 16px;padding:0 12px;gap:6px}
+  .sec-badge{font-size:8.5px;padding:7px 8px;letter-spacing:.05em}
+  .wrap{padding:0 12px}
+  .progress-wrap{padding:10px 14px;border-radius:10px;top:8px;margin-bottom:14px}
+  .prog-pct-num{font-size:22px}
+  .prog-step{font-size:9px;letter-spacing:.18em}
+  .prog-sections{gap:8px;margin-top:8px;font-size:8.5px}
+  /* Stepper: hidden on small screens — progress bar already shows state. */
+  .stepper{display:none}
+  .card{padding:18px 16px;border-radius:10px;margin-bottom:14px}
+  .card-head{padding-bottom:14px;margin-bottom:14px;gap:12px}
+  .card-t{font-size:22px;line-height:1.15}
+  .card-s{font-size:11px}
+  .card-head-icon{width:36px;height:36px;border-radius:8px}
+  .sec{margin-bottom:18px;padding-bottom:16px}
+  .sec-t{font-size:16px}
+  .sec-icon{width:20px;height:20px}
+  .sec-note{font-size:9.5px;width:100%;margin-left:0;margin-top:2px}
+  .row{gap:12px;margin-bottom:10px}
+  .field-lbl{font-size:9px;letter-spacing:.16em}
+  .field-hint{font-size:10.5px}
+  /* ✨ iOS zoom fix — inputs need >=16px to prevent auto-zoom on focus. */
+  .inp,.sel,.txa{font-size:16px;padding:12px 14px;border-radius:10px;min-height:48px}
+  .txa{min-height:96px}
+  .sel{padding-right:36px;background-position:right 12px center}
+  /* Touch-friendly pills (Yes/No/etc). */
+  .pill{padding:11px 18px;font-size:14px;min-height:44px;display:inline-flex;align-items:center;border-radius:10px}
+  /* Tag input wider, languages tags pop. */
+  .tag-wrap{padding:10px;min-height:52px;border-radius:10px}
+  .tag{font-size:12.5px;padding:5px 12px}
+  /* Checkbox grid stacks single column on tiny screens, two on tablet. */
+  .chk-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .chk{padding:11px 14px;font-size:13px;min-height:46px;border-radius:10px}
+  .chk-box{width:18px;height:18px}
+  /* Date of birth: 3 small dropdowns side by side, but with bigger touch. */
+  .dob-grid{gap:6px}
+  /* Availability: 2 cols on tablet, already 2 cols at 680px. */
+  .avail-day{padding:12px 6px;min-height:96px;border-radius:10px}
+  .avail-day-lbl{font-size:9.5px;letter-spacing:.16em}
+  .avail-day-hrs{font-size:13px}
+  .avail-toggle{font-size:10px;padding:4px 0}
+  .time-inputs input{font-size:16px;padding:6px;min-height:36px}
+  /* Service cards roomier. */
+  .svc{padding:14px 14px 14px 16px;border-radius:10px}
+  .svc-name{font-size:15px}
+  .svc-desc{font-size:10.5px}
+  /* Upload zones: full-width, 56px+ height for thumb. */
+  .upload{padding:14px 14px;border-radius:10px;gap:12px;min-height:64px}
+  .upload-icon{width:36px;height:36px}
+  .upload-ttl{font-size:13.5px}
+  .upload-h{font-size:10.5px}
+  .upload-btn{padding:9px 14px;font-size:11px;min-height:38px}
+  .selfie-box{padding:14px;border-radius:10px}
+  .selfie-icon{width:48px;height:48px;margin-bottom:10px}
+  .selfie-t{font-size:17px}
+  .selfie-s{font-size:11px}
+  .video-box{padding:18px 14px;border-radius:10px}
+  .video-icon{width:42px;height:42px}
+  .video-box-ttl{font-size:17px}
+  .video-box-sub{font-size:11px}
+  /* Consent rows tap-friendly. */
+  .consent{padding:14px;border-radius:10px;min-height:60px}
+  .consent-text{font-size:13px;line-height:1.5}
+  .consent-box{width:22px;height:22px}
+  /* Action bar: full-width buttons stacked, sticky bottom on phone. */
+  .actions{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(250,248,246,0),rgba(250,248,246,.96) 30%,#faf8f6 60%);padding:16px 12px;margin:18px -12px 0;justify-content:stretch;flex-direction:column;gap:8px;z-index:60;box-shadow:0 -4px 18px rgba(139,115,85,.06)}
+  .actions-left,.actions-right{width:100%;display:flex;gap:8px}
+  .actions-right{order:1}
+  .actions-left{order:2}
+  .btn{flex:1;min-width:0;padding:14px 18px;font-size:11.5px;letter-spacing:.16em;min-height:50px}
+  /* Toast becomes bottom-center, full-width-ish on phone. */
+  .toast{top:auto;bottom:20px;right:12px;left:12px;max-width:none;transform:translateY(140px);font-size:13px;padding:14px 18px;text-align:center}
+  .toast.visible{transform:translateY(0)}
+  /* Resume banner stacks. */
+  .resume-banner{padding:12px 14px;flex-direction:column;align-items:stretch;gap:10px}
+  .resume-actions{justify-content:stretch}
+  .resume-btn{flex:1;text-align:center;padding:10px 12px;font-size:11px;min-height:42px}
+  /* Success overlay friendlier on phone. */
+  .success-card{padding:0 12px}
+  .success-mark{width:64px;height:64px;margin-bottom:18px}
+  .success-t{font-size:32px;margin-bottom:10px}
+  .success-sub{font-size:12.5px;margin-bottom:18px}
+  .success-ref{font-size:13px;letter-spacing:.16em;padding:8px 14px}
+  /* Auto-save indicator visible on mobile too. */
+  .save-indicator{font-size:10px}
+  .footnote{font-size:10px;padding:12px 16px}
+}
+
+/* ─── PHONE ≤ 480px ─────────────────────────────────────────── */
+@media (max-width: 480px){
+  .hero-logo{font-size:28px}
+  .sec-strip{flex-direction:column;align-items:stretch}
+  .sec-badge{justify-content:center;padding:9px 8px;font-size:9px}
+  .progress-wrap{padding:10px 12px}
+  .prog-pct-num{font-size:20px}
+  .prog-pct-lbl{font-size:8.5px}
+  .card{padding:16px 14px}
+  .card-t{font-size:20px}
+  .card-head{flex-direction:column}
+  .card-head-icon{align-self:flex-start}
+  /* Single column for everything tiny. */
+  .chk-grid{grid-template-columns:1fr}
+  .svc-grid{grid-template-columns:1fr}
+  /* Date of birth: 3 cols still, but compact. */
+  .dob-grid{grid-template-columns:1fr 1fr 1.4fr}
+  /* Availability single column. */
+  .avail-grid{grid-template-columns:1fr;gap:6px}
+  .avail-day{min-height:auto;padding:14px;flex-direction:row;align-items:center;justify-content:space-between;text-align:left;gap:14px}
+  .avail-day-lbl{flex-shrink:0;width:48px}
+  .avail-day-hrs{flex:1;text-align:left}
+  .avail-toggle{margin-top:0;flex-shrink:0}
+  .time-inputs{flex-shrink:0}
+  /* Footer action stays sticky but compact */
+  .actions{padding:12px 10px}
+}
+
+/* Auto-save indicator (works across breakpoints). */
+.save-indicator{position:fixed;bottom:14px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(45,36,24,.92);color:#faf8f6;padding:8px 14px;border-radius:20px;font-size:11px;letter-spacing:.06em;backdrop-filter:blur(10px);z-index:90;opacity:0;transition:all .35s cubic-bezier(.22,.61,.36,1);pointer-events:none;font-weight:500}
+.save-indicator.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+.save-indicator svg{display:inline-block;vertical-align:-2px;margin-right:5px}
+
+/* Conditional reveal animation. */
+.reveal{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,.61,.36,1),margin .4s,padding .4s,opacity .3s;opacity:0}
+.reveal.open{max-height:600px;opacity:1}
+
+/* Phone combo (country code prefix + number). */
+.phone-combo{display:flex;gap:6px;align-items:stretch}
+.phone-combo .phone-prefix{width:120px;flex-shrink:0;font-family:var(--fb);font-weight:500;padding-right:28px;background-position:right 8px center}
+.phone-combo .phone-number{flex:1;min-width:0}
+@media (max-width: 480px){
+  .phone-combo .phone-prefix{width:104px;font-size:14px}
+}
+
+/* Mandatory CTA button (used before availability grid). */
+.avail-cta{display:flex;align-items:center;gap:10px;width:100%;padding:14px 18px;background:linear-gradient(135deg,rgba(196,168,130,.18),rgba(139,115,85,.10));border:1px solid var(--acL);border-radius:var(--rs);color:var(--tx);font-family:var(--fb);font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:all .2s;text-align:left;margin-bottom:6px;min-height:50px}
+.avail-cta b{color:var(--ac);font-weight:700}
+.avail-cta:hover{border-color:var(--ac);background:linear-gradient(135deg,rgba(196,168,130,.26),rgba(139,115,85,.14));transform:translateY(-1px);box-shadow:0 6px 16px rgba(139,115,85,.10)}
+.avail-cta svg:last-child{margin-left:auto;color:var(--ac);transition:transform .2s}
+.avail-cta:hover svg:last-child{transform:translateY(2px)}
+
+/* ═══ SERVICE MODULES (Tantric / Escort) ═══ */
+.svc-mod{background:linear-gradient(180deg,rgba(196,168,130,.04),rgba(255,255,255,0));border:1px solid var(--brd2);border-radius:14px;padding:20px 22px;margin-bottom:14px;transition:border-color .25s}
+.svc-mod-head{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--brd)}
+.svc-mod-title{font-family:var(--fd);font-size:24px;font-weight:600;color:var(--tx);letter-spacing:.01em;margin-bottom:4px;line-height:1.15}
+.svc-mod-desc{font-size:12.5px;color:var(--mt);line-height:1.6;font-style:italic}
+.svc-mod-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.svc-mod-q{font-size:13px;color:var(--tx);font-weight:600;letter-spacing:.01em}
+.svc-mod-block{margin-top:18px;padding-top:18px;border-top:1px solid var(--brd)}
+.svc-mod-block:first-child{border-top:0;padding-top:0;margin-top:0}
+
+/* Pricing tier card grid (Sold / Premium / Elite). */
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.tier-card{background:var(--card);border:1px solid var(--brd2);border-radius:12px;padding:14px 12px 12px;cursor:pointer;text-align:center;transition:all .2s;position:relative;overflow:hidden}
+.tier-card:hover{border-color:var(--acL);transform:translateY(-1px);box-shadow:0 6px 18px rgba(139,115,85,.08)}
+.tier-card.active{background:linear-gradient(180deg,rgba(196,168,130,.10),rgba(196,168,130,.02));border-color:var(--ac);box-shadow:0 0 0 2px rgba(139,115,85,.18),0 6px 18px rgba(139,115,85,.10)}
+.tier-card .tier-name{font-family:var(--fd);font-size:18px;font-weight:600;color:var(--tx);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.tier-card .tier-price{font-family:var(--fd);font-size:22px;font-weight:600;color:var(--ac);letter-spacing:.01em}
+.tier-card .tier-meta{font-size:9.5px;color:var(--mt);letter-spacing:.18em;text-transform:uppercase;margin-top:4px}
+.tier-card .tier-radio{position:absolute;top:8px;right:8px;width:16px;height:16px;border:1.5px solid var(--brd2);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);transition:all .2s}
+.tier-card.active .tier-radio{background:var(--ac);border-color:var(--ac)}
+.tier-card.active .tier-radio::after{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
+@media (max-width: 480px){
+  .tier-grid{grid-template-columns:1fr;gap:6px}
+  .tier-card{display:flex;align-items:center;justify-content:space-between;text-align:left;padding:14px 16px;min-height:60px}
+  .tier-card .tier-name{margin:0;font-size:16px}
+  .tier-card .tier-price{font-size:18px}
+  .tier-card .tier-radio{position:static;margin-left:auto}
+}
+
+/* Editable rate table that appears when a tier is selected. */
+.rate-table-wrap{margin-top:14px;background:var(--card);border:1px solid var(--brd2);border-radius:12px;padding:12px}
+.rate-table-title{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+.rate-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.rate-table th,.rate-table td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--brd)}
+.rate-table th{font-size:9.5px;letter-spacing:.18em;color:var(--mt);text-transform:uppercase;font-weight:600;background:transparent}
+.rate-table td:first-child{color:var(--tx);font-weight:500}
+.rate-table input.rate-input{width:100%;padding:6px 8px;border:1px solid var(--brd);border-radius:6px;background:transparent;font-family:var(--fb);font-size:13px;color:var(--tx);text-align:right}
+.rate-table input.rate-input:focus{outline:none;border-color:var(--ac);background:rgba(196,168,130,.06)}
+@media (max-width: 480px){
+  .rate-table th,.rate-table td{padding:8px 6px;font-size:12px}
+  .rate-table input.rate-input{font-size:14px}
+}
+
+/* Special offers grid (Tantric "on top" extras). */
+.offer-grid{display:flex;flex-direction:column;gap:8px}
+.offer-card{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--card);border:1px solid var(--brd);border-radius:10px;cursor:pointer;transition:all .2s;min-height:64px}
+.offer-card:hover{border-color:var(--acL);transform:translateY(-1px);box-shadow:0 4px 12px rgba(139,115,85,.06)}
+.offer-card.checked{background:linear-gradient(180deg,rgba(93,140,114,.05),transparent);border-color:var(--gn)}
+.offer-card .offer-check{width:20px;height:20px;border:1.5px solid var(--brd2);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;background:var(--card);transition:all .2s}
+.offer-card.checked .offer-check{background:var(--gn);border-color:var(--gn)}
+.offer-card .offer-check svg{width:11px;height:11px;color:#fff;opacity:0}
+.offer-card.checked .offer-check svg{opacity:1}
+.offer-card .offer-body{flex:1;min-width:0}
+.offer-card .offer-row1{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.offer-card .offer-name{font-family:var(--fd);font-size:17px;font-weight:600;color:var(--tx);letter-spacing:.01em}
+.offer-card .offer-price{font-size:11px;color:var(--ac);letter-spacing:.06em;text-transform:uppercase;font-weight:600;flex-shrink:0;background:rgba(196,168,130,.10);padding:4px 10px;border-radius:14px}
+.offer-card .offer-desc{font-size:11.5px;color:var(--mt);line-height:1.55}
+
+/* Escort services list (lighter style). */
+.escort-svc-list{display:flex;flex-direction:column;gap:6px}
+.escort-svc{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--card);border:1px solid var(--brd);border-radius:10px;transition:all .2s;cursor:pointer}
+.escort-svc:hover{border-color:var(--acL)}
+.escort-svc.checked{background:rgba(93,140,114,.04);border-color:var(--gn)}
+.escort-svc .escort-svc-check{width:18px;height:18px;border:1.5px solid var(--brd2);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;background:var(--card);transition:all .2s}
+.escort-svc.checked .escort-svc-check{background:var(--gn);border-color:var(--gn)}
+.escort-svc .escort-svc-check svg{width:11px;height:11px;color:#fff;opacity:0}
+.escort-svc.checked .escort-svc-check svg{opacity:1}
+.escort-svc .escort-svc-body{flex:1;min-width:0}
+.escort-svc .escort-svc-name{font-size:13px;font-weight:600;color:var(--tx);letter-spacing:.01em;margin-bottom:2px}
+.escort-svc .escort-svc-desc{font-size:11px;color:var(--mt);line-height:1.5}
+/* When a service has a tri-state pill (Yes/Discussion/No) we hide the
+   checkbox and show pills instead. */
+.escort-svc.with-pills .escort-svc-check{display:none}
+.escort-svc .escort-svc-pills{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.escort-svc .escort-svc-pills .pill{padding:6px 12px;font-size:11px;min-height:34px}
+
+/* Language pill list (language + level inline editor). */
+.lang-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.lang-row{display:flex;gap:8px;align-items:center;padding:10px 12px;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);transition:all .15s}
+.lang-row:hover{border-color:var(--acL)}
+.lang-row .lang-name{flex:1;font-weight:500;color:var(--tx);font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lang-row .lang-level{flex-shrink:0;width:140px}
+.lang-row .lang-x{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:transparent;color:var(--mt);border:0;cursor:pointer;font-size:18px;transition:all .15s}
+.lang-row .lang-x:hover{background:var(--rd);color:var(--card)}
+@media (max-width: 480px){
+  .lang-row{flex-wrap:wrap;gap:6px}
+  .lang-row .lang-name{flex-basis:100%;font-size:14px}
+  .lang-row .lang-level{flex:1;width:auto}
+  .lang-row .lang-x{flex-shrink:0}
+}
+
 </style>
 </head>
 <body>
@@ -356,48 +623,71 @@ input[type="file"]{display:none}
       <div class="row-1" style="margin-bottom:14px">
         <div class="field">
           <label class="field-lbl">Full Name <span class="req">*</span></label>
-          <input type="text" class="inp" id="f_fullname" placeholder="Your full legal name" data-sec="personal">
+          <input type="text" class="inp" id="f_fullname" placeholder="Maria Sofia Gonzalez" data-sec="personal" autocomplete="name" autocapitalize="words" spellcheck="false">
+          <div class="field-hint">Exactly as shown in your passport or government ID. We treat this strictly confidentially.</div>
         </div>
       </div>
       <div class="row">
         <div class="field">
           <label class="field-lbl">Date of Birth <span class="req">*</span></label>
           <div class="dob-grid">
-            <input type="number" class="inp" id="f_dob_d" placeholder="DD" min="1" max="31" data-sec="personal">
-            <input type="number" class="inp" id="f_dob_m" placeholder="MM" min="1" max="12" data-sec="personal">
-            <input type="number" class="inp" id="f_dob_y" placeholder="YYYY" min="1950" max="2010" data-sec="personal">
+            <input type="number" class="inp" id="f_dob_d" placeholder="DD" min="1" max="31" data-sec="personal" inputmode="numeric" autocomplete="bday-day">
+            <input type="number" class="inp" id="f_dob_m" placeholder="MM" min="1" max="12" data-sec="personal" inputmode="numeric" autocomplete="bday-month">
+            <input type="number" class="inp" id="f_dob_y" placeholder="YYYY" min="1950" max="2010" data-sec="personal" inputmode="numeric" autocomplete="bday-year">
           </div>
         </div>
         <div class="field">
           <label class="field-lbl">Nationality <span class="req">*</span></label>
-          <select class="sel" id="f_nationality" data-sec="personal"><option value="">Select...</option></select>
+          <select class="sel" id="f_nationality" data-sec="personal" autocomplete="off"><option value="">Select...</option></select>
         </div>
       </div>
       <div class="row">
         <div class="field">
-          <label class="field-lbl">Current City <span class="req">*</span></label>
-          <input type="text" class="inp" id="f_city" placeholder="e.g. London" data-sec="personal">
+          <label class="field-lbl">Country of Residence <span class="req">*</span></label>
+          <select class="sel" id="f_country" data-sec="personal" autocomplete="country-name"><option value="">Select your country...</option></select>
+          <div class="field-hint">This drives the city list below.</div>
         </div>
         <div class="field">
-          <label class="field-lbl">Country of Residence <span class="req">*</span></label>
-          <select class="sel" id="f_country" data-sec="personal"><option value="">Select...</option></select>
+          <label class="field-lbl">City <span class="req">*</span></label>
+          <select class="sel" id="f_city_select" data-sec="personal" disabled><option value="">Pick country first...</option></select>
+          <input type="text" class="inp" id="f_city" placeholder="Type your city" data-sec="personal" autocomplete="address-level2" style="display:none;margin-top:8px">
+        </div>
+      </div>
+      <div class="row-1">
+        <div class="field">
+          <label class="field-lbl">Local Area / Neighborhood <span class="opt-note">Optional</span></label>
+          <input type="text" class="inp" id="f_local_area_text" placeholder="e.g. Mayfair, Marbella Centro, Distrito Centro..." autocomplete="address-level3">
+          <div class="field-hint">Where you currently live within the city.</div>
+        </div>
+      </div>
+      <div class="row-1">
+        <div class="field">
+          <label class="field-lbl">Full Home Address <span class="opt-note">Optional · Strictly confidential</span></label>
+          <input type="text" class="inp" id="f_home_address" placeholder="16 Maddox Street, Flat 2, W1S 1PH, London, United Kingdom" autocomplete="street-address">
+          <div class="field-hint">Format: street &amp; number, flat, postcode, city, country. Used only for KYC verification.</div>
         </div>
       </div>
       <div class="row">
         <div class="field">
           <label class="field-lbl">Phone (WhatsApp) <span class="req">*</span></label>
-          <input type="tel" class="inp" id="f_phone" placeholder="+44 7..." data-sec="personal">
+          <div class="phone-combo">
+            <select class="sel phone-prefix" id="f_phone_code" data-sec="personal" aria-label="Country code">
+              <option value="">+...</option>
+            </select>
+            <input type="tel" class="inp phone-number" id="f_phone" placeholder="7700 900 123" data-sec="personal" inputmode="tel" autocomplete="tel-national">
+          </div>
+          <div class="field-hint">Pick your country code. Number without leading 0.</div>
         </div>
         <div class="field">
           <label class="field-lbl">Email <span class="req">*</span></label>
-          <input type="email" class="inp" id="f_email" placeholder="your@email.com" data-sec="personal">
+          <input type="email" class="inp" id="f_email" placeholder="your@email.com" data-sec="personal" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false">
         </div>
       </div>
       <div class="row-1">
         <div class="field">
-          <label class="field-lbl">Instagram <span class="opt-note">Optional</span></label>
-          <input type="text" class="inp" id="f_ig" placeholder="@yourusername">
-          <div class="field-hint">Helps us understand your presentation style</div>
+          <label class="field-lbl" data-optional>Instagram</label>
+          <input type="text" class="inp" id="f_ig" placeholder="@yourusername" autocapitalize="off" spellcheck="false">
+          <div class="field-hint">Helps us understand your presentation style.</div>
         </div>
       </div>
     </div>
@@ -455,10 +745,11 @@ input[type="file"]{display:none}
       </div>
       <div class="field">
         <label class="field-lbl">Languages Spoken <span class="req">*</span></label>
-        <div class="field-hint" style="margin-bottom:6px">Select all languages you speak</div>
-        <div class="tag-wrap" id="langWrap" onclick="document.getElementById('langSelect').focus()">
-          <select class="sel" id="langSelect" style="border:0;background:transparent;flex:1;min-width:140px;padding:4px;width:auto;box-shadow:none" onchange="addLang(this.value);this.value=''"><option value="">+ Add language</option></select>
+        <div class="field-hint" style="margin-bottom:6px">Add each language you speak and how well — Native / Fluent / Advanced / Conversational / Basic.</div>
+        <div style="display:flex;gap:8px;align-items:stretch;flex-wrap:wrap">
+          <select class="sel" id="langSelect" style="flex:1;min-width:160px"><option value="">+ Add a language…</option></select>
         </div>
+        <div class="lang-list" id="langList"></div>
       </div>
     </div>
 
@@ -585,13 +876,15 @@ input[type="file"]{display:none}
         <div class="sec-t">Your Working Area</div>
       </div>
       <div class="field">
-        <label class="field-lbl">Local Area in London <span class="req">*</span></label>
-        <select class="sel" id="f_local_area" data-sec="work"><option value="">Select your area...</option></select>
+        <label class="field-lbl"><span id="localAreaLabel">Local Area</span> <span class="req">*</span></label>
+        <select class="sel" id="f_local_area" data-sec="work"><option value="">Pick city first...</option></select>
+        <div class="field-hint">Where you work most often. The list updates based on your selected city.</div>
       </div>
       <div class="row-1" style="margin-top:14px">
         <div class="field">
           <label class="field-lbl">In-house Address <span class="opt-note">If you offer in-house</span></label>
-          <input type="text" class="inp" id="f_inhouse_address" placeholder="Full address (kept confidential)">
+          <input type="text" class="inp" id="f_inhouse_address" placeholder="16 Maddox Street, Flat 2, W1S 1PH, London, United Kingdom" autocomplete="street-address">
+          <div class="field-hint">Format: street &amp; number, flat, postcode, city, country. Kept strictly confidential.</div>
         </div>
       </div>
       <div class="row-3" style="margin-top:14px">
@@ -649,47 +942,7 @@ input[type="file"]{display:none}
         </div>
       </div>
     </div>
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
-        <div class="sec-t">Pricing & Terms</div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label class="field-lbl">Starting Price (60 min) <span class="req">*</span></label>
-          <div style="display:flex;gap:6px;align-items:stretch">
-            <div style="padding:10px 14px;background:var(--sf);border:1px solid var(--brd);border-radius:var(--rs);border-right:0;color:var(--ac);font-family:var(--fd);font-size:16px;font-weight:500">£</div>
-            <input type="number" class="inp" id="f_rate" placeholder="250" min="100" max="2000" style="border-top-left-radius:0;border-bottom-left-radius:0" data-sec="work">
-          </div>
-          <div class="field-hint">We'll discuss and finalize rates after interview</div>
-        </div>
-        <div class="field">
-          <label class="field-lbl">Currently with other agencies?</label>
-          <div class="pill-group" data-pill="competing">
-            <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="No">No</div>
-            <div class="pill" data-val="Prefer not to say">Prefer not to say</div>
-          </div>
-        </div>
-      </div>
-      <div class="row-1" style="margin-top:14px">
-        <div class="field"><label class="field-lbl">Duration Preferences <span class="opt-note">Select all</span></label>
-          <div class="chk-grid" id="durationGrid" style="margin-top:4px"></div>
-        </div>
-      </div>
-    </div>
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6 2 2 6 2 12s4 10 10 10 10-4 10-10S18 2 12 2z"/></svg></div>
-        <div class="sec-t">Services You Offer</div>
-        <span class="sec-note">Select all that apply</span>
-      </div>
-      <div class="svc-grid" id="servicesGrid" data-sec="services"></div>
-      <div style="margin-top:20px">
-        <label class="field-lbl" style="margin-bottom:10px;display:block">Add-ons / Extras <span class="opt-note">Optional</span></label>
-        <div class="svc-grid addons-2col" id="addonsGrid"></div>
-      </div>
-    </div>
+    <!-- ═══ WEEKLY AVAILABILITY (moved up — sets schedule before pricing) ═══ -->
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
@@ -700,11 +953,129 @@ input[type="file"]{display:none}
           <select class="sel" id="f_days_week" data-sec="availability"><option value="">Select...</option><option>1-2 days a week</option><option>3-4 days a week</option><option>5 days a week</option><option>6-7 days a week</option><option>Occasionally (on request only)</option></select>
         </div>
       </div>
+      <button type="button" class="avail-cta" onclick="document.getElementById('availGrid').scrollIntoView({behavior:'smooth',block:'start'})">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Choose your weekly availability — <b>mandatory</b></span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="field-hint" style="margin:6px 0 12px">Tap each day to mark it ON, then set the hours you'd like to work. Off days stay off.</div>
       <div class="avail-grid" id="availGrid"></div>
       <div class="row-1" style="margin-top:10px">
         <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
           <textarea class="txa" id="f_avail_notes" placeholder="e.g. 'I prefer 48h advance notice...'"></textarea>
         </div>
+      </div>
+    </div>
+
+    <!-- ═══ PRICING & SERVICES — Two service modules with Yes/No reveal ═══ -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
+        <div class="sec-t">Services &amp; Pricing</div>
+        <span class="sec-note">Tell us which services you offer and your rates.</span>
+      </div>
+
+      <!-- ─── Service Module 1: TANTRIC MASSAGE ─── -->
+      <div class="svc-mod" id="modTantric">
+        <div class="svc-mod-head">
+          <div class="svc-mod-title">Tantric Massage</div>
+          <div class="svc-mod-desc">A tantric massage with a mix of deep-tissue techniques and sensual body-to-body moves, ending with a slow hand climax.</div>
+        </div>
+        <div class="svc-mod-toggle">
+          <span class="svc-mod-q">Do you offer Tantric Massage?</span>
+          <div class="pill-group" data-pill="offers_tantric">
+            <div class="pill" data-val="Yes">Yes</div>
+            <div class="pill" data-val="No">No</div>
+          </div>
+        </div>
+        <div class="reveal" id="tantricBody">
+          <div class="svc-mod-block">
+            <div class="field-lbl" style="margin-bottom:8px">Pricing tier <span class="req">*</span></div>
+            <div class="field-hint" style="margin-bottom:10px">Pick the tier that matches you. Rates auto-fill — you can override any cell.</div>
+            <div class="tier-grid" id="tantricTierGrid"></div>
+            <div class="rate-table-wrap" id="tantricRateTableWrap" style="display:none">
+              <div class="rate-table-title" id="tantricRateTitle">Your rates</div>
+              <table class="rate-table" id="tantricRateTable"></table>
+              <div class="field-hint" style="margin-top:8px">Tap a cell to edit. We discuss and finalise rates at interview.</div>
+            </div>
+          </div>
+          <div class="svc-mod-block">
+            <div class="field-lbl" style="margin-bottom:8px">Special Offers <span class="opt-note">Select all you offer</span></div>
+            <div class="field-hint" style="margin-bottom:10px">These are charged "on top" of the base rate. Tap each one you'd like to offer.</div>
+            <div class="offer-grid" id="tantricOffersGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Service Module 2: ESCORT COMPANIONSHIP ─── -->
+      <div class="svc-mod" id="modEscort" style="margin-top:18px">
+        <div class="svc-mod-head">
+          <div class="svc-mod-title">Escort Companionship Services</div>
+          <div class="svc-mod-desc">A sensual companionship experience between two consenting adults, which may include a girlfriend experience (GFE) and a relaxed level of intimacy.</div>
+        </div>
+        <div class="svc-mod-toggle">
+          <span class="svc-mod-q">Do you offer Escort Companionship?</span>
+          <div class="pill-group" data-pill="offers_escort">
+            <div class="pill" data-val="Yes">Yes</div>
+            <div class="pill" data-val="No">No</div>
+          </div>
+        </div>
+        <div class="reveal" id="escortBody">
+          <div class="svc-mod-block">
+            <div class="field-lbl" style="margin-bottom:8px">Pricing tier <span class="req">*</span></div>
+            <div class="tier-grid" id="escortTierGrid"></div>
+            <div class="rate-table-wrap" id="escortRateTableWrap" style="display:none">
+              <div class="rate-table-title" id="escortRateTitle">Your rates</div>
+              <table class="rate-table" id="escortRateTable"></table>
+              <div class="field-hint" style="margin-top:8px">Tap a cell to edit. We discuss and finalise rates at interview.</div>
+            </div>
+          </div>
+
+          <div class="svc-mod-block">
+            <div class="row">
+              <div class="field">
+                <label class="field-lbl">Currently with other agencies?</label>
+                <div class="pill-group" data-pill="competing">
+                  <div class="pill" data-val="Yes">Yes</div>
+                  <div class="pill" data-val="No">No</div>
+                  <div class="pill" data-val="Prefer not to say">Prefer not to say</div>
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-lbl">Duration Preferences <span class="opt-note">Select all</span></label>
+                <div class="chk-grid" id="durationGrid" style="margin-top:4px"></div>
+              </div>
+            </div>
+            <div class="row-1" id="agencyWebsiteWrap" style="margin-top:14px;display:none">
+              <div class="field">
+                <label class="field-lbl">Agency website / profile link <span class="opt-note">Required if you said Yes</span></label>
+                <input type="url" class="inp" id="f_agency_website" placeholder="https://other-agency.com/your-profile" inputmode="url" autocapitalize="off" spellcheck="false">
+              </div>
+            </div>
+          </div>
+
+          <div class="svc-mod-block">
+            <div class="field-lbl" style="margin-bottom:8px">Services you offer <span class="opt-note">Tap each one</span></div>
+            <div class="field-hint" style="margin-bottom:10px">All optional. Some have Yes / Discussion / No so you can be precise.</div>
+            <div class="escort-svc-list" id="escortServicesList"></div>
+          </div>
+
+          <div class="svc-mod-block">
+            <div class="field">
+              <label class="field-lbl">Boundaries <span class="opt-note">Optional but recommended</span></label>
+              <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have. Be honest — this helps us match you to the right clients. Examples: 'No facial finishing', 'No kissing on first booking', 'Prefer mature clients only'..." rows="4"></textarea>
+              <div class="field-hint">Anything we should know upfront before sending you a booking.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden legacy mounts kept so existing JS that targets them
+           continues to work without breaking. The new UI controls these. -->
+      <div style="display:none">
+        <input type="hidden" id="f_rate">
+        <div class="svc-grid" id="servicesGrid" data-sec="services"></div>
+        <div class="svc-grid addons-2col" id="addonsGrid"></div>
       </div>
     </div>
     <div class="actions">
@@ -802,14 +1173,24 @@ input[type="file"]{display:none}
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
         <div class="sec-t">Emergency Contact</div>
-        <span class="sec-note">Optional but recommended</span>
+        <span class="sec-note">Required for safety</span>
       </div>
-      <div class="row-3">
-        <div class="field"><label class="field-lbl">Contact Name</label><input type="text" class="inp" id="f_em_name"></div>
-        <div class="field"><label class="field-lbl">Relationship</label>
+      <div class="row">
+        <div class="field"><label class="field-lbl">Contact Name <span class="req">*</span></label>
+          <input type="text" class="inp" id="f_em_name" placeholder="Full name" autocomplete="off" autocapitalize="words">
+        </div>
+        <div class="field"><label class="field-lbl">Relationship <span class="req">*</span></label>
           <select class="sel" id="f_em_rel"><option value="">Select...</option><option>Partner</option><option>Parent</option><option>Sibling</option><option>Close friend</option><option>Other family</option><option>Other</option></select>
         </div>
-        <div class="field"><label class="field-lbl">Phone</label><input type="tel" class="inp" id="f_em_phone" placeholder="+44 7..."></div>
+      </div>
+      <div class="row-1" style="margin-top:14px">
+        <div class="field"><label class="field-lbl">Phone <span class="req">*</span></label>
+          <div class="phone-combo">
+            <select class="sel phone-prefix" id="f_em_phone_code" aria-label="Country code"><option value="">+...</option></select>
+            <input type="tel" class="inp phone-number" id="f_em_phone" placeholder="7700 900 123" inputmode="tel" autocomplete="off">
+          </div>
+          <div class="field-hint">Country code first, then number without leading 0.</div>
+        </div>
       </div>
     </div>
     <div class="sec">
@@ -826,14 +1207,8 @@ input[type="file"]{display:none}
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="consent-text">I consent to <b>data storage and processing</b> in accordance with GDPR.</div>
         </div>
-        <div class="consent" data-consent="nda" data-sec="consent">
-          <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="consent-text">I understand an <b>NDA will be required</b> upon approval.</div>
-        </div>
-        <div class="consent" data-consent="photo" data-sec="consent">
-          <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="consent-text">I consent to <b>professional photography</b> if I proceed.</div>
-        </div>
+        <!-- NDA and professional photography consents removed — both are
+             discussed during the interview rather than upfront. -->
         <div class="consent" data-consent="terms" data-sec="consent">
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="consent-text">I agree to the <b>terms and conditions</b> and confirm all information is accurate.</div>
@@ -899,7 +1274,196 @@ let ADDONS = [];
 
 // Static UI constants (not business-specific)
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const DURATIONS = ['30 min','60 min','90 min','120 min','3 hours','Overnight','Weekend'];
+const DURATIONS = ['30 min','60 min','90 min','120 min','3 hours','4 hours','6 hours','Overnight','Weekend','Trip'];
+
+// Country phone codes — covers the source markets we expect (EU + UK + US +
+// Latin America + Middle East + Asia). Sorted alphabetically for usability.
+const PHONE_CODES = [
+  {c:'+44',n:'United Kingdom',f:'\uD83C\uDDEC\uD83C\uDDE7'},
+  {c:'+1', n:'United States',  f:'\uD83C\uDDFA\uD83C\uDDF8'},
+  {c:'+1', n:'Canada',          f:'\uD83C\uDDE8\uD83C\uDDE6'},
+  {c:'+34',n:'Spain',           f:'\uD83C\uDDEA\uD83C\uDDF8'},
+  {c:'+351',n:'Portugal',       f:'\uD83C\uDDF5\uD83C\uDDF9'},
+  {c:'+33',n:'France',          f:'\uD83C\uDDEB\uD83C\uDDF7'},
+  {c:'+49',n:'Germany',         f:'\uD83C\uDDE9\uD83C\uDDEA'},
+  {c:'+39',n:'Italy',           f:'\uD83C\uDDEE\uD83C\uDDF9'},
+  {c:'+31',n:'Netherlands',     f:'\uD83C\uDDF3\uD83C\uDDF1'},
+  {c:'+32',n:'Belgium',         f:'\uD83C\uDDE7\uD83C\uDDEA'},
+  {c:'+41',n:'Switzerland',     f:'\uD83C\uDDE8\uD83C\uDDED'},
+  {c:'+43',n:'Austria',         f:'\uD83C\uDDE6\uD83C\uDDF9'},
+  {c:'+40',n:'Romania',         f:'\uD83C\uDDF7\uD83C\uDDF4'},
+  {c:'+48',n:'Poland',          f:'\uD83C\uDDF5\uD83C\uDDF1'},
+  {c:'+30',n:'Greece',          f:'\uD83C\uDDEC\uD83C\uDDF7'},
+  {c:'+353',n:'Ireland',        f:'\uD83C\uDDEE\uD83C\uDDEA'},
+  {c:'+45',n:'Denmark',         f:'\uD83C\uDDE9\uD83C\uDDF0'},
+  {c:'+46',n:'Sweden',          f:'\uD83C\uDDF8\uD83C\uDDEA'},
+  {c:'+47',n:'Norway',          f:'\uD83C\uDDF3\uD83C\uDDF4'},
+  {c:'+358',n:'Finland',        f:'\uD83C\uDDEB\uD83C\uDDEE'},
+  {c:'+420',n:'Czechia',        f:'\uD83C\uDDE8\uD83C\uDDFF'},
+  {c:'+421',n:'Slovakia',       f:'\uD83C\uDDF8\uD83C\uDDF0'},
+  {c:'+36',n:'Hungary',         f:'\uD83C\uDDED\uD83C\uDDFA'},
+  {c:'+359',n:'Bulgaria',       f:'\uD83C\uDDE7\uD83C\uDDEC'},
+  {c:'+380',n:'Ukraine',        f:'\uD83C\uDDFA\uD83C\uDDE6'},
+  {c:'+7', n:'Russia',          f:'\uD83C\uDDF7\uD83C\uDDFA'},
+  {c:'+90',n:'Turkey',          f:'\uD83C\uDDF9\uD83C\uDDF7'},
+  {c:'+972',n:'Israel',         f:'\uD83C\uDDEE\uD83C\uDDF1'},
+  {c:'+971',n:'United Arab Emirates',f:'\uD83C\uDDE6\uD83C\uDDEA'},
+  {c:'+974',n:'Qatar',          f:'\uD83C\uDDF6\uD83C\uDDE6'},
+  {c:'+966',n:'Saudi Arabia',   f:'\uD83C\uDDF8\uD83C\uDDE6'},
+  {c:'+212',n:'Morocco',        f:'\uD83C\uDDF2\uD83C\uDDE6'},
+  {c:'+27',n:'South Africa',    f:'\uD83C\uDDFF\uD83C\uDDE6'},
+  {c:'+55',n:'Brazil',          f:'\uD83C\uDDE7\uD83C\uDDF7'},
+  {c:'+54',n:'Argentina',       f:'\uD83C\uDDE6\uD83C\uDDF7'},
+  {c:'+57',n:'Colombia',        f:'\uD83C\uDDE8\uD83C\uDDF4'},
+  {c:'+58',n:'Venezuela',       f:'\uD83C\uDDFB\uD83C\uDDEA'},
+  {c:'+52',n:'Mexico',          f:'\uD83C\uDDF2\uD83C\uDDFD'},
+  {c:'+86',n:'China',           f:'\uD83C\uDDE8\uD83C\uDDF3'},
+  {c:'+81',n:'Japan',           f:'\uD83C\uDDEF\uD83C\uDDF5'},
+  {c:'+82',n:'South Korea',     f:'\uD83C\uDDF0\uD83C\uDDF7'},
+  {c:'+66',n:'Thailand',        f:'\uD83C\uDDF9\uD83C\uDDED'},
+  {c:'+84',n:'Vietnam',         f:'\uD83C\uDDFB\uD83C\uDDF3'},
+  {c:'+63',n:'Philippines',     f:'\uD83C\uDDF5\uD83C\uDDED'},
+  {c:'+91',n:'India',           f:'\uD83C\uDDEE\uD83C\uDDF3'},
+  {c:'+61',n:'Australia',       f:'\uD83C\uDDE6\uD83C\uDDFA'},
+  {c:'+64',n:'New Zealand',     f:'\uD83C\uDDF3\uD83C\uDDFF'}
+];
+
+// Curated city list per country. We expect applicants from these markets;
+// extend the list any time. The dropdown stays empty until a country is
+// chosen. Free-text fallback ("Other...") lives in the form below.
+const CITIES_BY_COUNTRY = {
+  'United Kingdom':['London','Manchester','Birmingham','Leeds','Liverpool','Glasgow','Edinburgh','Bristol','Newcastle','Cardiff','Brighton','Oxford','Cambridge','Other (UK)'],
+  'Spain':['Madrid','Barcelona','Marbella','Valencia','Seville','Malaga','Ibiza','Palma de Mallorca','Bilbao','Other (Spain)'],
+  'Portugal':['Lisbon','Porto','Faro','Cascais','Other (Portugal)'],
+  'France':['Paris','Cannes','Nice','Lyon','Marseille','Saint-Tropez','Other (France)'],
+  'Italy':['Milan','Rome','Florence','Venice','Naples','Capri','Other (Italy)'],
+  'Germany':['Berlin','Munich','Hamburg','Frankfurt','Cologne','Other (Germany)'],
+  'Netherlands':['Amsterdam','The Hague','Rotterdam','Other (Netherlands)'],
+  'Belgium':['Brussels','Antwerp','Other (Belgium)'],
+  'Switzerland':['Zurich','Geneva','Lausanne','Basel','Bern','Other (Switzerland)'],
+  'Austria':['Vienna','Salzburg','Other (Austria)'],
+  'Romania':['Bucharest','Cluj-Napoca','Timisoara','Brasov','Constanta','Iasi','Other (Romania)'],
+  'Poland':['Warsaw','Krakow','Wroclaw','Gdansk','Other (Poland)'],
+  'Greece':['Athens','Thessaloniki','Mykonos','Santorini','Other (Greece)'],
+  'Ireland':['Dublin','Cork','Galway','Other (Ireland)'],
+  'Denmark':['Copenhagen','Aarhus','Other (Denmark)'],
+  'Sweden':['Stockholm','Gothenburg','Malmo','Other (Sweden)'],
+  'Norway':['Oslo','Bergen','Other (Norway)'],
+  'Finland':['Helsinki','Other (Finland)'],
+  'Czechia':['Prague','Brno','Other (Czechia)'],
+  'Hungary':['Budapest','Other (Hungary)'],
+  'Bulgaria':['Sofia','Sunny Beach','Other (Bulgaria)'],
+  'Ukraine':['Kyiv','Lviv','Odesa','Other (Ukraine)'],
+  'Turkey':['Istanbul','Ankara','Antalya','Bodrum','Other (Turkey)'],
+  'Israel':['Tel Aviv','Jerusalem','Other (Israel)'],
+  'United Arab Emirates':['Dubai','Abu Dhabi','Other (UAE)'],
+  'Qatar':['Doha','Other (Qatar)'],
+  'Saudi Arabia':['Riyadh','Jeddah','Other (Saudi Arabia)'],
+  'Morocco':['Marrakesh','Casablanca','Other (Morocco)'],
+  'South Africa':['Cape Town','Johannesburg','Other (South Africa)'],
+  'United States':['New York','Los Angeles','Miami','Las Vegas','San Francisco','Chicago','Other (USA)'],
+  'Canada':['Toronto','Vancouver','Montreal','Other (Canada)'],
+  'Brazil':['Rio de Janeiro','Sao Paulo','Other (Brazil)'],
+  'Argentina':['Buenos Aires','Other (Argentina)'],
+  'Colombia':['Bogota','Medellin','Other (Colombia)'],
+  'Mexico':['Mexico City','Cancun','Tulum','Other (Mexico)'],
+  'Australia':['Sydney','Melbourne','Brisbane','Other (Australia)'],
+  'Other':['Other...']
+};
+
+// Language proficiency levels for the new languages picker.
+const LANG_LEVELS = ['Native','Fluent','Advanced','Conversational','Basic'];
+
+// ─── PRICING TIERS ───────────────────────────────────────────────
+// Three published pricing tiers. The applicant picks the tier that
+// matches her positioning and the table auto-fills. She can override
+// any cell. Each row is { duration, in_house, mobile }.
+const PRICING_TIERS = {
+  sold: {
+    name: 'Sold',
+    starting: 250,
+    rates: [
+      { duration: '60 minutes',     in_house: 250, mobile: 350 },
+      { duration: '90 minutes',     in_house: 400, mobile: 500 },
+      { duration: '2 hours',        in_house: 500, mobile: 650 },
+      { duration: '3 hours',        in_house: 750, mobile: 950 },
+      { duration: 'Extra 30 min',   in_house: 150, mobile: 200 },
+      { duration: 'Extra 1 hour',   in_house: 250, mobile: 350 }
+    ]
+  },
+  premium: {
+    name: 'Premium',
+    starting: 300,
+    rates: [
+      { duration: '60 minutes',     in_house: 300, mobile: 350 },
+      { duration: '90 minutes',     in_house: 450, mobile: 500 },
+      { duration: '2 hours',        in_house: 600, mobile: 650 },
+      { duration: '3 hours',        in_house: 900, mobile: 950 },
+      { duration: 'Extra 30 min',   in_house: 150, mobile: 200 },
+      { duration: 'Extra 1 hour',   in_house: 300, mobile: 350 }
+    ]
+  },
+  elite: {
+    name: 'Elite',
+    starting: 350,
+    rates: [
+      { duration: '60 minutes',     in_house: 350, mobile: 400 },
+      { duration: '90 minutes',     in_house: 500, mobile: 550 },
+      { duration: '2 hours',        in_house: 650, mobile: 700 },
+      { duration: '3 hours',        in_house: 950, mobile: 1000 },
+      { duration: 'Extra 30 min',   in_house: 200, mobile: 250 },
+      { duration: 'Extra 1 hour',   in_house: 350, mobile: 400 }
+    ]
+  }
+};
+
+// ─── TANTRIC SPECIAL OFFERS (charged "on top") ───────────────────
+const TANTRIC_OFFERS = [
+  { key: 'vip_package', name: 'VIP Package', price: 250,
+    desc: 'Includes 3 add-ons: mutual touching, nuru slides, assisted shower (separately worth double). Complimentary head, neck and shoulders — great for jet lag.' },
+  { key: 'four_hands', name: 'Four Hands', price: 350,
+    desc: 'Two masseuses pamper you head-to-toe at the same time — twice the care, twice the relaxation. Price is for the additional masseuse.' },
+  { key: 'mutual_touching', name: 'Mutual Touching', price: 200,
+    desc: 'Allows the client to gently touch the masseuse\u2019s body and intimate area, massaging and enjoying the session.' },
+  { key: 'aqua_massage', name: 'Aqua Massage', price: 150,
+    desc: 'Takes place in a warm shower or hot bath — water, salts, oils, bubbles for a playful moment before or after.' },
+  { key: 'extra_hand_climax', name: 'Extra Hand Climax', price: 100,
+    desc: 'Extend the pleasure with one more slow hand climax — more teasing, more intense, more prolonged peak.' },
+  { key: 'nuru_massage', name: 'Nuru Massage', price: 100,
+    desc: 'Body-to-body massage with hot Nuru gel — she slides her body over yours throughout the entire session.' },
+  { key: 'prostate_massage', name: 'Prostate Massage', price: 250,
+    desc: 'G-Spot prostate massage with a special toy — unique sensation, performed gently and respectfully.' },
+  { key: 'belly_dancing', name: 'Belly Dancing', price: 200,
+    desc: 'Graceful, hypnotic rhythms with sensual energy — playful and mesmerising before the massage.' },
+  { key: 'fifty_shades', name: 'Fifty Shades of Grey', price: 250,
+    desc: 'A unique experience inspired by the movie, without sexual contact. Foot fetish, sexy outfits, seductive secretary, school educator — all tied up and teased.' }
+];
+
+// ─── ESCORT SERVICES (granular checklist) ────────────────────────
+// `mode: 'check'` is a simple yes/no checkbox.
+// `mode: 'tri'` shows three pills: Yes / Discussion / No.
+const ESCORT_SERVICES = [
+  // Companionship basics
+  { key: 'kissing',           name: 'Kissing (Light / Deep)',          desc: 'A natural level of closeness, from soft to more passionate connection.', mode: 'check' },
+  { key: 'oral_protected',    name: 'Oral Services \u2014 Protected',  desc: 'Offered with protection.',                                              mode: 'check' },
+  { key: 'oral_unprotected',  name: 'Oral Services \u2014 Unprotected',desc: 'May be available upon agreement.',                                      mode: 'check' },
+  // Finishing preferences
+  { key: 'finish_external',   name: 'External Finish (Face / Body)',   desc: 'External finish options.',                                              mode: 'check' },
+  { key: 'finish_internal',   name: 'Internal Finish (Mouth)',         desc: 'Internal finish option.',                                               mode: 'check' },
+  // Positions
+  { key: 'sixty_nine',        name: '69 Position',                     desc: 'Mutual interaction.',                                                   mode: 'check' },
+  { key: 'face_sitting',      name: 'Face Sitting',                    desc: 'Available upon preference.',                                            mode: 'check' },
+  // Kink-light
+  { key: 'light_dominance',   name: 'Light Dominance (Spanking \u2014 Giving)', desc: 'Light, controlled dominance.',                                  mode: 'check' },
+  { key: 'rimming_giving',    name: 'Rimming (Giving only)',           desc: 'Offered as a giving service only.',                                     mode: 'check' },
+  // Tri-state (Yes / Discussion / No)
+  { key: 'extreme_activities',name: 'Extreme Activities',              desc: 'Anything outside the usual scope \u2014 always discussed first.',       mode: 'tri'   },
+  { key: 'water_sports',      name: 'Water Sports',                    desc: 'Available upon discussion.',                                            mode: 'tri'   },
+  // Bookings & travel
+  { key: 'overnight',         name: 'Overnight Bookings',              desc: '8\u201310 hour minimum.',                                               mode: 'check' },
+  { key: 'party_bookings',    name: 'Party Bookings',                  desc: 'Group / event bookings.',                                                mode: 'check' },
+  { key: 'weekend_trips',     name: 'Weekend Trips',                   desc: 'Weekend travel away with the client.',                                  mode: 'check' }
+];
 const WORK_NAME_POOL = [
   'Aria','Bella','Celine','Diana','Elena','Fiona','Grace','Harper',
   'Iris','Jasmine','Kira','Luna','Mia','Nova','Olivia','Penelope',
@@ -964,20 +1528,39 @@ function applyFallbackDefaults(){
     TRAVEL_DESTINATIONS = ['Destination 1','Destination 2','Destination 3','Destination 4','Destination 5','Other'];
   }
   if(LANGUAGES.length === 0){
-    LANGUAGES = ['English (native)','English (fluent)','English (conversational)','English (basic)','Portuguese (native)','Portuguese (fluent)','Spanish (native)','Spanish (fluent)','French (native)','French (fluent)','Italian (native)','Italian (fluent)','German (native)','German (fluent)','Russian (native)','Russian (fluent)','Romanian (native)','Romanian (fluent)','Polish (native)','Polish (fluent)','Mandarin','Japanese','Korean','Arabic','Turkish','Greek','Dutch','Swedish','Hebrew','Thai','Vietnamese'];
+    LANGUAGES = ['English','Portuguese','Spanish','French','Italian','German','Russian','Romanian','Polish','Ukrainian','Bulgarian','Hungarian','Greek','Turkish','Arabic','Hebrew','Mandarin','Cantonese','Japanese','Korean','Thai','Vietnamese','Filipino','Hindi','Dutch','Swedish','Norwegian','Danish','Finnish','Czech','Slovak','Croatian','Serbian','Albanian'];
   }
   if(SERVICES.length === 0){
-    // Generic fallback — overridden by DB
+    // Curated default — only services that are part of the Mayriche
+    // active offering. Override at the database level via business_services.
     SERVICES = [
-      {name:'Service 1', desc:''},
-      {name:'Service 2', desc:''}
+      {name:'Classic Tantric Massage', desc:''},
+      {name:'Nuru Massage', desc:''},
+      {name:'Couples Tantric Massage', desc:''},
+      {name:'Prostate Massage', desc:''},
+      {name:'Oriental Head Massage', desc:''},
+      {name:'Swedish / Deep Tissue', desc:''},
+      {name:'Candle Oil Massage', desc:''},
+      {name:'Aqua Massage', desc:''},
+      {name:'Dark Tantra Massage', desc:''},
+      {name:'Female Tantric Massage', desc:''},
+      {name:'Hot Stones', desc:''},
+      {name:'Aromatherapy', desc:''},
+      {name:'Mutual Touch', desc:''},
+      {name:'Body-to-Body', desc:''},
+      {name:'Tantric Massage \u2014 60 min', desc:''},
+      {name:'Tantric Massage \u2014 90 min', desc:''},
+      {name:'Mutual Touching', desc:''},
+      {name:'VIP Package', desc:'3 add-ons (mutual touching, nuru slides, assisted shower)'},
+      {name:'Belly Dancing', desc:''},
+      {name:'Fifty Shades of Grey', desc:''},
+      {name:'Private Suite', desc:'Premium private suite upgrade'}
     ];
   }
   if(ADDONS.length === 0){
-    ADDONS = [
-      {name:'Add-on 1', desc:''},
-      {name:'Add-on 2', desc:''}
-    ];
+    // Placeholder until the new add-ons list is provided. Will be filtered
+    // by the business_services table when DB is configured.
+    ADDONS = [];
   }
 }
 
@@ -985,8 +1568,11 @@ function applyFallbackDefaults(){
 let curStep = 1;
 let formData = {
   fullname:'', dob_d:'', dob_m:'', dob_y:'',
-  nationality:'', city:'', country:'', phone:'', email:'', ig:'',
+  nationality:'', city:'', country:'', phone:'', phone_code:'', email:'', ig:'',
+  // local_area_text and home_address are new free-text fields under Personal.
+  local_area_text:'', home_address:'',
   rtw:'', uk_bank:'', english:'', self_emp:'',
+  // languages: array of { language, level } objects.
   languages:[],
   height:'', weight:'', body:'', dress:'', eye:'', hair:'',
   breast:'', breast_type:'', profile_age:'',
@@ -997,29 +1583,52 @@ let formData = {
   mobile_30:'', late_hours:'',
   abroad:[], travel_other:'',
   services:[], addons:[],
-  rate:'', competing:'', dur_pref:[],
+  rate:'', competing:'', agency_website:'', dur_pref:[],
+  // ─── New service modules ─────────────────────────────────────────
+  // offers_tantric / offers_escort: 'Yes' or 'No' (Yes reveals the body)
+  offers_tantric:'', offers_escort:'',
+  // tantric_tier / escort_tier: 'sold' | 'premium' | 'elite' (selected card)
+  tantric_tier:'', escort_tier:'',
+  // Editable rate tables — array of { duration, in_house, mobile }.
+  tantric_rates:[], escort_rates:[],
+  // Special offers selected for tantric (array of keys from TANTRIC_OFFERS)
+  tantric_offers:[],
+  // Escort services state — keyed by service key
+  //   { kissing:true, oral_unprotected:false, extreme_activities:'Yes', ... }
+  escort_services:{},
+  boundaries:'',
   days_week:'',
   availability:{}, avail_notes:'',
-  em_name:'', em_rel:'', em_phone:'',
-  consents:{age:false, gdpr:false, nda:false, photo:false, terms:false},
+  em_name:'', em_rel:'', em_phone:'', em_phone_code:'',
+  // NDA + photo consents removed; only age + gdpr + terms remain.
+  consents:{age:false, gdpr:false, terms:false},
   files:{selfie:null, utility:null, diploma:null, portfolio:[], fullbody:null},
   video:null,
 };
 
 const SEC_REQ = {
   personal: 7, physical: 3, experience: 1, work: 4,
-  services: 1, availability: 1, documents: 1, consent: 5
+  services: 1, availability: 1, documents: 1, consent: 3
 };
 
 // ═══════════ INIT ═══════════
 document.addEventListener('DOMContentLoaded', async function(){
   await loadConfig();
   applyFallbackDefaults();
-  
+
   populateDropdown('f_nationality', NATIONALITIES);
   populateDropdown('f_country', COUNTRIES);
   populateDropdown('f_local_area', LOCAL_AREAS);
   populateLangDropdown();
+  populatePhoneCodes('f_phone_code');
+  populatePhoneCodes('f_em_phone_code');
+  initCityCascade();
+  initAgencyReveal();
+  initServiceModules();
+  renderTierGrid('tantric');
+  renderTierGrid('escort');
+  renderTantricOffers();
+  renderEscortServices();
 
   // Abroad grid
   const abr = document.getElementById('abroadGrid');
@@ -1113,7 +1722,9 @@ document.addEventListener('DOMContentLoaded', async function(){
     el.addEventListener('input', () => {
       formData[key] = el.value;
       updateProgress();
+      scheduleAutoSave();
     });
+    el.addEventListener('blur', () => silentSaveDraft());
   });
 
   // Pill groups
@@ -1142,34 +1753,6 @@ document.addEventListener('DOMContentLoaded', async function(){
   updateProgress();
   updateLiveDateTime();
   setInterval(updateLiveDateTime, 1000);
-  
-  // ═══ AUTO-SAVE DRAFT every 10 seconds (silent, no toast) ═══
-  // Protects from network drops / browser crashes / accidental close
-  setInterval(function(){
-    // Only save if form has any data
-    if(formData.fullname || formData.email || formData.phone){
-      try {
-        const d = {...formData};
-        delete d.files; delete d.video;
-        d.savedAt = new Date().toISOString();
-        localStorage.setItem('mayriche_apply_draft', JSON.stringify(d));
-        console.log('[Auto-save] Draft saved at', new Date().toLocaleTimeString());
-      } catch(e){ console.warn('[Auto-save] fail:', e); }
-    }
-  }, 10000);
-  
-  // ═══ SAVE ON PAGE CLOSE / REFRESH ═══
-  // Last-chance save before user leaves
-  window.addEventListener('beforeunload', function(e){
-    if(formData.fullname || formData.email || formData.phone){
-      try {
-        const d = {...formData};
-        delete d.files; delete d.video;
-        d.savedAt = new Date().toISOString();
-        localStorage.setItem('mayriche_apply_draft', JSON.stringify(d));
-      } catch(ex){}
-    }
-  });
 });
 
 function populateDropdown(id, items){
@@ -1188,11 +1771,315 @@ function populateDropdown(id, items){
 function populateLangDropdown(){
   const sel = document.getElementById('langSelect');
   if(!sel) return;
-  sel.innerHTML = '<option value="">+ Add language</option>';
+  sel.innerHTML = '<option value="">+ Add a language…</option>';
+  // Show plain language names; level is picked separately per row.
+  // De-duplicate after stripping any "(level)" suffix from old config.
+  const seen = new Set();
   LANGUAGES.forEach(l => {
+    const name = l.replace(/\s*\([^)]*\)\s*$/, '').trim();
+    if(!name || seen.has(name)) return;
+    seen.add(name);
     const opt = document.createElement('option');
-    opt.textContent = l;
+    opt.value = name;
+    opt.textContent = name;
     sel.appendChild(opt);
+  });
+  sel.onchange = function(){
+    if(this.value){
+      addLang(this.value);
+      this.value = '';
+    }
+  };
+}
+
+// ─── Phone country codes ──────────────────────────────────────────
+function populatePhoneCodes(selectId){
+  const sel = document.getElementById(selectId);
+  if(!sel) return;
+  sel.innerHTML = '<option value="">+...</option>';
+  // Sort by country name, but float UK + ES + RO + BR (likely markets) on top
+  // for faster picking.
+  const top = ['United Kingdom','Spain','Romania','Brazil','Portugal','Italy','France','Germany'];
+  const ordered = [
+    ...PHONE_CODES.filter(p => top.includes(p.n)).sort((a,b) => top.indexOf(a.n) - top.indexOf(b.n)),
+    ...PHONE_CODES.filter(p => !top.includes(p.n)).sort((a,b) => a.n.localeCompare(b.n))
+  ];
+  ordered.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.c;
+    opt.textContent = p.f + ' ' + p.c + ' · ' + p.n;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change', () => {
+    if(selectId === 'f_phone_code') formData.phone_code = sel.value;
+    if(selectId === 'f_em_phone_code') formData.em_phone_code = sel.value;
+  });
+}
+
+// ─── Country → City cascade ──────────────────────────────────────
+function initCityCascade(){
+  const country = document.getElementById('f_country');
+  const citySel = document.getElementById('f_city_select');
+  const cityFree = document.getElementById('f_city');
+  const localLabel = document.getElementById('localAreaLabel');
+  const localSel = document.getElementById('f_local_area');
+  if(!country || !citySel) return;
+
+  function refreshCities(){
+    const c = country.value || '';
+    const cities = CITIES_BY_COUNTRY[c];
+    citySel.innerHTML = '';
+    if(!c){
+      citySel.innerHTML = '<option value="">Pick country first…</option>';
+      citySel.disabled = true;
+      cityFree.style.display = 'none';
+      cityFree.value = '';
+      formData.city = '';
+      return;
+    }
+    citySel.disabled = false;
+    citySel.innerHTML = '<option value="">Select your city…</option>';
+    if(cities && cities.length){
+      cities.forEach(city => {
+        const opt = document.createElement('option');
+        opt.value = city;
+        opt.textContent = city;
+        citySel.appendChild(opt);
+      });
+    } else {
+      // Country with no curated city list — fall straight to free text.
+      cityFree.style.display = 'block';
+      citySel.innerHTML = '<option value="Other">Other / Type below</option>';
+      citySel.value = 'Other';
+      formData.city = '';
+    }
+  }
+
+  country.addEventListener('change', () => {
+    refreshCities();
+    // Updating the country wipes the local-area selection; updates label too.
+    if(localLabel) localLabel.textContent = 'Local Area' + (country.value ? ' in ' + country.value : '');
+    if(localSel){
+      localSel.value = '';
+      formData.local_area = '';
+    }
+  });
+
+  citySel.addEventListener('change', () => {
+    const v = citySel.value;
+    // Cities that start with "Other" expose the free-text fallback.
+    if(v && v.toLowerCase().startsWith('other')){
+      cityFree.style.display = 'block';
+      cityFree.focus();
+      formData.city = cityFree.value || '';
+    } else {
+      cityFree.style.display = 'none';
+      cityFree.value = '';
+      formData.city = v;
+    }
+    if(localLabel && v && !v.toLowerCase().startsWith('other')){
+      localLabel.textContent = 'Local Area in ' + v;
+    }
+    updateProgress();
+  });
+
+  cityFree.addEventListener('input', () => {
+    formData.city = cityFree.value;
+    updateProgress();
+  });
+}
+
+// ─── Other agencies → conditional website field ──────────────────
+function initAgencyReveal(){
+  const grp = document.querySelector('[data-pill="competing"]');
+  const wrap = document.getElementById('agencyWebsiteWrap');
+  if(!grp || !wrap) return;
+  grp.addEventListener('click', e => {
+    const target = e.target.closest('.pill');
+    if(!target) return;
+    // Defer so the .active class set by the existing pill handler wins first.
+    setTimeout(() => {
+      const isYes = grp.querySelector('.pill.active')?.dataset.val === 'Yes';
+      wrap.style.display = isYes ? 'block' : 'none';
+      if(!isYes){
+        const inp = document.getElementById('f_agency_website');
+        if(inp) inp.value = '';
+        formData.agency_website = '';
+      }
+    }, 0);
+  });
+}
+
+// ─── Service modules: Tantric + Escort reveal ────────────────────
+function initServiceModules(){
+  ['offers_tantric','offers_escort'].forEach(key => {
+    const grp = document.querySelector('[data-pill="' + key + '"]');
+    const body = document.getElementById(key === 'offers_tantric' ? 'tantricBody' : 'escortBody');
+    if(!grp || !body) return;
+    grp.addEventListener('click', e => {
+      const target = e.target.closest('.pill');
+      if(!target) return;
+      setTimeout(() => {
+        const val = grp.querySelector('.pill.active')?.dataset.val || '';
+        formData[key] = val;
+        if(val === 'Yes'){ body.classList.add('open'); }
+        else { body.classList.remove('open'); }
+        scheduleAutoSave && scheduleAutoSave();
+      }, 0);
+    });
+  });
+}
+
+// ─── Render pricing tier cards (3 cards: Sold / Premium / Elite) ──
+function renderTierGrid(scope){
+  // scope = 'tantric' | 'escort'
+  const grid = document.getElementById(scope + 'TierGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  Object.keys(PRICING_TIERS).forEach(key => {
+    const tier = PRICING_TIERS[key];
+    const card = document.createElement('div');
+    card.className = 'tier-card';
+    card.dataset.tier = key;
+    if(formData[scope + '_tier'] === key) card.classList.add('active');
+    card.innerHTML =
+      '<div class="tier-radio"></div>' +
+      '<div class="tier-name">' + tier.name + '</div>' +
+      '<div class="tier-price">\u00a3' + tier.starting + '</div>' +
+      '<div class="tier-meta">60 min \u00b7 in-house</div>';
+    card.addEventListener('click', () => {
+      formData[scope + '_tier'] = key;
+      // Deep-clone tier rates so edits don't mutate the constant.
+      formData[scope + '_rates'] = tier.rates.map(r => ({ ...r }));
+      renderTierGrid(scope);
+      renderRateTable(scope);
+      // Mirror to the legacy single starting-price field used by the
+      // existing app/lady profile.
+      formData.rate = String(tier.starting);
+      const legacyRate = document.getElementById('f_rate');
+      if(legacyRate) legacyRate.value = tier.starting;
+      scheduleAutoSave && scheduleAutoSave();
+      updateProgress && updateProgress();
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ─── Render the editable rate table ──────────────────────────────
+function renderRateTable(scope){
+  const wrap = document.getElementById(scope + 'RateTableWrap');
+  const table = document.getElementById(scope + 'RateTable');
+  const titleEl = document.getElementById(scope + 'RateTitle');
+  if(!wrap || !table) return;
+  const tier = formData[scope + '_tier'];
+  const rates = formData[scope + '_rates'];
+  if(!tier || !rates || rates.length === 0){
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+  if(titleEl) titleEl.textContent = PRICING_TIERS[tier].name + ' rates \u2014 you can edit any cell';
+  table.innerHTML =
+    '<thead><tr><th>Duration</th><th style="text-align:right">In-House (\u00a3)</th><th style="text-align:right">Mobile (\u00a3)</th></tr></thead>' +
+    '<tbody>' +
+    rates.map((r, i) =>
+      '<tr>' +
+        '<td>' + r.duration + '</td>' +
+        '<td><input type="number" inputmode="numeric" class="rate-input" data-scope="' + scope + '" data-i="' + i + '" data-col="in_house" value="' + (r.in_house||'') + '" min="0" step="10"></td>' +
+        '<td><input type="number" inputmode="numeric" class="rate-input" data-scope="' + scope + '" data-i="' + i + '" data-col="mobile" value="' + (r.mobile||'') + '" min="0" step="10"></td>' +
+      '</tr>'
+    ).join('') +
+    '</tbody>';
+  // Wire change events for inline rate editing.
+  table.querySelectorAll('.rate-input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const sc = e.target.dataset.scope;
+      const i = parseInt(e.target.dataset.i);
+      const col = e.target.dataset.col;
+      const v = parseInt(e.target.value) || 0;
+      formData[sc + '_rates'][i][col] = v;
+      scheduleAutoSave && scheduleAutoSave();
+    });
+  });
+}
+
+// ─── Render Tantric special offers list ──────────────────────────
+function renderTantricOffers(){
+  const grid = document.getElementById('tantricOffersGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  TANTRIC_OFFERS.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'offer-card';
+    if(formData.tantric_offers.includes(o.key)) card.classList.add('checked');
+    card.innerHTML =
+      '<div class="offer-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+      '<div class="offer-body">' +
+        '<div class="offer-row1">' +
+          '<span class="offer-name">' + o.name + '</span>' +
+          '<span class="offer-price">\u00a3' + o.price + ' on top</span>' +
+        '</div>' +
+        '<div class="offer-desc">' + o.desc + '</div>' +
+      '</div>';
+    card.addEventListener('click', () => {
+      const i = formData.tantric_offers.indexOf(o.key);
+      if(i >= 0){ formData.tantric_offers.splice(i, 1); card.classList.remove('checked'); }
+      else { formData.tantric_offers.push(o.key); card.classList.add('checked'); }
+      scheduleAutoSave && scheduleAutoSave();
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ─── Render Escort services list (mix of checkboxes + tri-state) ──
+function renderEscortServices(){
+  const list = document.getElementById('escortServicesList');
+  if(!list) return;
+  list.innerHTML = '';
+  ESCORT_SERVICES.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'escort-svc';
+    if(s.mode === 'tri') row.classList.add('with-pills');
+    const cur = formData.escort_services[s.key];
+    if(s.mode === 'check' && cur === true) row.classList.add('checked');
+
+    let html =
+      '<div class="escort-svc-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+      '<div class="escort-svc-body">' +
+        '<div class="escort-svc-name">' + s.name + '</div>' +
+        '<div class="escort-svc-desc">' + s.desc + '</div>';
+    if(s.mode === 'tri'){
+      html +=
+        '<div class="escort-svc-pills" data-key="' + s.key + '">' +
+          ['Yes','Discussion','No'].map(v =>
+            '<div class="pill' + (cur === v ? ' active' : '') + '" data-val="' + v + '">' + v + '</div>'
+          ).join('') +
+        '</div>';
+    }
+    html += '</div>';
+    row.innerHTML = html;
+
+    if(s.mode === 'check'){
+      row.addEventListener('click', () => {
+        const newVal = !formData.escort_services[s.key];
+        formData.escort_services[s.key] = newVal;
+        if(newVal) row.classList.add('checked');
+        else row.classList.remove('checked');
+        scheduleAutoSave && scheduleAutoSave();
+      });
+    } else {
+      // Tri-state pills handle their own clicks.
+      row.querySelectorAll('.pill').forEach(p => {
+        p.addEventListener('click', e => {
+          e.stopPropagation();
+          formData.escort_services[s.key] = p.dataset.val;
+          row.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+          p.classList.add('active');
+          scheduleAutoSave && scheduleAutoSave();
+        });
+      });
+    }
+    list.appendChild(row);
   });
 }
 
@@ -1207,28 +2094,62 @@ function updateLiveDateTime(){
     String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
 }
 
-// ═══════════ LANGUAGES ═══════════
+// ═══════════ LANGUAGES (with proficiency level) ═══════════
+// formData.languages is an array of objects { language, level }.
+// Level options come from LANG_LEVELS (Native / Fluent / Advanced /
+// Conversational / Basic). Level defaults to Native.
+function langKey(name){
+  return (name||'').toString().trim();
+}
 function addLang(val){
-  if(!val || formData.languages.includes(val)) return;
-  formData.languages.push(val);
+  const name = langKey(val);
+  if(!name) return;
+  // Migrate any legacy strings still in formData.languages to objects.
+  formData.languages = (formData.languages || []).map(l => typeof l === 'string' ? {language:l, level:'Native'} : l);
+  if(formData.languages.find(l => l.language === name)) return; // dup
+  formData.languages.push({language:name, level:'Native'});
   renderLangs();
   updateProgress();
 }
-function removeLang(val){
-  formData.languages = formData.languages.filter(l => l !== val);
+function removeLang(name){
+  const k = langKey(name);
+  formData.languages = (formData.languages || []).filter(l => (typeof l === 'string' ? l : l.language) !== k);
   renderLangs();
   updateProgress();
+}
+function setLangLevel(name, level){
+  const k = langKey(name);
+  formData.languages = (formData.languages || []).map(l => {
+    if(typeof l === 'string') l = {language:l, level:'Native'};
+    if(l.language === k) return {language:l.language, level:level};
+    return l;
+  });
+  // Don't re-render — we just persist the new level.
 }
 function renderLangs(){
-  const wrap = document.getElementById('langWrap');
-  wrap.querySelectorAll('.tag').forEach(t => t.remove());
-  const sel = document.getElementById('langSelect');
-  formData.languages.forEach(l => {
-    const tag = document.createElement('span');
-    tag.className = 'tag';
-    tag.innerHTML = l+' <span class="tag-x" onclick="event.stopPropagation();removeLang(\''+l.replace(/'/g,"\\'")+'\')">×</span>';
-    wrap.insertBefore(tag, sel);
+  const wrap = document.getElementById('langList');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  // Migrate strings → objects on first render.
+  formData.languages = (formData.languages || []).map(l => typeof l === 'string' ? {language:l, level:'Native'} : l);
+  formData.languages.forEach(({language, level}) => {
+    const safe = language.replace(/'/g, "\\'");
+    const row = document.createElement('div');
+    row.className = 'lang-row';
+    row.innerHTML =
+      '<span class="lang-name">' + language + '</span>' +
+      '<select class="sel lang-level" onchange="setLangLevel(\'' + safe + '\', this.value)">' +
+        LANG_LEVELS.map(lv => '<option value="' + lv + '"' + (lv === (level||'Native') ? ' selected' : '') + '>' + lv + '</option>').join('') +
+      '</select>' +
+      '<button type="button" class="lang-x" onclick="removeLang(\'' + safe + '\')" aria-label="Remove ' + language + '">\u00d7</button>';
+    wrap.appendChild(row);
   });
+  // Keep a stable secondary placeholder slot for compatibility with the
+  // legacy tag-wrap rendering (older code paths look for #langWrap tags).
+  const wrap2 = document.getElementById('langWrap');
+  if(wrap2){
+    wrap2.querySelectorAll('.tag').forEach(t => t.remove());
+  }
 }
 
 // ═══════════ AVAILABILITY ═══════════
@@ -1271,20 +2192,48 @@ async function loadTakenNames(){
 }
 function generateSuggestions(baseName){
   const taken = new Set(takenNames);
-  const firstName = (baseName || formData.fullname || '').trim().split(/\s+/)[0] || '';
+  // Pull the applicant's first name as the seed for personalised suggestions.
+  const seed = (baseName || formData.workname || formData.fullname || '').trim();
+  const firstName = seed.split(/\s+/)[0] || '';
   const suggestions = new Set();
-  if(firstName){
-    const variations = [firstName, firstName.slice(0,-1), firstName+'a', firstName+'ie', firstName.slice(0,3)+'ly'];
-    variations.forEach(v => {
+
+  if(firstName && firstName.length >= 3){
+    const fn = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+    const lower = fn.toLowerCase();
+    // Build smart variations driven by the real name.
+    // For "Sophia": Soph, Sofie, Sisi, Sophy, Sosi.
+    // For "Maria":  Mia, Mara, Marie, Mimi, Mary.
+    const variations = new Set([
+      fn,                             // Sophia
+      fn.slice(0, 4),                 // Soph
+      fn.slice(0, 3),                 // Sop
+      fn.slice(0, 2) + fn.slice(0, 2),// SoSo
+      fn.slice(0, 1) + fn.slice(-1),  // Sa
+      fn.slice(0, -1) + 'ie',         // Sophiie -> Sofie (close)
+      fn.slice(0, 3) + 'ie',          // Sopie
+      fn.slice(0, 2) + 'si',          // Sosi / Sisi
+      fn.charAt(0) + lower.charAt(1) + 'si', // Sisi
+      fn.slice(0, 2) + fn.slice(-1) + 'a',   // Sopa
+      fn + 'y',                       // Sophiay -> trim
+      fn.slice(0, -1) + 'y',          // Sophy
+      fn.slice(0, 3) + 'a',           // Sopa
+      fn.charAt(0) + 'i' + (lower.includes('a') ? 'a' : fn.slice(-1)) // Si...
+    ]);
+    variations.forEach(raw => {
+      let v = String(raw||'').replace(/\s+/g,'').replace(/[^a-zA-Z]/g,'');
+      if(!v) return;
       v = v.charAt(0).toUpperCase() + v.slice(1).toLowerCase();
-      if(v.length >= 3 && !taken.has(v.toLowerCase())) suggestions.add(v);
+      if(v.length < 3 || v.length > 14) return;
+      if(taken.has(v.toLowerCase())) return;
+      suggestions.add(v);
     });
   }
+  // Fill remaining slots from the curated pool (avoiding duplicates / taken).
   for(const name of WORK_NAME_POOL){
-    if(suggestions.size >= 5) break;
+    if(suggestions.size >= 6) break;
     if(!taken.has(name.toLowerCase())) suggestions.add(name);
   }
-  return Array.from(suggestions).slice(0,5);
+  return Array.from(suggestions).slice(0, 6);
 }
 async function checkWorkName(){
   const el = document.getElementById('f_workname');
@@ -1447,6 +2396,40 @@ function renderSummary(){
 }
 
 // ═══════════ DRAFT (local cache only — form in progress) ═══════════
+// Auto-save indicator. Saves silently every 6 seconds while the user is
+// editing, plus on every focus-out from inputs. Shows a soft pill at
+// bottom-center for 2s when a save fires so the applicant sees progress.
+let autoSaveTimer = null;
+let autoSavePending = false;
+function flashAutoSave(){
+  let el = document.getElementById('autoSaveIndicator');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'autoSaveIndicator';
+    el.className = 'save-indicator';
+    el.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Saved';
+    document.body.appendChild(el);
+  }
+  el.classList.add('visible');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('visible'), 1800);
+}
+function silentSaveDraft(){
+  const d = {...formData};
+  delete d.files; delete d.video;
+  d.savedAt = new Date().toISOString();
+  try { localStorage.setItem('mayriche_apply_draft', JSON.stringify(d)); flashAutoSave(); }
+  catch(e){ /* quota exceeded — ignore silently */ }
+}
+function scheduleAutoSave(){
+  if(autoSavePending) return;
+  autoSavePending = true;
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    silentSaveDraft();
+    autoSavePending = false;
+  }, 600); // debounce so we don't hammer localStorage on every keystroke
+}
 function saveDraft(){
   const d = {...formData};
   delete d.files; delete d.video;
@@ -1552,21 +2535,161 @@ function showUploadProgress(kind, pct){
 }
 
 // ═══════════ SUBMIT ═══════════
+// Friendly field labels for validation errors (avoid showing raw keys
+// like "rtw" or "days_week" to applicants).
+const FIELD_LABELS = {
+  fullname:    'Full name (as on ID/passport)',
+  nationality: 'Nationality',
+  city:        'City of residence',
+  country:     'Country of residence',
+  phone_code:  'Phone country code',
+  phone:       'Phone number',
+  email:       'Email address',
+  rtw:         'Right to work in UK',
+  english:     'English level',
+  height:      'Height',
+  weight:      'Weight',
+  body:        'Body type',
+  years:       'Years of experience',
+  workname:    'Work name',
+  local_area:  'Local area in your city',
+  inhouse:     'In-house availability',
+  mobile:      'Mobile availability',
+  rate:        'Starting rate',
+  days_week:   'Available days per week',
+  em_name:     'Emergency contact name',
+  em_rel:      'Emergency contact relationship',
+  em_phone_code:'Emergency contact phone code',
+  em_phone:    'Emergency contact phone'
+};
+// Map field key -> DOM element id so we can scroll the user to the
+// missing field and visually highlight it.
+const FIELD_ELEMENT_IDS = {
+  fullname:    'f_fullname',
+  nationality: 'f_nationality',
+  city:        'f_city_select',
+  country:     'f_country',
+  phone_code:  'f_phone_code',
+  phone:       'f_phone',
+  email:       'f_email',
+  rtw:         'f_rtw',
+  english:     'f_english',
+  height:      'f_height',
+  weight:      'f_weight',
+  body:        'f_body',
+  years:       'f_years',
+  workname:    'f_workname',
+  local_area:  'f_local_area',
+  inhouse:     'f_inhouse',
+  mobile:      'f_mobile',
+  rate:        'f_rate',
+  days_week:   'f_days_week',
+  em_name:     'f_em_name',
+  em_rel:      'f_em_rel',
+  em_phone_code:'f_em_phone_code',
+  em_phone:    'f_em_phone'
+};
+
+function flashMissingField(fieldKey){
+  // First try id-based lookup (selects, inputs).
+  var elId = FIELD_ELEMENT_IDS[fieldKey];
+  var el = elId ? document.getElementById(elId) : null;
+  // Fallback for pill-groups like "inhouse"/"mobile" which use data-pill.
+  if(!el){
+    el = document.querySelector('[data-pill="'+fieldKey+'"]');
+  }
+  if(!el) return;
+  // Scroll into view + flash a soft red border for ~2 seconds.
+  try { el.scrollIntoView({ behavior:'smooth', block:'center' }); } catch(e){ el.scrollIntoView(); }
+  var prevBorder = el.style.border;
+  var prevShadow = el.style.boxShadow;
+  var prevRadius = el.style.borderRadius;
+  el.style.border = '1px solid #c06060';
+  el.style.boxShadow = '0 0 0 3px rgba(192,96,96,.18)';
+  if(!prevRadius) el.style.borderRadius = '8px';
+  setTimeout(function(){
+    el.style.border = prevBorder;
+    el.style.boxShadow = prevShadow;
+    el.style.borderRadius = prevRadius;
+  }, 2200);
+  try { el.focus({ preventScroll:true }); } catch(e){}
+}
+
 async function submitApplication(){
-  const required = ['fullname','nationality','city','country','phone','email','rtw','english','height','weight','body','years','workname','local_area','inhouse','mobile','rate','days_week'];
+  // Pull current values from selects/inputs that don't fire input events
+  // when populated by cascading logic (city select).
+  const citySelEl = document.getElementById('f_city_select');
+  const cityFreeEl = document.getElementById('f_city');
+  if(citySelEl && citySelEl.value && !citySelEl.value.toLowerCase().startsWith('other')) formData.city = citySelEl.value;
+  else if(cityFreeEl && cityFreeEl.value) formData.city = cityFreeEl.value;
+
+  const required = [
+    'fullname','nationality','country','city',
+    'phone_code','phone','email',
+    'rtw','english',
+    'height','weight','body','years',
+    'workname','local_area','inhouse','mobile','rate','days_week',
+    'em_name','em_rel','em_phone_code','em_phone'
+  ];
   for(const k of required){
     if(!formData[k]||!formData[k].toString().trim()){
-      showToast('Missing: '+k.replace('_',' '), 'error');
+      var label = FIELD_LABELS[k] || k.replace(/_/g,' ');
+      showToast('Please fill in: '+label, 'error');
+      flashMissingField(k);
       return;
     }
   }
-  if(!formData.dob_d||!formData.dob_m||!formData.dob_y){ showToast('Enter date of birth','error'); return; }
-  if(formData.languages.length===0){ showToast('Select at least one language','error'); return; }
-  if(formData.services.length===0){ showToast('Select at least one service','error'); return; }
+  if(!formData.dob_d||!formData.dob_m||!formData.dob_y){
+    showToast('Please enter your date of birth','error');
+    var dobEl = document.getElementById('f_dob_d') || document.getElementById('f_dob');
+    if(dobEl){ try{ dobEl.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+    return;
+  }
+  // Agency website is required only when "competing = Yes".
+  if(formData.competing === 'Yes' && !formData.agency_website){
+    showToast('Please add the agency website / profile link', 'error');
+    flashMissingField('agency_website');
+    return;
+  }
+  if(!formData.languages || formData.languages.length===0){ showToast('Add at least one language with its level','error'); return; }
+  // Must offer at least one of the two service modules and configure
+  // pricing for whichever they offer.
+  if(formData.offers_tantric !== 'Yes' && formData.offers_escort !== 'Yes'){
+    showToast('Select Yes for at least one service module (Tantric or Escort)','error');
+    document.getElementById('modTantric')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){
+    showToast('Pick your Tantric pricing tier (Sold / Premium / Elite)','error');
+    document.getElementById('tantricTierGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if(formData.offers_escort === 'Yes' && !formData.escort_tier){
+    showToast('Pick your Escort pricing tier (Sold / Premium / Elite)','error');
+    document.getElementById('escortTierGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  // Sync legacy `services` array from the new escort_services map so the
+  // existing app/lady profile keeps a flat list to display.
+  formData.services = [];
+  if(formData.offers_tantric === 'Yes') formData.services.push('Tantric Massage');
+  if(formData.offers_escort === 'Yes') formData.services.push('Escort Companionship');
+  Object.keys(formData.escort_services||{}).forEach(k => {
+    const v = formData.escort_services[k];
+    const meta = ESCORT_SERVICES.find(s => s.key === k);
+    if(!meta) return;
+    if(v === true) formData.services.push(meta.name);
+    else if(typeof v === 'string' && v && v !== 'No') formData.services.push(meta.name + ' (' + v + ')');
+  });
+  // Tantric add-ons map -> addons (legacy column).
+  formData.addons = (formData.tantric_offers||[]).map(k => {
+    const meta = TANTRIC_OFFERS.find(o => o.key === k);
+    return meta ? meta.name + ' (\u00a3' + meta.price + ' on top)' : k;
+  });
   const anyDay = Object.values(formData.availability).some(d => d.enabled);
-  if(!anyDay){ showToast('Set availability for at least one day','error'); return; }
+  if(!anyDay){ showToast('Set your weekly availability — tap each day you can work','error'); return; }
   const allConsents = Object.values(formData.consents).every(v => v);
-  if(!allConsents){ showToast('Please accept all consents','error'); return; }
+  if(!allConsents){ showToast('Please accept all consents at the bottom of the form','error'); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
@@ -1635,7 +2758,10 @@ async function submitApplication(){
     birth_year: formData.dob_y,
     nationality: formData.nationality,
     country_residence: formData.country,
+    city: formData.city || null,
     local_area: formData.local_area,
+    home_neighbourhood: formData.local_area_text || null,
+    home_address: formData.home_address || null,
     in_house_address: formData.inhouse_address||null,
     
     // Physical
@@ -1651,18 +2777,24 @@ async function submitApplication(){
     
     // Experience
     years_experience: formData.years,
-    languages: formData.languages.join(', '),
-    
+    // languages: array of {language, level} objects normalised to a string
+    // for the existing `languages` text column. Full structure also stored
+    // in `languages_detail` JSONB so the lady profile can render badges.
+    languages: (formData.languages||[]).map(l => typeof l === 'string' ? l : (l.language + (l.level ? ' (' + l.level + ')' : ''))).join(', '),
+    languages_detail: (formData.languages||[]).map(l => typeof l === 'string' ? {language:l, level:'Native'} : l),
+
     // Contact
     email: formData.email.trim(),
-    phone: formData.phone.trim(),
+    phone: ((formData.phone_code||'') + ' ' + (formData.phone||'').trim()).trim(),
+    phone_code: formData.phone_code || null,
+    phone_local: (formData.phone||'').trim() || null,
     social_media: formData.ig || null,
-    
-    // Emergency
+
+    // Emergency contact (now mandatory)
     em_c_name: formData.em_name || null,
     em_c_rel: formData.em_rel || null,
-    em_c_phone: formData.em_phone || null,
-    emergency_contact: formData.em_phone || null,
+    em_c_phone: ((formData.em_phone_code||'') + ' ' + (formData.em_phone||'').trim()).trim() || null,
+    emergency_contact: ((formData.em_phone_code||'') + ' ' + (formData.em_phone||'').trim()).trim() || null,
     
     // Work preferences
     provide_inhouse: formData.inhouse,
@@ -1685,12 +2817,10 @@ async function submitApplication(){
     file_video_intro: uploadedPaths.video || null,
     profile_photo_url: uploadedPaths.fullbody || null,  // Main profile photo
     
-    // Consents (all 5 required)
+    // Consents (3 required: age + GDPR + terms; NDA & photo discussed at interview)
     gdpr_signed: formData.consents.gdpr ? 'Yes' : 'Not yet',
-    nda_signed: formData.consents.nda ? 'Acknowledged' : 'Not yet',
     consent_form: formData.consents.terms ? 'Yes' : 'Not yet',
-    consent_age_verified: formData.consents.age,
-    consent_photo_release: formData.consents.photo,
+    consent_age_verified: !!formData.consents.age,
     
     // All other application data bundled as rich detail
     special_requests: [
@@ -1700,6 +2830,7 @@ async function submitApplication(){
       formData.addons.length>0 ? 'Add-ons: '+formData.addons.join(', ') : '',
       formData.rate ? 'Starting rate (60min): £'+formData.rate : '',
       formData.competing ? 'Other agencies: '+formData.competing : '',
+      formData.agency_website ? 'Agency website: '+formData.agency_website : '',
       formData.avail_notes ? 'Availability notes: '+formData.avail_notes : '',
       formData.rtw ? 'Right to work UK: '+formData.rtw : '',
       formData.uk_bank ? 'UK bank: '+formData.uk_bank : '',
@@ -1719,6 +2850,34 @@ async function submitApplication(){
     addons_offered: formData.addons,
     duration_preferences: formData.dur_pref,
     starting_rate: parseFloat(formData.rate)||null,
+    boundaries: formData.boundaries || null,
+    // Structured service offering: keeps the rich data so the lady profile
+    // can render it. Two service "modules" each with tier + rate table +
+    // their own extras.
+    services_offering: {
+      tantric: formData.offers_tantric === 'Yes' ? {
+        offered: true,
+        tier: formData.tantric_tier,
+        rates: formData.tantric_rates,
+        offers: (formData.tantric_offers||[]).map(k => {
+          const meta = TANTRIC_OFFERS.find(o => o.key === k);
+          return meta ? { key:k, name:meta.name, price:meta.price } : { key:k };
+        })
+      } : { offered: false },
+      escort: formData.offers_escort === 'Yes' ? {
+        offered: true,
+        tier: formData.escort_tier,
+        rates: formData.escort_rates,
+        services: Object.keys(formData.escort_services||{}).map(k => {
+          const meta = ESCORT_SERVICES.find(s => s.key === k);
+          return { key:k, name: meta ? meta.name : k, value: formData.escort_services[k] };
+        }),
+        boundaries: formData.boundaries || null,
+        competing: formData.competing || null,
+        agency_website: formData.agency_website || null,
+        duration_preferences: formData.dur_pref
+      } : { offered: false }
+    },
     
     // Link to owner
     user_id: '155edca8-551d-4516-891e-33e2348d638c'
