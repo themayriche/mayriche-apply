@@ -442,23 +442,21 @@ html{scroll-behavior:smooth}
 .svc-mod-block{margin-top:18px;padding-top:18px;border-top:1px solid var(--brd)}
 .svc-mod-block:first-child{border-top:0;padding-top:0;margin-top:0}
 
-/* Pricing tier card grid (Sold / Premium / Elite). */
-.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.tier-card{background:var(--card);border:1px solid var(--brd2);border-radius:12px;padding:14px 12px 12px;cursor:pointer;text-align:center;transition:all .2s;position:relative;overflow:hidden}
-.tier-card:hover{border-color:var(--acL);transform:translateY(-1px);box-shadow:0 6px 18px rgba(139,115,85,.08)}
-.tier-card.active{background:linear-gradient(180deg,rgba(196,168,130,.10),rgba(196,168,130,.02));border-color:var(--ac);box-shadow:0 0 0 2px rgba(139,115,85,.18),0 6px 18px rgba(139,115,85,.10)}
-.tier-card .tier-name{font-family:var(--fd);font-size:18px;font-weight:600;color:var(--tx);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
-.tier-card .tier-price{font-family:var(--fd);font-size:22px;font-weight:600;color:var(--ac);letter-spacing:.01em}
-.tier-card .tier-meta{font-size:9.5px;color:var(--mt);letter-spacing:.18em;text-transform:uppercase;margin-top:4px}
-.tier-card .tier-radio{position:absolute;top:8px;right:8px;width:16px;height:16px;border:1.5px solid var(--brd2);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);transition:all .2s}
-.tier-card.active .tier-radio{background:var(--ac);border-color:var(--ac)}
-.tier-card.active .tier-radio::after{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
+/* Starting-price combo (input £xxx + 3 quick tier chips). */
+.price-combo{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.price-input-wrap{display:flex;align-items:stretch;flex-shrink:0}
+.price-input-wrap .price-cur{padding:0 14px;background:var(--sf);border:1px solid var(--brd);border-right:0;border-radius:var(--rs) 0 0 var(--rs);color:var(--ac);font-family:var(--fd);font-size:20px;font-weight:600;display:flex;align-items:center}
+.price-input-wrap .price-input{width:128px;border-radius:0 var(--rs) var(--rs) 0;font-family:var(--fd);font-size:22px;font-weight:600;color:var(--tx);text-align:left;padding:8px 14px;letter-spacing:.01em}
+.tier-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tier-chip{padding:10px 16px;background:var(--card);border:1px solid var(--brd2);border-radius:24px;color:var(--tx);font-family:var(--fb);font-size:12px;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:all .2s;min-height:42px;display:inline-flex;align-items:center;white-space:nowrap}
+.tier-chip:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-1px)}
+.tier-chip.active{background:linear-gradient(135deg,#8b7355,#6d5a43);color:#fff;border-color:#6d5a43;box-shadow:0 4px 14px rgba(139,115,85,.28)}
 @media (max-width: 480px){
-  .tier-grid{grid-template-columns:1fr;gap:6px}
-  .tier-card{display:flex;align-items:center;justify-content:space-between;text-align:left;padding:14px 16px;min-height:60px}
-  .tier-card .tier-name{margin:0;font-size:16px}
-  .tier-card .tier-price{font-size:18px}
-  .tier-card .tier-radio{position:static;margin-left:auto}
+  .price-combo{gap:10px}
+  .price-input-wrap{width:100%}
+  .price-input-wrap .price-input{flex:1;width:auto;font-size:24px;text-align:center}
+  .tier-chips{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .tier-chip{justify-content:center;font-size:11px;padding:10px 6px;letter-spacing:.02em}
 }
 
 /* Editable rate table that appears when a tier is selected. */
@@ -990,9 +988,19 @@ html{scroll-behavior:smooth}
         </div>
         <div class="reveal" id="tantricBody">
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Pricing tier <span class="req">*</span></div>
-            <div class="field-hint" style="margin-bottom:10px">Pick the tier that matches you. Rates auto-fill — you can override any cell.</div>
-            <div class="tier-grid" id="tantricTierGrid"></div>
+            <div class="field-lbl" style="margin-bottom:8px">Starting price <span class="req">*</span></div>
+            <div class="field-hint" style="margin-bottom:12px">Your 60-minute in-house rate. The rate table auto-fills based on the closest tier &mdash; tap any chip to use a preset, or type your own.</div>
+            <div class="price-combo">
+              <div class="price-input-wrap">
+                <span class="price-cur">\u00a3</span>
+                <input type="number" class="inp price-input" id="tantricStartingPrice" inputmode="numeric" min="100" max="2000" step="10" placeholder="250" oninput="applyStartingPrice('tantric', this.value)">
+              </div>
+              <div class="tier-chips" id="tantricTierChips">
+                <button type="button" class="tier-chip" data-tier="sold" onclick="setTierByChip('tantric','sold')">\u00a3250 \u00b7 Sold</button>
+                <button type="button" class="tier-chip" data-tier="premium" onclick="setTierByChip('tantric','premium')">\u00a3300 \u00b7 Premium</button>
+                <button type="button" class="tier-chip" data-tier="elite" onclick="setTierByChip('tantric','elite')">\u00a3350 \u00b7 Elite</button>
+              </div>
+            </div>
             <div class="rate-table-wrap" id="tantricRateTableWrap" style="display:none">
               <div class="rate-table-title" id="tantricRateTitle">Your rates</div>
               <table class="rate-table" id="tantricRateTable"></table>
@@ -1022,8 +1030,19 @@ html{scroll-behavior:smooth}
         </div>
         <div class="reveal" id="escortBody">
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Pricing tier <span class="req">*</span></div>
-            <div class="tier-grid" id="escortTierGrid"></div>
+            <div class="field-lbl" style="margin-bottom:8px">Starting price <span class="req">*</span></div>
+            <div class="field-hint" style="margin-bottom:12px">Your 60-minute in-house rate for companionship. Same logic &mdash; pick a preset or type your own; the table auto-fills.</div>
+            <div class="price-combo">
+              <div class="price-input-wrap">
+                <span class="price-cur">\u00a3</span>
+                <input type="number" class="inp price-input" id="escortStartingPrice" inputmode="numeric" min="100" max="2000" step="10" placeholder="250" oninput="applyStartingPrice('escort', this.value)">
+              </div>
+              <div class="tier-chips" id="escortTierChips">
+                <button type="button" class="tier-chip" data-tier="sold" onclick="setTierByChip('escort','sold')">\u00a3250 \u00b7 Sold</button>
+                <button type="button" class="tier-chip" data-tier="premium" onclick="setTierByChip('escort','premium')">\u00a3300 \u00b7 Premium</button>
+                <button type="button" class="tier-chip" data-tier="elite" onclick="setTierByChip('escort','elite')">\u00a3350 \u00b7 Elite</button>
+              </div>
+            </div>
             <div class="rate-table-wrap" id="escortRateTableWrap" style="display:none">
               <div class="rate-table-title" id="escortRateTitle">Your rates</div>
               <table class="rate-table" id="escortRateTable"></table>
@@ -1930,40 +1949,66 @@ function initServiceModules(){
   });
 }
 
-// ─── Render pricing tier cards (3 cards: Sold / Premium / Elite) ──
-function renderTierGrid(scope){
-  // scope = 'tantric' | 'escort'
-  const grid = document.getElementById(scope + 'TierGrid');
-  if(!grid) return;
-  grid.innerHTML = '';
-  Object.keys(PRICING_TIERS).forEach(key => {
-    const tier = PRICING_TIERS[key];
-    const card = document.createElement('div');
-    card.className = 'tier-card';
-    card.dataset.tier = key;
-    if(formData[scope + '_tier'] === key) card.classList.add('active');
-    card.innerHTML =
-      '<div class="tier-radio"></div>' +
-      '<div class="tier-name">' + tier.name + '</div>' +
-      '<div class="tier-price">\u00a3' + tier.starting + '</div>' +
-      '<div class="tier-meta">60 min \u00b7 in-house</div>';
-    card.addEventListener('click', () => {
-      formData[scope + '_tier'] = key;
-      // Deep-clone tier rates so edits don't mutate the constant.
-      formData[scope + '_rates'] = tier.rates.map(r => ({ ...r }));
-      renderTierGrid(scope);
-      renderRateTable(scope);
-      // Mirror to the legacy single starting-price field used by the
-      // existing app/lady profile.
-      formData.rate = String(tier.starting);
-      const legacyRate = document.getElementById('f_rate');
-      if(legacyRate) legacyRate.value = tier.starting;
-      scheduleAutoSave && scheduleAutoSave();
-      updateProgress && updateProgress();
-    });
-    grid.appendChild(card);
-  });
+// ─── Snap a free-text starting price to the closest tier ──────────
+// Boundaries: <=275 → sold, 276-325 → premium, >=326 → elite.
+function inferTierFromPrice(price){
+  const p = parseFloat(price) || 0;
+  if(p <= 275) return 'sold';
+  if(p <= 325) return 'premium';
+  return 'elite';
 }
+
+// ─── Apply a starting price → load matching tier rates into table ─
+function applyStartingPrice(scope, priceVal){
+  const price = parseFloat(priceVal) || 0;
+  const wrap = document.getElementById(scope + 'RateTableWrap');
+  const chips = document.getElementById(scope + 'TierChips');
+  if(!price || price < 50){
+    formData[scope + '_tier'] = '';
+    formData[scope + '_rates'] = [];
+    if(wrap) wrap.style.display = 'none';
+    if(chips) chips.querySelectorAll('.tier-chip').forEach(c => c.classList.remove('active'));
+    formData.rate = '';
+    const legacyRate = document.getElementById('f_rate');
+    if(legacyRate) legacyRate.value = '';
+    scheduleAutoSave && scheduleAutoSave();
+    return;
+  }
+  const tierKey = inferTierFromPrice(price);
+  const tier = PRICING_TIERS[tierKey];
+  // Deep-clone tier rates and override the 60-min in-house cell with the
+  // exact entered value. Other cells stay at the tier's published rates
+  // — she can still tap and override any cell.
+  const rates = tier.rates.map(r => ({ ...r }));
+  if(rates.length > 0) rates[0].in_house = price;
+  formData[scope + '_tier'] = tierKey;
+  formData[scope + '_rates'] = rates;
+  formData.rate = String(price);
+  const legacyRate = document.getElementById('f_rate');
+  if(legacyRate) legacyRate.value = price;
+  // Highlight the matching chip.
+  if(chips){
+    chips.querySelectorAll('.tier-chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.tier === tierKey);
+    });
+  }
+  renderRateTable(scope);
+  scheduleAutoSave && scheduleAutoSave();
+  updateProgress && updateProgress();
+}
+
+// ─── Click a tier chip → fill input + apply rates ─────────────────
+function setTierByChip(scope, tierKey){
+  const tier = PRICING_TIERS[tierKey];
+  if(!tier) return;
+  const inp = document.getElementById(scope + 'StartingPrice');
+  if(inp) inp.value = tier.starting;
+  applyStartingPrice(scope, tier.starting);
+}
+
+// Stub kept for any external callers; the new UX renders the rate
+// table directly via applyStartingPrice / setTierByChip.
+function renderTierGrid(){ /* no-op (replaced by price-combo UI) */ }
 
 // ─── Render the editable rate table ──────────────────────────────
 function renderRateTable(scope){
@@ -2475,18 +2520,40 @@ function loadDraft(){
             }
           }
         });
-      } else if(['inhouse','mobile','airport','competing','uk_bank','self_emp','photoshoot','diplomas','mobile_30','late_hours'].includes(k)){
+      } else if(['inhouse','mobile','airport','competing','uk_bank','self_emp','photoshoot','diplomas','mobile_30','late_hours','offers_tantric','offers_escort'].includes(k)){
         formData[k] = d[k];
         if(d[k]){
           const p = document.querySelector('[data-pill="'+k+'"] [data-val="'+d[k]+'"]');
           if(p) p.classList.add('active');
         }
+        // Open service module body if user previously said Yes.
+        if(k === 'offers_tantric' && d[k] === 'Yes') document.getElementById('tantricBody')?.classList.add('open');
+        if(k === 'offers_escort'  && d[k] === 'Yes') document.getElementById('escortBody')?.classList.add('open');
+      } else if(k === 'tantric_offers'){
+        formData.tantric_offers = d.tantric_offers || [];
+        renderTantricOffers();
+      } else if(k === 'escort_services'){
+        formData.escort_services = d.escort_services || {};
+        renderEscortServices();
+      } else if(k === 'tantric_rates' || k === 'escort_rates'){
+        // Skip — these get rebuilt by applyStartingPrice() below.
+        formData[k] = d[k] || [];
+      } else if(k === 'tantric_tier' || k === 'escort_tier'){
+        formData[k] = d[k] || '';
       } else {
         formData[k] = d[k];
         const el = document.getElementById('f_'+k);
         if(el) el.value = d[k]||'';
       }
     });
+    // Restore the starting-price input + auto-fill rate table for both
+    // service modules from the legacy `rate` field (last entered price).
+    if(d.rate){
+      const tan = document.getElementById('tantricStartingPrice');
+      const esc = document.getElementById('escortStartingPrice');
+      if(d.offers_tantric === 'Yes' && tan){ tan.value = d.rate; applyStartingPrice('tantric', d.rate); }
+      if(d.offers_escort === 'Yes' && esc){ esc.value = d.rate; applyStartingPrice('escort', d.rate); }
+    }
     document.getElementById('resumeBanner').style.display='none';
     showToast('Draft restored', 'success');
     updateProgress();
