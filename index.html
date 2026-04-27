@@ -1016,8 +1016,8 @@ html{scroll-behavior:smooth}
             </div>
           </div>
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Special Offers <span class="opt-note">Select all you offer</span></div>
-            <div class="field-hint" style="margin-bottom:10px">These are charged "on top" of the base rate. Tap each one you'd like to offer.</div>
+            <div class="field-lbl" style="margin-bottom:8px">Services You Offer <span class="opt-note">Select all that apply</span></div>
+            <div class="field-hint" style="margin-bottom:10px">These are charged on top of your base rate. Tap each one you'd like to offer.</div>
             <div class="offer-grid" id="tantricOffersGrid"></div>
           </div>
         </div>
@@ -2043,8 +2043,9 @@ function updateCurrencyDisplays(){
   renderTierChips('escort');
 }
 
-// Render tier chips dynamically so their currency symbol matches
-// the active currency. Three chips per scope: Sold / Premium / Elite.
+// Render tier chips dynamically. Show ONLY the price — internal tier
+// names (Sold / Premium / Elite) are private and never exposed to
+// applicants. The applicant just sees three quick-pick prices.
 function renderTierChips(scope){
   const wrap = document.getElementById(scope + 'TierChips');
   if(!wrap) return;
@@ -2057,7 +2058,7 @@ function renderTierChips(scope){
     btn.type = 'button';
     btn.className = 'tier-chip' + (activeTier === key ? ' active' : '');
     btn.dataset.tier = key;
-    btn.textContent = sym + tier.starting + ' \u00b7 ' + tier.name;
+    btn.textContent = sym + tier.starting;
     btn.addEventListener('click', () => setTierByChip(scope, key));
     wrap.appendChild(btn);
   });
@@ -2135,7 +2136,8 @@ function renderRateTable(scope){
   }
   wrap.style.display = 'block';
   const sym = getCurrencySymbol(formData.currency);
-  if(titleEl) titleEl.textContent = PRICING_TIERS[tier].name + ' rates';
+  // Neutral title — never expose internal tier names to the applicant.
+  if(titleEl) titleEl.textContent = 'Your rate card';
   table.innerHTML =
     '<thead><tr>' +
       '<th>Duration</th>' +
