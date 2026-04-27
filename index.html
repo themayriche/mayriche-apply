@@ -413,9 +413,13 @@ html{scroll-behavior:smooth}
 .save-indicator.visible{opacity:1;transform:translateX(-50%) translateY(0)}
 .save-indicator svg{display:inline-block;vertical-align:-2px;margin-right:5px}
 
-/* Conditional reveal animation. */
-.reveal{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,.61,.36,1),margin .4s,padding .4s,opacity .3s;opacity:0}
-.reveal.open{max-height:600px;opacity:1}
+/* Conditional reveal — collapsed by default, fully visible when open.
+   Once `.open` is set we drop the max-height clamp entirely so the
+   content (rate table + 9 tantric extras OR escort sections totaling
+   ~3500px) is never clipped regardless of how tall it grows. Browsers
+   without JS still see the open content via the .open rules below. */
+.reveal{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.22,.61,.36,1),opacity .3s;opacity:0}
+.reveal.open{max-height:none;opacity:1;overflow:visible}
 
 /* Phone combo (country code prefix + number). */
 .phone-combo{display:flex;gap:6px;align-items:stretch}
@@ -982,14 +986,14 @@ html{scroll-behavior:smooth}
         <span class="sec-note">Tell us which services you offer and your rates.</span>
       </div>
 
-      <!-- ─── Service Module 1: TANTRIC MASSAGE ─── -->
+      <!-- ─── Service Module 1: TANTRIC MASSAGE SERVICES ─── -->
       <div class="svc-mod" id="modTantric">
         <div class="svc-mod-head">
-          <div class="svc-mod-title">Tantric Massage</div>
+          <div class="svc-mod-title">Tantric Massage Services</div>
           <div class="svc-mod-desc">A tantric massage with a mix of deep-tissue techniques and sensual body-to-body moves, ending with a slow hand climax.</div>
         </div>
         <div class="svc-mod-toggle">
-          <span class="svc-mod-q">Do you offer Tantric Massage?</span>
+          <span class="svc-mod-q">Do you offer Tantric Massage Services?</span>
           <div class="pill-group" data-pill="offers_tantric">
             <div class="pill" data-val="Yes">Yes</div>
             <div class="pill" data-val="No">No</div>
@@ -1016,7 +1020,7 @@ html{scroll-behavior:smooth}
             </div>
           </div>
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Tantric Massage Services <span class="opt-note">Select all that apply</span></div>
+            <div class="field-lbl" style="margin-bottom:8px">Services You Offer <span class="opt-note">Select all that apply</span></div>
             <div class="field-hint" style="margin-bottom:10px">These are charged on top of your base rate. Tap each one you'd like to offer.</div>
             <div class="offer-grid" id="tantricOffersGrid"></div>
           </div>
@@ -1987,6 +1991,29 @@ function initAgencyReveal(){
 }
 
 // ─── Service modules: Tantric + Escort reveal ────────────────────
+// Smooth open/close that DOES NOT clip content. We measure
+// scrollHeight when opening, ride the transition, then drop the
+// max-height constraint so future growth (currency change, new
+// services, etc.) is always fully visible.
+function openReveal(body){
+  body.classList.add('open');
+  // Animate from 0 to scrollHeight, then release the constraint.
+  body.style.maxHeight = body.scrollHeight + 'px';
+  setTimeout(() => { body.style.maxHeight = 'none'; }, 380);
+}
+function closeReveal(body){
+  // Pin current height first so the transition has a starting frame,
+  // then collapse to 0 in the next animation frame.
+  body.style.maxHeight = body.scrollHeight + 'px';
+  requestAnimationFrame(() => {
+    body.style.maxHeight = '0px';
+    setTimeout(() => {
+      body.classList.remove('open');
+      body.style.maxHeight = '';
+    }, 380);
+  });
+}
+
 function initServiceModules(){
   ['offers_tantric','offers_escort'].forEach(key => {
     const grp = document.querySelector('[data-pill="' + key + '"]');
@@ -1998,8 +2025,8 @@ function initServiceModules(){
       setTimeout(() => {
         const val = grp.querySelector('.pill.active')?.dataset.val || '';
         formData[key] = val;
-        if(val === 'Yes'){ body.classList.add('open'); }
-        else { body.classList.remove('open'); }
+        if(val === 'Yes') openReveal(body);
+        else closeReveal(body);
         scheduleAutoSave && scheduleAutoSave();
       }, 0);
     });
@@ -2654,8 +2681,16 @@ function loadDraft(){
           if(p) p.classList.add('active');
         }
         // Open service module body if user previously said Yes.
-        if(k === 'offers_tantric' && d[k] === 'Yes') document.getElementById('tantricBody')?.classList.add('open');
-        if(k === 'offers_escort'  && d[k] === 'Yes') document.getElementById('escortBody')?.classList.add('open');
+        // Use the JS helper so max-height is dropped after the transition
+        // and the full content stays visible.
+        if(k === 'offers_tantric' && d[k] === 'Yes'){
+          const tb = document.getElementById('tantricBody');
+          if(tb){ tb.classList.add('open'); tb.style.maxHeight = 'none'; }
+        }
+        if(k === 'offers_escort'  && d[k] === 'Yes'){
+          const eb = document.getElementById('escortBody');
+          if(eb){ eb.classList.add('open'); eb.style.maxHeight = 'none'; }
+        }
       } else if(k === 'tantric_offers'){
         formData.tantric_offers = d.tantric_offers || [];
         renderTantricOffers();
