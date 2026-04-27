@@ -1016,7 +1016,7 @@ html{scroll-behavior:smooth}
             </div>
           </div>
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Services You Offer <span class="opt-note">Select all that apply</span></div>
+            <div class="field-lbl" style="margin-bottom:8px">Tantric Massage Services <span class="opt-note">Select all that apply</span></div>
             <div class="field-hint" style="margin-bottom:10px">These are charged on top of your base rate. Tap each one you'd like to offer.</div>
             <div class="offer-grid" id="tantricOffersGrid"></div>
           </div>
@@ -1081,8 +1081,8 @@ html{scroll-behavior:smooth}
           </div>
 
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Services you offer <span class="opt-note">Tap each one</span></div>
-            <div class="field-hint" style="margin-bottom:10px">All optional. Some have Yes / Discussion / No so you can be precise.</div>
+            <div class="field-lbl" style="margin-bottom:8px">Services You Offer <span class="opt-note">Tap each one</span></div>
+            <div class="field-hint" style="margin-bottom:10px">All optional. Some have Yes / On request / No so you can be precise.</div>
             <div class="escort-svc-list" id="escortServicesList"></div>
           </div>
 
@@ -1482,8 +1482,9 @@ function getCurrencySymbol(code){
 // `mode: 'check'` = simple yes/no checkbox.
 // `mode: 'tri'`   = three pills: Yes / On request / No.
 const ESCORT_SERVICES = [
-  // Group 1 — Services You Offer
-  { key: 'kissing',           group: 1, label: 'Services You Offer',
+  // Group 1 — first group has no sub-label; the top-level
+  // "Services You Offer" header in the HTML serves as the section title.
+  { key: 'kissing',           group: 1,
     name: 'Kissing (Light / Deep)',
     desc: 'A natural level of closeness, from soft to more passionate connection.', mode: 'check' },
   { key: 'oral_protected',    group: 1,
@@ -1527,8 +1528,8 @@ const ESCORT_SERVICES = [
 
   // Group 6 — Bookings & travel (no header)
   { key: 'overnight',         group: 6,
-    name: 'Overnight Bookings',
-    desc: '8\u201310 hour minimum.', mode: 'check' },
+    name: 'Overnight Bookings (8\u201310h minimum)',
+    desc: '', mode: 'check' },
   { key: 'party_bookings',    group: 6,
     name: 'Party Bookings',
     desc: 'Group / event bookings.', mode: 'check' },
