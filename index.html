@@ -459,19 +459,26 @@ html{scroll-behavior:smooth}
   .tier-chip{justify-content:center;font-size:11px;padding:10px 6px;letter-spacing:.02em}
 }
 
-/* Editable rate table that appears when a tier is selected. */
-.rate-table-wrap{margin-top:14px;background:var(--card);border:1px solid var(--brd2);border-radius:12px;padding:12px}
-.rate-table-title{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
-.rate-table{width:100%;border-collapse:collapse;font-size:12.5px}
-.rate-table th,.rate-table td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--brd)}
+/* Read-only rate table (displays computed rates per tier). */
+.rate-table-wrap{margin-top:14px;background:var(--card);border:1px solid var(--brd2);border-radius:12px;padding:14px 16px;overflow-x:auto}
+.rate-table-title{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+.rate-table{width:100%;border-collapse:collapse;font-size:13px}
+.rate-table th,.rate-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--brd)}
 .rate-table th{font-size:9.5px;letter-spacing:.18em;color:var(--mt);text-transform:uppercase;font-weight:600;background:transparent}
 .rate-table td:first-child{color:var(--tx);font-weight:500}
-.rate-table input.rate-input{width:100%;padding:6px 8px;border:1px solid var(--brd);border-radius:6px;background:transparent;font-family:var(--fb);font-size:13px;color:var(--tx);text-align:right}
-.rate-table input.rate-input:focus{outline:none;border-color:var(--ac);background:rgba(196,168,130,.06)}
+.rate-table td.rate-cell{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);text-align:right;letter-spacing:.01em}
+.rate-table tr:last-child td{border-bottom:0}
 @media (max-width: 480px){
-  .rate-table th,.rate-table td{padding:8px 6px;font-size:12px}
-  .rate-table input.rate-input{font-size:14px}
+  .rate-table th,.rate-table td{padding:9px 8px;font-size:12.5px}
+  .rate-table td.rate-cell{font-size:14px}
 }
+
+/* Currency selector (£ / € / $). */
+.currency-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.currency-chip{padding:8px 14px;background:var(--card);border:1px solid var(--brd2);border-radius:24px;color:var(--tx);font-family:var(--fb);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;min-height:40px;display:inline-flex;align-items:center;gap:6px}
+.currency-chip:hover{border-color:var(--ac);color:var(--ac)}
+.currency-chip.active{background:linear-gradient(135deg,#8b7355,#6d5a43);color:#fff;border-color:#6d5a43;box-shadow:0 4px 12px rgba(139,115,85,.24)}
+.currency-chip .currency-glyph{font-family:var(--fd);font-size:16px;font-weight:600}
 
 /* Special offers grid (Tantric "on top" extras). */
 .offer-grid{display:flex;flex-direction:column;gap:8px}
@@ -488,8 +495,10 @@ html{scroll-behavior:smooth}
 .offer-card .offer-price{font-size:11px;color:var(--ac);letter-spacing:.06em;text-transform:uppercase;font-weight:600;flex-shrink:0;background:rgba(196,168,130,.10);padding:4px 10px;border-radius:14px}
 .offer-card .offer-desc{font-size:11.5px;color:var(--mt);line-height:1.55}
 
-/* Escort services list (lighter style). */
+/* Escort services list (lighter style, grouped). */
 .escort-svc-list{display:flex;flex-direction:column;gap:6px}
+.escort-svc-divider{height:1px;background:linear-gradient(90deg,transparent,var(--brd2),transparent);margin:10px 4px;opacity:.7}
+.escort-svc-group-label{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--ac);letter-spacing:.04em;margin:6px 0 4px;text-transform:none}
 .escort-svc{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--card);border:1px solid var(--brd);border-radius:10px;transition:all .2s;cursor:pointer}
 .escort-svc:hover{border-color:var(--acL)}
 .escort-svc.checked{background:rgba(93,140,114,.04);border-color:var(--gn)}
@@ -988,23 +997,22 @@ html{scroll-behavior:smooth}
         </div>
         <div class="reveal" id="tantricBody">
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Starting price <span class="req">*</span></div>
-            <div class="field-hint" style="margin-bottom:12px">Your 60-minute in-house rate. The rate table auto-fills based on the closest tier &mdash; tap any chip to use a preset, or type your own.</div>
+            <div class="field-lbl" style="margin-bottom:8px">Currency</div>
+            <div class="currency-row" id="tantricCurrencyRow"></div>
+
+            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Starting price <span class="req">*</span></div>
+            <div class="field-hint" style="margin-bottom:12px">Your 60-minute in-house rate. The full rate table appears below based on the closest tier.</div>
             <div class="price-combo">
               <div class="price-input-wrap">
-                <span class="price-cur">\u00a3</span>
+                <span class="price-cur" id="tantricPriceCur">£</span>
                 <input type="number" class="inp price-input" id="tantricStartingPrice" inputmode="numeric" min="100" max="2000" step="10" placeholder="250" oninput="applyStartingPrice('tantric', this.value)">
               </div>
-              <div class="tier-chips" id="tantricTierChips">
-                <button type="button" class="tier-chip" data-tier="sold" onclick="setTierByChip('tantric','sold')">\u00a3250 \u00b7 Sold</button>
-                <button type="button" class="tier-chip" data-tier="premium" onclick="setTierByChip('tantric','premium')">\u00a3300 \u00b7 Premium</button>
-                <button type="button" class="tier-chip" data-tier="elite" onclick="setTierByChip('tantric','elite')">\u00a3350 \u00b7 Elite</button>
-              </div>
+              <div class="tier-chips" id="tantricTierChips"></div>
             </div>
             <div class="rate-table-wrap" id="tantricRateTableWrap" style="display:none">
               <div class="rate-table-title" id="tantricRateTitle">Your rates</div>
               <table class="rate-table" id="tantricRateTable"></table>
-              <div class="field-hint" style="margin-top:8px">Tap a cell to edit. We discuss and finalise rates at interview.</div>
+              <div class="field-hint" style="margin-top:8px">We discuss and finalise rates at interview.</div>
             </div>
           </div>
           <div class="svc-mod-block">
@@ -1030,23 +1038,22 @@ html{scroll-behavior:smooth}
         </div>
         <div class="reveal" id="escortBody">
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Starting price <span class="req">*</span></div>
-            <div class="field-hint" style="margin-bottom:12px">Your 60-minute in-house rate for companionship. Same logic &mdash; pick a preset or type your own; the table auto-fills.</div>
+            <div class="field-lbl" style="margin-bottom:8px">Currency</div>
+            <div class="currency-row" id="escortCurrencyRow"></div>
+
+            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Starting price <span class="req">*</span></div>
+            <div class="field-hint" style="margin-bottom:12px">Your 60-minute in-house rate for companionship. The full rate table appears below.</div>
             <div class="price-combo">
               <div class="price-input-wrap">
-                <span class="price-cur">\u00a3</span>
+                <span class="price-cur" id="escortPriceCur">£</span>
                 <input type="number" class="inp price-input" id="escortStartingPrice" inputmode="numeric" min="100" max="2000" step="10" placeholder="250" oninput="applyStartingPrice('escort', this.value)">
               </div>
-              <div class="tier-chips" id="escortTierChips">
-                <button type="button" class="tier-chip" data-tier="sold" onclick="setTierByChip('escort','sold')">\u00a3250 \u00b7 Sold</button>
-                <button type="button" class="tier-chip" data-tier="premium" onclick="setTierByChip('escort','premium')">\u00a3300 \u00b7 Premium</button>
-                <button type="button" class="tier-chip" data-tier="elite" onclick="setTierByChip('escort','elite')">\u00a3350 \u00b7 Elite</button>
-              </div>
+              <div class="tier-chips" id="escortTierChips"></div>
             </div>
             <div class="rate-table-wrap" id="escortRateTableWrap" style="display:none">
               <div class="rate-table-title" id="escortRateTitle">Your rates</div>
               <table class="rate-table" id="escortRateTable"></table>
-              <div class="field-hint" style="margin-top:8px">Tap a cell to edit. We discuss and finalise rates at interview.</div>
+              <div class="field-hint" style="margin-top:8px">We discuss and finalise rates at interview.</div>
             </div>
           </div>
 
@@ -1458,30 +1465,76 @@ const TANTRIC_OFFERS = [
     desc: 'A unique experience inspired by the movie, without sexual contact. Foot fetish, sexy outfits, seductive secretary, school educator — all tied up and teased.' }
 ];
 
-// ─── ESCORT SERVICES (granular checklist) ────────────────────────
-// `mode: 'check'` is a simple yes/no checkbox.
-// `mode: 'tri'` shows three pills: Yes / Discussion / No.
+// ─── CURRENCIES (drives every price displayed in this form) ──────
+const CURRENCIES = [
+  { code: 'GBP', symbol: '\u00a3', label: 'GBP' },
+  { code: 'EUR', symbol: '\u20ac', label: 'EUR' },
+  { code: 'USD', symbol: '$',      label: 'USD' }
+];
+function getCurrencySymbol(code){
+  const c = CURRENCIES.find(x => x.code === code);
+  return c ? c.symbol : '\u00a3';
+}
+
+// ─── ESCORT SERVICES (granular checklist, grouped) ───────────────
+// Items are grouped via `group` index. The first item in each group
+// optionally carries a `label` displayed as a section header.
+// `mode: 'check'` = simple yes/no checkbox.
+// `mode: 'tri'`   = three pills: Yes / On request / No.
 const ESCORT_SERVICES = [
-  // Companionship basics
-  { key: 'kissing',           name: 'Kissing (Light / Deep)',          desc: 'A natural level of closeness, from soft to more passionate connection.', mode: 'check' },
-  { key: 'oral_protected',    name: 'Oral Services \u2014 Protected',  desc: 'Offered with protection.',                                              mode: 'check' },
-  { key: 'oral_unprotected',  name: 'Oral Services \u2014 Unprotected',desc: 'May be available upon agreement.',                                      mode: 'check' },
-  // Finishing preferences
-  { key: 'finish_external',   name: 'External Finish (Face / Body)',   desc: 'External finish options.',                                              mode: 'check' },
-  { key: 'finish_internal',   name: 'Internal Finish (Mouth)',         desc: 'Internal finish option.',                                               mode: 'check' },
-  // Positions
-  { key: 'sixty_nine',        name: '69 Position',                     desc: 'Mutual interaction.',                                                   mode: 'check' },
-  { key: 'face_sitting',      name: 'Face Sitting',                    desc: 'Available upon preference.',                                            mode: 'check' },
-  // Kink-light
-  { key: 'light_dominance',   name: 'Light Dominance (Spanking \u2014 Giving)', desc: 'Light, controlled dominance.',                                  mode: 'check' },
-  { key: 'rimming_giving',    name: 'Rimming (Giving only)',           desc: 'Offered as a giving service only.',                                     mode: 'check' },
-  // Tri-state (Yes / Discussion / No)
-  { key: 'extreme_activities',name: 'Extreme Activities',              desc: 'Anything outside the usual scope \u2014 always discussed first.',       mode: 'tri'   },
-  { key: 'water_sports',      name: 'Water Sports',                    desc: 'Available upon discussion.',                                            mode: 'tri'   },
-  // Bookings & travel
-  { key: 'overnight',         name: 'Overnight Bookings',              desc: '8\u201310 hour minimum.',                                               mode: 'check' },
-  { key: 'party_bookings',    name: 'Party Bookings',                  desc: 'Group / event bookings.',                                                mode: 'check' },
-  { key: 'weekend_trips',     name: 'Weekend Trips',                   desc: 'Weekend travel away with the client.',                                  mode: 'check' }
+  // Group 1 — Services You Offer
+  { key: 'kissing',           group: 1, label: 'Services You Offer',
+    name: 'Kissing (Light / Deep)',
+    desc: 'A natural level of closeness, from soft to more passionate connection.', mode: 'check' },
+  { key: 'oral_protected',    group: 1,
+    name: 'Oral Services Protected',
+    desc: 'Offered with protection.', mode: 'check' },
+  { key: 'oral_unprotected',  group: 1,
+    name: 'Oral Services Unprotected',
+    desc: 'May be available upon agreement.', mode: 'check' },
+
+  // Group 2 — Finishing Preferences
+  { key: 'finish_external',   group: 2, label: 'Finishing Preferences',
+    name: 'External Finish (Face / Body)',
+    desc: 'External finish options.', mode: 'check' },
+  { key: 'finish_internal',   group: 2,
+    name: 'Internal Finish (Mouth)',
+    desc: 'Internal finish option.', mode: 'check' },
+
+  // Group 3 — Positions (no header)
+  { key: 'sixty_nine',        group: 3,
+    name: '69 Position',
+    desc: 'Mutual interaction.', mode: 'check' },
+  { key: 'face_sitting',      group: 3,
+    name: 'Face Sitting',
+    desc: 'Available upon preference.', mode: 'check' },
+
+  // Group 4 — Additional Preferences
+  { key: 'light_dominance',   group: 4, label: 'Additional Preferences',
+    name: 'Light Dominance (Spanking \u2014 Giving)',
+    desc: 'Light, controlled dominance.', mode: 'check' },
+  { key: 'rimming_giving',    group: 4,
+    name: 'Rimming (Giving only)',
+    desc: 'Offered as a giving service only.', mode: 'check' },
+
+  // Group 5 — Tri-state extras (no header)
+  { key: 'extreme_activities',group: 5,
+    name: 'Extreme Activities',
+    desc: 'Yes available, on request, discussion or no.', mode: 'tri' },
+  { key: 'water_sports',      group: 5,
+    name: 'Water Sports',
+    desc: 'Yes available, on request, discussion or no.', mode: 'tri' },
+
+  // Group 6 — Bookings & travel (no header)
+  { key: 'overnight',         group: 6,
+    name: 'Overnight Bookings',
+    desc: '8\u201310 hour minimum.', mode: 'check' },
+  { key: 'party_bookings',    group: 6,
+    name: 'Party Bookings',
+    desc: 'Group / event bookings.', mode: 'check' },
+  { key: 'weekend_trips',     group: 6,
+    name: 'Weekend Trips',
+    desc: 'Weekend travel away with the client.', mode: 'check' }
 ];
 const WORK_NAME_POOL = [
   'Aria','Bella','Celine','Diana','Elena','Fiona','Grace','Harper',
@@ -1604,6 +1657,8 @@ let formData = {
   services:[], addons:[],
   rate:'', competing:'', agency_website:'', dur_pref:[],
   // ─── New service modules ─────────────────────────────────────────
+  // Currency applies globally to all price displays in the form.
+  currency:'GBP',
   // offers_tantric / offers_escort: 'Yes' or 'No' (Yes reveals the body)
   offers_tantric:'', offers_escort:'',
   // tantric_tier / escort_tier: 'sold' | 'premium' | 'elite' (selected card)
@@ -1644,8 +1699,9 @@ document.addEventListener('DOMContentLoaded', async function(){
   initCityCascade();
   initAgencyReveal();
   initServiceModules();
-  renderTierGrid('tantric');
-  renderTierGrid('escort');
+  renderCurrencyRows();
+  renderTierChips('tantric');
+  renderTierChips('escort');
   renderTantricOffers();
   renderEscortServices();
 
@@ -1949,6 +2005,64 @@ function initServiceModules(){
   });
 }
 
+// ─── Currency chips (£ / € / $) — populated for both modules ──────
+function renderCurrencyRows(){
+  ['tantric','escort'].forEach(scope => {
+    const row = document.getElementById(scope + 'CurrencyRow');
+    if(!row) return;
+    row.innerHTML = '';
+    CURRENCIES.forEach(c => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'currency-chip' + (formData.currency === c.code ? ' active' : '');
+      btn.dataset.code = c.code;
+      btn.innerHTML = '<span class="currency-glyph">' + c.symbol + '</span><span>' + c.label + '</span>';
+      btn.addEventListener('click', () => {
+        formData.currency = c.code;
+        renderCurrencyRows();
+        updateCurrencyDisplays();
+        renderTantricOffers();
+        renderRateTable('tantric');
+        renderRateTable('escort');
+        scheduleAutoSave && scheduleAutoSave();
+      });
+      row.appendChild(btn);
+    });
+  });
+}
+
+// Updates the inline £ / € / $ symbol next to the price input.
+function updateCurrencyDisplays(){
+  const sym = getCurrencySymbol(formData.currency);
+  const a = document.getElementById('tantricPriceCur');
+  const b = document.getElementById('escortPriceCur');
+  if(a) a.textContent = sym;
+  if(b) b.textContent = sym;
+  // Refresh tier chips so their preset prices show in the new currency.
+  renderTierChips('tantric');
+  renderTierChips('escort');
+}
+
+// Render tier chips dynamically so their currency symbol matches
+// the active currency. Three chips per scope: Sold / Premium / Elite.
+function renderTierChips(scope){
+  const wrap = document.getElementById(scope + 'TierChips');
+  if(!wrap) return;
+  const sym = getCurrencySymbol(formData.currency);
+  const activeTier = formData[scope + '_tier'] || '';
+  wrap.innerHTML = '';
+  Object.keys(PRICING_TIERS).forEach(key => {
+    const tier = PRICING_TIERS[key];
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'tier-chip' + (activeTier === key ? ' active' : '');
+    btn.dataset.tier = key;
+    btn.textContent = sym + tier.starting + ' \u00b7 ' + tier.name;
+    btn.addEventListener('click', () => setTierByChip(scope, key));
+    wrap.appendChild(btn);
+  });
+}
+
 // ─── Snap a free-text starting price to the closest tier ──────────
 // Boundaries: <=275 → sold, 276-325 → premium, >=326 → elite.
 function inferTierFromPrice(price){
@@ -1986,12 +2100,9 @@ function applyStartingPrice(scope, priceVal){
   formData.rate = String(price);
   const legacyRate = document.getElementById('f_rate');
   if(legacyRate) legacyRate.value = price;
-  // Highlight the matching chip.
-  if(chips){
-    chips.querySelectorAll('.tier-chip').forEach(c => {
-      c.classList.toggle('active', c.dataset.tier === tierKey);
-    });
-  }
+  // Highlight the matching chip (chips are rebuilt by renderTierChips
+  // so we just rerender after picking a tier).
+  renderTierChips(scope);
   renderRateTable(scope);
   scheduleAutoSave && scheduleAutoSave();
   updateProgress && updateProgress();
@@ -2010,7 +2121,7 @@ function setTierByChip(scope, tierKey){
 // table directly via applyStartingPrice / setTierByChip.
 function renderTierGrid(){ /* no-op (replaced by price-combo UI) */ }
 
-// ─── Render the editable rate table ──────────────────────────────
+// ─── Render the rate table (read-only display) ───────────────────
 function renderRateTable(scope){
   const wrap = document.getElementById(scope + 'RateTableWrap');
   const table = document.getElementById(scope + 'RateTable');
@@ -2023,29 +2134,23 @@ function renderRateTable(scope){
     return;
   }
   wrap.style.display = 'block';
-  if(titleEl) titleEl.textContent = PRICING_TIERS[tier].name + ' rates \u2014 you can edit any cell';
+  const sym = getCurrencySymbol(formData.currency);
+  if(titleEl) titleEl.textContent = PRICING_TIERS[tier].name + ' rates';
   table.innerHTML =
-    '<thead><tr><th>Duration</th><th style="text-align:right">In-House (\u00a3)</th><th style="text-align:right">Mobile (\u00a3)</th></tr></thead>' +
+    '<thead><tr>' +
+      '<th>Duration</th>' +
+      '<th style="text-align:right">In-House (' + sym + ')</th>' +
+      '<th style="text-align:right">Mobile (' + sym + ')</th>' +
+    '</tr></thead>' +
     '<tbody>' +
-    rates.map((r, i) =>
+    rates.map(r =>
       '<tr>' +
         '<td>' + r.duration + '</td>' +
-        '<td><input type="number" inputmode="numeric" class="rate-input" data-scope="' + scope + '" data-i="' + i + '" data-col="in_house" value="' + (r.in_house||'') + '" min="0" step="10"></td>' +
-        '<td><input type="number" inputmode="numeric" class="rate-input" data-scope="' + scope + '" data-i="' + i + '" data-col="mobile" value="' + (r.mobile||'') + '" min="0" step="10"></td>' +
+        '<td class="rate-cell">' + sym + (r.in_house||0) + '</td>' +
+        '<td class="rate-cell">' + sym + (r.mobile||0) + '</td>' +
       '</tr>'
     ).join('') +
     '</tbody>';
-  // Wire change events for inline rate editing.
-  table.querySelectorAll('.rate-input').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const sc = e.target.dataset.scope;
-      const i = parseInt(e.target.dataset.i);
-      const col = e.target.dataset.col;
-      const v = parseInt(e.target.value) || 0;
-      formData[sc + '_rates'][i][col] = v;
-      scheduleAutoSave && scheduleAutoSave();
-    });
-  });
 }
 
 // ─── Render Tantric special offers list ──────────────────────────
@@ -2053,6 +2158,7 @@ function renderTantricOffers(){
   const grid = document.getElementById('tantricOffersGrid');
   if(!grid) return;
   grid.innerHTML = '';
+  const sym = getCurrencySymbol(formData.currency);
   TANTRIC_OFFERS.forEach(o => {
     const card = document.createElement('div');
     card.className = 'offer-card';
@@ -2062,7 +2168,7 @@ function renderTantricOffers(){
       '<div class="offer-body">' +
         '<div class="offer-row1">' +
           '<span class="offer-name">' + o.name + '</span>' +
-          '<span class="offer-price">\u00a3' + o.price + ' on top</span>' +
+          '<span class="offer-price">' + sym + o.price + ' on top</span>' +
         '</div>' +
         '<div class="offer-desc">' + o.desc + '</div>' +
       '</div>';
@@ -2076,12 +2182,30 @@ function renderTantricOffers(){
   });
 }
 
-// ─── Render Escort services list (mix of checkboxes + tri-state) ──
+// ─── Render Escort services list (grouped, with section dividers) ─
 function renderEscortServices(){
   const list = document.getElementById('escortServicesList');
   if(!list) return;
   list.innerHTML = '';
+
+  let currentGroup = -1;
   ESCORT_SERVICES.forEach(s => {
+    // New group → emit a divider (and optional label).
+    if(s.group !== currentGroup){
+      if(currentGroup !== -1){
+        const divider = document.createElement('div');
+        divider.className = 'escort-svc-divider';
+        list.appendChild(divider);
+      }
+      if(s.label){
+        const heading = document.createElement('div');
+        heading.className = 'escort-svc-group-label';
+        heading.textContent = s.label;
+        list.appendChild(heading);
+      }
+      currentGroup = s.group;
+    }
+
     const row = document.createElement('div');
     row.className = 'escort-svc';
     if(s.mode === 'tri') row.classList.add('with-pills');
@@ -2092,11 +2216,11 @@ function renderEscortServices(){
       '<div class="escort-svc-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
       '<div class="escort-svc-body">' +
         '<div class="escort-svc-name">' + s.name + '</div>' +
-        '<div class="escort-svc-desc">' + s.desc + '</div>';
+        (s.desc ? '<div class="escort-svc-desc">' + s.desc + '</div>' : '');
     if(s.mode === 'tri'){
       html +=
         '<div class="escort-svc-pills" data-key="' + s.key + '">' +
-          ['Yes','Discussion','No'].map(v =>
+          ['Yes','On request','No'].map(v =>
             '<div class="pill' + (cur === v ? ' active' : '') + '" data-val="' + v + '">' + v + '</div>'
           ).join('') +
         '</div>';
@@ -2748,10 +2872,12 @@ async function submitApplication(){
     if(v === true) formData.services.push(meta.name);
     else if(typeof v === 'string' && v && v !== 'No') formData.services.push(meta.name + ' (' + v + ')');
   });
-  // Tantric add-ons map -> addons (legacy column).
+  // Tantric add-ons map -> addons (legacy column). Use the active
+  // currency symbol so the lady profile shows the right glyph.
+  const sym = getCurrencySymbol(formData.currency);
   formData.addons = (formData.tantric_offers||[]).map(k => {
     const meta = TANTRIC_OFFERS.find(o => o.key === k);
-    return meta ? meta.name + ' (\u00a3' + meta.price + ' on top)' : k;
+    return meta ? meta.name + ' (' + sym + meta.price + ' on top)' : k;
   });
   const anyDay = Object.values(formData.availability).some(d => d.enabled);
   if(!anyDay){ showToast('Set your weekly availability — tap each day you can work','error'); return; }
@@ -2917,14 +3043,17 @@ async function submitApplication(){
     addons_offered: formData.addons,
     duration_preferences: formData.dur_pref,
     starting_rate: parseFloat(formData.rate)||null,
+    starting_rate_currency: formData.currency || 'GBP',
     boundaries: formData.boundaries || null,
     // Structured service offering: keeps the rich data so the lady profile
     // can render it. Two service "modules" each with tier + rate table +
     // their own extras.
     services_offering: {
+      currency: formData.currency || 'GBP',
       tantric: formData.offers_tantric === 'Yes' ? {
         offered: true,
         tier: formData.tantric_tier,
+        starting_price: parseFloat(formData.rate)||null,
         rates: formData.tantric_rates,
         offers: (formData.tantric_offers||[]).map(k => {
           const meta = TANTRIC_OFFERS.find(o => o.key === k);
@@ -2934,6 +3063,7 @@ async function submitApplication(){
       escort: formData.offers_escort === 'Yes' ? {
         offered: true,
         tier: formData.escort_tier,
+        starting_price: parseFloat(formData.rate)||null,
         rates: formData.escort_rates,
         services: Object.keys(formData.escort_services||{}).map(k => {
           const meta = ESCORT_SERVICES.find(s => s.key === k);
