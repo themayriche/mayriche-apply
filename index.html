@@ -114,6 +114,20 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 .prog-sec-dot{width:6px;height:6px;border-radius:50%;background:rgba(139,115,85,.18);transition:all .3s;}
 .prog-sec.done .prog-sec-dot{background:var(--gn);box-shadow:0 0 6px rgba(93,140,114,.4)}
 .prog-sec.partial .prog-sec-dot{background:var(--am)}
+/* Validation state — section dots flip red when the applicant tries to
+   advance with missing required fields in that section. Stays red
+   until the section's missing items get filled. updateProgress()
+   clears the `.missing` class on its own once the section has enough
+   completions, so users get instant green-thumb feedback as they fix
+   things. */
+.prog-sec.missing{color:var(--rd)}
+.prog-sec.missing .prog-sec-dot{background:var(--rd);box-shadow:0 0 8px rgba(192,96,96,.45);animation:dotPulse 1.4s ease-in-out 2}
+@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.45)}}
+/* Per-field red highlight — applied to any input/select the validation
+   loop flagged. Persists until the user types/picks something
+   (cleared on focus + value-change in the wire-up below). */
+.inp.field-missing,.sel.field-missing,.txa.field-missing{border-color:var(--rd) !important;box-shadow:0 0 0 2px rgba(192,96,96,.14) !important;background:rgba(192,96,96,.04) !important}
+.pill-group.field-missing{box-shadow:0 0 0 2px rgba(192,96,96,.20);border-radius:8px;padding:2px}
 
 /* Sticky stepper — pinned below the progress header so the active
    step stays visible on scroll. Width matches the cards (no
@@ -319,6 +333,17 @@ input[type="file"]{display:none}
 .upload-prog{height:3px;background:var(--sf);border-radius:2px;overflow:hidden;margin-top:6px;display:none;}
 .upload-prog.active{display:block}
 .upload-prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--acL));width:0%;transition:width .2s;}
+
+/* Overall submission progress strip — sits above the Submit button so
+   the applicant tracks upload state without scrolling up to the
+   per-file bars. Champagne fill stays visible in both themes. */
+.submit-prog{margin:0 0 14px;padding:12px 14px;background:var(--wm);border:1px solid var(--brd2);border-radius:var(--rs);animation:fadeIn .3s ease}
+.submit-prog-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.submit-prog-label{font-size:11px;color:var(--tx);letter-spacing:.04em;font-weight:500}
+.submit-prog-pct{font-family:var(--fd);font-size:18px;font-weight:600;color:var(--ac);font-feature-settings:'tnum'}
+.submit-prog-bar{height:4px;background:rgba(139,115,85,.10);border-radius:2px;overflow:hidden}
+.submit-prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--acL));width:0%;transition:width .35s cubic-bezier(.22,.61,.36,1)}
+:root[data-theme="dark"] .submit-prog-bar{background:rgba(196,168,130,.14)}
 
 /* ════════════════════════════════════════════════════════════════
    MOBILE-FIRST RESPONSIVE — applies on phones & small tablets.
@@ -634,7 +659,7 @@ html{scroll-behavior:smooth}
 <div class="hero">
   <div class="hero-mark" aria-hidden="true">
     <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="120" cy="120" r="105" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <circle cx="120" cy="120" r="106" fill="none" stroke="currentColor" stroke-width="0.9"/>
       <text x="120" y="172" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="150" font-weight="300" fill="currentColor">M</text>
     </svg>
   </div>
@@ -1466,6 +1491,18 @@ html{scroll-behavior:smooth}
       <div class="stamp-value" id="liveDateTime">—</div>
     </div>
     <div class="footnote">By submitting, you confirm all information is accurate. We'll contact you within 24–48 hours via WhatsApp or email.</div>
+    <!-- Submission progress strip — hidden until submit is clicked.
+         Sits directly above the Submit button so the applicant sees
+         exactly what's happening without scrolling up to find each
+         per-file bar. Updates by step: validating → uploading X/Y →
+         saving → confirming. -->
+    <div class="submit-prog" id="submitProg" style="display:none">
+      <div class="submit-prog-row">
+        <span class="submit-prog-label" id="submitProgLabel">Preparing…</span>
+        <span class="submit-prog-pct" id="submitProgPct">0%</span>
+      </div>
+      <div class="submit-prog-bar"><div class="submit-prog-fill" id="submitProgFill" style="width:0%"></div></div>
+    </div>
     <div class="actions">
       <div class="actions-left"><button class="btn btn-ghost" onclick="goStep(3)">← Back</button></div>
       <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save for Later</button><button class="btn btn-primary" id="submitBtn" onclick="submitApplication()">Submit Application</button></div>
@@ -3091,7 +3128,95 @@ function renderSuggestions(){
 }
 
 // ═══════════ STEP NAVIGATION ═══════════
+// Required fields per step. Each entry: { key, el (id of the input or
+// pill group), sec (the progress-sections data-sec the field belongs
+// to). Validation only blocks forward navigation; going BACK or
+// jumping to a completed step is always allowed.
+const STEP_REQ = {
+  1: [
+    {key:'fullname',     el:'f_fullname',         sec:'personal'},
+    {key:'dob_d',        el:'f_dob_d',            sec:'personal'},
+    {key:'dob_m',        el:'f_dob_m',            sec:'personal'},
+    {key:'dob_y',        el:'f_dob_y',            sec:'personal'},
+    {key:'nationality',  el:'f_nationality',      sec:'personal'},
+    {key:'country',      el:'f_country',          sec:'personal'},
+    {key:'city',         el:'f_city_select',      sec:'personal'},
+    {key:'home_street',  el:'f_home_street',      sec:'personal'},
+    {key:'home_postcode',el:'f_home_postcode',    sec:'personal'},
+    {key:'phone_code',   el:'f_phone_code',       sec:'personal'},
+    {key:'phone',        el:'f_phone',            sec:'personal'},
+    {key:'email',        el:'f_email',            sec:'personal'},
+    {key:'rtw',          el:'f_rtw',              sec:'personal'},
+    {key:'english',      el:'f_english',          sec:'personal'}
+  ],
+  2: [
+    {key:'workname',    el:'f_workname',          sec:'work'},
+    {key:'height',      el:'f_height',            sec:'physical'},
+    {key:'weight',      el:'f_weight',            sec:'physical'},
+    {key:'body',        el:'f_body',              sec:'physical'},
+    {key:'years',       el:'f_years',             sec:'experience'},
+    {key:'local_area',  el:'f_local_area',        sec:'work'},
+    {key:'inhouse',     el:'[data-pill="inhouse"]',sec:'work'},
+    {key:'mobile',      el:'[data-pill="mobile"]', sec:'work'},
+    {key:'days_week',   el:'f_days_week',         sec:'availability'}
+  ],
+  3: [], // Step 3 services validation runs in submitApplication
+  4: []
+};
+
+// Validate the CURRENT step before advancing. Highlights missing
+// inputs in red + flips their section dots to .missing. Returns true
+// if the step is complete (clear to advance).
+function validateStepBeforeAdvance(currentStep){
+  // Clear any prior red state from this step's fields so we only flag
+  // what's actually missing right now.
+  (STEP_REQ[currentStep]||[]).forEach(r => {
+    const el = r.el && r.el.startsWith('[') ? document.querySelector(r.el) : document.getElementById(r.el);
+    if(el) el.classList.remove('field-missing');
+  });
+  document.querySelectorAll('.prog-sec.missing').forEach(s => s.classList.remove('missing'));
+
+  const missing = [];
+  const missingSecs = new Set();
+  (STEP_REQ[currentStep]||[]).forEach(r => {
+    const val = formData[r.key];
+    if(!val || (typeof val === 'string' && !val.trim())){
+      missing.push(r);
+      missingSecs.add(r.sec);
+      const el = r.el && r.el.startsWith('[') ? document.querySelector(r.el) : document.getElementById(r.el);
+      if(el) el.classList.add('field-missing');
+    }
+  });
+
+  if(missing.length === 0) return true;
+
+  // Flip the relevant section dots red.
+  missingSecs.forEach(sec => {
+    const dot = document.querySelector('.prog-sec[data-sec="'+sec+'"]');
+    if(dot) dot.classList.add('missing');
+  });
+
+  // Friendly toast — name the first missing field by its label.
+  const first = missing[0];
+  const label = (typeof FIELD_LABELS !== 'undefined' && FIELD_LABELS[first.key]) || first.key.replace(/_/g,' ');
+  showToast('Missing: ' + label, 'error');
+
+  // Scroll the first missing input into view so the red flag is visible.
+  const firstEl = first.el && first.el.startsWith('[')
+    ? document.querySelector(first.el)
+    : document.getElementById(first.el);
+  if(firstEl){
+    try { firstEl.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e) { firstEl.scrollIntoView(); }
+  }
+  return false;
+}
+
 function goStep(n){
+  // Block forward jumps with unmet required fields. Back / same-step
+  // and direct stepper clicks to a completed step are always allowed.
+  if(n > curStep){
+    if(!validateStepBeforeAdvance(curStep)) return;
+  }
   curStep = n;
   for(let i=1;i<=4;i++){
     document.getElementById('step'+i).style.display = (i===n ? 'block' : 'none');
@@ -3104,6 +3229,31 @@ function goStep(n){
   window.scrollTo({top:0, behavior:'smooth'});
   if(n === 3) loadTakenNames().then(renderSuggestions);
 }
+
+// Clear .field-missing as soon as the user types something. Listens
+// once on the document so it works for any input introduced later.
+document.addEventListener('input', function(e){
+  const t = e.target;
+  if(t && (t.classList.contains('inp') || t.classList.contains('sel') || t.classList.contains('txa'))){
+    if(t.classList.contains('field-missing') && t.value && t.value.toString().trim()){
+      t.classList.remove('field-missing');
+    }
+  }
+}, true);
+// Same for selects (change event) + pill clicks (custom event).
+document.addEventListener('change', function(e){
+  const t = e.target;
+  if(t && t.classList.contains('sel') && t.value && t.classList.contains('field-missing')){
+    t.classList.remove('field-missing');
+  }
+}, true);
+document.addEventListener('click', function(e){
+  const p = e.target && e.target.closest('.pill');
+  if(p){
+    const g = p.parentElement;
+    if(g && g.classList.contains('field-missing')) g.classList.remove('field-missing');
+  }
+}, true);
 
 // ═══════════ PROGRESS ═══════════
 function updateProgress(){
@@ -3571,50 +3721,60 @@ async function submitApplication(){
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = 'Uploading files...';
+  btn.textContent = 'Uploading…';
+
+  // ═══ OVERALL SUBMIT PROGRESS ═══
+  // Count every file we'll upload + 2 implicit phases (saving + notifying)
+  // so the bar reflects real progress instead of jumping 50→100.
+  const filesToUpload = [];
+  if(formData.files.selfie)   filesToUpload.push({k:'selfie',   type:'selfie_kyc',  label:'Selfie + ID',       f:formData.files.selfie});
+  if(formData.files.fullbody) filesToUpload.push({k:'fullbody', type:'fullbody',    label:'Full-body photo',   f:formData.files.fullbody});
+  if(formData.files.utility)  filesToUpload.push({k:'utility',  type:'utility',     label:'Utility bill',      f:formData.files.utility});
+  if(formData.files.diploma)  filesToUpload.push({k:'diploma',  type:'diploma',     label:'Diploma',           f:formData.files.diploma});
+  (formData.files.portfolio||[]).forEach((p, i) => filesToUpload.push({k:'portfolio', type:'portfolio', index:i, label:'Portfolio photo '+(i+1), f:p}));
+  if(formData.video)          filesToUpload.push({k:'video',    type:'video_intro', label:'Video introduction',f:formData.video});
+  // Total steps = file uploads + 1 (db insert) + 1 (notifications/email).
+  const totalSteps = filesToUpload.length + 2;
+  let stepDone = 0;
+  const setProgress = (label, override) => {
+    const pct = override != null ? override : Math.round((stepDone / totalSteps) * 100);
+    const wrap = document.getElementById('submitProg');
+    const fill = document.getElementById('submitProgFill');
+    const pctEl = document.getElementById('submitProgPct');
+    const lblEl = document.getElementById('submitProgLabel');
+    if(wrap){ wrap.style.display = 'block'; }
+    if(fill) fill.style.width = pct + '%';
+    if(pctEl) pctEl.textContent = pct + '%';
+    if(lblEl) lblEl.textContent = label;
+  };
+  setProgress('Preparing…', 2);
 
   const applicationRef = 'APP-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
   const dob = formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0');
   const age = calculateAge(dob);
 
   // ═══ UPLOAD FILES TO SUPABASE STORAGE ═══
-  const uploadedPaths = {};
-  
-  if(formData.files.selfie){
-    showUploadProgress('selfie', 50);
-    uploadedPaths.selfie = await uploadFileToStorage(formData.files.selfie, applicationRef, 'selfie_kyc');
-    showUploadProgress('selfie', 100);
-  }
-  if(formData.files.fullbody){
-    showUploadProgress('fullbody', 50);
-    uploadedPaths.fullbody = await uploadFileToStorage(formData.files.fullbody, applicationRef, 'fullbody');
-    showUploadProgress('fullbody', 100);
-  }
-  if(formData.files.utility){
-    showUploadProgress('utility', 50);
-    uploadedPaths.utility = await uploadFileToStorage(formData.files.utility, applicationRef, 'utility');
-    showUploadProgress('utility', 100);
-  }
-  if(formData.files.diploma){
-    showUploadProgress('diploma', 50);
-    uploadedPaths.diploma = await uploadFileToStorage(formData.files.diploma, applicationRef, 'diploma');
-    showUploadProgress('diploma', 100);
-  }
-  uploadedPaths.portfolio = [];
-  for(let i=0; i<formData.files.portfolio.length; i++){
-    showUploadProgress('portfolio', (i / formData.files.portfolio.length) * 100);
-    const path = await uploadFileToStorage(formData.files.portfolio[i], applicationRef, 'portfolio', i);
-    if(path) uploadedPaths.portfolio.push(path);
-  }
-  showUploadProgress('portfolio', 100);
-  if(formData.video){
-    btn.textContent = 'Uploading video...';
-    showUploadProgress('video', 50);
-    uploadedPaths.video = await uploadFileToStorage(formData.video, applicationRef, 'video_intro');
-    showUploadProgress('video', 100);
+  const uploadedPaths = { portfolio: [] };
+
+  for(let i = 0; i < filesToUpload.length; i++){
+    const item = filesToUpload[i];
+    setProgress('Uploading ' + item.label + ' (' + (i+1) + ' of ' + filesToUpload.length + ')');
+    btn.textContent = 'Uploading ' + (i+1) + '/' + filesToUpload.length + '…';
+    // Per-file mini bar — show going to 50% on start, 100% on finish.
+    showUploadProgress(item.k, 50);
+    const path = await uploadFileToStorage(item.f, applicationRef, item.type, item.index);
+    showUploadProgress(item.k, 100);
+    if(path){
+      if(item.k === 'portfolio') uploadedPaths.portfolio.push(path);
+      else if(item.k === 'video') uploadedPaths.video = path;
+      else uploadedPaths[item.k] = path;
+    }
+    stepDone++;
+    setProgress('Uploaded ' + (i+1) + ' of ' + filesToUpload.length);
   }
 
-  btn.textContent = 'Saving application...';
+  btn.textContent = 'Saving…';
+  setProgress('Saving your application…');
 
   // ═══ SAVE TO `ladies` TABLE (stage='Just Applied') ═══
   // This makes the application appear automatically in MC OS → Ladies → Applications tab
@@ -3791,6 +3951,10 @@ async function submitApplication(){
     // preserve the original special_requests blob when appending the
     // BLOCKLIST tag — passing the id alone meant the patch overwrote the
     // rich detail with just the tag line.
+    // DB insert succeeded — advance the overall progress.
+    stepDone++;
+    setProgress('Saved · Notifying team…');
+
     try {
       const newLady = (r.data && r.data[0]) || null;
       if(newLady) await postSubmitRouting(newLady, formData);
@@ -3799,7 +3963,8 @@ async function submitApplication(){
     }
 
     // ═══ SEND CONFIRMATION EMAIL ═══
-    btn.textContent = 'Sending confirmation email...';
+    btn.textContent = 'Sending confirmation…';
+    setProgress('Sending confirmation email…');
     try {
       await sendConfirmationEmail(formData.email, formData.fullname, applicationRef);
     } catch(e){
@@ -3811,6 +3976,9 @@ async function submitApplication(){
     // OS dashboard widget + Hiring kanban read for the badge. The old
     // notifyOwner targeted a `notifications` table that doesn't exist.)
 
+    stepDone++;
+    setProgress('Complete ✓', 100);
+
     localStorage.removeItem('mayriche_apply_draft');
     document.getElementById('successRef').textContent = applicationRef;
     window.__lastAppRef = applicationRef;
@@ -3821,6 +3989,9 @@ async function submitApplication(){
     showToast('Submit failed: '+e.message, 'error');
     btn.disabled = false;
     btn.textContent = 'Submit Application';
+    // Hide the progress strip on failure so the next attempt starts fresh.
+    var sp = document.getElementById('submitProg');
+    if(sp) sp.style.display = 'none';
   }
 }
 
