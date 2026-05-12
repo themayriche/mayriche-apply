@@ -89,11 +89,14 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 :root[data-theme="dark"] .theme-toggle .icon-sun{display:block}
 @media(max-width:480px){.theme-toggle{top:10px;right:10px;width:32px;height:32px}.theme-toggle svg{width:14px;height:14px}}
 
-/* Sticky progress header — anchored to viewport top with a small inset.
-   The wrap padding extends the surrounding background under the
-   transparent gap above the header so no page background bleeds
-   through on scroll. */
-.progress-wrap{position:sticky;top:0;z-index:50;margin:0 -20px 22px;padding:14px 20px;background:rgba(250,248,246,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--brd);box-shadow:0 4px 20px rgba(139,115,85,.04);animation:fadeIn .6s .3s both;}
+/* Sticky progress header — anchored to viewport top.
+   Width matches the cards beneath (no negative margins) so the
+   strip aligns flush with the card edges. Background uses the
+   theme card token so it works in both light and dark modes. */
+.progress-wrap{position:sticky;top:0;z-index:50;margin:0 0 22px;padding:14px 18px;background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--brd2);border-radius:var(--r);box-shadow:0 4px 20px rgba(139,115,85,.04);animation:fadeIn .6s .3s both;}
+:root[data-theme="dark"] .progress-wrap{background:rgba(30,26,20,.92);border-color:var(--brd2);box-shadow:0 4px 20px rgba(0,0,0,.30)}
+:root[data-theme="dark"] .prog-bar{background:rgba(196,168,130,.14)}
+:root[data-theme="dark"] .prog-fill{background:linear-gradient(90deg,var(--ac),#E8D5A6,var(--acL))}
 .prog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
 .prog-step{font-size:10px;letter-spacing:.28em;color:var(--mt);text-transform:uppercase;font-weight:500;}
 .prog-step b{color:var(--ac);font-weight:600}
@@ -112,11 +115,12 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 .prog-sec.done .prog-sec-dot{background:var(--gn);box-shadow:0 0 6px rgba(93,140,114,.4)}
 .prog-sec.partial .prog-sec-dot{background:var(--am)}
 
-/* Sticky stepper — stays pinned at top of viewport (under progress-wrap)
-   so the applicant always knows which step they're on. Background uses
-   the same champagne tint as the Continue button so the active step
-   visually anchors to the CTA the applicant clicks. */
-.stepper{position:sticky;top:64px;z-index:48;display:flex;justify-content:center;align-items:center;gap:0;margin:0 -20px 26px;padding:12px 20px;flex-wrap:wrap;background:linear-gradient(180deg,rgba(196,168,130,.18),rgba(196,168,130,.08));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--brd2);}
+/* Sticky stepper — pinned below the progress header so the active
+   step stays visible on scroll. Width matches the cards (no
+   negative margins) and the surface uses the theme card token so
+   it reads cleanly in both light and dark modes. */
+.stepper{position:sticky;top:78px;z-index:48;display:flex;justify-content:center;align-items:center;gap:0;margin:0 0 26px;padding:12px 18px;flex-wrap:wrap;background:linear-gradient(180deg,rgba(196,168,130,.18),rgba(196,168,130,.06));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--brd2);border-radius:var(--r);}
+:root[data-theme="dark"] .stepper{background:linear-gradient(180deg,rgba(201,176,132,.14),rgba(201,176,132,.05));}
 .step{display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer;opacity:.55;transition:all .3s cubic-bezier(.22,.61,.36,1);user-select:none;}
 .step:hover{opacity:.9}.step.active{opacity:1}.step.done{opacity:.85}
 .step-num{width:26px;height:26px;border-radius:50%;border:1px solid var(--brd2);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:12px;font-weight:600;color:var(--ac);background:var(--card);transition:all .3s;}
