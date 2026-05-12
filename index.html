@@ -30,10 +30,11 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 .hero-logo{font-family:var(--fd);font-size:48px;font-weight:500;letter-spacing:.24em;color:var(--tx);margin-bottom:6px;}
 .hero-sub{font-size:10px;letter-spacing:.42em;color:var(--ac);text-transform:uppercase;font-weight:500;margin-bottom:18px;}
 
-.sec-strip{max-width:960px;margin:0 auto 28px;padding:0 20px;display:flex;justify-content:space-between;align-items:stretch;gap:8px;flex-wrap:nowrap;animation:fadeUp .7s .15s both;}
-.sec-badge{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 10px;background:var(--card);border:1px solid var(--brd2);border-radius:40px;font-size:9.5px;color:var(--ac);letter-spacing:.08em;font-weight:600;transition:all .2s;text-align:center;white-space:nowrap;text-transform:uppercase;}
-.sec-badge:hover{border-color:var(--ac);color:var(--tx);transform:translateY(-1px);box-shadow:0 3px 10px rgba(139,115,85,.08);}
-.sec-badge svg{color:var(--ac);flex-shrink:0}
+/* Trust widgets — slim, compact, no hover lift (user feedback: take less space). */
+.sec-strip{max-width:760px;margin:0 auto 22px;padding:0 20px;display:flex;justify-content:center;align-items:stretch;gap:6px;flex-wrap:wrap;animation:fadeUp .7s .15s both;}
+.sec-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;background:var(--card);border:1px solid var(--brd2);border-radius:20px;font-size:8.5px;color:var(--ac);letter-spacing:.06em;font-weight:600;transition:border-color .2s, color .2s;text-align:center;white-space:nowrap;text-transform:uppercase;}
+.sec-badge:hover{border-color:var(--ac);color:var(--tx);}
+.sec-badge svg{color:var(--ac);flex-shrink:0;width:10px;height:10px}
 @media(max-width:900px){.sec-strip{flex-wrap:wrap;justify-content:center}.sec-badge{flex:0 0 auto}}
 
 .safe-badge{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:var(--card);border:1px solid var(--brd2);border-radius:20px;font-size:9.5px;color:var(--ac);letter-spacing:.08em;font-weight:600;text-transform:uppercase;position:relative;}
@@ -46,7 +47,11 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 
 .wrap{max-width:960px;margin:0 auto;padding:0 20px;}
 
-.progress-wrap{position:sticky;top:12px;z-index:50;margin-bottom:22px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--brd);border-radius:var(--r);padding:14px 20px;box-shadow:0 4px 20px rgba(139,115,85,.06);animation:fadeIn .6s .3s both;}
+/* Sticky progress header — anchored to viewport top with a small inset.
+   The wrap padding extends the surrounding background under the
+   transparent gap above the header so no page background bleeds
+   through on scroll. */
+.progress-wrap{position:sticky;top:0;z-index:50;margin:0 -20px 22px;padding:14px 20px;background:rgba(250,248,246,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--brd);box-shadow:0 4px 20px rgba(139,115,85,.04);animation:fadeIn .6s .3s both;}
 .prog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
 .prog-step{font-size:10px;letter-spacing:.28em;color:var(--mt);text-transform:uppercase;font-weight:500;}
 .prog-step b{color:var(--ac);font-weight:600}
@@ -99,9 +104,11 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 .field-lbl{font-size:9.5px;letter-spacing:.2em;color:var(--mt);text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:6px;}
 .field-lbl .req{color:var(--ac)}
 .field-hint{font-size:10.5px;color:var(--mt);font-style:italic;letter-spacing:.02em;line-height:1.4;}
-.inp,.sel,.txa{background:var(--bg);border:1px solid var(--brd);border-radius:var(--rs);padding:10px 12px;color:var(--tx);font-family:var(--fb);font-size:13px;transition:all .2s;width:100%;outline:none;}
+.inp,.sel,.txa{background:var(--bg);border:1px solid var(--brd);border-radius:var(--rs);padding:10px 12px;color:var(--tx);font-family:var(--fb);font-size:13px;transition:border-color .2s, background-color .2s;width:100%;outline:none;position:relative;}
 .inp::placeholder,.txa::placeholder{color:var(--mt);opacity:.55}
-.inp:focus,.sel:focus,.txa:focus{border-color:var(--ac);background:var(--card);box-shadow:0 0 0 3px rgba(139,115,85,.08);}
+/* Focus state: subtle border + bg change only, no 3px ring that
+   would visually overlap neighbouring fields. */
+.inp:focus,.sel:focus,.txa:focus{border-color:var(--ac);background:var(--card);box-shadow:none;}
 .sel{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b7355' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:32px;cursor:pointer;}
 .sel option{background:var(--card);color:var(--tx)}
 .txa{resize:vertical;min-height:80px;font-family:var(--fb)}
@@ -112,8 +119,8 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 .pill:hover{border-color:var(--ac);color:var(--tx)}
 .pill.active{background:var(--ac);color:var(--card);border-color:var(--ac);}
 
-.tag-wrap{border:1px solid var(--brd);border-radius:var(--rs);padding:8px;background:var(--bg);min-height:42px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;transition:all .2s;cursor:text;}
-.tag-wrap:focus-within{border-color:var(--ac);background:var(--card);box-shadow:0 0 0 3px rgba(139,115,85,.08);}
+.tag-wrap{border:1px solid var(--brd);border-radius:var(--rs);padding:8px;background:var(--bg);min-height:42px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;transition:border-color .2s, background-color .2s;cursor:text;}
+.tag-wrap:focus-within{border-color:var(--ac);background:var(--card);box-shadow:none;}
 .tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--sf);border:1px solid var(--brd2);border-radius:14px;font-size:11.5px;color:var(--tx);}
 .tag-x{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mt);font-size:10px;font-weight:700;}
 .tag-x:hover{background:var(--rd);color:var(--card)}
@@ -152,7 +159,7 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 .svc-grid.addons-2col{grid-template-columns:1fr 1fr;}
 @media(max-width:680px){.svc-grid.addons-2col{grid-template-columns:1fr}}
 .svc{position:relative;padding:14px 16px;background:var(--card);border:1px solid var(--brd);border-radius:var(--r);cursor:pointer;transition:all .2s;}
-.svc:hover{border-color:var(--acL);transform:translateY(-1px);box-shadow:0 4px 12px rgba(139,115,85,.06)}
+.svc:hover{border-color:var(--acL);box-shadow:0 4px 12px rgba(139,115,85,.06)}
 .svc.checked{background:linear-gradient(180deg,rgba(93,140,114,.04),transparent);border-color:var(--gn);}
 .svc-check{position:absolute;top:12px;right:12px;width:18px;height:18px;border:1.5px solid var(--brd2);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);transition:all .2s;}
 .svc.checked .svc-check{background:var(--gn);border-color:var(--gn);}
@@ -209,12 +216,15 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 
 .actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap;}
 .actions-left,.actions-right{display:flex;gap:10px;flex-wrap:wrap}
-.btn{padding:12px 28px;background:transparent;border:1px solid var(--ac);border-radius:var(--rs);color:var(--ac);font-size:11px;letter-spacing:.2em;cursor:pointer;text-transform:uppercase;font-family:var(--fb);font-weight:600;transition:all .25s cubic-bezier(.22,.61,.36,1);min-width:130px;}
-.btn:hover{background:var(--ac);color:var(--card);box-shadow:0 6px 20px rgba(139,115,85,.2);transform:translateY(-1px);}
+/* Buttons — stable, no lift on hover (caused visible jitter when moving
+   from one to the next). Slimmer padding + narrower min-width so the
+   action row doesn't dominate the page. */
+.btn{padding:9px 18px;background:transparent;border:1px solid var(--ac);border-radius:var(--rs);color:var(--ac);font-size:11px;letter-spacing:.16em;cursor:pointer;text-transform:uppercase;font-family:var(--fb);font-weight:600;transition:background-color .2s, color .2s, border-color .2s;min-width:108px;}
+.btn:hover{background:var(--ac);color:var(--card);}
 .btn-primary{background:var(--ac);color:var(--card);}
 .btn-primary:hover{background:#6d5a43;border-color:#6d5a43;}
 .btn-ghost{border-color:var(--brd2);color:var(--mt);}
-.btn-ghost:hover{background:var(--sf);color:var(--tx);border-color:var(--ac);box-shadow:none;transform:none;}
+.btn-ghost:hover{background:var(--sf);color:var(--tx);border-color:var(--ac);}
 
 .resume-banner{background:linear-gradient(90deg,rgba(196,168,130,.12),rgba(196,168,130,.03));border:1px solid var(--acL);border-radius:var(--r);padding:14px 20px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;animation:fadeIn .6s;}
 .resume-msg{font-size:12px;color:var(--tx);letter-spacing:.01em}
@@ -608,9 +618,9 @@ html{scroll-behavior:smooth}
   <div class="stepper">
     <div class="step active" data-step="1" onclick="goStep(1)"><div class="step-num"><span>1</span></div><div class="step-lbl">About You</div></div>
     <div class="step-div"></div>
-    <div class="step" data-step="2" onclick="goStep(2)"><div class="step-num"><span>2</span></div><div class="step-lbl">Profile</div></div>
+    <div class="step" data-step="2" onclick="goStep(2)"><div class="step-num"><span>2</span></div><div class="step-lbl">Public Profile</div></div>
     <div class="step-div"></div>
-    <div class="step" data-step="3" onclick="goStep(3)"><div class="step-num"><span>3</span></div><div class="step-lbl">Work</div></div>
+    <div class="step" data-step="3" onclick="goStep(3)"><div class="step-num"><span>3</span></div><div class="step-lbl">Services</div></div>
     <div class="step-div"></div>
     <div class="step" data-step="4" onclick="goStep(4)"><div class="step-num"><span>4</span></div><div class="step-lbl">Documents</div></div>
   </div>
@@ -618,23 +628,22 @@ html{scroll-behavior:smooth}
   <!-- ═══════════ STEP 1: ABOUT YOU ═══════════ -->
   <div class="card" id="step1">
     <div class="card-head">
-      <div><div class="card-t">About You</div><div class="card-s">Personal information. Strictly confidential.</div></div>
+      <div><div class="card-t">About You</div><div class="card-s">Personal information.</div></div>
       <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 016-6h4a6 6 0 016 6v2"/></svg></div>
     </div>
+
+    <!-- Safe & Strictly Confidential banner — moved below the card head -->
+    <div class="safe-badge" style="margin:0 0 16px;display:inline-flex">
+      <svg class="locker-open" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+      <svg class="locker-closed" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>Safe &amp; Strictly Confidential</span>
+    </div>
+
     <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 016-6h4a6 6 0 016 6v2"/></svg></div>
-        <div class="sec-t">Personal Information</div>
-        <div class="safe-badge">
-          <svg class="locker-open" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
-          <svg class="locker-closed" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span>Safe &amp; Strictly Confidential</span>
-        </div>
-      </div>
       <div class="row-1" style="margin-bottom:14px">
         <div class="field">
           <label class="field-lbl">Full Name <span class="req">*</span></label>
-          <input type="text" class="inp" id="f_fullname" placeholder="Maria Sofia Gonzalez" data-sec="personal" autocomplete="name" autocapitalize="words" spellcheck="false">
+          <input type="text" class="inp" id="f_fullname" placeholder="Write your full name correctly" data-sec="personal" autocomplete="name" autocapitalize="words" spellcheck="false">
           <div class="field-hint">Exactly as shown in your passport or government ID. We treat this strictly confidentially.</div>
         </div>
       </div>
@@ -650,13 +659,15 @@ html{scroll-behavior:smooth}
         <div class="field">
           <label class="field-lbl">Nationality <span class="req">*</span></label>
           <select class="sel" id="f_nationality" data-sec="personal" autocomplete="off"><option value="">Select...</option></select>
+          <input type="text" class="inp" id="f_nationality_other" placeholder="Type your nationality" data-sec="personal" style="display:none;margin-top:8px">
         </div>
       </div>
       <div class="row">
         <div class="field">
           <label class="field-lbl">Country of Residence <span class="req">*</span></label>
           <select class="sel" id="f_country" data-sec="personal" autocomplete="country-name"><option value="">Select your country...</option></select>
-          <div class="field-hint">This drives the city list below.</div>
+          <input type="text" class="inp" id="f_country_other" placeholder="Type your country" data-sec="personal" style="display:none;margin-top:8px">
+          <div class="field-hint">Once you choose your country, the city will show up in the list below.</div>
         </div>
         <div class="field">
           <label class="field-lbl">City <span class="req">*</span></label>
@@ -671,27 +682,21 @@ html{scroll-behavior:smooth}
           <div class="field-hint">Where you currently live within the city.</div>
         </div>
       </div>
-      <div class="row-1">
-        <div class="field">
-          <label class="field-lbl">Full Home Address <span class="opt-note">Optional · Strictly confidential</span></label>
-          <input type="text" class="inp" id="f_home_address" placeholder="16 Maddox Street, Flat 2, W1S 1PH, London, United Kingdom" autocomplete="street-address">
-          <div class="field-hint">Format: street &amp; number, flat, postcode, city, country. Used only for KYC verification.</div>
-        </div>
-      </div>
       <div class="row">
         <div class="field">
           <label class="field-lbl">Phone (WhatsApp) <span class="req">*</span></label>
           <div class="phone-combo">
             <select class="sel phone-prefix" id="f_phone_code" data-sec="personal" aria-label="Country code">
-              <option value="">+...</option>
+              <option value="">Add prefix</option>
             </select>
             <input type="tel" class="inp phone-number" id="f_phone" placeholder="7700 900 123" data-sec="personal" inputmode="tel" autocomplete="tel-national">
           </div>
-          <div class="field-hint">Pick your country code. Number without leading 0.</div>
+          <div class="field-hint">Pick your country code. Number without prefix won&rsquo;t work.</div>
         </div>
         <div class="field">
           <label class="field-lbl">Email <span class="req">*</span></label>
           <input type="email" class="inp" id="f_email" placeholder="your@email.com" data-sec="personal" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false">
+          <div class="field-hint" id="f_email_hint" style="display:none;color:var(--rd)">Please use a valid email address.</div>
         </div>
       </div>
       <div class="row-1">
@@ -721,8 +726,8 @@ html{scroll-behavior:smooth}
           </select>
         </div>
         <div class="field">
-          <label class="field-lbl">UK bank account?</label>
-          <div class="pill-group" data-pill="uk_bank">
+          <label class="field-lbl">UK bank account <span class="req">*</span></label>
+          <div class="pill-group" data-pill="uk_bank" data-required="true">
             <div class="pill" data-val="Yes">Yes</div>
             <div class="pill" data-val="No">No</div>
             <div class="pill" data-val="In progress">In progress</div>
@@ -734,8 +739,11 @@ html{scroll-behavior:smooth}
           <label class="field-lbl">English Level <span class="req">*</span></label>
           <select class="sel" id="f_english" data-sec="personal">
             <option value="">Select...</option>
-            <option>Fluent</option><option>Conversational</option>
-            <option>Basic</option><option>None — learning</option>
+            <option>Native</option>
+            <option>Fluent</option>
+            <option>Conversational</option>
+            <option>Basic</option>
+            <option>None - I am learning</option>
           </select>
         </div>
         <div class="field">
@@ -751,16 +759,17 @@ html{scroll-behavior:smooth}
 
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5l9 7 9-7"/><path d="M3 5v14h18V5"/></svg></div>
-        <div class="sec-t">Languages</div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/></svg></div>
+        <div class="sec-t">Extra languages</div>
       </div>
       <div class="field">
-        <label class="field-lbl">Languages Spoken <span class="req">*</span></label>
-        <div class="field-hint" style="margin-bottom:6px">Add each language you speak and how well — Native / Fluent / Advanced / Conversational / Basic.</div>
+        <label class="field-lbl">Other languages you speak <span class="opt-note">Optional</span></label>
+        <div class="field-hint" style="margin-bottom:6px">English is captured above. Add any other languages and how well — Native / Fluent / Advanced / Conversational / Basic. Up to 5.</div>
         <div style="display:flex;gap:8px;align-items:stretch;flex-wrap:wrap">
           <select class="sel" id="langSelect" style="flex:1;min-width:160px"><option value="">+ Add a language…</option></select>
         </div>
         <div class="lang-list" id="langList"></div>
+        <div class="field-hint" id="langHint" style="margin-top:6px;display:none">Add one more language below if you speak more.</div>
       </div>
     </div>
 
@@ -770,16 +779,42 @@ html{scroll-behavior:smooth}
     </div>
   </div>
 
-  <!-- ═══════════ STEP 2: PROFESSIONAL PROFILE ═══════════ -->
+  <!-- ═══════════ STEP 2: PUBLIC PROFILE ═══════════ -->
   <div class="card" id="step2" style="display:none">
     <div class="card-head">
-      <div><div class="card-t">Professional Profile</div><div class="card-s">Your physical attributes and experience.</div></div>
-      <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.35 4.76L20 8.63l-4 3.9.94 5.47L12 15.5l-4.94 2.5L8 12.53 4 8.63l5.65-1.87L12 2z"/></svg></div>
+      <div><div class="card-t">Public Profile</div><div class="card-s">What clients will see — your name, profile age, and physical stats.</div></div>
+      <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 21c.8-3.6 3.4-6 6.5-6s5.7 2.4 6.5 6"/><path d="M18 4.5l.8 1.6 1.7.3-1.2 1.2.3 1.7L18 8.5l-1.6.8.3-1.7-1.2-1.2 1.7-.3z"/></svg></div>
     </div>
+
+    <!-- ── Name + Profile Age ── moved from Step 3 / row 3 — this is what
+         clients see first, so it leads the Public Profile section. ── -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 016-6h4a6 6 0 016 6v2"/></svg></div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M16 4v4h4"/><circle cx="11" cy="14" r="3"/><path d="M7 21c.6-2.4 2-4 4-4s3.4 1.6 4 4"/></svg></div>
+        <div class="sec-t">Your Profile</div>
+        <span class="sec-note">This is where we start seeing your profile</span>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label class="field-lbl">Choose Your Name <span class="req">*</span></label>
+          <input type="text" class="inp" id="f_workname" placeholder="Type your choice or pick a suggestion below" oninput="checkWorkName()">
+          <div class="wn-status" id="wnStatus" style="display:none"></div>
+          <div class="field-hint">The name clients will see on your profile. Must be unique &mdash; we verify it.</div>
+          <div class="wn-sug" id="wnSuggestions"></div>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Profile Age <span class="req">*</span></label>
+          <input type="number" class="inp" id="f_profile_age" placeholder="e.g. 25" min="18" max="55" data-sec="physical">
+          <div class="field-hint">The age you&rsquo;d like to appear as on your profile.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M6 21c.8-3.5 3.2-6 6-6s5.2 2.5 6 6"/><path d="M12 11v4"/></svg></div>
         <div class="sec-t">Physical</div>
+        <span class="sec-note">All required &mdash; clients pick by these</span>
       </div>
       <div class="row-3">
         <div class="field"><label class="field-lbl">Height (cm) <span class="req">*</span></label><input type="number" class="inp" id="f_height" placeholder="170" min="140" max="210" data-sec="physical"></div>
@@ -796,47 +831,50 @@ html{scroll-behavior:smooth}
         </div>
       </div>
       <div class="row-3">
-        <div class="field"><label class="field-lbl">Dress Size (UK)</label>
-          <select class="sel" id="f_dress"><option value="">Select...</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>14</option><option>16</option></select>
+        <div class="field"><label class="field-lbl">Dress Size (UK) <span class="req">*</span></label>
+          <select class="sel" id="f_dress" data-sec="physical"><option value="">Select...</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option>14</option><option>16</option></select>
         </div>
-        <div class="field"><label class="field-lbl">Eye Colour</label>
-          <select class="sel" id="f_eye"><option value="">Select...</option><option>Blue</option><option>Green</option><option>Hazel</option><option>Brown</option><option>Dark brown</option><option>Grey</option></select>
+        <div class="field"><label class="field-lbl">Eye Colour <span class="req">*</span></label>
+          <select class="sel" id="f_eye" data-sec="physical"><option value="">Select...</option><option>Blue</option><option>Green</option><option>Hazel</option><option>Brown</option><option>Dark brown</option><option>Grey</option><option>Other</option></select>
+          <input type="text" class="inp" id="f_eye_other" placeholder="Type your eye colour" data-sec="physical" style="display:none;margin-top:8px">
         </div>
-        <div class="field"><label class="field-lbl">Hair Colour</label>
-          <select class="sel" id="f_hair"><option value="">Select...</option><option>Blonde</option><option>Light brown</option><option>Brunette</option><option>Dark brown</option><option>Black</option><option>Red</option><option>Dark red</option><option>Auburn</option><option>Other</option></select>
+        <div class="field"><label class="field-lbl">Hair Colour <span class="req">*</span></label>
+          <select class="sel" id="f_hair" data-sec="physical"><option value="">Select...</option><option>Blonde</option><option>Light brown</option><option>Brunette</option><option>Dark brown</option><option>Black</option><option>Red</option><option>Dark red</option><option>Auburn</option><option>Other</option></select>
+          <input type="text" class="inp" id="f_hair_other" placeholder="Type your hair colour" data-sec="physical" style="display:none;margin-top:8px">
         </div>
       </div>
-      <div class="row-3">
-        <div class="field"><label class="field-lbl">Breast Size</label><input type="text" class="inp" id="f_breast" placeholder="e.g. 34C"></div>
-        <div class="field"><label class="field-lbl">Breast Type</label>
-          <select class="sel" id="f_breast_type"><option value="">Select...</option><option>Natural</option><option>Enhanced</option></select>
+      <div class="row">
+        <div class="field"><label class="field-lbl">Breast Size <span class="req">*</span></label><input type="text" class="inp" id="f_breast" placeholder="e.g. 34C" data-sec="physical"></div>
+        <div class="field"><label class="field-lbl">Breast Type <span class="req">*</span></label>
+          <select class="sel" id="f_breast_type" data-sec="physical"><option value="">Select...</option><option>Natural</option><option>Enhanced</option></select>
         </div>
-        <div class="field"><label class="field-lbl">Profile Age</label><input type="number" class="inp" id="f_profile_age" placeholder="e.g. 25" min="18" max="55"><div class="field-hint">Age you'd like to appear as</div></div>
       </div>
     </div>
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.35 4.76L20 8.63l-4 3.9.94 5.47L12 15.5l-4.94 2.5L8 12.53 4 8.63l5.65-1.87L12 2z"/></svg></div>
-        <div class="sec-t">Experience & Training</div>
+        <div class="sec-t">Experience &amp; Training</div>
       </div>
       <div class="row">
         <div class="field"><label class="field-lbl">Years of Experience <span class="req">*</span></label>
           <select class="sel" id="f_years" data-sec="experience"><option value="">Select...</option><option>No prior experience</option><option>0 – 1 year</option><option>1 – 3 years</option><option>3 – 5 years</option><option>5 – 10 years</option><option>10+ years</option></select>
         </div>
         <div class="field"><label class="field-lbl">How did you hear about us?</label>
-          <select class="sel" id="f_heard"><option value="">Select...</option><option>Instagram</option><option>Referral from a friend</option><option>Google search</option><option>Agency contact</option><option>Website</option><option>Other</option></select>
+          <select class="sel" id="f_heard"><option value="">Select...</option><option>Instagram</option><option>From a friend</option><option>Google search</option><option>Agency contact</option><option>Website</option><option>Other</option></select>
+          <input type="text" class="inp" id="f_heard_other" placeholder="Tell us where you heard about us" style="display:none;margin-top:8px">
         </div>
       </div>
+
+      <!-- #27 — Tell us what you do best (replaces the training & previous-
+           experience textareas). One single, focused prompt. -->
       <div class="row-1">
-        <div class="field"><label class="field-lbl">Training & Certifications <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_training" placeholder="List any formal training, certifications, or diplomas..."></textarea>
+        <div class="field">
+          <label class="field-lbl">If you have experience, tell us what you do best <span class="opt-note">Optional</span></label>
+          <textarea class="txa" id="f_prev_exp" rows="4" placeholder="How do you greet a client professionally? How prompt are you with replies? What do you bring to the experience that makes it memorable? Share anything that helps us understand your style."></textarea>
+          <div class="field-hint">Free-form &mdash; write in your own words. This stays strictly confidential.</div>
         </div>
       </div>
-      <div class="row-1">
-        <div class="field"><label class="field-lbl">Previous Experience <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_prev_exp" placeholder="Briefly describe your experience..."></textarea>
-        </div>
-      </div>
+
       <div class="row">
         <div class="field"><label class="field-lbl">Professional photoshoot?</label>
           <div class="pill-group" data-pill="photoshoot">
@@ -845,42 +883,24 @@ html{scroll-behavior:smooth}
             <div class="pill" data-val="Not interested">Not interested</div>
           </div>
         </div>
-        <div class="field"><label class="field-lbl">Diplomas/Courses?</label>
+        <div class="field">
+          <label class="field-lbl">Diplomas / Courses?</label>
           <div class="pill-group" data-pill="diplomas">
             <div class="pill" data-val="Yes">Yes</div>
             <div class="pill" data-val="No">No</div>
           </div>
+          <!-- #25 — Reveal an upload button when Yes is picked. -->
+          <div id="diplomaUploadWrap" style="display:none;margin-top:10px">
+            <input type="file" id="f_diploma_proof" accept="image/*,application/pdf" style="display:none" onchange="onDiplomaProofChange(this)">
+            <button type="button" class="upload-btn" onclick="document.getElementById('f_diploma_proof').click()">Upload the proof (or upload later)</button>
+            <div class="field-hint" id="diplomaProofName" style="margin-top:6px"></div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="actions">
-      <div class="actions-left"><button class="btn btn-ghost" onclick="goStep(1)">← Back</button></div>
-      <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button><button class="btn btn-primary" onclick="goStep(3)">Continue →</button></div>
-    </div>
-  </div>
 
-  <!-- ═══════════ STEP 3: WORK & AVAILABILITY ═══════════ -->
-  <div class="card" id="step3" style="display:none">
-    <div class="card-head">
-      <div><div class="card-t">Work & Availability</div><div class="card-s">Services, location, and schedule.</div></div>
-      <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-    </div>
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div>
-        <div class="sec-t">Work Name</div>
-        <span class="sec-note">We'll verify uniqueness</span>
-      </div>
-      <div class="row-1">
-        <div class="field">
-          <label class="field-lbl">Preferred Work Name <span class="opt-note">We Verify Uniqueness</span></label>
-          <input type="text" class="inp" id="f_workname" placeholder="Type your choice or pick a suggestion below" oninput="checkWorkName()">
-          <div class="wn-status" id="wnStatus" style="display:none"></div>
-          <div class="field-hint">The name clients will see on your profile. Must be unique.</div>
-          <div class="wn-sug" id="wnSuggestions"></div>
-        </div>
-      </div>
-    </div>
+    <!-- ═══ #28 — WORK & AVAILABILITY moved into Public Profile ═══ -->
+
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
@@ -931,7 +951,7 @@ html{scroll-behavior:smooth}
           </div>
         </div>
         <div class="field">
-          <label class="field-lbl">Late nights & weekends?</label>
+          <label class="field-lbl">Late nights &amp; weekends?</label>
           <div class="pill-group" data-pill="late_hours">
             <div class="pill" data-val="Yes always">Yes always</div>
             <div class="pill" data-val="Advance notice">Advance notice</div>
@@ -940,12 +960,13 @@ html{scroll-behavior:smooth}
         </div>
       </div>
     </div>
+
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20"/></svg></div>
         <div class="sec-t">Available for Travel</div>
       </div>
-      <div class="field-hint" style="margin-bottom:10px">Select all destinations you're open to.</div>
+      <div class="field-hint" style="margin-bottom:10px">Select all destinations you&rsquo;re open to.</div>
       <div class="chk-grid" id="abroadGrid"></div>
       <div class="row-1" style="margin-top:14px">
         <div class="field"><label class="field-lbl">Other Travel Notes <span class="opt-note">Optional</span></label>
@@ -953,7 +974,7 @@ html{scroll-behavior:smooth}
         </div>
       </div>
     </div>
-    <!-- ═══ WEEKLY AVAILABILITY (moved up — sets schedule before pricing) ═══ -->
+
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
@@ -966,17 +987,33 @@ html{scroll-behavior:smooth}
       </div>
       <button type="button" class="avail-cta" onclick="document.getElementById('availGrid').scrollIntoView({behavior:'smooth',block:'start'})">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>Choose your weekly availability — <b>mandatory</b></span>
+        <span>Choose your weekly availability &mdash; <b>mandatory</b></span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="field-hint" style="margin:6px 0 12px">Tap each day to mark it ON, then set the hours you'd like to work. Off days stay off.</div>
+      <div class="field-hint" style="margin:6px 0 12px">Tap each day to mark it ON, then set the hours you&rsquo;d like to work. Off days stay off.</div>
       <div class="avail-grid" id="availGrid"></div>
       <div class="row-1" style="margin-top:10px">
         <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_avail_notes" placeholder="e.g. 'I prefer 48h advance notice...'"></textarea>
+          <textarea class="txa" id="f_avail_notes" placeholder="e.g. &lsquo;I prefer 48h advance notice...&rsquo;"></textarea>
         </div>
       </div>
     </div>
+
+    <div class="actions">
+      <div class="actions-left"><button class="btn btn-ghost" onclick="goStep(1)">← Back</button></div>
+      <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save Draft</button><button class="btn btn-primary" onclick="goStep(3)">Continue →</button></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ STEP 3: SERVICES & PRICING ═══════════ -->
+  <div class="card" id="step3" style="display:none">
+    <div class="card-head">
+      <div><div class="card-t">Services &amp; Pricing</div><div class="card-s">What you offer and how much you charge.</div></div>
+      <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
+    </div>
+
+    <!-- Work Name + Working Area + Travel + Weekly Availability moved to
+         Step 2 (Public Profile). Step 3 is now Services & Pricing only. -->
 
     <!-- ═══ PRICING & SERVICES — Two service modules with Yes/No reveal ═══ -->
     <div class="sec">
@@ -1027,14 +1064,18 @@ html{scroll-behavior:smooth}
         </div>
       </div>
 
-      <!-- ─── Service Module 2: ESCORT COMPANIONSHIP ─── -->
+      <!-- ─── Service Module 2: COMPANIONS SERVICES (user-facing name).
+           Internal ids / JS keys (modEscort, offers_escort, escort_services,
+           escort_rates, escort_tier) stay as `escort` because the submit
+           handler + MC OS lady-profile reader index on those keys. Only the
+           visible copy is renamed. ─── -->
       <div class="svc-mod" id="modEscort" style="margin-top:18px">
         <div class="svc-mod-head">
-          <div class="svc-mod-title">Escort Companionship Services</div>
+          <div class="svc-mod-title">Companions Services</div>
           <div class="svc-mod-desc">A sensual companionship experience between two consenting adults, which may include a girlfriend experience (GFE) and a relaxed level of intimacy.</div>
         </div>
         <div class="svc-mod-toggle">
-          <span class="svc-mod-q">Do you offer Escort Companionship?</span>
+          <span class="svc-mod-q">Do you offer Companions Services?</span>
           <div class="pill-group" data-pill="offers_escort">
             <div class="pill" data-val="Yes">Yes</div>
             <div class="pill" data-val="No">No</div>
@@ -1646,14 +1687,14 @@ let curStep = 1;
 let formData = {
   fullname:'', dob_d:'', dob_m:'', dob_y:'',
   nationality:'', city:'', country:'', phone:'', phone_code:'', email:'', ig:'',
-  // local_area_text and home_address are new free-text fields under Personal.
-  local_area_text:'', home_address:'',
+  // local_area_text is a free-text neighbourhood/landmark field under Personal.
+  local_area_text:'',
   rtw:'', uk_bank:'', english:'', self_emp:'',
   // languages: array of { language, level } objects.
   languages:[],
   height:'', weight:'', body:'', dress:'', eye:'', hair:'',
   breast:'', breast_type:'', profile_age:'',
-  years:'', heard:'', training:'', prev_exp:'',
+  years:'', heard:'', prev_exp:'',
   photoshoot:'', diplomas:'',
   workname:'',
   local_area:'', inhouse_address:'', inhouse:'', mobile:'', airport:'',
@@ -1702,6 +1743,13 @@ document.addEventListener('DOMContentLoaded', async function(){
   populatePhoneCodes('f_phone_code');
   populatePhoneCodes('f_em_phone_code');
   initCityCascade();
+  initOtherReveal('f_nationality', 'f_nationality_other', 'nationality');
+  initOtherReveal('f_country',     'f_country_other',     'country');
+  initOtherReveal('f_hair',        'f_hair_other',        'hair');
+  initOtherReveal('f_eye',         'f_eye_other',         'eye');
+  initOtherReveal('f_heard',       'f_heard_other',       'heard');
+  initEmailValidation();
+  initDiplomaUploadReveal();
   initAgencyReveal();
   initServiceModules();
   renderCurrencyRows();
@@ -1852,12 +1900,17 @@ function populateLangDropdown(){
   const sel = document.getElementById('langSelect');
   if(!sel) return;
   sel.innerHTML = '<option value="">+ Add a language…</option>';
-  // Show plain language names; level is picked separately per row.
-  // De-duplicate after stripping any "(level)" suffix from old config.
+  // English is captured in the dedicated English Level field above —
+  // it should never appear in the extras list. Also exclude any
+  // languages the user has already added (avoid duplicate picks).
+  const taken = new Set((formData.languages||[]).map(l => (typeof l === 'string' ? l : l.language).toLowerCase()));
   const seen = new Set();
   LANGUAGES.forEach(l => {
     const name = l.replace(/\s*\([^)]*\)\s*$/, '').trim();
-    if(!name || seen.has(name)) return;
+    if(!name) return;
+    if(name.toLowerCase() === 'english') return;        // #18: exclude English
+    if(taken.has(name.toLowerCase())) return;            // already added
+    if(seen.has(name)) return;
     seen.add(name);
     const opt = document.createElement('option');
     opt.value = name;
@@ -1866,8 +1919,32 @@ function populateLangDropdown(){
   });
   sel.onchange = function(){
     if(this.value){
+      // #19: cap at 5 extras to match the form UX.
+      const count = (formData.languages||[]).length;
+      if(count >= 5){
+        if(typeof showToast === 'function') showToast('You can add up to 5 extra languages.');
+        this.value = '';
+        return;
+      }
       addLang(this.value);
       this.value = '';
+      // Re-build the dropdown so the just-added language drops out,
+      // and the user sees an obvious "pick again" affordance.
+      populateLangDropdown();
+      // Auto-show the "add one more" hint so the user knows they can.
+      const hint = document.getElementById('langHint');
+      if(hint){
+        const newCount = (formData.languages||[]).length;
+        if(newCount > 0 && newCount < 5){
+          hint.textContent = 'Add one more language below if you speak more.';
+          hint.style.display = 'block';
+        } else if(newCount >= 5){
+          hint.textContent = 'Maximum 5 extra languages reached.';
+          hint.style.display = 'block';
+        } else {
+          hint.style.display = 'none';
+        }
+      }
     }
   };
 }
@@ -1967,6 +2044,115 @@ function initCityCascade(){
     formData.city = cityFree.value;
     updateProgress();
   });
+}
+
+// ─── Nationality / Country "Other" → reveal text input ─────────────
+// When the user picks "Other" from a select, show the matching free-text
+// input and route its value into formData under the canonical key.
+function initOtherReveal(selectId, inputId, formKey){
+  const sel = document.getElementById(selectId);
+  const inp = document.getElementById(inputId);
+  if(!sel || !inp) return;
+  const isOther = v => /^other\b/i.test((v||'').trim()) || (v||'').trim().toLowerCase() === 'other';
+  sel.addEventListener('change', () => {
+    if(isOther(sel.value)){
+      inp.style.display = 'block';
+      inp.focus();
+      // Reset stored value until the user types one — keeps validation honest.
+      formData[formKey] = '';
+    } else {
+      inp.style.display = 'none';
+      inp.value = '';
+      formData[formKey] = sel.value;
+    }
+    updateProgress();
+  });
+  inp.addEventListener('input', () => {
+    formData[formKey] = inp.value.trim();
+    updateProgress();
+  });
+}
+
+// ─── Email validation against a curated list of real domains ────────
+// Block typos like "gnail.com" before submit. Shows the inline hint
+// under the email field. Falls open on submit (still attempts) — this
+// is advisory UX, not a hard block.
+const EMAIL_VALID_DOMAINS = [
+  'gmail.com','googlemail.com',
+  'outlook.com','hotmail.com','live.com','msn.com',
+  'icloud.com','me.com','mac.com',
+  'yahoo.com','yahoo.co.uk','ymail.com','rocketmail.com',
+  'protonmail.com','proton.me','pm.me',
+  'aol.com','gmx.com','gmx.co.uk','mail.com','zoho.com','fastmail.com',
+  'tutanota.com','tutamail.com','yandex.com','yandex.ru'
+];
+function isPlausibleEmail(value){
+  const v = (value||'').trim().toLowerCase();
+  // Basic RFC-ish shape first.
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return false;
+  const domain = v.split('@')[1];
+  // Allow any whitelist domain or any address on a custom host with a
+  // valid-looking TLD (≥2 chars, letters only — keeps the door open
+  // for company emails on the application form).
+  if(EMAIL_VALID_DOMAINS.indexOf(domain) !== -1) return true;
+  // Otherwise require a "normal" looking domain with a letters-only TLD.
+  return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(domain) && /\.[a-z]{2,}$/.test(domain);
+}
+function initEmailValidation(){
+  const inp  = document.getElementById('f_email');
+  const hint = document.getElementById('f_email_hint');
+  if(!inp || !hint) return;
+  const update = () => {
+    const v = inp.value.trim();
+    if(!v){ hint.style.display = 'none'; inp.style.borderColor = ''; return; }
+    if(isPlausibleEmail(v)){
+      hint.style.display = 'none';
+      inp.style.borderColor = '';
+    } else {
+      hint.style.display = 'block';
+      inp.style.borderColor = 'var(--rd)';
+    }
+  };
+  inp.addEventListener('blur',  update);
+  inp.addEventListener('input', () => {
+    // Hide the warning while typing — only show it on blur to avoid noise.
+    if(hint.style.display === 'block') update();
+  });
+}
+
+// ─── Diplomas/Courses pill = Yes → reveal upload button (#25) ──────
+// When the user picks "Yes" on the Diplomas/Courses pill group, we
+// auto-reveal a small "Upload the proof (or upload later)" affordance.
+// The actual file is stashed on formData so step 4's documents handler
+// can pick it up at submit, or the lady can upload later from her
+// profile.
+function initDiplomaUploadReveal(){
+  const grp  = document.querySelector('[data-pill="diplomas"]');
+  const wrap = document.getElementById('diplomaUploadWrap');
+  if(!grp || !wrap) return;
+  grp.addEventListener('click', e => {
+    const target = e.target.closest('.pill');
+    if(!target) return;
+    // Defer so the .active class set by the existing pill handler wins.
+    setTimeout(() => {
+      const isYes = grp.querySelector('.pill.active')?.dataset.val === 'Yes';
+      wrap.style.display = isYes ? 'block' : 'none';
+      if(!isYes){
+        const inp = document.getElementById('f_diploma_proof');
+        if(inp) inp.value = '';
+        const lbl = document.getElementById('diplomaProofName');
+        if(lbl) lbl.textContent = '';
+        if(formData) formData.diploma_proof = null;
+      }
+    }, 0);
+  });
+}
+function onDiplomaProofChange(input){
+  const lbl = document.getElementById('diplomaProofName');
+  const f = input.files && input.files[0];
+  if(!f){ if(lbl) lbl.textContent = ''; return; }
+  if(lbl) lbl.textContent = 'Selected: ' + f.name + ' · ' + Math.round(f.size/1024) + ' KB · we’ll attach it at submit.';
+  if(formData) formData.diploma_proof = f;
 }
 
 // ─── Other agencies → conditional website field ──────────────────
@@ -2519,7 +2705,7 @@ function updateProgress(){
   document.getElementById('progPct').textContent = pct;
   document.getElementById('progFill').style.width = pct + '%';
   
-  const stepNames = ['','About You','Professional Profile','Work & Availability','Documents'];
+  const stepNames = ['','About You','Public Profile','Services & Pricing','Documents'];
   document.getElementById('progStep').innerHTML = 'Step <b>'+curStep+'</b> of 4 · '+stepNames[curStep];
 }
 
@@ -2884,7 +3070,7 @@ async function submitApplication(){
   // Must offer at least one of the two service modules and configure
   // pricing for whichever they offer.
   if(formData.offers_tantric !== 'Yes' && formData.offers_escort !== 'Yes'){
-    showToast('Select Yes for at least one service module (Tantric or Escort)','error');
+    showToast('Select Yes for at least one service module (Tantric or Companions)','error');
     document.getElementById('modTantric')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
@@ -2894,7 +3080,7 @@ async function submitApplication(){
     return;
   }
   if(formData.offers_escort === 'Yes' && !formData.escort_tier){
-    showToast('Pick your Escort pricing tier (Sold / Premium / Elite)','error');
+    showToast('Pick your Companions pricing tier (Sold / Premium / Elite)','error');
     document.getElementById('escortTierGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
@@ -2902,7 +3088,7 @@ async function submitApplication(){
   // existing app/lady profile keeps a flat list to display.
   formData.services = [];
   if(formData.offers_tantric === 'Yes') formData.services.push('Tantric Massage');
-  if(formData.offers_escort === 'Yes') formData.services.push('Escort Companionship');
+  if(formData.offers_escort === 'Yes') formData.services.push('Companions Services');
   Object.keys(formData.escort_services||{}).forEach(k => {
     const v = formData.escort_services[k];
     const meta = ESCORT_SERVICES.find(s => s.key === k);
@@ -2992,7 +3178,6 @@ async function submitApplication(){
     city: formData.city || null,
     local_area: formData.local_area,
     home_neighbourhood: formData.local_area_text || null,
-    home_address: formData.home_address || null,
     in_house_address: formData.inhouse_address||null,
     
     // Physical
@@ -3055,7 +3240,6 @@ async function submitApplication(){
     
     // All other application data bundled as rich detail
     special_requests: [
-      formData.training ? 'Training: '+formData.training : '',
       formData.prev_exp ? 'Experience: '+formData.prev_exp : '',
       formData.services.length>0 ? 'Services: '+formData.services.join(', ') : '',
       formData.addons.length>0 ? 'Add-ons: '+formData.addons.join(', ') : '',
@@ -3123,6 +3307,22 @@ async function submitApplication(){
     const r = await sb.from('ladies').insert([ladyRow]).select();
     if(r.error) throw r.error;
 
+    // ═══ POST-SUBMIT ROUTING (non-blocking) ═══
+    // Runs after the lady row is created. Checks the permanent blocklist,
+    // auto-flags beginners for mandatory Practice (Basic tier), and writes
+    // a notification row for the founder. All wrapped so any failure is
+    // logged but does NOT block the applicant's success screen.
+    // We pass the full inserted row (not just the id) so the routing can
+    // preserve the original special_requests blob when appending the
+    // BLOCKLIST tag — passing the id alone meant the patch overwrote the
+    // rich detail with just the tag line.
+    try {
+      const newLady = (r.data && r.data[0]) || null;
+      if(newLady) await postSubmitRouting(newLady, formData);
+    } catch(e){
+      console.warn('Post-submit routing failed (non-critical):', e);
+    }
+
     // ═══ SEND CONFIRMATION EMAIL ═══
     btn.textContent = 'Sending confirmation email...';
     try {
@@ -3131,12 +3331,10 @@ async function submitApplication(){
       console.warn('Email send failed (non-critical):', e);
     }
 
-    // ═══ NOTIFY OWNER (via notifications table for real-time MC OS badge) ═══
-    try {
-      await notifyOwner(applicationRef, formData.fullname, formData.workname);
-    } catch(e){
-      console.warn('Notify owner failed (non-critical):', e);
-    }
+    // (notifyOwner removed — postSubmitRouting already writes a
+    // 'new_application' row to apply_notifications, which is what the
+    // OS dashboard widget + Hiring kanban read for the badge. The old
+    // notifyOwner targeted a `notifications` table that doesn't exist.)
 
     localStorage.removeItem('mayriche_apply_draft');
     document.getElementById('successRef').textContent = applicationRef;
@@ -3151,52 +3349,114 @@ async function submitApplication(){
   }
 }
 
+// ════════════════════════════════════════════════════════════════════
+// POST-SUBMIT ROUTING — Practice gating + blocklist check + alert log
+// ════════════════════════════════════════════════════════════════════
+// 1. Look up the permanent blocklist by email/phone. If hit, mark the
+//    application with a BLOCKLIST flag in special_requests so the kanban
+//    card shows it immediately, plus a separate notification row.
+// 2. If the applicant declared "No prior experience" or "0 – 1 year",
+//    auto-set practice_mandatory = true and practice_tier = 'basic'.
+//    Other tiers (Advanced / Exclusive) are decided at the interview.
+// 3. Always write a 'new_application' notification so the founder sees
+//    a fresh entry in the OS in-app badge.
+//
+// Every step is wrapped — any single failure is logged but never
+// blocks the applicant's success flow.
+async function postSubmitRouting(newLady, formData){
+  if(!sb || !newLady || !newLady.id) return;
+  const newLadyId = newLady.id;
+
+  // ── beginner detection ──
+  // Reads formData.years (the actual key — was looking at the non-existent
+  // formData.years_experience which meant this auto-flag never fired).
+  // Buckets match the exact option labels in the form (#f_years select),
+  // including the en-dash variant.
+  const beginnerBuckets = ['No prior experience', '0 – 1 year'];
+  const isBeginner = beginnerBuckets.indexOf((formData.years||'').trim()) >= 0;
+
+  // 1 — blocklist check (anon SELECT policy allows this)
+  let blockHit = null;
+  try {
+    // Match by email exact, OR by digits-only phone (so '+44 7700 900123'
+    // still matches '+447700900123' or '07700 900123' stored in blocklist).
+    const phoneDigits = ((formData.phone_code||'') + (formData.phone||'')).replace(/\D/g,'');
+    const emailLower  = (formData.email||'').trim().toLowerCase();
+    const filters = [];
+    if(emailLower) filters.push('email.eq.'+encodeURIComponent(emailLower));
+    if(phoneDigits) filters.push('phone.ilike.'+encodeURIComponent('%'+phoneDigits.slice(-9)+'%'));
+    if(filters.length>0){
+      const q = await sb.from('ladies_blocklist')
+        .select('id, name, removal_reason, removed_at')
+        .or(filters.join(','))
+        .limit(1);
+      if(!q.error && q.data && q.data.length>0) blockHit = q.data[0];
+    }
+  } catch(e){ console.warn('[postSubmit] blocklist check failed:', e); }
+
+  // 2 — patch the new lady row with flags + practice defaults
+  try {
+    const patch = {};
+    if(isBeginner){
+      patch.practice_mandatory = true;
+      patch.practice_tier = 'basic';
+    }
+    if(blockHit){
+      // Append the BLOCKLIST tag to whatever special_requests the INSERT
+      // already produced — DO NOT overwrite. Reading newLady.special_requests
+      // preserves the rich blob (experience, services, rates, agency info, etc.).
+      const prior = newLady.special_requests || '';
+      patch.special_requests = (prior ? prior + '\n\n' : '') +
+        '[BLOCKLIST MATCH] ' + (blockHit.removal_reason || 'reason not given');
+    }
+    if(Object.keys(patch).length>0){
+      await sb.from('ladies').update(patch).eq('id', newLadyId);
+    }
+  } catch(e){ console.warn('[postSubmit] lady patch failed:', e); }
+
+  // 3 — notification rows (anon INSERT policy allows new_application + blocklist_match)
+  try {
+    const rows = [{
+      lady_id: newLadyId,
+      notification_type: 'new_application',
+      message: 'New application from '+(formData.fullname||'(no name)')+
+               '. Beginner: '+(isBeginner?'YES':'no')+
+               '. Practice: '+(isBeginner?'basic (mandatory)':'tbd at interview')+'.',
+      sent_to_founder: true,
+      channel: 'all'
+    }];
+    if(blockHit){
+      rows.push({
+        lady_id: newLadyId,
+        notification_type: 'blocklist_match',
+        message: 'BLOCKLIST match on email/phone — review before proceeding. Prior reason: '+(blockHit.removal_reason||'unknown'),
+        sent_to_founder: true,
+        channel: 'all'
+      });
+    }
+    await sb.from('apply_notifications').insert(rows);
+  } catch(e){ console.warn('[postSubmit] notification insert failed:', e); }
+}
+
 // ═══════════ SEND CONFIRMATION EMAIL ═══════════
-// Uses Supabase Edge Function 'send-apply-email' (creează după SQL)
+// Uses Supabase Edge Function 'send-apply-email' (deploy alongside the
+// schema migration). The Edge Function is responsible for templating
+// + sending — never expose mail provider creds to the public form.
+// The previous email_queue fallback is gone — that table doesn't exist
+// in this project, so the fallback was a silent no-op.
 async function sendConfirmationEmail(toEmail, fullName, appRef){
   if(!sb || !toEmail) return;
   try {
     const res = await sb.functions.invoke('send-apply-email', {
-      body: {
-        to: toEmail,
-        name: fullName,
-        application_ref: appRef
-      }
+      body: { to: toEmail, name: fullName, application_ref: appRef }
     });
-    console.log('✅ Confirmation email sent:', res);
+    if(res && res.error) throw res.error;
+    console.log('[apply] Confirmation email dispatched:', appRef);
   } catch(e){
-    // Fallback: Insert to email_queue table for later processing
-    try {
-      await sb.from('email_queue').insert({
-        to_email: toEmail,
-        template: 'apply_confirmation',
-        template_data: { name: fullName, application_ref: appRef },
-        status: 'pending'
-      });
-      console.log('📧 Email queued for sending');
-    } catch(e2){
-      console.warn('Email queue insert failed:', e2);
-    }
-  }
-}
-
-// ═══════════ NOTIFY OWNER (triggers badge in MC OS) ═══════════
-async function notifyOwner(appRef, fullName, workName){
-  if(!sb) return;
-  try {
-    await sb.from('notifications').insert({
-      user_id: '155edca8-551d-4516-891e-33e2348d638c',
-      type: 'new_application',
-      title: 'New application received',
-      message: fullName + (workName ? ' (as '+workName+')' : '') + ' has submitted an application',
-      link_to: '/ladies/applications',
-      reference: appRef,
-      read: false,
-      priority: 'high'
-    });
-    console.log('✅ Owner notified');
-  } catch(e){
-    console.warn('Notify fail:', e);
+    // Edge Function not deployed yet → silent skip. Founder still sees
+    // the application via the apply_notifications row written by
+    // postSubmitRouting + the dashboard widget.
+    console.warn('[apply] Email Edge Function not available yet:', e && e.message);
   }
 }
 
