@@ -344,6 +344,32 @@ input[type="file"]{display:none}
 .opt-note{display:inline-block;padding:2px 8px;background:var(--sf);border-radius:10px;font-size:9.5px;color:var(--mt);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-left:6px;}
 
 /* Upload progress bar */
+/* Photo grids — used by Professional Photoshoot (5 slots) + Full-Body
+   3-angle grid. Each slot is a thumbnail card with the same card
+   styling as the rest of Step 4. Empty slots show a dashed border +
+   placeholder icon; filled slots show the image preview + a hover
+   replace button. */
+.photo-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:4px}
+.photo-grid-3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:768px){.photo-grid{grid-template-columns:repeat(3,1fr)}.photo-grid-3{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:480px){.photo-grid{grid-template-columns:repeat(2,1fr)}.photo-grid-3{grid-template-columns:1fr}}
+.photo-slot{position:relative;aspect-ratio:3/4;background:var(--wm);border:1.5px dashed var(--brd2);border-radius:var(--rs);overflow:hidden;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;color:var(--mt)}
+.photo-slot:hover{border-color:var(--ac);background:var(--sf);color:var(--ac)}
+.photo-slot.filled{border-style:solid;border-color:var(--gn);background:var(--card)}
+.photo-slot-empty{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:8px}
+.photo-slot-icon{width:28px;height:28px;opacity:.7}
+.photo-slot-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+.photo-slot-hint{font-size:9px;color:var(--mt);font-weight:400;letter-spacing:.04em;text-transform:none;font-style:italic}
+.photo-slot-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photo-slot-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.55),rgba(0,0,0,0) 50%);display:flex;align-items:flex-end;justify-content:space-between;padding:8px 10px;opacity:0;transition:opacity .2s}
+.photo-slot:hover .photo-slot-overlay{opacity:1}
+.photo-slot.filled .photo-slot-overlay{opacity:0;}
+.photo-slot.filled:hover .photo-slot-overlay{opacity:1}
+.photo-slot-badge{background:rgba(255,255,255,.92);color:var(--tx);font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:3px 8px;border-radius:3px}
+.photo-slot-remove{background:rgba(192,96,96,.92);color:#fff;border:0;font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:4px 10px;border-radius:3px;cursor:pointer;font-family:var(--fb)}
+.photo-slot-remove:hover{background:#a85050}
+.photo-slot.required-empty{border-color:rgba(192,96,96,.40);background:rgba(192,96,96,.04)}
+
 .upload-prog{height:3px;background:var(--sf);border-radius:2px;overflow:hidden;margin-top:6px;display:none;}
 .upload-prog.active{display:block}
 .upload-prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--acL));width:0%;transition:width .2s;}
@@ -1428,53 +1454,81 @@ html{scroll-behavior:smooth}
       <div class="upload-prog" id="prog_location"><div class="upload-prog-fill"></div></div>
     </div>
 
+    <!-- ─── PROFESSIONAL PHOTOSHOOT ─── 5-photo grid (was the
+         "Portfolio" sub-row inside Supporting Documents). Each slot
+         renders the same card style as the rest of Step 4 so the
+         section reads consistently. -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <div class="sec-t">Professional Photoshoot</div>
+        <span class="sec-note">Minimum 5 photos</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">Five (or more) of your best professional photos. Use the slots below — each slot accepts one image. Recommended: clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
+      <div class="photo-grid" id="proPhotoGrid"></div>
+      <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
+      <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
+    </div>
+
+    <!-- ─── FULL-BODY PHOTOS — 3 mandatory angles ─── Front / back / side
+         in black lingerie, no filters, no face-editing. Modelled after a
+         model-fit body check so the CEO can verify the applicant matches
+         the work-name profile before approving. -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/><path d="M5 12h14"/></svg></div>
+        <div class="sec-t">Full-Body Photos</div>
+        <span class="sec-note">3 angles · mandatory</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">Three full-length shots — <strong style="color:var(--tx)">front, back, side</strong> — in <strong style="color:var(--ac)">black lingerie</strong>. <strong style="color:var(--rd);font-weight:600">No filter, no face-editing, natural daylight.</strong> Model-style body check — gives us a clear view to confirm the work-name profile before approval.</div>
+      <div class="photo-grid photo-grid-3" id="bodyPhotoGrid"></div>
+      <input type="file" id="file_fullbody_front" accept="image/*" onchange="handleBodyPhoto(event,'front')" style="display:none">
+      <input type="file" id="file_fullbody_back"  accept="image/*" onchange="handleBodyPhoto(event,'back')"  style="display:none">
+      <input type="file" id="file_fullbody_side"  accept="image/*" onchange="handleBodyPhoto(event,'side')"  style="display:none">
+      <!-- Hidden legacy single-photo input kept so any prior draft restore
+           that points at f_fullbody doesn't error. Submit pulls the front
+           shot as the primary profile photo. -->
+      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')" style="display:none">
+      <div class="upload-prog" id="prog_fullbody"><div class="upload-prog-fill"></div></div>
+    </div>
+
+    <!-- ─── SUPPORTING DOCUMENTS ─── Proof of Address + Bank Statement
+         + Diploma. Each one a separate slot — Bank Statement is new
+         (used by accounts for verifying bank details before payouts).
+         Portfolio moved out into its own Pro Photoshoot section above. -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></div>
         <div class="sec-t">Supporting Documents</div>
         <span class="sec-note">Optional</span>
       </div>
       <div class="upload-list">
         <div class="upload" id="upl_utility" onclick="document.getElementById('file_utility').click()">
           <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">Proof of Address</div><div class="upload-h">Utility bill or bank statement</div></div>
+          <div class="upload-info"><div class="upload-ttl">Proof of Address</div><div class="upload-h">Utility bill — gas, water, council tax</div></div>
           <button class="upload-btn">Upload</button>
         </div>
         <input type="file" id="file_utility" accept="image/*,application/pdf" onchange="handleFileUpload(event,'utility')">
         <div class="upload-prog" id="prog_utility"><div class="upload-prog-fill"></div></div>
 
+        <div class="upload" id="upl_bank" onclick="document.getElementById('file_bank').click()">
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 14h2M7 17h6"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">Bank Statement</div><div class="upload-h">For bank details verification before payouts</div></div>
+          <button class="upload-btn">Upload</button>
+        </div>
+        <input type="file" id="file_bank" accept="image/*,application/pdf" onchange="handleFileUpload(event,'bank')">
+        <div class="upload-prog" id="prog_bank"><div class="upload-prog-fill"></div></div>
+
         <div class="upload" id="upl_diploma" onclick="document.getElementById('file_diploma').click()">
           <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7l9 5 9-5-9-5z"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">Diploma / Certification</div><div class="upload-h">Optional · Any training certificates</div></div>
+          <div class="upload-info"><div class="upload-ttl">Diploma / Certification</div><div class="upload-h">Any training certificates (massage, beauty, etc.)</div></div>
           <button class="upload-btn">Upload</button>
         </div>
         <input type="file" id="file_diploma" accept="image/*,application/pdf" onchange="handleFileUpload(event,'diploma')">
         <div class="upload-prog" id="prog_diploma"><div class="upload-prog-fill"></div></div>
+      </div>
+    </div>
 
-        <div class="upload" id="upl_portfolio" onclick="document.getElementById('file_portfolio').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">Professional Portfolio</div><div class="upload-h">Optional · Up to 5 photos</div></div>
-          <button class="upload-btn">Upload</button>
-        </div>
-        <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')">
-        <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
-      </div>
-    </div>
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/><path d="M5 12h14"/></svg></div>
-        <div class="sec-t">Full-Body Photo</div>
-      </div>
-      <div class="selfie-box">
-        <div class="selfie-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/></svg></div>
-        <div class="selfie-t">Clear Full-Body Photo</div>
-        <div class="selfie-s"><strong style="color:var(--tx)">What we need:</strong> <strong style="color:var(--ac)">lingerie with a robe on top</strong> is perfect.<br><strong style="color:var(--rd);font-weight:600">No filter. No face-editing. Natural lighting.</strong></div>
-        <button class="btn" onclick="document.getElementById('file_fullbody').click()">Upload Full-Body Photo</button>
-      </div>
-      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
-      <div id="fullbodyStatus" style="text-align:center;margin-top:8px"></div>
-      <div class="upload-prog" id="prog_fullbody"><div class="upload-prog-fill"></div></div>
-    </div>
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/><path d="M9 12l2 2 4-4"/></svg></div>
@@ -2165,7 +2219,16 @@ let formData = {
   signature_name:'', signature_signed_at:'',
   // NDA + photo consents removed; only age + gdpr + terms remain.
   consents:{age:false, gdpr:false, terms:false},
-  files:{selfie:null, utility:null, diploma:null, portfolio:[], fullbody:null, location:null},
+  // Step 4 file slots. portfolio = up to 5 Pro Photoshoot images.
+  // fullbody_* = the 3 mandatory body-check angles (front/back/side).
+  // bank = the new Supporting Documents bank-statement slot.
+  // location stays the room/bathroom walkthrough video.
+  files:{
+    selfie:null, utility:null, bank:null, diploma:null,
+    portfolio:[],
+    fullbody:null, fullbody_front:null, fullbody_back:null, fullbody_side:null,
+    location:null
+  },
   video:null,
 };
 
@@ -2190,6 +2253,10 @@ document.addEventListener('DOMContentLoaded', async function(){
   initTantricCompetingReveal();
   initHomeAddressInputs();
   initInhouseAddressInputs();
+  // Photo grids (Pro Photoshoot 5-slot + Full-Body 3-angle).
+  ensureProPhotoInput();
+  renderProPhotoGrid();
+  renderBodyPhotoGrid();
   initOtherReveal('f_nationality', 'f_nationality_other', 'nationality');
   initOtherReveal('f_country',     'f_country_other',     'country');
   initOtherReveal('f_hair',        'f_hair_other',        'hair');
@@ -3388,11 +3455,11 @@ function handleFileUpload(ev, kind){
   const files = ev.target.files;
   if(!files || files.length===0) return;
   if(kind === 'portfolio'){
+    // Multi-select fills the grid up to 5. Slot-based picker calls
+    // renderProPhotoGrid directly; this path is the bulk-select
+    // fallback that still works for compat.
     formData.files.portfolio = Array.from(files).slice(0,5);
-    const el = document.getElementById('upl_portfolio');
-    el.classList.add('done');
-    el.querySelector('.upload-ttl').textContent = 'Professional Portfolio · '+formData.files.portfolio.length+' selected';
-    el.querySelector('.upload-btn').textContent = 'Replace';
+    if(typeof renderProPhotoGrid === 'function') renderProPhotoGrid();
   } else if(kind === 'selfie'){
     formData.files.selfie = files[0];
     document.getElementById('selfieStatus').innerHTML = 
@@ -3409,6 +3476,131 @@ function handleFileUpload(ev, kind){
     el.querySelector('.upload-btn').textContent = 'Replace';
   }
   updateProgress();
+}
+
+// ═══════════ PROFESSIONAL PHOTOSHOOT — 5-slot grid ═══════════
+// 5 slots (slot 1 is required; 2-5 are optional but encouraged).
+// Each slot opens the hidden file_portfolio input filtered to its
+// index; if the applicant clicks a filled slot they get a replace
+// dialog. Multi-select is also supported (drop in 5 at once) via the
+// existing handleFileUpload('portfolio') path — this grid just gives
+// the slot-based visual + a per-slot remove control.
+function renderProPhotoGrid(){
+  const grid = document.getElementById('proPhotoGrid');
+  if(!grid) return;
+  const photos = formData.files.portfolio || [];
+  let html = '';
+  for(let i=0;i<5;i++){
+    const file = photos[i];
+    const required = (i === 0);
+    const url = file ? URL.createObjectURL(file) : '';
+    if(file){
+      html += '<div class="photo-slot filled" onclick="document.getElementById(\'proPhotoInput\').dataset.idx='+i+';document.getElementById(\'proPhotoInput\').click()">' +
+        '<img class="photo-slot-img" src="'+url+'" alt="">' +
+        '<div class="photo-slot-overlay">' +
+          '<span class="photo-slot-badge">'+(i+1)+' / 5</span>' +
+          '<button type="button" class="photo-slot-remove" onclick="event.stopPropagation();removeProPhoto('+i+')">Remove</button>' +
+        '</div>' +
+        '</div>';
+    } else {
+      html += '<div class="photo-slot'+(required?' required-empty':'')+'" onclick="document.getElementById(\'proPhotoInput\').dataset.idx='+i+';document.getElementById(\'proPhotoInput\').click()">' +
+        '<div class="photo-slot-empty">' +
+          '<svg class="photo-slot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>' +
+          '<span class="photo-slot-label">Photo '+(i+1)+'</span>' +
+          (required ? '<span class="photo-slot-hint">required</span>' : '<span class="photo-slot-hint">optional</span>') +
+        '</div></div>';
+    }
+  }
+  grid.innerHTML = html;
+}
+window.removeProPhoto = function(i){
+  if(!formData.files.portfolio) return;
+  formData.files.portfolio.splice(i,1);
+  renderProPhotoGrid();
+  scheduleAutoSave && scheduleAutoSave();
+};
+
+// Single hidden input that handles per-slot replacement. When the
+// applicant clicks an empty slot we set dataset.idx so the change
+// event knows which slot to fill (or append if idx >= current
+// length).
+function ensureProPhotoInput(){
+  if(document.getElementById('proPhotoInput')) return;
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.id = 'proPhotoInput';
+  inp.accept = 'image/*';
+  inp.style.display = 'none';
+  inp.addEventListener('change', function(e){
+    const f = e.target.files[0];
+    if(!f) return;
+    const idx = parseInt(e.target.dataset.idx || '0', 10);
+    if(!formData.files.portfolio) formData.files.portfolio = [];
+    // Cap at 5 — if the user clicks slot 6 it falls back to last.
+    const i = Math.min(Math.max(idx,0), 4);
+    formData.files.portfolio[i] = f;
+    // Reset value so re-selecting the same file fires change again.
+    e.target.value = '';
+    renderProPhotoGrid();
+    updateProgress();
+    scheduleAutoSave && scheduleAutoSave();
+  });
+  document.body.appendChild(inp);
+}
+
+// ═══════════ FULL-BODY 3-ANGLE GRID ═══════════
+// Front / Back / Side. All three mandatory at submit. Click a slot →
+// opens the matching file_fullbody_<angle> input. handleBodyPhoto
+// stores the file and re-renders the grid.
+function renderBodyPhotoGrid(){
+  const grid = document.getElementById('bodyPhotoGrid');
+  if(!grid) return;
+  const slots = [
+    {k:'fullbody_front', label:'Front', input:'file_fullbody_front'},
+    {k:'fullbody_back',  label:'Back',  input:'file_fullbody_back'},
+    {k:'fullbody_side',  label:'Side',  input:'file_fullbody_side'}
+  ];
+  let html = '';
+  slots.forEach(function(s){
+    const file = formData.files[s.k];
+    const url = file ? URL.createObjectURL(file) : '';
+    if(file){
+      html += '<div class="photo-slot filled" onclick="document.getElementById(\''+s.input+'\').click()">' +
+        '<img class="photo-slot-img" src="'+url+'" alt="">' +
+        '<div class="photo-slot-overlay">' +
+          '<span class="photo-slot-badge">'+s.label+'</span>' +
+          '<button type="button" class="photo-slot-remove" onclick="event.stopPropagation();removeBodyPhoto(\''+s.k+'\')">Remove</button>' +
+        '</div>' +
+        '</div>';
+    } else {
+      html += '<div class="photo-slot required-empty" onclick="document.getElementById(\''+s.input+'\').click()">' +
+        '<div class="photo-slot-empty">' +
+          '<svg class="photo-slot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/></svg>' +
+          '<span class="photo-slot-label">'+s.label+'</span>' +
+          '<span class="photo-slot-hint">required</span>' +
+        '</div></div>';
+    }
+  });
+  grid.innerHTML = html;
+}
+window.removeBodyPhoto = function(angle){
+  formData.files['fullbody_'+angle] = null;
+  // Clear front mirror used by legacy profile_photo_url.
+  if(angle === 'front') formData.files.fullbody = null;
+  renderBodyPhotoGrid();
+  scheduleAutoSave && scheduleAutoSave();
+};
+function handleBodyPhoto(ev, angle){
+  const file = ev.target.files[0];
+  if(!file) return;
+  formData.files['fullbody_'+angle] = file;
+  // Mirror the front shot into the legacy fullbody slot so the lady
+  // profile's profile_photo_url stays populated without extra logic.
+  if(angle === 'front') formData.files.fullbody = file;
+  ev.target.value = '';
+  renderBodyPhotoGrid();
+  updateProgress();
+  scheduleAutoSave && scheduleAutoSave();
 }
 
 // ═══════════ DIGITAL SIGNATURE ═══════════
@@ -3874,6 +4066,25 @@ async function submitApplication(){
   });
   const anyDay = Object.values(formData.availability).some(d => d.enabled);
   if(!anyDay){ showToast('Set your weekly availability — tap each day you can work','error'); return; }
+  // Step 4 mandatory uploads — surfaced as a soft block here so the
+  // applicant can't submit without the three body angles + minimum
+  // five professional photos. Selfie + ID stays required too.
+  if(!formData.files.selfie){
+    showToast('Please upload the Selfie + ID (Identity Verification)','error');
+    document.getElementById('upl_utility')?.parentElement?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const bodyMissing = ['front','back','side'].filter(a => !formData.files['fullbody_'+a]);
+  if(bodyMissing.length > 0){
+    showToast('Full-body photos missing: '+bodyMissing.join(', '),'error');
+    document.getElementById('bodyPhotoGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if((formData.files.portfolio||[]).length < 5){
+    showToast('Please upload at least 5 professional photos','error');
+    document.getElementById('proPhotoGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   const allConsents = Object.values(formData.consents).every(v => v);
   if(!allConsents){ showToast('Please accept all consents at the bottom of the form','error'); return; }
   // Digital signature mandatory — pairs with the consent checkboxes
@@ -3896,13 +4107,17 @@ async function submitApplication(){
   // Count every file we'll upload + 2 implicit phases (saving + notifying)
   // so the bar reflects real progress instead of jumping 50→100.
   const filesToUpload = [];
-  if(formData.files.selfie)   filesToUpload.push({k:'selfie',   type:'selfie_kyc',  label:'Selfie + ID',       f:formData.files.selfie});
-  if(formData.files.fullbody) filesToUpload.push({k:'fullbody', type:'fullbody',    label:'Full-body photo',   f:formData.files.fullbody});
-  if(formData.files.utility)  filesToUpload.push({k:'utility',  type:'utility',     label:'Utility bill',      f:formData.files.utility});
-  if(formData.files.diploma)  filesToUpload.push({k:'diploma',  type:'diploma',     label:'Diploma',           f:formData.files.diploma});
-  if(formData.files.location) filesToUpload.push({k:'location', type:'location_check', label:'Location walkthrough', f:formData.files.location});
+  if(formData.files.selfie)         filesToUpload.push({k:'selfie',         type:'selfie_kyc',     label:'Selfie + ID',          f:formData.files.selfie});
+  // Three mandatory body angles — replaces the legacy single fullbody.
+  if(formData.files.fullbody_front) filesToUpload.push({k:'fullbody_front', type:'fullbody_front', label:'Full-body (front)',    f:formData.files.fullbody_front});
+  if(formData.files.fullbody_back)  filesToUpload.push({k:'fullbody_back',  type:'fullbody_back',  label:'Full-body (back)',     f:formData.files.fullbody_back});
+  if(formData.files.fullbody_side)  filesToUpload.push({k:'fullbody_side',  type:'fullbody_side',  label:'Full-body (side)',     f:formData.files.fullbody_side});
+  if(formData.files.utility)        filesToUpload.push({k:'utility',        type:'utility',        label:'Utility bill',         f:formData.files.utility});
+  if(formData.files.bank)           filesToUpload.push({k:'bank',           type:'bank_statement', label:'Bank statement',       f:formData.files.bank});
+  if(formData.files.diploma)        filesToUpload.push({k:'diploma',        type:'diploma',        label:'Diploma',              f:formData.files.diploma});
+  if(formData.files.location)       filesToUpload.push({k:'location',       type:'location_check', label:'Location walkthrough', f:formData.files.location});
   (formData.files.portfolio||[]).forEach((p, i) => filesToUpload.push({k:'portfolio', type:'portfolio', index:i, label:'Portfolio photo '+(i+1), f:p}));
-  if(formData.video)          filesToUpload.push({k:'video',    type:'video_intro', label:'Video introduction',f:formData.video});
+  if(formData.video)                filesToUpload.push({k:'video',          type:'video_intro',    label:'Video introduction',   f:formData.video});
   // Total steps = file uploads + 1 (db insert) + 1 (notifications/email).
   const totalSteps = filesToUpload.length + 2;
   let stepDone = 0;
@@ -4018,13 +4233,20 @@ async function submitApplication(){
     
     // Files (Storage paths)
     file_selfie_kyc: uploadedPaths.selfie || null,
-    file_fullbody: uploadedPaths.fullbody || null,
+    // Legacy single full-body field — set to the front shot for
+    // back-compat with readers that haven't been updated yet.
+    file_fullbody: uploadedPaths.fullbody_front || uploadedPaths.fullbody || null,
+    file_fullbody_front: uploadedPaths.fullbody_front || null,
+    file_fullbody_back:  uploadedPaths.fullbody_back  || null,
+    file_fullbody_side:  uploadedPaths.fullbody_side  || null,
     file_utility_bill: uploadedPaths.utility || null,
+    file_bank_statement: uploadedPaths.bank || null,
     file_diploma: uploadedPaths.diploma || null,
     file_portfolio: uploadedPaths.portfolio || [],
     file_video_intro: uploadedPaths.video || null,
     file_location_check: uploadedPaths.location || null,
-    profile_photo_url: uploadedPaths.fullbody || null,  // Main profile photo
+    // Main client-facing photo = front body shot.
+    profile_photo_url: uploadedPaths.fullbody_front || uploadedPaths.fullbody || null,
     
     // Consents (3 required: age + GDPR + terms; NDA & photo discussed at interview)
     gdpr_signed: formData.consents.gdpr ? 'Yes' : 'Not yet',
