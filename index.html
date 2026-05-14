@@ -168,7 +168,7 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 .field-lbl{font-size:9px;letter-spacing:.2em;color:var(--mt);text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:6px;}
 .field-lbl .req{color:var(--ac)}
 .field-hint{font-size:10px;color:var(--mt);font-style:italic;letter-spacing:.02em;line-height:1.45;}
-.inp,.sel,.txa{background:var(--bg);border:1px solid var(--brd);border-radius:var(--rs);padding:11px 13px;color:var(--tx);font-family:var(--fb);font-size:12.5px;transition:border-color .2s, background-color .2s;width:100%;outline:none;position:relative;}
+.inp,.sel,.txa{background:var(--bg);border:1px solid var(--brd);border-radius:var(--rs);padding:9px 12px;color:var(--tx);font-family:var(--fb);font-size:12px;line-height:1.4;transition:border-color .2s, background-color .2s;width:100%;outline:none;position:relative;}
 .inp::placeholder,.txa::placeholder{color:var(--mt);opacity:.55}
 /* Focus state: subtle border + bg change only, no 3px ring that
    would visually overlap neighbouring fields. */
@@ -486,7 +486,12 @@ html{scroll-behavior:smooth}
   .consent-text{font-size:13px;line-height:1.5}
   .consent-box{width:22px;height:22px}
   /* Action bar: full-width buttons stacked, sticky bottom on phone. */
-  .actions{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(250,248,246,0),rgba(250,248,246,.96) 30%,#faf8f6 60%);padding:16px 12px;margin:18px -12px 0;justify-content:stretch;flex-direction:column;gap:8px;z-index:60;box-shadow:0 -4px 18px rgba(139,115,85,.06)}
+  /* Sticky mobile action bar — gradient fades from transparent up
+     into the page background. Uses var(--bg) so it inherits cream
+     in light mode and luxury noir in dark, instead of the previous
+     hardcoded #faf8f6 that stood out as a white slab on dark. */
+  .actions{position:sticky;bottom:0;background:linear-gradient(180deg,transparent 0%,var(--bg) 50%,var(--bg) 100%);padding:16px 12px;margin:18px -12px 0;justify-content:stretch;flex-direction:column;gap:8px;z-index:60;box-shadow:0 -4px 18px rgba(0,0,0,.10)}
+  :root[data-theme="dark"] .actions{box-shadow:0 -4px 18px rgba(0,0,0,.45)}
   .actions-left,.actions-right{width:100%;display:flex;gap:8px}
   .actions-right{order:1}
   .actions-left{order:2}
@@ -808,16 +813,16 @@ html{scroll-behavior:smooth}
         <div class="field">
           <label class="field-lbl">Full Name <span class="req">*</span></label>
           <input type="text" class="inp" id="f_fullname" placeholder="Write your full name correctly" data-sec="personal" autocomplete="name" autocapitalize="words" spellcheck="false">
-          <div class="field-hint">Exactly as shown in your passport or government ID. We treat this strictly confidentially.</div>
+          <div class="field-hint">Exactly as shown in your passport or government ID. This is for identification purposes.</div>
         </div>
       </div>
       <div class="row">
         <div class="field">
           <label class="field-lbl">Date of Birth <span class="req">*</span></label>
           <div class="dob-grid">
-            <input type="number" class="inp" id="f_dob_d" placeholder="DD" min="1" max="31" data-sec="personal" inputmode="numeric" autocomplete="bday-day">
-            <input type="number" class="inp" id="f_dob_m" placeholder="MM" min="1" max="12" data-sec="personal" inputmode="numeric" autocomplete="bday-month">
-            <input type="number" class="inp" id="f_dob_y" placeholder="YYYY" min="1950" max="2010" data-sec="personal" inputmode="numeric" autocomplete="bday-year">
+            <input type="number" class="inp" id="f_dob_d" placeholder="DD" min="1" max="31" data-sec="personal" inputmode="numeric" autocomplete="bday-day" oninput="clampDob(this,'d')">
+            <input type="number" class="inp" id="f_dob_m" placeholder="MM" min="1" max="12" data-sec="personal" inputmode="numeric" autocomplete="bday-month" oninput="clampDob(this,'m')">
+            <input type="number" class="inp" id="f_dob_y" placeholder="YYYY" min="1965" max="2008" data-sec="personal" inputmode="numeric" autocomplete="bday-year" oninput="clampDob(this,'y')">
           </div>
         </div>
         <div class="field">
@@ -895,9 +900,9 @@ html{scroll-behavior:smooth}
       </div>
       <div class="row-1">
         <div class="field">
-          <label class="field-lbl" data-optional>Instagram</label>
-          <input type="text" class="inp" id="f_ig" placeholder="@yourusername" autocapitalize="off" spellcheck="false">
-          <div class="field-hint">Helps us understand your presentation style.</div>
+          <label class="field-lbl" data-optional>Social Media <span class="opt-note">(Instagram or Facebook)</span></label>
+          <input type="text" class="inp" id="f_ig" placeholder="@yourusername or facebook.com/yourname" autocapitalize="off" spellcheck="false">
+          <div class="field-hint">Helps us understand your presentation style. Either link or @handle works.</div>
         </div>
       </div>
     </div>
@@ -928,7 +933,17 @@ html{scroll-behavior:smooth}
           </div>
         </div>
       </div>
+      <!-- Self-Employed first, English Level after — per CEO request.
+           Pairs business-status questions together, then language. -->
       <div class="row">
+        <div class="field">
+          <label class="field-lbl">Registered self-employed? <span class="req">*</span></label>
+          <div class="pill-group" data-pill="self_emp" data-required="true">
+            <div class="pill" data-val="Yes">Yes</div>
+            <div class="pill" data-val="No">No</div>
+            <div class="pill" data-val="Planning to">Planning to</div>
+          </div>
+        </div>
         <div class="field">
           <label class="field-lbl">English Level <span class="req">*</span></label>
           <select class="sel" id="f_english" data-sec="personal">
@@ -939,14 +954,6 @@ html{scroll-behavior:smooth}
             <option>Basic</option>
             <option>None - I am learning</option>
           </select>
-        </div>
-        <div class="field">
-          <label class="field-lbl">Registered self-employed?</label>
-          <div class="pill-group" data-pill="self_emp">
-            <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="No">No</div>
-            <div class="pill" data-val="Planning to">Planning to</div>
-          </div>
         </div>
       </div>
     </div>
@@ -1756,15 +1763,15 @@ const PHONE_CODES = [
 // chosen. Free-text fallback ("Other...") lives in the form below.
 const CITIES_BY_COUNTRY = {
   'United Kingdom':['London','Manchester','Birmingham','Leeds','Liverpool','Glasgow','Edinburgh','Bristol','Newcastle','Cardiff','Brighton','Oxford','Cambridge','Other (UK)'],
-  'Spain':['Madrid','Barcelona','Marbella','Valencia','Seville','Malaga','Ibiza','Palma de Mallorca','Bilbao','Other (Spain)'],
-  'Portugal':['Lisbon','Porto','Faro','Cascais','Other (Portugal)'],
-  'France':['Paris','Cannes','Nice','Lyon','Marseille','Saint-Tropez','Other (France)'],
-  'Italy':['Milan','Rome','Florence','Venice','Naples','Capri','Other (Italy)'],
-  'Germany':['Berlin','Munich','Hamburg','Frankfurt','Cologne','Other (Germany)'],
-  'Netherlands':['Amsterdam','The Hague','Rotterdam','Other (Netherlands)'],
-  'Belgium':['Brussels','Antwerp','Other (Belgium)'],
-  'Switzerland':['Zurich','Geneva','Lausanne','Basel','Bern','Other (Switzerland)'],
-  'Austria':['Vienna','Salzburg','Other (Austria)'],
+  'Spain':['Madrid','Barcelona','Marbella','Valencia','Seville','Malaga','Bilbao','Zaragoza','Granada','Alicante','San Sebastian','Cordoba','Salamanca','Santander','Vigo','Ibiza','Palma de Mallorca','Tenerife','Las Palmas','Pamplona','Murcia','Other (Spain)'],
+  'Portugal':['Lisbon','Porto','Faro','Cascais','Estoril','Sintra','Coimbra','Braga','Funchal','Algarve','Other (Portugal)'],
+  'France':['Paris','Cannes','Nice','Lyon','Marseille','Saint-Tropez','Bordeaux','Toulouse','Strasbourg','Lille','Nantes','Montpellier','Aix-en-Provence','Biarritz','Monaco / Monte-Carlo','Other (France)'],
+  'Italy':['Milan','Rome','Florence','Venice','Naples','Turin','Bologna','Genoa','Verona','Palermo','Bari','Capri','Como','Portofino','Sardinia','Sicily','Other (Italy)'],
+  'Germany':['Berlin','Munich','Hamburg','Frankfurt','Cologne','Stuttgart','Düsseldorf','Leipzig','Dresden','Hannover','Nuremberg','Bremen','Essen','Dortmund','Bonn','Wiesbaden','Baden-Baden','Other (Germany)'],
+  'Netherlands':['Amsterdam','The Hague','Rotterdam','Utrecht','Eindhoven','Groningen','Haarlem','Maastricht','Other (Netherlands)'],
+  'Belgium':['Brussels','Antwerp','Ghent','Bruges','Liege','Knokke-Heist','Other (Belgium)'],
+  'Switzerland':['Zurich','Geneva','Lausanne','Basel','Bern','Lugano','St. Moritz','Zermatt','Gstaad','Other (Switzerland)'],
+  'Austria':['Vienna','Salzburg','Innsbruck','Graz','Linz','Kitzbühel','Other (Austria)'],
   'Romania':['Bucharest','Cluj-Napoca','Timisoara','Brasov','Constanta','Iasi','Other (Romania)'],
   'Poland':['Warsaw','Krakow','Wroclaw','Gdansk','Other (Poland)'],
   'Greece':['Athens','Thessaloniki','Mykonos','Santorini','Other (Greece)'],
@@ -3096,6 +3103,47 @@ function renderEscortServices(){
   });
 }
 
+// ═══════════ DOB CLAMP / VALIDATION ═══════════
+// Clamps day / month / year inputs to sensible ranges in real time so
+// the applicant can't accidentally type 2855 as a year. Day 1-31,
+// month 1-12, year between (current year - 60) and (current year -
+// 18) — anyone outside the working age window gets flagged red.
+// Also forces 4-digit year length so phones with overzealous keypads
+// don't accept 5+ digits.
+window.clampDob = function(el, kind){
+  if(!el) return;
+  const now = new Date();
+  const maxY = now.getFullYear() - 18;
+  const minY = now.getFullYear() - 60;
+  let raw = (el.value||'').replace(/[^0-9]/g,'').slice(0, kind === 'y' ? 4 : 2);
+  if(kind === 'y' && raw.length < 4){
+    // While typing — keep digits, don't clamp until 4 chars present.
+    el.value = raw;
+    formData.dob_y = raw;
+    el.classList.remove('field-missing');
+    return;
+  }
+  let n = parseInt(raw, 10);
+  let min = kind === 'd' ? 1 : kind === 'm' ? 1 : minY;
+  let max = kind === 'd' ? 31 : kind === 'm' ? 12 : maxY;
+  if(isNaN(n)){
+    el.value = '';
+    formData['dob_'+kind] = '';
+    return;
+  }
+  // Clamp + flag if user typed something out of range.
+  if(n < min || n > max){
+    el.classList.add('field-missing');
+    // Don't auto-rewrite — let the applicant see and correct it.
+    el.value = String(n);
+    formData['dob_'+kind] = String(n);
+  } else {
+    el.classList.remove('field-missing');
+    el.value = String(n);
+    formData['dob_'+kind] = String(n);
+  }
+};
+
 // ═══════════ LIVE DATE/TIME ═══════════
 function updateLiveDateTime(){
   const el = document.getElementById('liveDateTime');
@@ -3303,6 +3351,8 @@ const STEP_REQ = {
     {key:'phone',        el:'f_phone',            sec:'personal'},
     {key:'email',        el:'f_email',            sec:'personal'},
     {key:'rtw',          el:'f_rtw',              sec:'personal'},
+    {key:'uk_bank',      el:'[data-pill="uk_bank"]', sec:'personal'},
+    {key:'self_emp',     el:'[data-pill="self_emp"]', sec:'personal'},
     {key:'english',      el:'f_english',          sec:'personal'}
   ],
   2: [
@@ -3335,11 +3385,19 @@ function validateStepBeforeAdvance(currentStep){
   const missing = [];
   const missingSecs = new Set();
   (STEP_REQ[currentStep]||[]).forEach(r => {
-    const val = formData[r.key];
+    const el = r.el && r.el.startsWith('[') ? document.querySelector(r.el) : document.getElementById(r.el);
+    // Belt-and-braces: trust formData first, but if the input has a
+    // value in the DOM that never made it into formData (race with
+    // event handlers, paste-without-input, autofill, etc.) sync it
+    // here so the validation reflects what the applicant actually sees.
+    let val = formData[r.key];
+    if((!val || (typeof val === 'string' && !val.trim())) && el && 'value' in el && el.value && el.value.trim()){
+      val = el.value.trim();
+      formData[r.key] = val;
+    }
     if(!val || (typeof val === 'string' && !val.trim())){
       missing.push(r);
       missingSecs.add(r.sec);
-      const el = r.el && r.el.startsWith('[') ? document.querySelector(r.el) : document.getElementById(r.el);
       if(el) el.classList.add('field-missing');
     }
   });
