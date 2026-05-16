@@ -370,6 +370,15 @@ input[type="file"]{display:none}
 .photo-slot-remove:hover{background:#a85050}
 .photo-slot.required-empty{border-color:rgba(192,96,96,.40);background:rgba(192,96,96,.04)}
 
+/* Add-language picker — visually a champagne CTA button so it reads
+   as an action, not a half-rendered dropdown. The native select
+   chevron is preserved so applicants know it opens a list. */
+.lang-add-wrap{width:100%}
+.lang-add{background:var(--card);border:1.5px dashed var(--ac);color:var(--ac);font-weight:600;letter-spacing:.06em;cursor:pointer;text-align:left;padding-left:14px;transition:all .15s}
+.lang-add:hover{background:var(--wm);border-color:var(--ac);color:var(--tx);border-style:solid}
+.lang-add:focus{border-style:solid}
+.lang-add option{font-weight:400;color:var(--tx);background:var(--card)}
+
 .upload-prog{height:3px;background:var(--sf);border-radius:2px;overflow:hidden;margin-top:6px;display:none;}
 .upload-prog.active{display:block}
 .upload-prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--acL));width:0%;transition:width .2s;}
@@ -958,6 +967,46 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
+    <!-- ─── IDENTITY & DOCUMENTS ─── ID Copy + Proof of Address +
+         Bank Statement. ID Copy is a quick scan/photo of passport
+         or government ID (NOT the selfie+ID at Step 4 — that's a
+         separate liveness check the applicant takes while holding
+         the doc). Proof of Address moved here from Step 4 so all
+         identity bundle lives together at Step 1; Bank Statement
+         covers payout verification. -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
+        <div class="sec-t">Identity &amp; Documents</div>
+        <span class="sec-note">For identification purposes</span>
+      </div>
+      <div class="upload-list">
+        <div class="upload" id="upl_idcopy" onclick="document.getElementById('file_idcopy').click()">
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">ID Copy <span class="req">*</span></div><div class="upload-h">Passport, driving licence or national ID — clear scan or photo, both sides</div></div>
+          <button class="upload-btn">Upload</button>
+        </div>
+        <input type="file" id="file_idcopy" accept="image/*,application/pdf" onchange="handleFileUpload(event,'idcopy')">
+        <div class="upload-prog" id="prog_idcopy"><div class="upload-prog-fill"></div></div>
+
+        <div class="upload" id="upl_utility" onclick="document.getElementById('file_utility').click()">
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">Proof of Address <span class="req">*</span></div><div class="upload-h">One utility bill (gas, water, council tax) showing your home address</div></div>
+          <button class="upload-btn">Upload</button>
+        </div>
+        <input type="file" id="file_utility" accept="image/*,application/pdf" onchange="handleFileUpload(event,'utility')">
+        <div class="upload-prog" id="prog_utility"><div class="upload-prog-fill"></div></div>
+
+        <div class="upload" id="upl_bank" onclick="document.getElementById('file_bank').click()">
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 14h2M7 17h6"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">Proof of Bank Account <span class="req">*</span></div><div class="upload-h">One bank statement confirming your account number — used for payouts</div></div>
+          <button class="upload-btn">Upload</button>
+        </div>
+        <input type="file" id="file_bank" accept="image/*,application/pdf" onchange="handleFileUpload(event,'bank')">
+        <div class="upload-prog" id="prog_bank"><div class="upload-prog-fill"></div></div>
+      </div>
+    </div>
+
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/></svg></div>
@@ -965,12 +1014,17 @@ html{scroll-behavior:smooth}
       </div>
       <div class="field">
         <label class="field-lbl">Other languages you speak <span class="opt-note">Optional</span></label>
-        <div class="field-hint" style="margin-bottom:6px">English is captured above. Add any other languages and how well — Native / Fluent / Advanced / Conversational / Basic. Up to 5.</div>
-        <div style="display:flex;gap:8px;align-items:stretch;flex-wrap:wrap">
-          <select class="sel" id="langSelect" style="flex:1;min-width:160px"><option value="">+ Add a language…</option></select>
-        </div>
+        <div class="field-hint" style="margin-bottom:10px">English is captured above. Add any other languages and how well — Native / Fluent / Advanced / Conversational / Basic. Up to 5.</div>
         <div class="lang-list" id="langList"></div>
-        <div class="field-hint" id="langHint" style="margin-top:6px;display:none">Add one more language below if you speak more.</div>
+        <!-- Add-language affordance — styled like a button so the
+             dropdown reads as an action, not a half-rendered field.
+             Label flips to "+ Add one more language" after the first
+             pick (handled in populateLangDropdown). Width 100% on
+             phones for easy tap. -->
+        <div class="lang-add-wrap" style="margin-top:10px">
+          <select class="sel lang-add" id="langSelect"><option value="">+ Add a language</option></select>
+        </div>
+        <div class="field-hint" id="langHint" style="margin-top:6px;display:none">Add one more language if you speak more.</div>
       </div>
     </div>
 
@@ -1499,33 +1553,17 @@ html{scroll-behavior:smooth}
       <div class="upload-prog" id="prog_fullbody"><div class="upload-prog-fill"></div></div>
     </div>
 
-    <!-- ─── SUPPORTING DOCUMENTS ─── Proof of Address + Bank Statement
-         + Diploma. Each one a separate slot — Bank Statement is new
-         (used by accounts for verifying bank details before payouts).
-         Portfolio moved out into its own Pro Photoshoot section above. -->
+    <!-- ─── DIPLOMAS ONLY ─── Proof of Address + Bank Statement moved
+         to Step 1 (Identity & Documents) per CEO. Diploma stays
+         here on Step 4 because it's a credential, not an identity
+         doc. -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></div>
-        <div class="sec-t">Supporting Documents</div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7l9 5 9-5-9-5z"/></svg></div>
+        <div class="sec-t">Diplomas &amp; Certifications</div>
         <span class="sec-note">Optional</span>
       </div>
       <div class="upload-list">
-        <div class="upload" id="upl_utility" onclick="document.getElementById('file_utility').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">Proof of Address</div><div class="upload-h">Utility bill — gas, water, council tax</div></div>
-          <button class="upload-btn">Upload</button>
-        </div>
-        <input type="file" id="file_utility" accept="image/*,application/pdf" onchange="handleFileUpload(event,'utility')">
-        <div class="upload-prog" id="prog_utility"><div class="upload-prog-fill"></div></div>
-
-        <div class="upload" id="upl_bank" onclick="document.getElementById('file_bank').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 14h2M7 17h6"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">Bank Statement</div><div class="upload-h">For bank details verification before payouts</div></div>
-          <button class="upload-btn">Upload</button>
-        </div>
-        <input type="file" id="file_bank" accept="image/*,application/pdf" onchange="handleFileUpload(event,'bank')">
-        <div class="upload-prog" id="prog_bank"><div class="upload-prog-fill"></div></div>
-
         <div class="upload" id="upl_diploma" onclick="document.getElementById('file_diploma').click()">
           <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7l9 5 9-5-9-5z"/></svg></div>
           <div class="upload-info"><div class="upload-ttl">Diploma / Certification</div><div class="upload-h">Any training certificates (massage, beauty, etc.)</div></div>
@@ -2226,12 +2264,15 @@ let formData = {
   signature_name:'', signature_signed_at:'',
   // NDA + photo consents removed; only age + gdpr + terms remain.
   consents:{age:false, gdpr:false, terms:false},
-  // Step 4 file slots. portfolio = up to 5 Pro Photoshoot images.
+  // File slots split across Step 1 (identity bundle) + Step 4
+  // (photos + media). idcopy = passport / driving licence / ID
+  // scan uploaded at Step 1, separate from the Selfie+ID liveness
+  // check at Step 4. portfolio = up to 5 Pro Photoshoot images.
   // fullbody_* = the 3 mandatory body-check angles (front/back/side).
-  // bank = the new Supporting Documents bank-statement slot.
-  // location stays the room/bathroom walkthrough video.
+  // bank = Bank Statement proof. location = room walkthrough video.
   files:{
-    selfie:null, utility:null, bank:null, diploma:null,
+    idcopy:null, utility:null, bank:null,
+    selfie:null, diploma:null,
     portfolio:[],
     fullbody:null, fullbody_front:null, fullbody_back:null, fullbody_side:null,
     location:null
@@ -2420,7 +2461,17 @@ function populateDropdown(id, items){
 function populateLangDropdown(){
   const sel = document.getElementById('langSelect');
   if(!sel) return;
-  sel.innerHTML = '<option value="">+ Add a language…</option>';
+  // Placeholder text adapts to state so the action reads correctly:
+  //   no languages added yet  -> "+ Add a language"
+  //   at least one added       -> "+ Add one more language"
+  //   five added (cap reached) -> "Maximum 5 languages reached"
+  const _ladded = (formData.languages||[]).length;
+  const _plabel = _ladded === 0 ? '+ Add a language'
+                : _ladded >= 5 ? 'Maximum 5 languages reached'
+                :                '+ Add one more language';
+  sel.innerHTML = '<option value="">'+_plabel+'</option>';
+  if(_ladded >= 5){ sel.disabled = true; return; }
+  sel.disabled = false;
   // English is captured in the dedicated English Level field above —
   // it should never appear in the extras list. Also exclude any
   // languages the user has already added (avoid duplicate picks).
@@ -3449,23 +3500,35 @@ function goStep(n){
 document.addEventListener('input', function(e){
   const t = e.target;
   if(t && (t.classList.contains('inp') || t.classList.contains('sel') || t.classList.contains('txa'))){
-    if(t.classList.contains('field-missing') && t.value && t.value.toString().trim()){
-      t.classList.remove('field-missing');
+    if(t.value && t.value.toString().trim()){
+      // Clear the form-wide red noise as soon as the applicant starts
+      // typing — same rationale as the pill click handler above.
+      document.querySelectorAll('.pill-group.field-missing, .inp.field-missing, .sel.field-missing, .txa.field-missing').forEach(el => el.classList.remove('field-missing'));
+      document.querySelectorAll('.prog-sec.missing').forEach(s => s.classList.remove('missing'));
     }
   }
 }, true);
-// Same for selects (change event) + pill clicks (custom event).
+// Same for selects (change event) — clear everywhere on any change.
 document.addEventListener('change', function(e){
   const t = e.target;
-  if(t && t.classList.contains('sel') && t.value && t.classList.contains('field-missing')){
-    t.classList.remove('field-missing');
+  if(t && t.classList.contains('sel') && t.value){
+    document.querySelectorAll('.pill-group.field-missing, .inp.field-missing, .sel.field-missing, .txa.field-missing').forEach(el => el.classList.remove('field-missing'));
+    document.querySelectorAll('.prog-sec.missing').forEach(s => s.classList.remove('missing'));
   }
 }, true);
 document.addEventListener('click', function(e){
   const p = e.target && e.target.closest('.pill');
   if(p){
-    const g = p.parentElement;
-    if(g && g.classList.contains('field-missing')) g.classList.remove('field-missing');
+    // Old behaviour cleared field-missing only from the clicked
+    // pill's own group, which left every OTHER flagged group
+    // glowing red after the user had moved on — they read the
+    // leftover red as "I clicked here and that one turned red".
+    // Now we clear .field-missing from every pill-group AND every
+    // input across the form whenever the applicant interacts with
+    // any pill, so the next Continue does a fresh validation pass
+    // without legacy red noise. Same goes for the section dots.
+    document.querySelectorAll('.pill-group.field-missing, .inp.field-missing, .sel.field-missing, .txa.field-missing').forEach(el => el.classList.remove('field-missing'));
+    document.querySelectorAll('.prog-sec.missing').forEach(s => s.classList.remove('missing'));
   }
 }, true);
 
@@ -4127,9 +4190,25 @@ async function submitApplication(){
   // Step 4 mandatory uploads — surfaced as a soft block here so the
   // applicant can't submit without the three body angles + minimum
   // five professional photos. Selfie + ID stays required too.
+  // Step 1 identity bundle — all three are mandatory.
+  if(!formData.files.idcopy){
+    showToast('Please upload your ID Copy in Step 1','error');
+    document.getElementById('upl_idcopy')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if(!formData.files.utility){
+    showToast('Please upload Proof of Address in Step 1','error');
+    document.getElementById('upl_utility')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if(!formData.files.bank){
+    showToast('Please upload Proof of Bank Account in Step 1','error');
+    document.getElementById('upl_bank')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   if(!formData.files.selfie){
     showToast('Please upload the Selfie + ID (Identity Verification)','error');
-    document.getElementById('upl_utility')?.parentElement?.scrollIntoView({behavior:'smooth',block:'center'});
+    document.getElementById('upl_idcopy')?.parentElement?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
   const bodyMissing = ['front','back','side'].filter(a => !formData.files['fullbody_'+a]);
@@ -4165,13 +4244,20 @@ async function submitApplication(){
   // Count every file we'll upload + 2 implicit phases (saving + notifying)
   // so the bar reflects real progress instead of jumping 50→100.
   const filesToUpload = [];
+  // Step 1 identity bundle uploads first so the founder reviewing
+  // the kanban card sees ID + address + bank confirmation before
+  // anything else.
+  if(formData.files.idcopy)         filesToUpload.push({k:'idcopy',         type:'id_copy',        label:'ID copy',              f:formData.files.idcopy});
+  if(formData.files.utility)        filesToUpload.push({k:'utility',        type:'utility',        label:'Proof of Address',     f:formData.files.utility});
+  if(formData.files.bank)           filesToUpload.push({k:'bank',           type:'bank_statement', label:'Bank statement',       f:formData.files.bank});
   if(formData.files.selfie)         filesToUpload.push({k:'selfie',         type:'selfie_kyc',     label:'Selfie + ID',          f:formData.files.selfie});
   // Three mandatory body angles — replaces the legacy single fullbody.
   if(formData.files.fullbody_front) filesToUpload.push({k:'fullbody_front', type:'fullbody_front', label:'Full-body (front)',    f:formData.files.fullbody_front});
   if(formData.files.fullbody_back)  filesToUpload.push({k:'fullbody_back',  type:'fullbody_back',  label:'Full-body (back)',     f:formData.files.fullbody_back});
   if(formData.files.fullbody_side)  filesToUpload.push({k:'fullbody_side',  type:'fullbody_side',  label:'Full-body (side)',     f:formData.files.fullbody_side});
-  if(formData.files.utility)        filesToUpload.push({k:'utility',        type:'utility',        label:'Utility bill',         f:formData.files.utility});
-  if(formData.files.bank)           filesToUpload.push({k:'bank',           type:'bank_statement', label:'Bank statement',       f:formData.files.bank});
+  // (utility + bank moved into the Step 1 identity bundle above —
+  // they were duplicated here in earlier rounds; keeping a single
+  // source of truth.)
   if(formData.files.diploma)        filesToUpload.push({k:'diploma',        type:'diploma',        label:'Diploma',              f:formData.files.diploma});
   if(formData.files.location)       filesToUpload.push({k:'location',       type:'location_check', label:'Location walkthrough', f:formData.files.location});
   (formData.files.portfolio||[]).forEach((p, i) => filesToUpload.push({k:'portfolio', type:'portfolio', index:i, label:'Portfolio photo '+(i+1), f:p}));
@@ -4297,6 +4383,7 @@ async function submitApplication(){
     file_fullbody_front: uploadedPaths.fullbody_front || null,
     file_fullbody_back:  uploadedPaths.fullbody_back  || null,
     file_fullbody_side:  uploadedPaths.fullbody_side  || null,
+    file_id_copy: uploadedPaths.idcopy || null,
     file_utility_bill: uploadedPaths.utility || null,
     file_bank_statement: uploadedPaths.bank || null,
     file_diploma: uploadedPaths.diploma || null,
