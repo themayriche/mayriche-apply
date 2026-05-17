@@ -918,41 +918,10 @@ html{scroll-behavior:smooth}
 
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v7c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <div class="sec-t">Legal & Practical</div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/></svg></div>
+        <div class="sec-t">Language</div>
       </div>
-      <div class="row">
-        <div class="field">
-          <label class="field-lbl">Right to work in UK <span class="req">*</span></label>
-          <select class="sel" id="f_rtw" data-sec="personal">
-            <option value="">Select...</option>
-            <option>Yes — British citizen</option>
-            <option>Yes — settled/pre-settled status</option>
-            <option>Yes — valid work visa</option>
-            <option>Not yet — in process</option>
-            <option>No</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="field-lbl">UK bank account <span class="req">*</span></label>
-          <div class="pill-group" data-pill="uk_bank" data-required="true">
-            <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="No">No</div>
-            <div class="pill" data-val="In progress">In progress</div>
-          </div>
-        </div>
-      </div>
-      <!-- Self-Employed first, English Level after — per CEO request.
-           Pairs business-status questions together, then language. -->
-      <div class="row">
-        <div class="field">
-          <label class="field-lbl">Registered self-employed? <span class="req">*</span></label>
-          <div class="pill-group" data-pill="self_emp" data-required="true">
-            <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="No">No</div>
-            <div class="pill" data-val="Planning to">Planning to</div>
-          </div>
-        </div>
+      <div class="row-1">
         <div class="field">
           <label class="field-lbl">English Level <span class="req">*</span></label>
           <select class="sel" id="f_english" data-sec="personal">
@@ -1110,26 +1079,9 @@ html{scroll-behavior:smooth}
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.35 4.76L20 8.63l-4 3.9.94 5.47L12 15.5l-4.94 2.5L8 12.53 4 8.63l5.65-1.87L12 2z"/></svg></div>
         <div class="sec-t">Experience &amp; Training</div>
       </div>
-      <!-- Reordered per CEO request:
-           Years → Diploma → Training & Certifications → Photoshoot → Heard.
-           Heard options reduced to 5: Social Media, From a Friend, Google
-           Search, Another Agency, Other (no more Instagram/Website split). -->
-      <div class="row">
+      <div class="row-1">
         <div class="field"><label class="field-lbl">Years of Experience <span class="req">*</span></label>
           <select class="sel" id="f_years" data-sec="experience"><option value="">Select...</option><option>No prior experience</option><option>0 – 1 year</option><option>1 – 3 years</option><option>3 – 5 years</option><option>5 – 10 years</option><option>10+ years</option></select>
-        </div>
-        <div class="field">
-          <label class="field-lbl">Diplomas / Courses?</label>
-          <div class="pill-group" data-pill="diplomas">
-            <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="No">No</div>
-          </div>
-          <!-- Reveal an upload button when Yes is picked. -->
-          <div id="diplomaUploadWrap" style="display:none;margin-top:10px">
-            <input type="file" id="f_diploma_proof" accept="image/*,application/pdf" style="display:none" onchange="onDiplomaProofChange(this)">
-            <button type="button" class="upload-btn" onclick="document.getElementById('f_diploma_proof').click()">Upload the proof (or upload later)</button>
-            <div class="field-hint" id="diplomaProofName" style="margin-top:6px"></div>
-          </div>
         </div>
       </div>
 
@@ -1553,27 +1505,6 @@ html{scroll-behavior:smooth}
       <div class="upload-prog" id="prog_fullbody"><div class="upload-prog-fill"></div></div>
     </div>
 
-    <!-- ─── DIPLOMAS ONLY ─── Proof of Address + Bank Statement moved
-         to Step 1 (Identity & Documents) per CEO. Diploma stays
-         here on Step 4 because it's a credential, not an identity
-         doc. -->
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7l9 5 9-5-9-5z"/></svg></div>
-        <div class="sec-t">Diplomas &amp; Certifications</div>
-        <span class="sec-note">Optional</span>
-      </div>
-      <div class="upload-list">
-        <div class="upload" id="upl_diploma" onclick="document.getElementById('file_diploma').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 7l9 5 9-5-9-5z"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">Diploma / Certification</div><div class="upload-h">Any training certificates (massage, beauty, etc.)</div></div>
-          <button class="upload-btn">Upload</button>
-        </div>
-        <input type="file" id="file_diploma" accept="image/*,application/pdf" onchange="handleFileUpload(event,'diploma')">
-        <div class="upload-prog" id="prog_diploma"><div class="upload-prog-fill"></div></div>
-      </div>
-    </div>
-
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/><path d="M9 12l2 2 4-4"/></svg></div>
@@ -1701,9 +1632,18 @@ html{scroll-behavior:smooth}
   <div class="success-card" style="max-width:620px;text-align:left">
     <div style="text-align:center;margin-bottom:22px">
       <div class="success-mark" style="margin-bottom:18px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
-      <div class="success-t">Thank you</div>
-      <div class="success-sub">Your application has been received. We'll be in touch within 24–48 hours.</div>
+      <div class="success-t">Application received</div>
+      <div class="success-sub" id="successSub">Thank you. Your application has been received.</div>
       <div class="success-ref" id="successRef">—</div>
+      <div style="max-width:480px;margin:18px auto 0;text-align:left;font-size:13px;line-height:1.7;color:var(--taupe)">
+        <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--champagne);margin-bottom:8px;text-align:center">What happens next</div>
+        <div style="padding-left:14px">
+          <div style="margin-bottom:6px">— Within 24–48 hours, the Mayriche team will personally review your application.</div>
+          <div style="margin-bottom:6px">— If you progress, you will receive an email invitation to a 30-minute video interview.</div>
+          <div style="margin-bottom:6px">— If we are unable to proceed at this time, we will let you know with a brief message.</div>
+        </div>
+        <div id="successEmailLine" style="margin-top:14px;text-align:center;color:var(--ink);font-size:12px"></div>
+      </div>
     </div>
     <div class="summary-card" style="max-height:50vh;overflow-y:auto">
       <div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>
@@ -2228,13 +2168,13 @@ let formData = {
   inhouse_street:'', inhouse_apt:'', inhouse_postcode:'',
   // Tantric "Other agencies?" Yes/No + URL (mirrors escort module).
   tantric_competing:'', tantric_agency_website:'',
-  rtw:'', uk_bank:'', english:'', self_emp:'',
+  english:'',
   // languages: array of { language, level } objects.
   languages:[],
   height:'', weight:'', body:'', dress:'', eye:'', hair:'',
   breast:'', breast_type:'', profile_age:'',
   years:'', heard:'', prev_exp:'',
-  photoshoot:'', diplomas:'',
+  photoshoot:'',
   workname:'',
   local_area:'', inhouse_address:'', inhouse:'', mobile:'', airport:'',
   mobile_30:'', late_hours:'',
@@ -2272,7 +2212,7 @@ let formData = {
   // bank = Bank Statement proof. location = room walkthrough video.
   files:{
     idcopy:null, utility:null, bank:null,
-    selfie:null, diploma:null,
+    selfie:null,
     portfolio:[],
     fullbody:null, fullbody_front:null, fullbody_back:null, fullbody_side:null,
     location:null
@@ -2311,7 +2251,6 @@ document.addEventListener('DOMContentLoaded', async function(){
   initOtherReveal('f_eye',         'f_eye_other',         'eye');
   initOtherReveal('f_heard',       'f_heard_other',       'heard');
   initEmailValidation();
-  initDiplomaUploadReveal();
   initAgencyReveal();
   initServiceModules();
   renderCurrencyRows();
@@ -2828,41 +2767,6 @@ function initEmailValidation(){
     // Hide the warning while typing — only show it on blur to avoid noise.
     if(hint.style.display === 'block') update();
   });
-}
-
-// ─── Diplomas/Courses pill = Yes → reveal upload button (#25) ──────
-// When the user picks "Yes" on the Diplomas/Courses pill group, we
-// auto-reveal a small "Upload the proof (or upload later)" affordance.
-// The actual file is stashed on formData so step 4's documents handler
-// can pick it up at submit, or the lady can upload later from her
-// profile.
-function initDiplomaUploadReveal(){
-  const grp  = document.querySelector('[data-pill="diplomas"]');
-  const wrap = document.getElementById('diplomaUploadWrap');
-  if(!grp || !wrap) return;
-  grp.addEventListener('click', e => {
-    const target = e.target.closest('.pill');
-    if(!target) return;
-    // Defer so the .active class set by the existing pill handler wins.
-    setTimeout(() => {
-      const isYes = grp.querySelector('.pill.active')?.dataset.val === 'Yes';
-      wrap.style.display = isYes ? 'block' : 'none';
-      if(!isYes){
-        const inp = document.getElementById('f_diploma_proof');
-        if(inp) inp.value = '';
-        const lbl = document.getElementById('diplomaProofName');
-        if(lbl) lbl.textContent = '';
-        if(formData) formData.diploma_proof = null;
-      }
-    }, 0);
-  });
-}
-function onDiplomaProofChange(input){
-  const lbl = document.getElementById('diplomaProofName');
-  const f = input.files && input.files[0];
-  if(!f){ if(lbl) lbl.textContent = ''; return; }
-  if(lbl) lbl.textContent = 'Selected: ' + f.name + ' · ' + Math.round(f.size/1024) + ' KB · we’ll attach it at submit.';
-  if(formData) formData.diploma_proof = f;
 }
 
 // ─── Other agencies → conditional website field ──────────────────
@@ -3401,9 +3305,6 @@ const STEP_REQ = {
     {key:'phone_code',   el:'f_phone_code',       sec:'personal'},
     {key:'phone',        el:'f_phone',            sec:'personal'},
     {key:'email',        el:'f_email',            sec:'personal'},
-    {key:'rtw',          el:'f_rtw',              sec:'personal'},
-    {key:'uk_bank',      el:'[data-pill="uk_bank"]', sec:'personal'},
-    {key:'self_emp',     el:'[data-pill="self_emp"]', sec:'personal'},
     {key:'english',      el:'f_english',          sec:'personal'}
   ],
   2: [
@@ -3805,7 +3706,7 @@ function handleVideoUpload(ev){
 function renderSummary(){
   const dob = formData.dob_d&&formData.dob_m&&formData.dob_y ? formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0') : '—';
   const daysOn = Object.keys(formData.availability).filter(d => formData.availability[d].enabled);
-  const filesCount = (formData.files.selfie?1:0)+(formData.files.utility?1:0)+(formData.files.diploma?1:0)+formData.files.portfolio.length+(formData.video?1:0)+(formData.files.fullbody?1:0);
+  const filesCount = (formData.files.selfie?1:0)+(formData.files.utility?1:0)+formData.files.portfolio.length+(formData.video?1:0)+(formData.files.fullbody?1:0);
   
   let html = '';
   html += row('Name', formData.fullname||'—');
@@ -3905,7 +3806,7 @@ function loadDraft(){
             }
           }
         });
-      } else if(['inhouse','mobile','airport','competing','tantric_competing','uk_bank','self_emp','photoshoot','diplomas','mobile_30','late_hours','offers_tantric','offers_escort'].includes(k)){
+      } else if(['inhouse','mobile','airport','competing','tantric_competing','photoshoot','mobile_30','late_hours','offers_tantric','offers_escort'].includes(k)){
         formData[k] = d[k];
         if(d[k]){
           const p = document.querySelector('[data-pill="'+k+'"] [data-val="'+d[k]+'"]');
@@ -4037,7 +3938,6 @@ const FIELD_LABELS = {
   phone_code:  'Phone country code',
   phone:       'Phone number',
   email:       'Email address',
-  rtw:         'Right to work in UK',
   english:     'English level',
   height:      'Height',
   weight:      'Weight',
@@ -4066,7 +3966,6 @@ const FIELD_ELEMENT_IDS = {
   phone_code:  'f_phone_code',
   phone:       'f_phone',
   email:       'f_email',
-  rtw:         'f_rtw',
   english:     'f_english',
   height:      'f_height',
   weight:      'f_weight',
@@ -4258,7 +4157,6 @@ async function submitApplication(){
   // (utility + bank moved into the Step 1 identity bundle above —
   // they were duplicated here in earlier rounds; keeping a single
   // source of truth.)
-  if(formData.files.diploma)        filesToUpload.push({k:'diploma',        type:'diploma',        label:'Diploma',              f:formData.files.diploma});
   if(formData.files.location)       filesToUpload.push({k:'location',       type:'location_check', label:'Location walkthrough', f:formData.files.location});
   (formData.files.portfolio||[]).forEach((p, i) => filesToUpload.push({k:'portfolio', type:'portfolio', index:i, label:'Portfolio photo '+(i+1), f:p}));
   if(formData.video)                filesToUpload.push({k:'video',          type:'video_intro',    label:'Video introduction',   f:formData.video});
@@ -4386,7 +4284,6 @@ async function submitApplication(){
     file_id_copy: uploadedPaths.idcopy || null,
     file_utility_bill: uploadedPaths.utility || null,
     file_bank_statement: uploadedPaths.bank || null,
-    file_diploma: uploadedPaths.diploma || null,
     file_portfolio: uploadedPaths.portfolio || [],
     file_video_intro: uploadedPaths.video || null,
     file_location_check: uploadedPaths.location || null,
@@ -4412,12 +4309,8 @@ async function submitApplication(){
       formData.competing ? 'Other agencies: '+formData.competing : '',
       formData.agency_website ? 'Agency website: '+formData.agency_website : '',
       formData.avail_notes ? 'Availability notes: '+formData.avail_notes : '',
-      formData.rtw ? 'Right to work UK: '+formData.rtw : '',
-      formData.uk_bank ? 'UK bank: '+formData.uk_bank : '',
       formData.english ? 'English: '+formData.english : '',
-      formData.self_emp ? 'Self-employed: '+formData.self_emp : '',
       formData.photoshoot ? 'Photoshoot: '+formData.photoshoot : '',
-      formData.diplomas ? 'Diplomas: '+formData.diplomas : '',
       formData.days_week ? 'Days/week: '+formData.days_week : '',
       formData.mobile_30 ? 'Mobile 30+min: '+formData.mobile_30 : '',
       formData.late_hours ? 'Late nights/weekends: '+formData.late_hours : '',
@@ -4523,6 +4416,11 @@ async function submitApplication(){
     setProgress('Complete ✓', 100);
 
     localStorage.removeItem('mayriche_apply_draft');
+    const firstName = (formData.fullname || '').trim().split(/\s+/)[0] || 'there';
+    const subEl = document.getElementById('successSub');
+    if(subEl) subEl.textContent = 'Thank you, ' + firstName + '. Your application has been received.';
+    const emailLine = document.getElementById('successEmailLine');
+    if(emailLine && formData.email) emailLine.textContent = 'A confirmation email has been sent to ' + formData.email + '.';
     document.getElementById('successRef').textContent = applicationRef;
     window.__lastAppRef = applicationRef;
     renderSummary();
@@ -4636,15 +4534,25 @@ async function postSubmitRouting(newLady, formData){
 async function sendConfirmationEmail(toEmail, fullName, appRef){
   if(!sb || !toEmail) return;
   try {
+    const phoneFull = ((formData.phone_code||'') + ' ' + (formData.phone||'')).trim();
     const res = await sb.functions.invoke('send-apply-email', {
-      body: { to: toEmail, name: fullName, application_ref: appRef }
+      body: {
+        to: toEmail,
+        name: fullName,
+        application_ref: appRef,
+        phone: phoneFull || null,
+        city: formData.city || null,
+        country: formData.country || null,
+        nationality: formData.nationality || null,
+        english_level: formData.english || null,
+        profile_age: formData.profile_age || null,
+        years: formData.years || null,
+        workname: formData.workname || null
+      }
     });
     if(res && res.error) throw res.error;
     console.log('[apply] Confirmation email dispatched:', appRef);
   } catch(e){
-    // Edge Function not deployed yet → silent skip. Founder still sees
-    // the application via the apply_notifications row written by
-    // postSubmitRouting + the dashboard widget.
     console.warn('[apply] Email Edge Function not available yet:', e && e.message);
   }
 }
