@@ -909,9 +909,12 @@ html{scroll-behavior:smooth}
       </div>
       <div class="row-1">
         <div class="field">
-          <label class="field-lbl" data-optional>Social Media <span class="opt-note">(Instagram or Facebook)</span></label>
-          <input type="text" class="inp" id="f_ig" placeholder="@yourusername or facebook.com/yourname" autocapitalize="off" spellcheck="false">
-          <div class="field-hint">Helps us understand your presentation style. Either link or @handle works.</div>
+          <label class="field-lbl" data-optional>Social Media link</label>
+          <input type="url" class="inp" id="f_ig" placeholder="https://instagram.com/yourname or facebook.com/yourname" autocapitalize="off" spellcheck="false" inputmode="url">
+          <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--taupe);cursor:pointer">
+            <input type="checkbox" id="f_no_social" style="width:16px;height:16px;cursor:pointer"> I don't have social media
+          </label>
+          <div class="field-hint" style="margin-top:8px">This is for us to check you're a real person. If your profile is private, we may request friendship.</div>
         </div>
       </div>
     </div>
@@ -1085,13 +1088,10 @@ html{scroll-behavior:smooth}
         </div>
       </div>
 
-      <!-- Training & Certifications — single focused prompt. Mentions
-           previous experience as a masseuse and working in the adults
-           services sector so the applicant has clear guidance. -->
       <div class="row-1">
         <div class="field">
-          <label class="field-lbl">Training &amp; Certifications <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_prev_exp" rows="4" placeholder="Mention previous experience as a masseuse and working in the adults services sector. Where did you train, which techniques are you certified in, and what kind of clients have you worked with?"></textarea>
+          <label class="field-lbl">More about your experience <span class="opt-note">Optional</span></label>
+          <textarea class="txa" id="f_prev_exp" rows="4" placeholder="Example: I have experience in tantric and adults services for a few years. I started to work in London in 2020 and the agency was..."></textarea>
           <div class="field-hint">Free-form &mdash; write in your own words. This stays strictly confidential.</div>
         </div>
       </div>
@@ -2169,6 +2169,8 @@ let formData = {
   // Tantric "Other agencies?" Yes/No + URL (mirrors escort module).
   tantric_competing:'', tantric_agency_website:'',
   english:'',
+  // Social media link OR explicit "I don't have any" flag.
+  ig:'', no_social:false,
   // languages: array of { language, level } objects.
   languages:[],
   height:'', weight:'', body:'', dress:'', eye:'', hair:'',
@@ -2251,6 +2253,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   initOtherReveal('f_eye',         'f_eye_other',         'eye');
   initOtherReveal('f_heard',       'f_heard_other',       'heard');
   initEmailValidation();
+  initNoSocialCheckbox();
   initAgencyReveal();
   initServiceModules();
   renderCurrencyRows();
@@ -2770,6 +2773,26 @@ function initEmailValidation(){
 }
 
 // ─── Other agencies → conditional website field ──────────────────
+// "I don't have social media" checkbox — when ticked, disable the
+// link input and clear any value so submit only carries one signal.
+function initNoSocialCheckbox(){
+  const chk = document.getElementById('f_no_social');
+  const inp = document.getElementById('f_ig');
+  if(!chk || !inp) return;
+  chk.addEventListener('change', () => {
+    formData.no_social = chk.checked;
+    if(chk.checked){
+      inp.value = '';
+      formData.ig = '';
+      inp.disabled = true;
+      inp.classList.add('disabled');
+    } else {
+      inp.disabled = false;
+      inp.classList.remove('disabled');
+    }
+  });
+}
+
 function initAgencyReveal(){
   const grp = document.querySelector('[data-pill="competing"]');
   const wrap = document.getElementById('agencyWebsiteWrap');
@@ -3120,10 +3143,11 @@ function langKey(name){
 function addLang(val){
   const name = langKey(val);
   if(!name) return;
-  // Migrate any legacy strings still in formData.languages to objects.
-  formData.languages = (formData.languages || []).map(l => typeof l === 'string' ? {language:l, level:'Native'} : l);
+  formData.languages = (formData.languages || []).map(l => typeof l === 'string' ? {language:l, level:''} : l);
   if(formData.languages.find(l => l.language === name)) return; // dup
-  formData.languages.push({language:name, level:'Native'});
+  // Default level is empty so the user is forced to pick "how do you
+  // speak {language}?" — we don't want to silently assume Native.
+  formData.languages.push({language:name, level:''});
   renderLangs();
   updateProgress();
 }
@@ -3136,7 +3160,7 @@ function removeLang(name){
 function setLangLevel(name, level){
   const k = langKey(name);
   formData.languages = (formData.languages || []).map(l => {
-    if(typeof l === 'string') l = {language:l, level:'Native'};
+    if(typeof l === 'string') l = {language:l, level:''};
     if(l.language === k) return {language:l.language, level:level};
     return l;
   });
@@ -3146,16 +3170,17 @@ function renderLangs(){
   const wrap = document.getElementById('langList');
   if(!wrap) return;
   wrap.innerHTML = '';
-  // Migrate strings → objects on first render.
-  formData.languages = (formData.languages || []).map(l => typeof l === 'string' ? {language:l, level:'Native'} : l);
+  formData.languages = (formData.languages || []).map(l => typeof l === 'string' ? {language:l, level:''} : l);
   formData.languages.forEach(({language, level}) => {
     const safe = language.replace(/'/g, "\\'");
     const row = document.createElement('div');
     row.className = 'lang-row';
+    const placeholder = 'How do you speak ' + language + '?';
     row.innerHTML =
       '<span class="lang-name">' + language + '</span>' +
       '<select class="sel lang-level" onchange="setLangLevel(\'' + safe + '\', this.value)">' +
-        LANG_LEVELS.map(lv => '<option value="' + lv + '"' + (lv === (level||'Native') ? ' selected' : '') + '>' + lv + '</option>').join('') +
+        '<option value="" disabled' + (!level ? ' selected' : '') + '>' + placeholder + '</option>' +
+        LANG_LEVELS.map(lv => '<option value="' + lv + '"' + (lv === level ? ' selected' : '') + '>' + lv + '</option>').join('') +
       '</select>' +
       '<button type="button" class="lang-x" onclick="removeLang(\'' + safe + '\')" aria-label="Remove ' + language + '">\u00d7</button>';
     wrap.appendChild(row);
@@ -4048,6 +4073,12 @@ async function submitApplication(){
     return;
   }
   if(!formData.languages || formData.languages.length===0){ showToast('Add at least one language with its level','error'); return; }
+  const missingLevel = (formData.languages||[]).find(l => !(typeof l === 'object' && l.level && l.level.trim()));
+  if(missingLevel){
+    const lname = typeof missingLevel === 'object' ? missingLevel.language : missingLevel;
+    showToast('Please pick how you speak ' + lname,'error');
+    return;
+  }
   // Must offer at least one of the two service modules and configure
   // pricing for whichever they offer.
   if(formData.offers_tantric !== 'Yes' && formData.offers_escort !== 'Yes'){
@@ -4253,7 +4284,7 @@ async function submitApplication(){
     phone: ((formData.phone_code||'') + ' ' + (formData.phone||'').trim()).trim(),
     phone_code: formData.phone_code || null,
     phone_local: (formData.phone||'').trim() || null,
-    social_media: formData.ig || null,
+    social_media: formData.no_social ? 'NO_SOCIAL_MEDIA' : (formData.ig || null),
 
     // Emergency contact (now mandatory)
     em_c_name: formData.em_name || null,
