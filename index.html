@@ -149,7 +149,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
    loop flagged. Persists until the user types/picks something
    (cleared on focus + value-change in the wire-up below). */
 .inp.field-missing,.sel.field-missing,.txa.field-missing{border-color:var(--rd) !important;box-shadow:0 0 0 2px rgba(192,96,96,.14) !important;background:rgba(192,96,96,.04) !important}
-.upload.field-missing,.video-box.field-missing,.svc-mod.field-missing,.sec.field-missing{border-color:var(--rd) !important;box-shadow:0 0 0 2px rgba(192,96,96,.18) !important}
+.upload.field-missing,.video-box.field-missing,.svc-mod.field-missing,.sec.field-missing,.offer-grid.field-missing,.escort-svc-list.field-missing{border-radius:10px;box-shadow:0 0 0 2px rgba(192,96,96,.30) !important;padding:6px}
 .pill-group.field-missing{box-shadow:0 0 0 2px rgba(192,96,96,.20);border-radius:8px;padding:2px}
 
 /* Sticky stepper — pinned below the progress header so the active
@@ -289,7 +289,9 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .video-box-ttl{font-family:var(--fd);font-size:20px;color:var(--tx);margin-bottom:4px;font-weight:500;}
 .video-box-sub{font-size:11.5px;color:var(--mt);margin-bottom:14px;font-style:italic;line-height:1.5;}
 .video-benefit{display:inline-block;padding:4px 10px;background:rgba(196,168,130,.1);border-radius:14px;font-size:10px;color:var(--ac);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:12px;}
-#videoPreview{max-width:100%;width:260px;border-radius:var(--rs);margin:0 auto 14px;display:block;}
+/* Keep video previews a compact box — portrait phone clips otherwise
+   render full-height and stretch the upload box down the whole page. */
+#videoPreview,#profVideoPreview,#locationPreview{max-width:100% !important;width:auto !important;max-height:260px !important;object-fit:contain;border-radius:var(--rs);margin:0 auto 14px;display:block;background:#000;}
 
 .consent-list{display:flex;flex-direction:column;gap:8px}
 .consent{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--brd);border-radius:var(--rs);cursor:pointer;transition:all .2s;background:var(--card);}
@@ -906,7 +908,7 @@ html{scroll-behavior:smooth}
         <label class="field-lbl">Other Languages <span class="opt-note">Optional</span></label>
         <!-- Add-language affordance sits right under the title. Added
              languages render in the list below it. -->
-        <div class="lang-add-wrap" style="margin-top:6px">
+        <div class="lang-add-wrap" style="margin-top:14px">
           <select class="sel lang-add" id="langSelect"><option value="">+ Add a language</option></select>
         </div>
         <div class="lang-list" id="langList" style="margin-top:10px"></div>
@@ -945,13 +947,13 @@ html{scroll-behavior:smooth}
            Three separate boxes (street, apartment, postcode) so the data
            is structured. Country, city and neighbourhood are already
            captured above. -->
-      <div class="row-1" style="margin-top:18px">
+      <div class="row-1" style="margin-top:22px">
         <div class="field">
           <label class="field-lbl">Home Address <span class="req">*</span></label>
-          <div class="field-hint">Where you currently live. This is mandatory and never shown to clients.</div>
+          <div class="field-hint" style="margin-bottom:6px">Where you currently live. This is mandatory and never shown to clients.</div>
         </div>
       </div>
-      <div class="row" style="margin-bottom:14px">
+      <div class="row" style="margin:14px 0">
         <div class="field" style="grid-column:span 2">
           <label class="field-lbl">Street &amp; Number <span class="req">*</span></label>
           <input type="text" class="inp" id="f_home_street" placeholder="16 Maddox Street" autocomplete="street-address" data-sec="personal">
@@ -1339,7 +1341,7 @@ html{scroll-behavior:smooth}
           <div class="svc-mod-block">
             <div class="field">
               <label class="field-lbl">Boundaries <span class="opt-note">Optional but recommended</span></label>
-              <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have, in your own words. Be honest — this helps us match you to the right clients. Examples: 'No facial finishing', 'No kissing on first booking'..." rows="4"></textarea>
+              <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have, in your own words. Be honest — this helps us match you to the right clients." rows="4"></textarea>
               <div class="field-hint">Anything we should know upfront before sending you a booking.</div>
             </div>
             <label style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:12.5px;color:var(--tx2);cursor:pointer;line-height:1.5">
@@ -2183,7 +2185,7 @@ const COMPANIONSHIP_TRAVEL = [
 
 // ─── SPECIAL REQUESTS & FETISHES ─── multi-select, price on request.
 const SPECIAL_REQUESTS = [
-  'Unprotected Services (+£300)',
+  'Unprotected Services',
   'BDSM', 'Domination (giving)', 'Submission (receiving)', 'Role-play & costumes',
   'Water sports', 'Foot fetish', 'Spanking', 'Bondage', 'Toys', 'Fantasy scenarios'
 ];
@@ -3387,7 +3389,7 @@ function renderAbroadOther(){
     const inp = document.createElement('input');
     inp.type = 'text';
     inp.className = 'inp';
-    inp.placeholder = 'e.g. Mallorca';
+    inp.placeholder = 'e.g. St. Barth';
     inp.value = val || '';
     inp.addEventListener('input', () => { formData.abroad_custom[i] = inp.value; });
     const x = document.createElement('button');
@@ -4392,7 +4394,13 @@ function validateStepBeforeAdvance(currentStep){
       flag2('modTantric','Select Yes for at least one service (Tantric or Companions)'); return false;
     }
     if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){ flag2('tantricStartingPrice','Please enter your Tantric starting price'); return false; }
+    if(formData.offers_tantric === 'Yes' && (formData.tantric_offers||[]).length < 4){
+      flag2('tantricOffersGrid','Please choose at least 4 Tantric services you offer'); return false;
+    }
     if(formData.offers_escort === 'Yes' && !formData.escort_tier){ flag2('escortStartingPrice','Please enter your Companions starting price'); return false; }
+    if(formData.offers_escort === 'Yes' && Object.values(formData.escort_services||{}).filter(v => v === true || (typeof v === 'string' && v && v !== 'No')).length < 4){
+      flag2('escortServicesList','Please choose at least 4 Companions services you offer'); return false;
+    }
     // Companionship & Travel — required when offering Companions.
     if(formData.offers_escort === 'Yes'){
       const missCT = COMPANIONSHIP_TRAVEL.find(it => !(formData.companionship_travel[it.key] && formData.companionship_travel[it.key].value));
@@ -4741,7 +4749,7 @@ function renderSignature(value){
 function handleLocationVideo(ev){
   const file = ev.target.files[0];
   if(!file) return;
-  if(file.size > 50*1024*1024){ showToast('Video too large (max 50 MB)', 'error'); return; }
+  if(file.size > 50*1024*1024){ showToast('Video too large — keep it under ~1 minute (max 50 MB). Tip: film at 720p, not 4K.', 'error'); return; }
   formData.files.location = file;
   const url = URL.createObjectURL(file);
   const preview = document.getElementById('locationPreview');
@@ -4761,7 +4769,7 @@ function handleVideoUpload(ev){
   const file = ev.target.files[0];
   if(!file) return;
   if(file.size > 50*1024*1024){
-    showToast('Video too large (max 50MB)', 'error');
+    showToast('Video too large — keep it under ~1 minute (max 50 MB). Tip: film at 720p, not 4K.', 'error');
     return;
   }
   formData.video = file;
