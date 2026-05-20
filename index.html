@@ -588,11 +588,11 @@ html{scroll-behavior:smooth}
 .reveal.open{max-height:none;opacity:1;overflow:visible}
 
 /* Phone combo (country code prefix + number). */
-.phone-combo{display:flex;gap:6px;align-items:stretch}
-.phone-combo .phone-prefix{width:120px;flex-shrink:0;font-family:var(--fb);font-weight:500;padding-right:28px;background-position:right 8px center}
-.phone-combo .phone-number{flex:1;min-width:0}
+.phone-combo{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.phone-combo .phone-prefix{width:100%;font-family:var(--fb);font-weight:500;padding-right:28px;background-position:right 10px center}
+.phone-combo .phone-number{width:100%;min-width:0}
 @media (max-width: 480px){
-  .phone-combo .phone-prefix{width:104px;font-size:14px}
+  .phone-combo .phone-prefix{width:100%;font-size:14px}
 }
 
 /* Mandatory CTA button (used before availability grid). */
@@ -690,7 +690,7 @@ html{scroll-behavior:smooth}
 .lang-row{display:flex;gap:8px;align-items:center;padding:10px 12px;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);transition:all .15s}
 .lang-row:hover{border-color:var(--acL)}
 .lang-row .lang-name{flex:1;font-weight:500;color:var(--tx);font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lang-row .lang-level{flex-shrink:0;width:140px}
+.lang-row .lang-level{flex-shrink:0;width:172px}
 .lang-row .lang-x{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:transparent;color:var(--mt);border:0;cursor:pointer;font-size:18px;transition:all .15s}
 .lang-row .lang-x:hover{background:var(--rd);color:var(--card)}
 @media (max-width: 480px){
@@ -951,7 +951,7 @@ html{scroll-behavior:smooth}
           <div class="field-hint">Pick your country code. Number without prefix won&rsquo;t work.</div>
           <div class="field-hint" id="f_phone_hint" style="display:none;color:var(--rd)">Please enter a valid phone number.</div>
           <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--tx2);cursor:pointer">
-            <input type="checkbox" id="f_phone_is_whatsapp" checked style="width:16px;height:16px;cursor:pointer"> This number is available on WhatsApp
+            <input type="checkbox" id="f_phone_is_whatsapp" style="width:16px;height:16px;cursor:pointer"> This number is also my WhatsApp
           </label>
           <div id="whatsappWrap" style="display:none;margin-top:10px">
             <label class="field-lbl">What&rsquo;s your WhatsApp number? <span class="req">*</span></label>
@@ -2204,7 +2204,7 @@ let formData = {
   // WhatsApp: phone_is_whatsapp defaults true (the phone above is reachable
   // on WhatsApp). If unticked, whatsapp_code + whatsapp capture a separate
   // number our team uses to reach the applicant.
-  phone_is_whatsapp:true, whatsapp:'', whatsapp_code:'',
+  phone_is_whatsapp:false, whatsapp:'', whatsapp_code:'',
   // local_area_text is the chosen / typed neighbourhood from the cascade.
   local_area_text:'',
   // Home address — three structured boxes in Step 1 (mandatory).
@@ -3714,7 +3714,7 @@ function renderLangs(){
     const safe = language.replace(/'/g, "\\'");
     const row = document.createElement('div');
     row.className = 'lang-row';
-    const placeholder = 'How do you speak ' + language + '?';
+    const placeholder = 'How well?';
     row.innerHTML =
       '<span class="lang-name">' + language + '</span>' +
       '<select class="sel lang-level" onchange="setLangLevel(\'' + safe + '\', this.value)">' +
