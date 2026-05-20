@@ -1253,12 +1253,14 @@ html{scroll-behavior:smooth}
         <span class="sec-note">Optional</span>
       </div>
       <div class="field-hint" style="margin-bottom:10px">Tick the seasonal spots you&rsquo;re happy to travel to.</div>
+      <button type="button" class="zones-all-btn" id="abroadSelectAll" style="margin-bottom:10px">Select all</button>
       <div class="chk-grid" id="abroadGrid"></div>
       <div id="abroadOtherWrap" style="display:none;margin-top:14px">
         <div class="field-lbl" style="margin-bottom:6px">Your other destination(s)</div>
         <div id="abroadOtherList"></div>
         <button type="button" class="zones-all-btn" id="abroadAddMore" style="margin-top:8px">+ Add another destination</button>
       </div>
+      <div class="chk-grid" id="abroadNoTravelGrid" style="margin-top:12px"></div>
     </div>
 
     <div class="sec">
@@ -1280,7 +1282,7 @@ html{scroll-behavior:smooth}
         </div>
       </div>
       <div class="field-lbl" style="margin-bottom:6px">Choose your weekly availability <span class="req">*</span></div>
-      <div class="field-hint" style="margin:0 0 12px">Click on every box to make your availability <b>ON</b> &mdash; each day defaults to <b>09:00 &ndash; 02:00</b> (we&rsquo;re open until 2am). Adjust the hours as you like, or tap again to turn a day off.</div>
+      <div class="field-hint" style="margin:0 0 12px">Every day starts <b>9 AM – 2 AM</b>. Adjust the hours as you like, or tap a day to turn it off. You can keep up to 3 days off (we need at least 4).</div>
       <div class="avail-grid" id="availGrid"></div>
       <div class="row-1" style="margin-top:10px">
         <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
@@ -1785,7 +1787,9 @@ let SERVICES = [];
 let ADDONS = [];
 
 // Static UI constants (not business-specific)
-const SEASONAL_DESTINATIONS = ['Ibiza','Monaco','Saint-Tropez','Cannes','Mykonos','Saint-Moritz','Courchevel','Other',"I don't want to travel anywhere"];
+// Real seasonal spots (NO_TRAVEL is rendered separately, after the
+// "Other" free-text destinations). "Other" stays at the end of the grid.
+const SEASONAL_DESTINATIONS = ['Ibiza','Marbella','Mallorca','Monaco','Saint-Tropez','Cannes','Mykonos','Dubai','Saint-Barths','Porto Cervo (Sardinia)','Capri','Lake Como','Bodrum','Aspen','Courchevel','Gstaad','Saint-Moritz','Miami','Las Vegas','Maldives','Other'];
 const NO_TRAVEL = "I don't want to travel anywhere";
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DURATIONS = ['30 min','60 min','90 min','120 min','3 hours','4 hours','6 hours','Overnight','Weekend','Trip'];
@@ -2402,9 +2406,12 @@ document.addEventListener('DOMContentLoaded', async function(){
   const rtr = document.getElementById('f_right_to_refuse');
   if(rtr) rtr.addEventListener('change', () => { formData.right_to_refuse = rtr.checked; scheduleAutoSave && scheduleAutoSave(); });
 
-  // Seasonal destinations grid
+  // Seasonal destinations grid (real spots + "Other"). "I don't want to
+  // travel anywhere" is rendered separately AFTER the "Other" free-text
+  // box so the custom destinations sit above it.
   const abr = document.getElementById('abroadGrid');
-  if(abr) SEASONAL_DESTINATIONS.forEach(loc => {
+  const noTravelGrid = document.getElementById('abroadNoTravelGrid');
+  function makeAbroadChip(loc){
     const el = document.createElement('div');
     el.className = 'chk';
     el.dataset.loc = loc;
@@ -2413,16 +2420,14 @@ document.addEventListener('DOMContentLoaded', async function(){
       const idx = formData.abroad.indexOf(loc);
       const willCheck = idx < 0;
       if(willCheck && loc === NO_TRAVEL){
-        // "I don't want to travel" is exclusive — clear everything else.
         formData.abroad = [NO_TRAVEL];
         formData.abroad_custom = [];
-        abr.querySelectorAll('.chk').forEach(c => c.classList.toggle('checked', c.dataset.loc === NO_TRAVEL));
+        document.querySelectorAll('#abroadGrid .chk, #abroadNoTravelGrid .chk').forEach(c => c.classList.toggle('checked', c.dataset.loc === NO_TRAVEL));
         syncAbroadOther();
       } else {
-        // Picking any real destination clears the "no travel" choice.
         if(willCheck){
           const ni = formData.abroad.indexOf(NO_TRAVEL);
-          if(ni >= 0){ formData.abroad.splice(ni,1); abr.querySelector('[data-loc="'+NO_TRAVEL+'"]')?.classList.remove('checked'); }
+          if(ni >= 0){ formData.abroad.splice(ni,1); document.querySelector('[data-loc="'+NO_TRAVEL+'"]')?.classList.remove('checked'); }
           formData.abroad.push(loc);
         } else {
           formData.abroad.splice(idx,1);
@@ -2432,7 +2437,28 @@ document.addEventListener('DOMContentLoaded', async function(){
       }
       updateProgress();
     });
-    abr.appendChild(el);
+    return el;
+  }
+  if(abr) SEASONAL_DESTINATIONS.forEach(loc => abr.appendChild(makeAbroadChip(loc)));
+  if(noTravelGrid) noTravelGrid.appendChild(makeAbroadChip(NO_TRAVEL));
+
+  // "Select all" toggles every real spot (not "Other" / not "no travel").
+  const abroadSelectAll = document.getElementById('abroadSelectAll');
+  if(abroadSelectAll) abroadSelectAll.addEventListener('click', () => {
+    const realSpots = SEASONAL_DESTINATIONS.filter(l => l !== 'Other');
+    const allOn = realSpots.every(l => formData.abroad.includes(l));
+    // Clear "no travel" if turning spots on.
+    const ni = formData.abroad.indexOf(NO_TRAVEL);
+    if(ni >= 0){ formData.abroad.splice(ni,1); document.querySelector('[data-loc="'+NO_TRAVEL+'"]')?.classList.remove('checked'); }
+    realSpots.forEach(l => {
+      const i = formData.abroad.indexOf(l);
+      if(allOn){ if(i >= 0) formData.abroad.splice(i,1); }
+      else if(i < 0){ formData.abroad.push(l); }
+      const chip = document.querySelector('#abroadGrid [data-loc="'+l+'"]');
+      if(chip) chip.classList.toggle('checked', !allOn);
+    });
+    abroadSelectAll.textContent = allOn ? 'Select all' : 'Deselect all';
+    updateProgress();
   });
   const abroadAddMore = document.getElementById('abroadAddMore');
   if(abroadAddMore) abroadAddMore.addEventListener('click', () => {
@@ -2494,19 +2520,21 @@ document.addEventListener('DOMContentLoaded', async function(){
   // Availability
   const avG = document.getElementById('availGrid');
   if(avG) DAYS.forEach(day => {
-    formData.availability[day] = {enabled:false, from:'', to:''};
+    // Every day starts ON (09:00–02:00) — she turns OFF the days she
+    // doesn't work (up to 3).
+    formData.availability[day] = {enabled:true, from:'09:00', to:'02:00'};
     const cell = document.createElement('div');
-    cell.className = 'avail-day off';
+    cell.className = 'avail-day on';
     cell.dataset.day = day;
-    cell.innerHTML = 
+    cell.innerHTML =
       '<div class="avail-day-lbl">'+day+'</div>'+
-      '<div class="avail-day-hrs">Off</div>'+
-      '<div class="time-inputs" style="display:none">'+
+      '<div class="avail-day-hrs">09:00 – 02:00</div>'+
+      '<div class="time-inputs" style="display:flex">'+
         '<input type="time" value="09:00" onchange="event.stopPropagation();setAvailTime(\''+day+'\',\'from\',this.value)" onclick="event.stopPropagation()">'+
         '<span class="time-sep">–</span>'+
         '<input type="time" value="02:00" onchange="event.stopPropagation();setAvailTime(\''+day+'\',\'to\',this.value)" onclick="event.stopPropagation()">'+
       '</div>'+
-      '<div class="avail-toggle">Tap to add</div>';
+      '<div class="avail-toggle">Tap to remove</div>';
     cell.addEventListener('click', () => toggleDay(day));
     avG.appendChild(cell);
   });
@@ -3945,7 +3973,7 @@ function toggleDay(day){
     cell.classList.add('on');
     cell.querySelector('.avail-day-hrs').textContent = d.from+' – '+d.to;
     cell.querySelector('.time-inputs').style.display = 'flex';
-    cell.querySelector('.avail-toggle').textContent = 'ON · tap to remove';
+    cell.querySelector('.avail-toggle').textContent = 'Tap to remove';
   } else {
     cell.classList.remove('on');
     cell.classList.add('off');
@@ -4184,6 +4212,13 @@ function validateStepBeforeAdvance(currentStep){
   // Step 2: a travel choice is mandatory — at least one seasonal
   // destination, "Other", or "I don't want to travel anywhere".
   if(currentStep === 2 && missing.length === 0){
+    const onDays = Object.keys(formData.availability||{}).filter(dy => formData.availability[dy] && formData.availability[dy].enabled).length;
+    if(onDays < 4){
+      const ag = document.getElementById('availGrid');
+      if(ag){ try{ ag.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast("You've selected too few days — we need at least 4 of 7.",'error');
+      return false;
+    }
     const pAge = parseInt(formData.profile_age, 10);
     if(!isNaN(pAge) && pAge < 21){
       const pe = document.getElementById('f_profile_age');
@@ -4644,15 +4679,19 @@ function loadDraft(){
       } else if(k === 'availability'){
         formData.availability = d.availability||{};
         Object.keys(formData.availability).forEach(day => {
-          if(formData.availability[day].enabled){
-            const cell = document.querySelector('[data-day="'+day+'"]');
-            if(cell){
-              cell.classList.remove('off');
-              cell.classList.add('on');
-              cell.querySelector('.avail-day-hrs').textContent = (formData.availability[day].from||'09:00')+' – '+(formData.availability[day].to||'23:00');
-              cell.querySelector('.time-inputs').style.display = 'flex';
-              cell.querySelector('.avail-toggle').textContent = 'ON · tap to remove';
-            }
+          const cell = document.querySelector('[data-day="'+day+'"]');
+          if(!cell) return;
+          const dd = formData.availability[day];
+          if(dd && dd.enabled){
+            cell.classList.remove('off'); cell.classList.add('on');
+            cell.querySelector('.avail-day-hrs').textContent = (dd.from||'09:00')+' – '+(dd.to||'02:00');
+            cell.querySelector('.time-inputs').style.display = 'flex';
+            cell.querySelector('.avail-toggle').textContent = 'Tap to remove';
+          } else {
+            cell.classList.remove('on'); cell.classList.add('off');
+            cell.querySelector('.avail-day-hrs').textContent = 'Off';
+            cell.querySelector('.time-inputs').style.display = 'none';
+            cell.querySelector('.avail-toggle').textContent = 'Tap to add';
           }
         });
       } else if(['offers_tantric','offers_escort'].includes(k)){
