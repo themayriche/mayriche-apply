@@ -1386,7 +1386,33 @@ html{scroll-behavior:smooth}
         </div>
         <div class="reveal" id="tantricBody">
           <div class="svc-mod-block">
-            <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tx2);cursor:pointer;margin-bottom:6px"><input type="checkbox" id="f_tantric_experience" style="width:16px;height:16px;cursor:pointer"> I have experience in this</label>
+            <div class="field">
+              <label class="field-lbl">Do you have experience in this? <span class="req">*</span></label>
+              <div class="pill-group" data-pill="tantric_experience">
+                <div class="pill" data-val="Yes">Yes</div>
+                <div class="pill" data-val="No">No</div>
+              </div>
+            </div>
+            <div class="row-1" id="tantricExpYearsWrap" style="margin-top:12px;display:none">
+              <div class="field">
+                <label class="field-lbl">How many years?</label>
+                <select class="sel" id="f_tantric_exp_years" style="max-width:200px"><option value="">Select...</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="svc-mod-block">
+            <div class="field">
+              <label class="field-lbl">Currently with other agencies?</label>
+              <div class="pill-group" data-pill="tantric_competing">
+                <div class="pill" data-val="Yes">Yes</div>
+                <div class="pill" data-val="No">No</div>
+              </div>
+            </div>
+            <div id="tantricAgencyWebsiteWrap" style="margin-top:14px;display:none">
+              <label class="field-lbl" style="margin-bottom:6px">Agency profile link(s) <span class="opt-note">Add each agency you work with</span></label>
+              <div id="tantricAgencyList"></div>
+              <button type="button" class="zones-all-btn" id="tantricAgencyAddMore" style="margin-top:8px">+ Add one more agency</button>
+            </div>
           </div>
           <div class="svc-mod-block">
             <div class="field-lbl" style="margin-bottom:8px">Currency</div>
@@ -1412,26 +1438,6 @@ html{scroll-behavior:smooth}
             <div class="field-hint" style="margin-bottom:10px">These are charged on top of your base rate. Tap each one you'd like to offer.</div>
             <div class="offer-grid" id="tantricOffersGrid"></div>
           </div>
-
-          <!-- ─── Tantric · Other agencies? ─── Same pattern as Companions.
-               If Yes, reveal the agency website / profile link input below. -->
-          <div class="svc-mod-block">
-            <div class="row">
-              <div class="field">
-                <label class="field-lbl">Currently with other agencies?</label>
-                <div class="pill-group" data-pill="tantric_competing">
-                  <div class="pill" data-val="Yes">Yes</div>
-                  <div class="pill" data-val="No">No</div>
-                </div>
-              </div>
-            </div>
-            <div class="row-1" id="tantricAgencyWebsiteWrap" style="margin-top:14px;display:none">
-              <div class="field">
-                <label class="field-lbl">Agency website / profile link <span class="opt-note">Required if you said Yes</span></label>
-                <input type="url" class="inp" id="f_tantric_agency_website" placeholder="https://other-agency.com/your-profile" inputmode="url" autocapitalize="off" spellcheck="false">
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -1455,7 +1461,34 @@ html{scroll-behavior:smooth}
         </div>
         <div class="reveal" id="escortBody">
           <div class="svc-mod-block">
-            <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tx2);cursor:pointer;margin-bottom:6px"><input type="checkbox" id="f_escort_experience" style="width:16px;height:16px;cursor:pointer"> I have experience in this</label>
+            <div class="field">
+              <label class="field-lbl">Do you have experience in this? <span class="req">*</span></label>
+              <div class="pill-group" data-pill="escort_experience">
+                <div class="pill" data-val="Yes">Yes</div>
+                <div class="pill" data-val="No">No</div>
+              </div>
+            </div>
+            <div class="row-1" id="escortExpYearsWrap" style="margin-top:12px;display:none">
+              <div class="field">
+                <label class="field-lbl">How many years?</label>
+                <select class="sel" id="f_escort_exp_years" style="max-width:200px"><option value="">Select...</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="svc-mod-block">
+            <div class="field">
+              <label class="field-lbl">Currently with other agencies?</label>
+              <div class="pill-group" data-pill="competing">
+                <div class="pill" data-val="Yes">Yes</div>
+                <div class="pill" data-val="No">No</div>
+                <div class="pill" data-val="Prefer not to say">Prefer not to say</div>
+              </div>
+            </div>
+            <div id="agencyWebsiteWrap" style="margin-top:14px;display:none">
+              <label class="field-lbl" style="margin-bottom:6px">Agency profile link(s) <span class="opt-note">Add each agency you work with</span></label>
+              <div id="escortAgencyList"></div>
+              <button type="button" class="zones-all-btn" id="escortAgencyAddMore" style="margin-top:8px">+ Add one more agency</button>
+            </div>
           </div>
           <div class="svc-mod-block">
             <div class="field-lbl" style="margin-bottom:8px">Currency</div>
@@ -1474,29 +1507,6 @@ html{scroll-behavior:smooth}
               <table class="rate-table" id="escortRateTable"></table>
               <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--tx2);cursor:pointer"><input type="checkbox" id="f_escort_no_30min" onchange="toggleNo30('escort', this.checked)" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t do 30-minute sessions</label>
               <div class="field-hint" style="margin-top:8px">We discuss and finalise rates at interview.</div>
-            </div>
-          </div>
-
-          <!-- Duration Preferences section removed per CEO request — the
-               4h / Overnight / 6h / Weekend Trip items now live as proper
-               services at the END of the Services You Offer list, with
-               their own descriptions, checkboxes, and prices. -->
-          <div class="svc-mod-block">
-            <div class="row">
-              <div class="field">
-                <label class="field-lbl">Currently with other agencies?</label>
-                <div class="pill-group" data-pill="competing">
-                  <div class="pill" data-val="Yes">Yes</div>
-                  <div class="pill" data-val="No">No</div>
-                  <div class="pill" data-val="Prefer not to say">Prefer not to say</div>
-                </div>
-              </div>
-            </div>
-            <div class="row-1" id="agencyWebsiteWrap" style="margin-top:14px;display:none">
-              <div class="field">
-                <label class="field-lbl">Agency website / profile link <span class="opt-note">Required if you said Yes</span></label>
-                <input type="url" class="inp" id="f_agency_website" placeholder="https://other-agency.com/your-profile" inputmode="url" autocapitalize="off" spellcheck="false">
-              </div>
             </div>
           </div>
 
@@ -2258,6 +2268,9 @@ let formData = {
   inhouse_street:'', inhouse_apt:'', inhouse_postcode:'',
   // Tantric "Other agencies?" Yes/No + URL (mirrors escort module).
   tantric_competing:'', tantric_agency_website:'',
+  // Multi-agency link lists (per module) + experience years.
+  tantric_agencies:[], escort_agencies:[],
+  tantric_exp_years:'', escort_exp_years:'',
   english:'',
   // Social media link OR explicit "I don't have any" flag.
   ig:'', no_social:false,
@@ -2289,7 +2302,7 @@ let formData = {
   // offers_tantric / offers_escort: 'Yes' or 'No' (Yes reveals the body)
   offers_tantric:'', offers_escort:'',
   // Per-module experience flags ("I have experience in this").
-  tantric_experience:false, escort_experience:false,
+  tantric_experience:'', escort_experience:'',
   // tantric_tier / escort_tier: 'sold' | 'premium' | 'elite' (selected card)
   tantric_tier:'', escort_tier:'',
   // Editable rate tables — array of { duration, in_house, mobile }.
@@ -2372,13 +2385,9 @@ document.addEventListener('DOMContentLoaded', async function(){
   initWhatsappToggle();
   initAgencyReveal();
   initServiceModules();
-  ['tantric_experience','escort_experience'].forEach(k => {
-    const c = document.getElementById('f_'+k);
-    if(c) c.addEventListener('change', () => { formData[k] = c.checked; scheduleAutoSave && scheduleAutoSave(); });
-  });
+  initExperienceReveal('tantric', '[data-pill="tantric_experience"]', 'tantricExpYearsWrap');
+  initExperienceReveal('escort', '[data-pill="escort_experience"]', 'escortExpYearsWrap');
   renderCurrencyRows();
-  renderTierChips('tantric');
-  renderTierChips('escort');
   renderTantricOffers();
   renderEscortServices();
 
@@ -3104,28 +3113,85 @@ function initSpecialRequestReveal(selectId, inputId, revealVals){
   });
 }
 
-// ─── Tantric "Other agencies?" Yes/No reveal ─────────────────────
-// Pill group writes to formData.tantric_competing. "Yes" reveals the
-// agency website / profile link input. Mirrors the Companions module.
-function initTantricCompetingReveal(){
-  const group = document.querySelector('[data-pill="tantric_competing"]');
-  const wrap  = document.getElementById('tantricAgencyWebsiteWrap');
-  const input = document.getElementById('f_tantric_agency_website');
+// ─── Multi-agency link list (per module) ─────────────────────────
+// Many ladies work with several agencies, so each "Yes" reveals a list
+// of links she can grow with "+ Add one more agency". Stored as an array
+// of URL strings in formData[scope+'_agencies'].
+function agencyKey(scope){ return scope === 'tantric' ? 'tantric_agencies' : 'escort_agencies'; }
+function renderAgencyLinks(scope){
+  const listId = scope === 'tantric' ? 'tantricAgencyList' : 'escortAgencyList';
+  const list = document.getElementById(listId);
+  if(!list) return;
+  const key = agencyKey(scope);
+  if(!Array.isArray(formData[key]) || formData[key].length === 0) formData[key] = [''];
+  list.innerHTML = '';
+  formData[key].forEach((val, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px';
+    const inp = document.createElement('input');
+    inp.type = 'url'; inp.className = 'inp';
+    inp.placeholder = 'https://other-agency.com/your-profile';
+    inp.value = val || '';
+    inp.setAttribute('inputmode','url'); inp.setAttribute('autocapitalize','off'); inp.spellcheck = false;
+    inp.addEventListener('input', () => { formData[key][i] = inp.value; scheduleAutoSave && scheduleAutoSave(); });
+    row.appendChild(inp);
+    if(formData[key].length > 1){
+      const x = document.createElement('button');
+      x.type = 'button'; x.className = 'lang-x'; x.textContent = '×';
+      x.setAttribute('aria-label','Remove agency');
+      x.onclick = () => { formData[key].splice(i,1); if(formData[key].length===0) formData[key]=['']; renderAgencyLinks(scope); };
+      row.appendChild(x);
+    }
+    list.appendChild(row);
+  });
+}
+function initCompetingReveal(scope, pillSel, wrapId, addBtnId){
+  const group = document.querySelector(pillSel);
+  const wrap  = document.getElementById(wrapId);
+  const compKey = scope === 'tantric' ? 'tantric_competing' : 'competing';
   if(!group || !wrap) return;
+  const sync = (v) => {
+    wrap.style.display = (v === 'Yes') ? 'block' : 'none';
+    if(v === 'Yes') renderAgencyLinks(scope);
+  };
   group.querySelectorAll('.pill').forEach(p => {
     p.addEventListener('click', () => {
-      const v = p.dataset.val;
-      formData.tantric_competing = v;
-      wrap.style.display = (v === 'Yes') ? 'grid' : 'none';
+      formData[compKey] = p.dataset.val;
+      sync(p.dataset.val);
       scheduleAutoSave && scheduleAutoSave();
     });
   });
-  if(input){
-    input.addEventListener('input', () => {
-      formData.tantric_agency_website = input.value;
+  const addBtn = document.getElementById(addBtnId);
+  if(addBtn) addBtn.addEventListener('click', () => {
+    formData[agencyKey(scope)].push('');
+    renderAgencyLinks(scope);
+    const inputs = document.querySelectorAll('#' + (scope==='tantric'?'tantricAgencyList':'escortAgencyList') + ' input');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  });
+  sync(formData[compKey]);
+}
+function initTantricCompetingReveal(){
+  initCompetingReveal('tantric', '[data-pill="tantric_competing"]', 'tantricAgencyWebsiteWrap', 'tantricAgencyAddMore');
+}
+
+// ─── Experience Yes/No → reveal "how many years" ─────────────────
+function initExperienceReveal(scope, pillSel, yearsWrapId){
+  const group = document.querySelector(pillSel);
+  const wrap  = document.getElementById(yearsWrapId);
+  const key = scope === 'tantric' ? 'tantric_experience' : 'escort_experience';
+  if(!group || !wrap) return;
+  const sync = (v) => { wrap.style.display = (v === 'Yes') ? 'block' : 'none'; };
+  group.querySelectorAll('.pill').forEach(p => {
+    p.addEventListener('click', () => {
+      formData[key] = p.dataset.val;
+      if(p.dataset.val !== 'Yes'){ formData[scope + '_exp_years'] = ''; const ys = document.getElementById('f_' + scope + '_exp_years'); if(ys) ys.value = ''; }
+      sync(p.dataset.val);
       scheduleAutoSave && scheduleAutoSave();
     });
-  }
+  });
+  const years = document.getElementById('f_' + scope + '_exp_years');
+  if(years) years.addEventListener('change', () => { formData[scope + '_exp_years'] = years.value; scheduleAutoSave && scheduleAutoSave(); });
+  sync(formData[key]);
 }
 
 // ─── Home Address (Step 1) — 3 structured inputs ─────────────────
@@ -3408,23 +3474,7 @@ function initWhatsappToggle(){
 }
 
 function initAgencyReveal(){
-  const grp = document.querySelector('[data-pill="competing"]');
-  const wrap = document.getElementById('agencyWebsiteWrap');
-  if(!grp || !wrap) return;
-  grp.addEventListener('click', e => {
-    const target = e.target.closest('.pill');
-    if(!target) return;
-    // Defer so the .active class set by the existing pill handler wins first.
-    setTimeout(() => {
-      const isYes = grp.querySelector('.pill.active')?.dataset.val === 'Yes';
-      wrap.style.display = isYes ? 'block' : 'none';
-      if(!isYes){
-        const inp = document.getElementById('f_agency_website');
-        if(inp) inp.value = '';
-        formData.agency_website = '';
-      }
-    }, 0);
-  });
+  initCompetingReveal('escort', '[data-pill="competing"]', 'agencyWebsiteWrap', 'escortAgencyAddMore');
 }
 
 // ─── Service modules: Tantric + Escort reveal ────────────────────
@@ -4539,9 +4589,9 @@ function loadDraft(){
           const p = document.querySelector('[data-pill="'+k+'"] [data-val="'+d[k]+'"]');
           if(p) p.classList.add('active');
         }
-        if(k === 'tantric_competing' && d[k] === 'Yes'){
-          const wrap = document.getElementById('tantricAgencyWebsiteWrap');
-          if(wrap) wrap.style.display = 'grid';
+        if(d[k] === 'Yes'){
+          const wrap = document.getElementById(k === 'tantric_competing' ? 'tantricAgencyWebsiteWrap' : 'agencyWebsiteWrap');
+          if(wrap) wrap.style.display = 'block';
         }
       } else if(k === 'tantric_offers'){
         formData.tantric_offers = d.tantric_offers || [];
@@ -4638,10 +4688,23 @@ function loadDraft(){
       // "No in-house" checkbox + disabled state.
       const niChk = document.getElementById('f_no_inhouse');
       if(niChk && d.no_inhouse){ niChk.checked = true; niChk.dispatchEvent(new Event('change')); }
-      // Per-module experience checkboxes.
-      ['tantric_experience','escort_experience'].forEach(k => {
-        const c = document.getElementById('f_'+k);
-        if(c){ c.checked = !!d[k]; formData[k] = !!d[k]; }
+      // Per-module experience (Yes/No pills) + years + agency links.
+      [['tantric','tantric_experience','tantricExpYearsWrap','f_tantric_exp_years'],
+       ['escort','escort_experience','escortExpYearsWrap','f_escort_exp_years']].forEach(([scope, expKey, yearsWrap, yearsId]) => {
+        const expVal = d[expKey] || '';
+        formData[expKey] = expVal;
+        const grp = document.querySelector('[data-pill="'+expKey+'"]');
+        if(grp) grp.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.dataset.val === expVal));
+        const yw = document.getElementById(yearsWrap);
+        if(yw) yw.style.display = (expVal === 'Yes') ? 'block' : 'none';
+        formData[scope + '_exp_years'] = d[scope + '_exp_years'] || '';
+        const ys = document.getElementById(yearsId);
+        if(ys) ys.value = formData[scope + '_exp_years'];
+        // Agency links.
+        const aKey = scope === 'tantric' ? 'tantric_agencies' : 'escort_agencies';
+        formData[aKey] = Array.isArray(d[aKey]) ? d[aKey] : [];
+        const compKey = scope === 'tantric' ? 'tantric_competing' : 'competing';
+        if((d[compKey] || formData[compKey]) === 'Yes') renderAgencyLinks(scope);
       });
       // Special-request note reveals.
       if(d.airport === 'Yes with special request'){ const an = document.getElementById('f_airport_note'); if(an){ an.style.display = 'block'; an.value = d.airport_note || ''; } }
@@ -4850,10 +4913,10 @@ async function submitApplication(){
     if(dEl){ try{ dEl.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
     return;
   }
-  // Agency website is required only when "competing = Yes".
-  if(formData.competing === 'Yes' && !formData.agency_website){
-    showToast('Please add the agency website / profile link', 'error');
-    flashMissingField('agency_website');
+  // At least one agency link is required only when "competing = Yes".
+  if(formData.competing === 'Yes' && !(formData.escort_agencies||[]).some(s => (s||'').trim())){
+    showToast('Please add at least one agency profile link', 'error');
+    document.getElementById('agencyWebsiteWrap')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
   // Emergency contact phone must be a valid number we can verify.
@@ -4877,14 +4940,24 @@ async function submitApplication(){
     document.getElementById('modTantric')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
+  if(formData.offers_tantric === 'Yes' && !formData.tantric_experience){
+    showToast('Please tell us if you have experience with Tantric','error');
+    document.querySelector('[data-pill="tantric_experience"]')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){
-    showToast('Pick your Tantric pricing tier (Sold / Premium / Elite)','error');
-    document.getElementById('tantricTierGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+    showToast('Please enter your Tantric starting price','error');
+    document.getElementById('tantricStartingPrice')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if(formData.offers_escort === 'Yes' && !formData.escort_experience){
+    showToast('Please tell us if you have experience with Companions','error');
+    document.querySelector('[data-pill="escort_experience"]')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
   if(formData.offers_escort === 'Yes' && !formData.escort_tier){
-    showToast('Pick your Companions pricing tier (Sold / Premium / Elite)','error');
-    document.getElementById('escortTierGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+    showToast('Please enter your Companions starting price','error');
+    document.getElementById('escortStartingPrice')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
   // Sync legacy `services` array from the new escort_services map so the
@@ -5147,7 +5220,7 @@ async function submitApplication(){
       formData.addons.length>0 ? 'Add-ons: '+formData.addons.join(', ') : '',
       formData.rate ? 'Starting rate (60min): £'+formData.rate : '',
       formData.competing ? 'Other agencies: '+formData.competing : '',
-      formData.agency_website ? 'Agency website: '+formData.agency_website : '',
+      (formData.escort_agencies||[]).some(s=>(s||'').trim()) ? 'Agency links: '+formData.escort_agencies.filter(s=>(s||'').trim()).join(', ') : '',
       formData.avail_notes ? 'Availability notes: '+formData.avail_notes : '',
       formData.travel_other ? 'Travel notes: '+formData.travel_other : '',
       formData.english ? 'English: '+formData.english : '',
@@ -5173,7 +5246,9 @@ async function submitApplication(){
       currency: formData.currency || 'GBP',
       tantric: formData.offers_tantric === 'Yes' ? {
         offered: true,
-        experience: !!formData.tantric_experience,
+        experience: formData.tantric_experience === 'Yes',
+        experience_years: formData.tantric_experience === 'Yes' ? (formData.tantric_exp_years || null) : null,
+        no_30min: !!formData.tantric_no_30min,
         tier: formData.tantric_tier,
         starting_price: parseFloat(formData.rate)||null,
         rates: formData.tantric_rates,
@@ -5183,11 +5258,13 @@ async function submitApplication(){
         }),
         // Mirrors the escort module's "Currently with other agencies?"
         competing: formData.tantric_competing || null,
-        agency_website: formData.tantric_agency_website || null
+        agencies: (formData.tantric_agencies||[]).map(s => (s||'').trim()).filter(Boolean)
       } : { offered: false },
       escort: formData.offers_escort === 'Yes' ? {
         offered: true,
-        experience: !!formData.escort_experience,
+        experience: formData.escort_experience === 'Yes',
+        experience_years: formData.escort_experience === 'Yes' ? (formData.escort_exp_years || null) : null,
+        no_30min: !!formData.escort_no_30min,
         tier: formData.escort_tier,
         starting_price: parseFloat(formData.rate)||null,
         rates: formData.escort_rates,
@@ -5205,10 +5282,7 @@ async function submitApplication(){
         }),
         boundaries: formData.boundaries || null,
         competing: formData.competing || null,
-        agency_website: formData.agency_website || null
-        // duration_preferences removed — durations now live inside
-        // `services` (four_hours / overnight / six_hours / weekend_trips
-        // / party_bookings) so the OS reads them uniformly.
+        agencies: (formData.escort_agencies||[]).map(s => (s||'').trim()).filter(Boolean)
       } : { offered: false }
     },
     
