@@ -1399,11 +1399,11 @@ html{scroll-behavior:smooth}
                 <span class="price-cur" id="tantricPriceCur">£</span>
                 <input type="number" class="inp price-input" id="tantricStartingPrice" inputmode="numeric" min="100" max="2000" step="10" placeholder="250" oninput="applyStartingPrice('tantric', this.value)">
               </div>
-              <div class="tier-chips" id="tantricTierChips"></div>
             </div>
             <div class="rate-table-wrap" id="tantricRateTableWrap" style="display:none">
               <div class="rate-table-title" id="tantricRateTitle">Your rates</div>
               <table class="rate-table" id="tantricRateTable"></table>
+              <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--tx2);cursor:pointer"><input type="checkbox" id="f_tantric_no_30min" onchange="toggleNo30('tantric', this.checked)" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t do 30-minute sessions</label>
               <div class="field-hint" style="margin-top:8px">We discuss and finalise rates at interview.</div>
             </div>
           </div>
@@ -1468,11 +1468,11 @@ html{scroll-behavior:smooth}
                 <span class="price-cur" id="escortPriceCur">£</span>
                 <input type="number" class="inp price-input" id="escortStartingPrice" inputmode="numeric" min="100" max="2000" step="10" placeholder="250" oninput="applyStartingPrice('escort', this.value)">
               </div>
-              <div class="tier-chips" id="escortTierChips"></div>
             </div>
             <div class="rate-table-wrap" id="escortRateTableWrap" style="display:none">
               <div class="rate-table-title" id="escortRateTitle">Your rates</div>
               <table class="rate-table" id="escortRateTable"></table>
+              <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--tx2);cursor:pointer"><input type="checkbox" id="f_escort_no_30min" onchange="toggleNo30('escort', this.checked)" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t do 30-minute sessions</label>
               <div class="field-hint" style="margin-top:8px">We discuss and finalise rates at interview.</div>
             </div>
           </div>
@@ -2010,6 +2010,22 @@ const PRICING_TIERS = {
   }
 };
 
+// ─── RATE PLAN ───────────────────────────────────────────────────
+// The rate table is built directly from the starting price she enters
+// (her 60-minute in-house rate) — no tier "suggestions" that might nudge
+// her to a different number. Each row's in-house price = base × mult,
+// rounded to the nearest £10, never below its floor. Mobile = +£100.
+const RATE_PLAN = [
+  { duration: '30 minutes', mult: 0.8, floor: 200, isThirty: true },
+  { duration: '1 hour',     mult: 1.0 },
+  { duration: '90 minutes', mult: 1.6 },
+  { duration: '2 hours',    mult: 2.0 },
+  { duration: '3 hours',    mult: 3.0 },
+  { duration: '4 hours',    mult: 4.0 },
+  { duration: 'Extra 1 hour', mult: 1.0 },
+  { duration: 'Extra 30 min', mult: 0.6, floor: 150 }
+];
+
 // ─── TANTRIC SPECIAL OFFERS (charged "on top") ───────────────────
 const TANTRIC_OFFERS = [
   { key: 'vip_package', name: 'VIP Package', price: 250,
@@ -2278,6 +2294,8 @@ let formData = {
   tantric_tier:'', escort_tier:'',
   // Editable rate tables — array of { duration, in_house, mobile }.
   tantric_rates:[], escort_rates:[],
+  // "I don't do 30-minute sessions" per module (strikes the 30-min row).
+  tantric_no_30min:false, escort_no_30min:false,
   // Special offers selected for tantric (array of keys from TANTRIC_OFFERS)
   tantric_offers:[],
   // Escort services state — keyed by service key
@@ -3488,81 +3506,51 @@ function updateCurrencyDisplays(){
 // Render tier chips dynamically. Show ONLY the price — internal tier
 // names (Sold / Premium / Elite) are private and never exposed to
 // applicants. The applicant just sees three quick-pick prices.
-function renderTierChips(scope){
-  const wrap = document.getElementById(scope + 'TierChips');
-  if(!wrap) return;
-  const sym = getCurrencySymbol(formData.currency);
-  const activeTier = formData[scope + '_tier'] || '';
-  wrap.innerHTML = '';
-  Object.keys(PRICING_TIERS).forEach(key => {
-    const tier = PRICING_TIERS[key];
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'tier-chip' + (activeTier === key ? ' active' : '');
-    btn.dataset.tier = key;
-    btn.textContent = sym + tier.starting;
-    btn.addEventListener('click', () => setTierByChip(scope, key));
-    wrap.appendChild(btn);
+// Tier chips were removed — entering a price builds the table directly,
+// with no suggested higher numbers. Kept as a no-op for old callers.
+function renderTierChips(){ /* no-op (tier suggestions removed) */ }
+function setTierByChip(){ /* no-op */ }
+function renderTierGrid(){ /* no-op */ }
+
+// ─── Build the rate rows from her entered starting price ──────────
+function buildRatesFromPrice(price){
+  return RATE_PLAN.map(p => {
+    let inh = (p.mult === 1.0) ? price : Math.round((price * p.mult) / 10) * 10;
+    if(p.floor) inh = Math.max(inh, p.floor);
+    return { duration: p.duration, in_house: inh, mobile: inh + 100, isThirty: !!p.isThirty };
   });
 }
 
-// ─── Snap a free-text starting price to the closest tier ──────────
-// Boundaries: <=275 → sold, 276-325 → premium, >=326 → elite.
-function inferTierFromPrice(price){
-  const p = parseFloat(price) || 0;
-  if(p <= 275) return 'sold';
-  if(p <= 325) return 'premium';
-  return 'elite';
-}
-
-// ─── Apply a starting price → load matching tier rates into table ─
+// ─── Apply a starting price → build the rate table directly ───────
 function applyStartingPrice(scope, priceVal){
   const price = parseFloat(priceVal) || 0;
   const wrap = document.getElementById(scope + 'RateTableWrap');
-  const chips = document.getElementById(scope + 'TierChips');
   if(!price || price < 50){
     formData[scope + '_tier'] = '';
     formData[scope + '_rates'] = [];
     if(wrap) wrap.style.display = 'none';
-    if(chips) chips.querySelectorAll('.tier-chip').forEach(c => c.classList.remove('active'));
     formData.rate = '';
     const legacyRate = document.getElementById('f_rate');
     if(legacyRate) legacyRate.value = '';
     scheduleAutoSave && scheduleAutoSave();
     return;
   }
-  const tierKey = inferTierFromPrice(price);
-  const tier = PRICING_TIERS[tierKey];
-  // Deep-clone tier rates and override the 60-min in-house cell with the
-  // exact entered value. Other cells stay at the tier's published rates
-  // — she can still tap and override any cell.
-  const rates = tier.rates.map(r => ({ ...r }));
-  if(rates.length > 0) rates[0].in_house = price;
-  formData[scope + '_tier'] = tierKey;
-  formData[scope + '_rates'] = rates;
+  formData[scope + '_tier'] = 'custom';
+  formData[scope + '_rates'] = buildRatesFromPrice(price);
   formData.rate = String(price);
   const legacyRate = document.getElementById('f_rate');
   if(legacyRate) legacyRate.value = price;
-  // Highlight the matching chip (chips are rebuilt by renderTierChips
-  // so we just rerender after picking a tier).
-  renderTierChips(scope);
   renderRateTable(scope);
   scheduleAutoSave && scheduleAutoSave();
   updateProgress && updateProgress();
 }
 
-// ─── Click a tier chip → fill input + apply rates ─────────────────
-function setTierByChip(scope, tierKey){
-  const tier = PRICING_TIERS[tierKey];
-  if(!tier) return;
-  const inp = document.getElementById(scope + 'StartingPrice');
-  if(inp) inp.value = tier.starting;
-  applyStartingPrice(scope, tier.starting);
+// ─── "I don't do 30-minute sessions" → strike the 30-min row ──────
+function toggleNo30(scope, checked){
+  formData[scope + '_no_30min'] = !!checked;
+  renderRateTable(scope);
+  scheduleAutoSave && scheduleAutoSave();
 }
-
-// Stub kept for any external callers; the new UX renders the rate
-// table directly via applyStartingPrice / setTierByChip.
-function renderTierGrid(){ /* no-op (replaced by price-combo UI) */ }
 
 // ─── Render the rate table (read-only display) ───────────────────
 function renderRateTable(scope){
@@ -3570,15 +3558,14 @@ function renderRateTable(scope){
   const table = document.getElementById(scope + 'RateTable');
   const titleEl = document.getElementById(scope + 'RateTitle');
   if(!wrap || !table) return;
-  const tier = formData[scope + '_tier'];
   const rates = formData[scope + '_rates'];
-  if(!tier || !rates || rates.length === 0){
+  if(!rates || rates.length === 0){
     wrap.style.display = 'none';
     return;
   }
   wrap.style.display = 'block';
   const sym = getCurrencySymbol(formData.currency);
-  // Neutral title — never expose internal tier names to the applicant.
+  const no30 = !!formData[scope + '_no_30min'];
   if(titleEl) titleEl.textContent = 'Your rate card';
   table.innerHTML =
     '<thead><tr>' +
@@ -3587,13 +3574,15 @@ function renderRateTable(scope){
       '<th style="text-align:right">Mobile (' + sym + ')</th>' +
     '</tr></thead>' +
     '<tbody>' +
-    rates.map(r =>
-      '<tr>' +
-        '<td>' + r.duration + '</td>' +
+    rates.map(r => {
+      const struck = (no30 && r.isThirty);
+      const st = struck ? ' style="text-decoration:line-through;opacity:.45"' : '';
+      return '<tr' + st + '>' +
+        '<td>' + r.duration + (struck ? ' <span style="font-size:10px;letter-spacing:.05em">(not offered)</span>' : '') + '</td>' +
         '<td class="rate-cell">' + sym + (r.in_house||0) + '</td>' +
         '<td class="rate-cell">' + sym + (r.mobile||0) + '</td>' +
-      '</tr>'
-    ).join('') +
+      '</tr>';
+    }).join('') +
     '</tbody>';
 }
 
@@ -4579,6 +4568,14 @@ function loadDraft(){
       if(d.offers_tantric === 'Yes' && tan){ tan.value = d.rate; applyStartingPrice('tantric', d.rate); }
       if(d.offers_escort === 'Yes' && esc){ esc.value = d.rate; applyStartingPrice('escort', d.rate); }
     }
+    // "I don't do 30-minute sessions" checkboxes + the strike on the table.
+    ['tantric','escort'].forEach(scope => {
+      const on = !!d[scope + '_no_30min'];
+      formData[scope + '_no_30min'] = on;
+      const c = document.getElementById('f_' + scope + '_no_30min');
+      if(c) c.checked = on;
+      renderRateTable(scope);
+    });
     // Restore the digital signature preview if a name was typed in
     // the prior session. signature_signed_at preserves the original
     // sign timestamp so we don't reset the audit trail on reload.
