@@ -1769,14 +1769,22 @@ html{scroll-behavior:smooth}
       <div class="success-t">Application received</div>
       <div class="success-sub" id="successSub">Thank you. Your application has been received.</div>
       <div class="success-ref" id="successRef">—</div>
-      <div style="max-width:480px;margin:18px auto 0;text-align:left;font-size:13px;line-height:1.7;color:var(--taupe)">
+      <!-- Permanent shareable link to this application -->
+      <div id="successLinkWrap" style="max-width:480px;margin:14px auto 0;display:none">
+        <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--champagne);margin-bottom:6px;text-align:center">Your application link</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="successLink" type="text" readonly class="inp" style="flex:1;min-width:0;font-size:12px;text-align:center" value="">
+          <button type="button" class="btn btn-ghost" style="flex-shrink:0;min-width:auto;padding:10px 14px" onclick="copyAppLink()">Copy</button>
+        </div>
+      </div>
+      <div style="max-width:480px;margin:18px auto 0;text-align:left;font-size:13px;line-height:1.7;color:var(--tx2)">
         <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--champagne);margin-bottom:8px;text-align:center">What happens next</div>
         <div style="padding-left:14px">
           <div style="margin-bottom:6px">— Within 24–48 hours, the Mayriche team will personally review your application.</div>
-          <div style="margin-bottom:6px">— If you progress, you will receive an email invitation to a 30-minute video interview.</div>
+          <div style="margin-bottom:6px">— If you progress, you will be contacted on WhatsApp or by email to arrange the next step.</div>
           <div style="margin-bottom:6px">— If we are unable to proceed at this time, we will let you know with a brief message.</div>
         </div>
-        <div id="successEmailLine" style="margin-top:14px;text-align:center;color:var(--ink);font-size:12px"></div>
+        <div id="successEmailLine" style="margin-top:14px;text-align:center;color:var(--tx);font-size:12px"></div>
       </div>
     </div>
     <div class="summary-card" style="max-height:50vh;overflow-y:auto">
@@ -2389,6 +2397,12 @@ const SEC_REQ = {
 
 // ═══════════ INIT ═══════════
 document.addEventListener('DOMContentLoaded', async function(){
+  // If opened with ?ref=APP-… show that application as a read-only card
+  // (the shareable application link) instead of the blank form.
+  try {
+    var _ref = new URLSearchParams(location.search).get('ref');
+    if(_ref && /^APP-[A-Za-z0-9-]{6,60}$/.test(_ref)){ await showApplicationCard(_ref); return; }
+  } catch(e){}
   await loadConfig();
   applyFallbackDefaults();
 
@@ -5735,6 +5749,12 @@ async function submitApplication(){
     if(emailLine && formData.email) emailLine.textContent = 'A confirmation email has been sent to ' + formData.email + '.';
     document.getElementById('successRef').textContent = applicationRef;
     window.__lastAppRef = applicationRef;
+    try {
+      var _lw = document.getElementById('successLinkWrap');
+      var _li = document.getElementById('successLink');
+      if(_li){ _li.value = 'https://apply.mayriche.co.uk/?ref=' + applicationRef; }
+      if(_lw){ _lw.style.display = 'block'; }
+    } catch(e){}
     renderSummary();
     document.getElementById('successOverlay').classList.add('visible');
   } catch(e){
@@ -5879,6 +5899,53 @@ function calculateAge(dob){
   return Math.floor((Date.now()-d.getTime()) / (365.25*24*60*60*1000));
 }
 
+// Read-only application card shown when the page is opened with ?ref=APP-…
+async function showApplicationCard(ref){
+  var ov = document.getElementById('successOverlay');
+  var card = ov ? ov.querySelector('.success-card') : null;
+  if(!ov || !card) { location.replace('/'); return; }
+  card.innerHTML = '<div style="text-align:center;color:var(--mt);font-size:13px;padding:40px">Loading application…</div>';
+  ov.classList.add('visible');
+  var d = null;
+  try { if(sb){ var r = await sb.rpc('get_application_card', { p_ref: ref }); d = r && r.data; } } catch(e){}
+  if(!d){
+    card.innerHTML = '<div style="text-align:center"><div class="success-t" style="font-size:30px">Not found</div><div class="success-sub">We couldn’t find an application for this link.</div><button class="btn btn-primary" onclick="location.replace(\'/\')">Start a new application</button></div>';
+    return;
+  }
+  var so = d.services_offering || {};
+  function money(v){ return v!=null ? '£'+v : '—'; }
+  var rows = [
+    ['Work name', d.work_name || d.profile_nickname || '—'],
+    ['Profile age', d.profile_age!=null ? d.profile_age : '—'],
+    ['Location', [d.local_area, d.city].filter(Boolean).join(', ') || '—'],
+    ['Nationality', d.nationality || '—'],
+    ['Languages', d.languages || '—'],
+    ['Physical', [d.height_cm?d.height_cm+'cm':null, d.weight_kg?d.weight_kg+'kg':null, d.body_type].filter(Boolean).join(' · ') || '—'],
+    ['Measurements', [d.dress_size?'Dress '+d.dress_size:null, d.breast_size, d.breast_type, d.eye_colour, d.hair_colour].filter(Boolean).join(' · ') || '—']
+  ];
+  if(so.tantric && so.tantric.offered) rows.push(['Tantric', 'from '+money(so.tantric.starting_price)]);
+  if(so.escort && so.escort.offered) rows.push(['Companions', 'from '+money(so.escort.starting_price)]);
+  var rowsHtml = rows.map(function(r){ return '<div style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--brd)"><span style="color:var(--mt);font-size:11px;letter-spacing:.08em;text-transform:uppercase">'+r[0]+'</span><span style="color:var(--tx);font-size:13px;text-align:right">'+r[1]+'</span></div>'; }).join('');
+  card.style.maxWidth = '620px'; card.style.textAlign = 'left';
+  card.innerHTML =
+    '<div style="text-align:center;margin-bottom:22px">'+
+      '<div style="font-family:var(--fd);font-size:24px;font-weight:300;letter-spacing:.32em;color:var(--ac);text-transform:uppercase">Mayriche</div>'+
+      '<div class="success-t" style="font-size:36px;margin-top:8px">'+(d.work_name||d.profile_nickname||'Application')+'</div>'+
+      '<div class="success-sub">'+(d.stage||'Application')+' · '+(d.application_ref||'')+'</div>'+
+    '</div>'+
+    '<div class="summary-card"><div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Profile</div>'+rowsHtml+'</div>'+
+    '<div class="actions" style="margin-top:20px;justify-content:center"><button class="btn btn-primary" onclick="location.replace(\'/\')">New application</button></div>';
+}
+function copyAppLink(){
+  const el = document.getElementById('successLink');
+  if(!el) return;
+  const v = el.value;
+  try {
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(v); }
+    else { el.removeAttribute('readonly'); el.select(); document.execCommand('copy'); el.setAttribute('readonly','readonly'); }
+    showToast('Link copied','success');
+  } catch(e){ el.select(); showToast('Select & copy the link','error'); }
+}
 function downloadPdf(){
   const ref = window.__lastAppRef || 'APP';
   window.print();
