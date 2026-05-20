@@ -5172,7 +5172,12 @@ async function submitApplication(){
   if(formData.competing === 'Yes' && !(formData.escort_agencies||[]).some(s => (s||'').trim())){
     showToast('Please add at least one agency profile link', 'error');
     if(typeof goStep === 'function') goStep(2);
-    setTimeout(() => { try{ document.getElementById('agencyWebsiteWrap')?.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }, 300);
+    setTimeout(() => {
+      const wrap = document.getElementById('agencyWebsiteWrap');
+      const inp = document.querySelector('#escortAgencyList input');
+      if(inp){ inp.classList.add('field-missing'); inp.focus(); }
+      try{ (inp || wrap)?.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
+    }, 300);
     return;
   }
   // Emergency contact phone must be a valid number we can verify.
