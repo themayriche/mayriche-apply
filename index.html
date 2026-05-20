@@ -901,15 +901,12 @@ html{scroll-behavior:smooth}
       <div class="field">
         <label class="field-lbl">Other languages you speak <span class="opt-note">Optional</span></label>
         <div class="field-hint" style="margin-bottom:10px">English is captured above. Add any other languages and how well — Native / Fluent / Advanced / Conversational / Basic. Up to 5.</div>
-        <div class="lang-list" id="langList"></div>
-        <!-- Add-language affordance — styled like a button so the
-             dropdown reads as an action, not a half-rendered field.
-             Label flips to "+ Add one more language" after the first
-             pick (handled in populateLangDropdown). Width 100% on
-             phones for easy tap. -->
-        <div class="lang-add-wrap" style="margin-top:10px">
+        <!-- Add-language affordance sits right under the title. Added
+             languages render in the list below it. -->
+        <div class="lang-add-wrap">
           <select class="sel lang-add" id="langSelect"><option value="">+ Add a language</option></select>
         </div>
+        <div class="lang-list" id="langList" style="margin-top:10px"></div>
         <div class="field-hint" id="langHint" style="margin-top:6px;display:none">Add one more language if you speak more.</div>
       </div>
     </div>
