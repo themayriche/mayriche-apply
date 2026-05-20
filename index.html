@@ -1162,15 +1162,17 @@ html{scroll-behavior:smooth}
       <div class="row-1" style="margin-top:14px">
         <div class="field">
           <label class="field-lbl"><span id="localAreaLabel">Working Area</span> <span class="req">*</span></label>
+          <div class="field-hint" style="margin:0 0 8px">The neighbourhood / zone you&rsquo;re mainly based in for work.</div>
           <select class="sel" id="f_local_area" disabled><option value="">Pick city first…</option></select>
           <input type="text" class="inp" id="f_local_area_work_text" placeholder="Type your working area" style="display:none;margin-top:8px">
-          <div class="field-hint">The neighbourhood / zone you&rsquo;re mainly based in for work.</div>
         </div>
       </div>
 
       <!-- ─── IN-HOUSE ADDRESS ─── Optional. The checkbox lets her skip it
-           entirely; ticking it disables the fields and records No in-house. -->
-      <div class="row-1" style="margin-top:18px">
+           entirely; ticking it disables the fields and records No in-house.
+           Extra top spacing + a hairline keep it clearly separate from the
+           Working Area field above (was feeling cramped). -->
+      <div class="row-1" style="margin-top:28px;padding-top:22px;border-top:1px solid var(--brd)">
         <div class="field">
           <label class="field-lbl">In-house Address <span class="opt-note">If you offer in-house</span></label>
           <div class="field-hint" style="margin-bottom:8px">Where you host clients. Kept strictly confidential — never shown to clients before booking is confirmed.</div>
