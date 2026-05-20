@@ -949,6 +949,7 @@ html{scroll-behavior:smooth}
             <input type="tel" class="inp phone-number" id="f_phone" placeholder="7700 900 123" data-sec="personal" inputmode="tel" autocomplete="tel-national">
           </div>
           <div class="field-hint">Pick your country code. Number without prefix won&rsquo;t work.</div>
+          <div class="field-hint" id="f_phone_hint" style="display:none;color:var(--rd)">Please enter a valid phone number.</div>
           <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--tx2);cursor:pointer">
             <input type="checkbox" id="f_phone_is_whatsapp" checked style="width:16px;height:16px;cursor:pointer"> This number is available on WhatsApp
           </label>
@@ -961,6 +962,7 @@ html{scroll-behavior:smooth}
               <input type="tel" class="inp phone-number" id="f_whatsapp" placeholder="7700 900 123" inputmode="tel" autocomplete="off">
             </div>
             <div class="field-hint">This is where our team will contact you.</div>
+            <div class="field-hint" id="f_whatsapp_hint" style="display:none;color:var(--rd)">Please enter a valid phone number.</div>
           </div>
         </div>
         <div class="field">
@@ -1563,6 +1565,7 @@ html{scroll-behavior:smooth}
             <input type="tel" class="inp phone-number" id="f_em_phone" placeholder="7700 900 123" inputmode="tel" autocomplete="off">
           </div>
           <div class="field-hint">Country code first, then number without leading 0.</div>
+          <div class="field-hint" id="f_em_phone_hint" style="display:none;color:var(--rd)">Please enter a valid phone number.</div>
         </div>
       </div>
     </div>
@@ -2315,6 +2318,9 @@ document.addEventListener('DOMContentLoaded', async function(){
   initPhotoshootReveal();
   populatePhoneCodes('f_whatsapp_code');
   initEmailValidation();
+  initPhoneValidation('f_phone', 'f_phone_hint');
+  initPhoneValidation('f_whatsapp', 'f_whatsapp_hint');
+  initPhoneValidation('f_em_phone', 'f_em_phone_hint');
   initNoSocialCheckbox();
   initWhatsappToggle();
   initAgencyReveal();
@@ -3223,6 +3229,34 @@ function initEmailValidation(){
     // Hide the warning while typing — only show it on blur to avoid noise.
     if(hint.style.display === 'block') update();
   });
+}
+
+// ─── Phone number validation ─────────────────────────────────────
+// A valid national number (the part after the country code) is 6–13
+// digits. We don't lock to exactly 10 because that's UK-only — other
+// countries are shorter or longer, so a range keeps it international
+// while still catching obvious mistakes (too few / too many digits).
+function isValidPhoneLocal(value){
+  const digits = (value||'').replace(/\D/g,'');
+  return digits.length >= 6 && digits.length <= 13;
+}
+function initPhoneValidation(inputId, hintId){
+  const inp  = document.getElementById(inputId);
+  const hint = document.getElementById(hintId);
+  if(!inp || !hint) return;
+  const update = () => {
+    const v = inp.value.trim();
+    if(!v){ hint.style.display = 'none'; inp.style.borderColor = ''; return; }
+    if(isValidPhoneLocal(v)){
+      hint.style.display = 'none';
+      inp.style.borderColor = '';
+    } else {
+      hint.style.display = 'block';
+      inp.style.borderColor = 'var(--rd)';
+    }
+  };
+  inp.addEventListener('blur', update);
+  inp.addEventListener('input', () => { if(hint.style.display === 'block') update(); });
 }
 
 // ─── Other agencies → conditional website field ──────────────────
