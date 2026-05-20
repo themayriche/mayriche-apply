@@ -5680,7 +5680,10 @@ async function submitApplication(){
 
   try {
     if(!sb) throw new Error('Database not connected');
-    const r = await sb.from('ladies').insert([ladyRow]).select();
+    // Insert WITHOUT .select() — the public (anon) key may insert but not
+    // read the ladies table, so a returning-select would fail RLS. We
+    // already hold the full row locally for post-submit routing.
+    const r = await sb.from('ladies').insert([ladyRow]);
     if(r.error) throw r.error;
 
     // ═══ POST-SUBMIT ROUTING (non-blocking) ═══
@@ -5697,7 +5700,7 @@ async function submitApplication(){
     setProgress('Saved · Notifying team…');
 
     try {
-      const newLady = (r.data && r.data[0]) || null;
+      const newLady = (r.data && r.data[0]) || ladyRow;
       if(newLady) await postSubmitRouting(newLady, formData);
     } catch(e){
       console.warn('Post-submit routing failed (non-critical):', e);
