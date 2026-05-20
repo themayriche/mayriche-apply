@@ -82,14 +82,14 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 
 /* Theme toggle — floats top-right, switches between light and dark.
    Hidden on mobile <420px to leave room for content. */
-.theme-toggle{position:fixed;top:16px;right:16px;z-index:60;width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--brd2);color:var(--ac);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px rgba(139,115,85,.10)}
+.theme-toggle{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--card);border:1px solid var(--brd2);color:var(--ac);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px rgba(139,115,85,.10)}
 .theme-toggle:hover{border-color:var(--ac);color:var(--tx);transform:translateY(-1px)}
 .theme-toggle svg{width:16px;height:16px}
 .theme-toggle .icon-moon{display:block}
 .theme-toggle .icon-sun{display:none}
 :root[data-theme="dark"] .theme-toggle .icon-moon{display:none}
 :root[data-theme="dark"] .theme-toggle .icon-sun{display:block}
-@media(max-width:480px){.theme-toggle{top:10px;right:10px;width:32px;height:32px}.theme-toggle svg{width:14px;height:14px}}
+@media(max-width:480px){.theme-toggle{width:30px;height:30px}.theme-toggle svg{width:14px;height:14px}}
 
 /* Sticky progress header — anchored to viewport top.
    Width matches the cards beneath (no negative margins) so the
@@ -213,7 +213,9 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .avail-day{padding:10px 4px;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);text-align:center;cursor:pointer;transition:all .2s;min-height:100px;display:flex;flex-direction:column;gap:5px;}
 .avail-day:hover{border-color:var(--acL)}
 .avail-day.off{background:rgba(192,96,96,.05);border-color:rgba(192,96,96,.20);}
-.avail-day.on{background:rgba(93,140,114,.04);border-color:var(--gn);}
+.avail-day.on{background:rgba(93,140,114,.12);border-color:var(--gn);}
+.avail-day.on .avail-day-lbl{color:var(--gn);}
+.avail-day.on .avail-day-hrs{color:var(--gn);}
 .avail-day-lbl{font-size:10px;color:var(--mt);letter-spacing:.2em;text-transform:uppercase;font-weight:600;}
 .avail-day-hrs{font-family:var(--fd);font-size:13px;color:var(--tx);font-weight:500;}
 /* OFF state — red label so the day visibly signals "not working" at a glance.
@@ -706,13 +708,8 @@ html{scroll-behavior:smooth}
 </head>
 <body>
 
-<!-- THEME TOGGLE — floats top-right; flips data-theme on :root and
-     persists the choice in localStorage. Set as early as possible so
-     the first paint already matches the saved preference. -->
-<button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode" onclick="toggleTheme()">
-  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-</button>
+<!-- THEME TOGGLE now lives inside the sticky progress header (below) so
+     it stays put on scroll and never overlaps the % text. -->
 <script>
   // Apply saved theme before the hero paints to avoid a flash.
   (function(){
@@ -796,9 +793,15 @@ html{scroll-behavior:smooth}
   <div class="progress-wrap">
     <div class="prog-head">
       <div class="prog-step" id="progStep">Step <b>1</b> of 4 · About You</div>
-      <div class="prog-pct">
-        <span class="prog-pct-num" id="progPct">0</span><span class="prog-pct-num">%</span>
-        <span class="prog-pct-lbl">Complete</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="prog-pct">
+          <span class="prog-pct-num" id="progPct">0</span><span class="prog-pct-num">%</span>
+          <span class="prog-pct-lbl">Complete</span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode" onclick="toggleTheme()">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
       </div>
     </div>
     <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
@@ -2324,7 +2327,7 @@ let formData = {
   escort_services:{},
   boundaries:'',
   days_week:'',
-  availability:{}, avail_notes:'',
+  availability:{}, availability_touched:false, avail_notes:'',
   em_name:'', em_rel:'', em_phone:'', em_phone_code:'',
   // Digital signature — typed full legal name + ISO timestamp captured
   // the moment the applicant first types something into the field.
@@ -3981,6 +3984,7 @@ function renderLangs(){
 function toggleDay(day){
   const cell = document.querySelector('[data-day="'+day+'"]');
   const d = formData.availability[day];
+  formData.availability_touched = true;
   d.enabled = !d.enabled;
   if(d.enabled){
     d.from = d.from || '09:00';
@@ -4000,6 +4004,7 @@ function toggleDay(day){
   updateProgress();
 }
 function setAvailTime(day, kind, val){
+  formData.availability_touched = true;
   formData.availability[day][kind] = val;
   const cell = document.querySelector('[data-day="'+day+'"]');
   const d = formData.availability[day];
@@ -4344,8 +4349,10 @@ function updateProgress(){
   if(formData.work_country) s.work++;
   if(formData.mobile) s.work++;
   if(formData.services.length>0) s.services++;
+  // Days default to ON, so only count availability once she's actually
+  // interacted with the calendar — keeps an untouched form at 0%.
   const anyDay = Object.values(formData.availability).some(d => d.enabled);
-  if(anyDay) s.availability++;
+  if(anyDay && formData.availability_touched) s.availability++;
   if(formData.files.idcopy || formData.video || formData.files.location || formData.files.portfolio.length>0) s.documents++;
   s.consent = Object.values(formData.consents).filter(v => v).length;
 
@@ -4694,6 +4701,7 @@ function loadDraft(){
         formData.addons.forEach(a => document.querySelector('[data-addon="'+a+'"]')?.classList.add('checked'));
       } else if(k === 'availability'){
         formData.availability = d.availability||{};
+        formData.availability_touched = !!d.availability_touched;
         Object.keys(formData.availability).forEach(day => {
           const cell = document.querySelector('[data-day="'+day+'"]');
           if(!cell) return;
