@@ -1289,7 +1289,7 @@ html{scroll-behavior:smooth}
         </div>
       </div>
       <div class="field-lbl" style="margin-bottom:6px">Choose your weekly availability <span class="req">*</span></div>
-      <div class="field-hint" style="margin:0 0 12px">Every day starts <b>9 AM – 2 AM</b>. Adjust the hours as you like, or tap a day to turn it off. You can keep up to 3 days off (we need at least 4).</div>
+      <div class="field-hint" style="margin:0 0 12px">Tap each day you work to switch it <b>ON</b> (9 AM – 2 AM by default — adjust as you like). We need at least 4 days.</div>
       <div class="avail-grid" id="availGrid"></div>
       <div class="row-1" style="margin-top:10px">
         <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
@@ -1340,7 +1340,7 @@ html{scroll-behavior:smooth}
         <div class="sec-t">Selfie Verification</div>
         <span class="sec-note">Strictly confidential</span>
       </div>
-      <div class="field-hint" style="margin-bottom:14px">A quick check that you&rsquo;re the same person in the photos &mdash; never shown to clients. One clear face selfie + one full-body photo.</div>
+      <div class="field-hint" style="margin-bottom:14px">A quick check that you&rsquo;re the same person &mdash; never shown to clients. One clear face selfie + one full-body photo. Wear black lingerie with heels and a robe.</div>
       <div class="upload" onclick="document.getElementById('file_selfie').click()">
         <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
         <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
@@ -1551,7 +1551,7 @@ html{scroll-behavior:smooth}
           <div class="svc-mod-block">
             <div class="field">
               <label class="field-lbl">Boundaries <span class="opt-note">Optional but recommended</span></label>
-              <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have, in your own words. Be honest — this helps us match you to the right clients. Examples: 'No facial finishing', 'No kissing on first booking', 'No anal'..." rows="4"></textarea>
+              <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have, in your own words. Be honest — this helps us match you to the right clients. Examples: 'No facial finishing', 'No kissing on first booking'..." rows="4"></textarea>
               <div class="field-hint">Anything we should know upfront before sending you a booking.</div>
             </div>
             <label style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:12.5px;color:var(--tx2);cursor:pointer;line-height:1.5">
@@ -1584,14 +1584,14 @@ html{scroll-behavior:smooth}
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="sec-t">Video Introduction</div>
-        <span class="sec-note">Mandatory</span>
+        <div class="sec-t">Video Introduction <span class="req">*</span></div>
+        <span class="sec-note" style="color:var(--rd);font-weight:600">You must be the same person as in your passport</span>
       </div>
       <div class="video-box" id="videoBox">
         <video id="videoPreview" controls style="display:none"></video>
         <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         <div class="video-box-ttl" id="videoTtl">60-second video introduction</div>
-        <div class="video-box-sub" id="videoSub">A 60-second clip, like a modern casting. Prop your phone up in good light and film your whole body — face, then a slow pirouette. Wear black lingerie with a robe and heels.<br><strong style="color:var(--rd)">You must be the same person as in your passport — if not, the application will not be accepted.</strong></div>
+        <div class="video-box-sub" id="videoSub">A 60-second clip, like a model casting. Prop your phone up in good light and film your whole body — face, then a slow pirouette. Wear black lingerie with a robe and heels.</div>
         <button class="btn btn-primary" onclick="document.getElementById('videoUpload').click()" style="min-width:auto">Upload Video</button>
         <div class="upload-prog" id="prog_video"><div class="upload-prog-fill"></div></div>
       </div>
@@ -1603,8 +1603,8 @@ html{scroll-behavior:smooth}
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div>
-        <div class="sec-t">Location Check</div>
-        <span class="sec-note">Mandatory</span>
+        <div class="sec-t">Location Check <span class="req">*</span></div>
+        <span class="sec-note" style="color:var(--rd);font-weight:600">Standard: super clean &amp; spa-like</span>
       </div>
       <div class="video-box" id="locationBox">
         <div class="video-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
@@ -2175,6 +2175,7 @@ const COMPANIONSHIP_TRAVEL = [
 
 // ─── SPECIAL REQUESTS & FETISHES ─── multi-select, price on request.
 const SPECIAL_REQUESTS = [
+  'Anal Services — Protected', 'Anal Services — Unprotected',
   'BDSM', 'Domination (giving)', 'Submission (receiving)', 'Role-play & costumes',
   'Water sports', 'Foot fetish', 'Spanking', 'Bondage', 'Toys', 'Fantasy scenarios'
 ];
@@ -2542,21 +2543,20 @@ document.addEventListener('DOMContentLoaded', async function(){
   // Availability
   const avG = document.getElementById('availGrid');
   if(avG) DAYS.forEach(day => {
-    // Every day starts ON (09:00–02:00) — she turns OFF the days she
-    // doesn't work (up to 3).
-    formData.availability[day] = {enabled:true, from:'09:00', to:'02:00'};
+    // Days start OFF — she taps each day she works ON (defaults 09:00–02:00).
+    formData.availability[day] = {enabled:false, from:'09:00', to:'02:00'};
     const cell = document.createElement('div');
-    cell.className = 'avail-day on';
+    cell.className = 'avail-day off';
     cell.dataset.day = day;
     cell.innerHTML =
       '<div class="avail-day-lbl">'+day+'</div>'+
-      '<div class="avail-day-hrs">09:00 – 02:00</div>'+
-      '<div class="time-inputs" style="display:flex">'+
+      '<div class="avail-day-hrs">OFF</div>'+
+      '<div class="time-inputs" style="display:none">'+
         '<input type="time" value="09:00" onchange="event.stopPropagation();setAvailTime(\''+day+'\',\'from\',this.value)" onclick="event.stopPropagation()">'+
         '<span class="time-sep">–</span>'+
         '<input type="time" value="02:00" onchange="event.stopPropagation();setAvailTime(\''+day+'\',\'to\',this.value)" onclick="event.stopPropagation()">'+
       '</div>'+
-      '<div class="avail-toggle">Tap to remove</div>';
+      '<div class="avail-toggle">Tap to add</div>';
     cell.addEventListener('click', () => toggleDay(day));
     avG.appendChild(cell);
   });
@@ -3626,9 +3626,14 @@ function renderTierGrid(){ /* no-op */ }
 // ─── Build the rate rows from her entered starting price ──────────
 function buildRatesFromPrice(price){
   return RATE_PLAN.map(p => {
+    // 30-minute session is a fixed £200 in-house regardless of her base
+    // rate, and is not offered as a mobile booking (shown as "—").
+    if(p.isThirty){
+      return { duration: p.duration, in_house: 200, mobile: null, isThirty: true };
+    }
     let inh = (p.mult === 1.0) ? price : Math.round((price * p.mult) / 10) * 10;
     if(p.floor) inh = Math.max(inh, p.floor);
-    return { duration: p.duration, in_house: inh, mobile: inh + 100, isThirty: !!p.isThirty };
+    return { duration: p.duration, in_house: inh, mobile: inh + 100, isThirty: false };
   });
 }
 
@@ -3690,8 +3695,8 @@ function renderRateTable(scope){
       const st = struck ? ' style="text-decoration:line-through;opacity:.45"' : '';
       return '<tr' + st + '>' +
         '<td>' + r.duration + (struck ? ' <span style="font-size:10px;letter-spacing:.05em">(not offered)</span>' : '') + '</td>' +
-        '<td class="rate-cell">' + sym + (r.in_house||0) + '</td>' +
-        '<td class="rate-cell">' + sym + (r.mobile||0) + '</td>' +
+        '<td class="rate-cell">' + (r.in_house != null ? sym + r.in_house : '—') + '</td>' +
+        '<td class="rate-cell">' + (r.mobile != null ? sym + r.mobile : '—') + '</td>' +
       '</tr>';
     }).join('') +
     '</tbody>';
@@ -3783,9 +3788,9 @@ function renderCompanionshipTravel(){
     row.className = 'svc-mod-block';
     row.style.cssText = 'border:1px solid var(--brd);border-radius:var(--rs);padding:12px;margin-bottom:10px';
     row.innerHTML =
-      '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap">' +
-        '<div style="min-width:0"><div class="offer-name">' + item.name + '</div><div class="offer-desc">' + item.desc + '</div></div>' +
-        '<select class="sel" style="max-width:150px;flex-shrink:0">' +
+      '<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:nowrap">' +
+        '<div style="flex:1;min-width:0"><div class="offer-name">' + item.name + '</div><div class="offer-desc">' + item.desc + '</div></div>' +
+        '<select class="sel" style="width:130px;flex-shrink:0">' +
           ['','Yes','On request','No'].map(v => '<option value="'+v+'"'+(cur.value===v?' selected':'')+'>'+(v||'Select…')+'</option>').join('') +
         '</select>' +
       '</div>' +
@@ -4013,11 +4018,11 @@ function toggleDay(day){
     cell.classList.add('on');
     cell.querySelector('.avail-day-hrs').textContent = d.from+' – '+d.to;
     cell.querySelector('.time-inputs').style.display = 'flex';
-    cell.querySelector('.avail-toggle').textContent = 'Tap to remove';
+    cell.querySelector('.avail-toggle').textContent = 'ON · Tap to remove';
   } else {
     cell.classList.remove('on');
     cell.classList.add('off');
-    cell.querySelector('.avail-day-hrs').textContent = 'Off';
+    cell.querySelector('.avail-day-hrs').textContent = 'OFF';
     cell.querySelector('.time-inputs').style.display = 'none';
     cell.querySelector('.avail-toggle').textContent = 'Tap to add';
   }
@@ -4730,10 +4735,10 @@ function loadDraft(){
             cell.classList.remove('off'); cell.classList.add('on');
             cell.querySelector('.avail-day-hrs').textContent = (dd.from||'09:00')+' – '+(dd.to||'02:00');
             cell.querySelector('.time-inputs').style.display = 'flex';
-            cell.querySelector('.avail-toggle').textContent = 'Tap to remove';
+            cell.querySelector('.avail-toggle').textContent = 'ON · Tap to remove';
           } else {
             cell.classList.remove('on'); cell.classList.add('off');
-            cell.querySelector('.avail-day-hrs').textContent = 'Off';
+            cell.querySelector('.avail-day-hrs').textContent = 'OFF';
             cell.querySelector('.time-inputs').style.display = 'none';
             cell.querySelector('.avail-toggle').textContent = 'Tap to add';
           }
