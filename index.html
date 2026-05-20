@@ -149,6 +149,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
    loop flagged. Persists until the user types/picks something
    (cleared on focus + value-change in the wire-up below). */
 .inp.field-missing,.sel.field-missing,.txa.field-missing{border-color:var(--rd) !important;box-shadow:0 0 0 2px rgba(192,96,96,.14) !important;background:rgba(192,96,96,.04) !important}
+.upload.field-missing,.video-box.field-missing,.svc-mod.field-missing,.sec.field-missing{border-color:var(--rd) !important;box-shadow:0 0 0 2px rgba(192,96,96,.18) !important}
 .pill-group.field-missing{box-shadow:0 0 0 2px rgba(192,96,96,.20);border-radius:8px;padding:2px}
 
 /* Sticky stepper — pinned below the progress header so the active
@@ -5097,29 +5098,34 @@ const FIELD_ELEMENT_IDS = {
   home_postcode:'f_home_postcode'
 };
 
+// Which step each required field lives on, so a submit error from the
+// final step can jump straight back to the right page.
+const FIELD_STEP = {
+  fullname:1, nationality:1, country:1, city:1, home_street:1, home_postcode:1,
+  phone_code:1, phone:1, email:1, english:1, em_name:1, em_rel:1, em_phone_code:1, em_phone:1,
+  dob_d:1, dob_m:1, dob_y:1, local_area_text:1,
+  profile_age:2, height:2, weight:2, body:2, dress:2, eye:2, hair:2, breast:2, breast_type:2,
+  workname:2, photoshoot:2, videoshoot:2, work_country:2, work_city:2, local_area:2,
+  mobile:2, mobile_30:2, airport:2, late_hours:2, rate:2, days_week:2
+};
+// Navigate to a field's step (if needed), then scroll to it and flag it red.
+function jumpAndFlag(step, selOrId){
+  const doIt = function(){
+    const el = (selOrId[0]==='[' || selOrId[0]==='#') ? document.querySelector(selOrId) : document.getElementById(selOrId);
+    if(!el) return;
+    el.classList.add('field-missing');
+    try { el.scrollIntoView({behavior:'smooth',block:'center'}); } catch(e){}
+    try { el.focus({preventScroll:true}); } catch(e){}
+  };
+  if(step && typeof curStep !== 'undefined' && curStep !== step && typeof goStep === 'function'){
+    goStep(step);
+    setTimeout(doIt, 320);
+  } else { doIt(); }
+}
 function flashMissingField(fieldKey){
-  // First try id-based lookup (selects, inputs).
-  var elId = FIELD_ELEMENT_IDS[fieldKey];
-  var el = elId ? document.getElementById(elId) : null;
-  // Fallback for pill-groups like "inhouse"/"mobile" which use data-pill.
-  if(!el){
-    el = document.querySelector('[data-pill="'+fieldKey+'"]');
-  }
-  if(!el) return;
-  // Scroll into view + flash a soft red border for ~2 seconds.
-  try { el.scrollIntoView({ behavior:'smooth', block:'center' }); } catch(e){ el.scrollIntoView(); }
-  var prevBorder = el.style.border;
-  var prevShadow = el.style.boxShadow;
-  var prevRadius = el.style.borderRadius;
-  el.style.border = '1px solid #c06060';
-  el.style.boxShadow = '0 0 0 3px rgba(192,96,96,.18)';
-  if(!prevRadius) el.style.borderRadius = '8px';
-  setTimeout(function(){
-    el.style.border = prevBorder;
-    el.style.boxShadow = prevShadow;
-    el.style.borderRadius = prevRadius;
-  }, 2200);
-  try { el.focus({ preventScroll:true }); } catch(e){}
+  const elId = FIELD_ELEMENT_IDS[fieldKey] || ('f_'+fieldKey);
+  const sel = document.getElementById(elId) ? elId : ('[data-pill="'+fieldKey+'"]');
+  jumpAndFlag(FIELD_STEP[fieldKey], sel);
 }
 
 async function submitApplication(){
@@ -5155,8 +5161,7 @@ async function submitApplication(){
   }
   if(!formData.dob_d||!formData.dob_m||!formData.dob_y){
     showToast('Please enter your date of birth','error');
-    var dobEl = document.getElementById('f_dob_d') || document.getElementById('f_dob');
-    if(dobEl){ try{ dobEl.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+    jumpAndFlag(1, 'f_dob_d');
     return;
   }
   // Minimum age 21 — computed live from today's date.
@@ -5164,8 +5169,7 @@ async function submitApplication(){
   const ageCheck = calculateAge(dobCheck);
   if(ageCheck === null || ageCheck < 21){
     showToast('You must be at least 21 years old to apply','error');
-    var dEl = document.getElementById('f_dob_d') || document.getElementById('f_dob');
-    if(dEl){ try{ dEl.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+    jumpAndFlag(1, 'f_dob_d');
     return;
   }
   // At least one agency link is required only when "competing = Yes".
@@ -5205,14 +5209,8 @@ async function submitApplication(){
     }, 300);
     return;
   }
-  // Services live on Step 2 now — jump back there and scroll to the issue.
-  const jumpToService = (sel) => {
-    if(typeof goStep === 'function') goStep(2);
-    setTimeout(() => {
-      const e = sel.startsWith('[') ? document.querySelector(sel) : document.getElementById(sel);
-      try{ e?.scrollIntoView({behavior:'smooth',block:'center'}); }catch(err){}
-    }, 300);
-  };
+  // Services live on Step 2 now — jump back there + flag the field red.
+  const jumpToService = (sel) => jumpAndFlag(2, sel);
   // Must offer at least one of the two service modules and configure
   // pricing for whichever they offer.
   if(formData.offers_tantric !== 'Yes' && formData.offers_escort !== 'Yes'){
@@ -5267,29 +5265,26 @@ async function submitApplication(){
   // Step 1 identity bundle — all three are mandatory.
   if(!formData.files.idcopy){
     showToast('Please upload your ID Copy in Step 1','error');
-    document.getElementById('upl_idcopy')?.scrollIntoView({behavior:'smooth',block:'center'});
+    jumpAndFlag(1, 'upl_idcopy');
     return;
   }
   if(!formData.files.bank){
     showToast('Please upload Proof of Bank Account in Step 1','error');
-    document.getElementById('upl_bank')?.scrollIntoView({behavior:'smooth',block:'center'});
+    jumpAndFlag(1, 'upl_bank');
     return;
   }
   if(!formData.video){
     showToast('Please upload your video introduction — it is mandatory','error');
-    document.getElementById('videoBox')?.scrollIntoView({behavior:'smooth',block:'center'});
+    jumpAndFlag(3, 'videoBox');
     return;
   }
   if(!formData.files.location){
     showToast('Please upload your location check video — it is mandatory','error');
-    document.getElementById('locationBox')?.scrollIntoView({behavior:'smooth',block:'center'});
+    jumpAndFlag(3, 'locationBox');
     return;
   }
-  // Photos / video / selfie live on Step 2 — jump back there to show the issue.
-  const jumpToProfile = (sel) => {
-    if(typeof goStep === 'function') goStep(2);
-    setTimeout(() => { try{ document.getElementById(sel)?.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }, 300);
-  };
+  // Photos / video / selfie live on Step 2 — jump back there + flag red.
+  const jumpToProfile = (sel) => jumpAndFlag(2, sel);
   if(formData.photoshoot === 'Yes I have' && (formData.files.portfolio||[]).length < 1){
     showToast('Please add at least one professional photo','error');
     jumpToProfile('proPhotoGrid');
