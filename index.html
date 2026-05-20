@@ -1159,236 +1159,7 @@ html{scroll-behavior:smooth}
         </div>
       </div>
     </div>
-    <!-- ═══ #28 — WORK & AVAILABILITY moved into Public Profile ═══ -->
 
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-        <div class="sec-t">Your Working Area</div>
-      </div>
-      <span class="sec-note" style="margin:-4px 0 4px">Where you&rsquo;ll actually work &mdash; this can be different from your home address.</span>
-      <!-- ─── WORKING LOCATION ─── Independent of the home address from
-           Step 1: she may live in one city and work in another. -->
-      <div class="row" style="margin-top:6px">
-        <div class="field">
-          <label class="field-lbl">Working Country <span class="req">*</span></label>
-          <select class="sel" id="f_work_country" data-sec="work"><option value="">Select country…</option></select>
-        </div>
-        <div class="field">
-          <label class="field-lbl">Working City <span class="req">*</span></label>
-          <select class="sel" id="f_work_city_select" disabled><option value="">Pick country first…</option></select>
-          <input type="text" class="inp" id="f_work_city" placeholder="Type your city" style="display:none;margin-top:8px">
-        </div>
-      </div>
-      <div class="row-1" style="margin-top:14px">
-        <div class="field">
-          <label class="field-lbl"><span id="localAreaLabel">Working Area</span> <span class="req">*</span></label>
-          <div class="field-hint" style="margin:0 0 8px">The neighbourhood / zone you&rsquo;re mainly based in for work.</div>
-          <select class="sel" id="f_local_area" disabled><option value="">Pick city first…</option></select>
-          <input type="text" class="inp" id="f_local_area_work_text" placeholder="Type your working area" style="display:none;margin-top:8px">
-        </div>
-      </div>
-
-      <!-- ─── IN-HOUSE ADDRESS ─── Optional. The checkbox lets her skip it
-           entirely; ticking it disables the fields and records No in-house.
-           Extra top spacing + a hairline keep it clearly separate from the
-           Working Area field above (was feeling cramped). -->
-      <div class="row-1" style="margin-top:28px;padding-top:22px;border-top:1px solid var(--brd)">
-        <div class="field">
-          <label class="field-lbl">In-house Address</label>
-          <div class="field-hint" style="margin-bottom:8px">Where you host clients. Kept strictly confidential — never shown to clients before booking is confirmed.</div>
-          <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--tx2);cursor:pointer">
-            <input type="checkbox" id="f_no_inhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile only)
-          </label>
-        </div>
-      </div>
-      <div id="inhouseFields">
-        <div class="row" style="margin-bottom:14px">
-          <div class="field" style="grid-column:span 2">
-            <label class="field-lbl">Street &amp; Number</label>
-            <input type="text" class="inp" id="f_inhouse_street" placeholder="16 Maddox Street" autocomplete="street-address">
-          </div>
-        </div>
-        <div class="row" style="margin-bottom:14px">
-          <div class="field">
-            <label class="field-lbl">Apartment / Flat</label>
-            <input type="text" class="inp" id="f_inhouse_apt" placeholder="2" inputmode="numeric" autocomplete="address-line2">
-          </div>
-          <div class="field">
-            <label class="field-lbl">Postcode</label>
-            <input type="text" class="inp" id="f_inhouse_postcode" placeholder="W1S 1PH" autocomplete="postal-code" autocapitalize="characters">
-          </div>
-        </div>
-      </div>
-      <!-- Hidden legacy field kept so the existing submit handler keeps
-           writing in_house_address as a single string until we update it. -->
-      <input type="hidden" id="f_inhouse_address">
-
-      <!-- ─── MOBILE ─── Provide Mobile → coverage zones (right after) →
-           Mobile 30+ → Airport. -->
-      <div class="row-1" style="margin-top:14px">
-        <div class="field">
-          <label class="field-lbl">Provide Mobile? <span class="req">*</span></label>
-          <select class="sel" id="f_mobile" data-sec="work">
-            <option value="">Select...</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-      </div>
-      <div id="mobileZonesWrap" style="display:none;margin-top:14px">
-        <div class="field">
-          <label class="field-lbl" style="margin-bottom:8px">Mobile coverage zones <span class="opt-note">Where you travel to</span></label>
-          <button type="button" id="zonesSelectAll" class="zones-all-btn">Select all zones</button>
-          <div class="chk-grid" id="mobileZonesGrid"></div>
-          <div class="field-hint" id="mobileZonesHint">Pick a working city above to see its zones.</div>
-        </div>
-      </div>
-      <div class="row" style="margin-top:14px">
-        <div class="field">
-          <label class="field-lbl">Mobile 30+ min away? <span class="req">*</span></label>
-          <select class="sel" id="f_mobile_30">
-            <option value="">Select...</option>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-            <option value="Depends with special request">Depends — with special request</option>
-          </select>
-          <input type="text" class="inp" id="f_mobile_30_note" placeholder="Your conditions for travelling 30+ min…" style="display:none;margin-top:8px">
-        </div>
-        <div class="field">
-          <label class="field-lbl">Airport Bookings? <span class="req">*</span></label>
-          <select class="sel" id="f_airport">
-            <option value="">Select...</option>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-            <option value="Yes with special request">Yes — with special request</option>
-          </select>
-          <input type="text" class="inp" id="f_airport_note" placeholder="Your airport booking conditions…" style="display:none;margin-top:8px">
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── ADDITIONAL WORKING COUNTRIES ─── Up to two more places she's
-         actually based in / works from (not seasonal trips). Each one
-         mirrors the primary: country → city → area + in-house. -->
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20"/></svg></div>
-        <div class="sec-t">Other Working Countries</div>
-        <span class="sec-note">If you also live &amp; work somewhere else</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:12px">Add another country / city you&rsquo;re based in and work from — e.g. Paris, Dubai, Rome. You can add up to two more.</div>
-      <div id="extraLocations"></div>
-      <button type="button" id="addLocationBtn" class="avail-cta" style="justify-content:center">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span>Add another working country</span>
-      </button>
-    </div>
-
-    <!-- ─── SEASONAL DESTINATIONS ─── Tick-only list of season spots. -->
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg></div>
-        <div class="sec-t">Available for Seasonal Destinations</div>
-        <span class="sec-note">Optional</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:10px">Tick the seasonal spots you&rsquo;re happy to travel to.</div>
-      <button type="button" class="zones-all-btn" id="abroadSelectAll" style="margin-bottom:10px">Select all</button>
-      <div class="chk-grid" id="abroadGrid"></div>
-      <div id="abroadOtherWrap" style="display:none;margin-top:14px">
-        <div class="field-lbl" style="margin-bottom:6px">Your other destination(s)</div>
-        <div id="abroadOtherList"></div>
-        <button type="button" class="zones-all-btn" id="abroadAddMore" style="margin-top:8px">+ Add another destination</button>
-      </div>
-      <div class="chk-grid" id="abroadNoTravelGrid" style="margin-top:12px"></div>
-    </div>
-
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <div class="sec-t">Weekly Availability</div>
-      </div>
-      <div class="row" style="margin-bottom:16px">
-        <div class="field"><label class="field-lbl">How many days per week? <span class="req">*</span></label>
-          <select class="sel" id="f_days_week" data-sec="availability"><option value="">Select...</option><option>1-2 days a week</option><option>3-4 days a week</option><option>5 days a week</option><option>6-7 days a week</option><option>Occasionally (on request only)</option></select>
-        </div>
-        <div class="field"><label class="field-lbl">Late nights &amp; weekends?</label>
-          <select class="sel" id="f_late_hours">
-            <option value="">Select...</option>
-            <option value="No">No</option>
-            <option value="Yes always">Yes always</option>
-            <option value="Advance notice">Advance notice</option>
-          </select>
-        </div>
-      </div>
-      <div class="field-lbl" style="margin-bottom:6px">Choose your weekly availability <span class="req">*</span></div>
-      <div class="field-hint" style="margin:0 0 12px">Tap each day you work to switch it <b>ON</b> (9 AM – 2 AM by default — adjust as you like). We need at least 4 days.</div>
-      <div class="avail-grid" id="availGrid"></div>
-      <div class="row-1" style="margin-top:10px">
-        <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_avail_notes" rows="3" placeholder="e.g. I prefer 2 hours in advance, or 12 hours in advance."></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- Photoshoot question sits right above its uploader so picking
-         "Yes, I have" reveals the 5-photo grid immediately below. -->
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
-        <div class="sec-t">Professional Photoshoot</div>
-      </div>
-      <div class="row-1" style="margin-top:6px">
-        <div class="field"><label class="field-lbl">Do you have a professional photoshoot? <span class="req">*</span></label>
-          <select class="sel" id="f_photoshoot" data-sec="experience">
-            <option value="">Select...</option>
-            <option value="Yes I have">Yes, I have</option>
-            <option value="No but willing">No, but willing to make one</option>
-            <option value="Not interested">Not interested</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── PROFESSIONAL PHOTOSHOOT ─── revealed when "Yes, I have" is
-         chosen for the photoshoot question. Lives here in Public Profile
-         next to her profile photos. Up to 5 images. -->
-    <div class="sec" id="proPhotoSection" style="display:none">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
-        <div class="sec-t">Add Your Professional Photoshoot</div>
-        <span class="sec-note">Up to 5 photos</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">Add up to 5 of your best professional photos — each slot takes one image. Clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
-      <div class="photo-grid" id="proPhotoGrid"></div>
-      <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
-      <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
-    </div>
-
-    <!-- ─── SELFIE VERIFICATION ─── confirms she is the person in the
-         photos. Strictly internal — never shown to clients. -->
-    <div class="sec" id="selfieBox">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 3-3"/></svg></div>
-        <div class="sec-t">Selfie Verification</div>
-        <span class="sec-note">Strictly confidential</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">A quick check that you&rsquo;re the same person &mdash; never shown to clients. One clear face selfie + one full-body photo. Wear black lingerie with heels and a robe.</div>
-      <div class="upload" onclick="document.getElementById('file_selfie').click()">
-        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
-        <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
-        <button type="button" class="upload-btn">Upload</button>
-      </div>
-      <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
-      <div class="upload" onclick="document.getElementById('file_fullbody').click()" style="margin-top:10px">
-        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v9m0 0l-3 5m3-5l3 5M7 9l5 1 5-1"/></svg></div>
-        <div class="upload-info"><div class="upload-ttl">Full-body photo <span class="req">*</span></div><div class="upload-h">One clear photo showing your full body, standing.</div><div id="fullbodyStatus" style="margin-top:4px"></div></div>
-        <button type="button" class="upload-btn">Upload</button>
-      </div>
-      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
-    </div>
-
-    <!-- ═══ PRICING & SERVICES — merged into Public Profile (one step) ═══ -->
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
@@ -1586,6 +1357,228 @@ html{scroll-behavior:smooth}
         <div class="svc-grid addons-2col" id="addonsGrid"></div>
       </div>
     </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <div class="sec-t">Professional Photoshoot</div>
+      </div>
+      <div class="row-1" style="margin-top:6px">
+        <div class="field"><label class="field-lbl">Do you have a professional photoshoot? <span class="req">*</span></label>
+          <select class="sel" id="f_photoshoot" data-sec="experience">
+            <option value="">Select...</option>
+            <option value="Yes I have">Yes, I have</option>
+            <option value="No but willing">No, but willing to make one</option>
+            <option value="Not interested">Not interested</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec" id="proPhotoSection" style="display:none">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <div class="sec-t">Add Your Professional Photoshoot</div>
+        <span class="sec-note">Up to 5 photos</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">Add up to 5 of your best professional photos — each slot takes one image. Clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
+      <div class="photo-grid" id="proPhotoGrid"></div>
+      <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
+      <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
+    </div>
+
+    <div class="sec" id="selfieBox">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 3-3"/></svg></div>
+        <div class="sec-t">Selfie Verification</div>
+        <span class="sec-note">Strictly confidential</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">A quick check that you&rsquo;re a real person &mdash; never posted online, never shown to clients. One clear face selfie + one full-body photo.</div>
+      <div class="upload" onclick="document.getElementById('file_selfie').click()">
+        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
+        <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
+        <button type="button" class="upload-btn">Upload</button>
+      </div>
+      <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
+      <div class="upload" onclick="document.getElementById('file_fullbody').click()" style="margin-top:10px">
+        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v9m0 0l-3 5m3-5l3 5M7 9l5 1 5-1"/></svg></div>
+        <div class="upload-info"><div class="upload-ttl">Full-body photo <span class="req">*</span></div><div class="upload-h">One clear photo showing your full body, standing.</div><div id="fullbodyStatus" style="margin-top:4px"></div></div>
+        <button type="button" class="upload-btn">Upload</button>
+      </div>
+      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div class="sec-t">Your Working Area</div>
+      </div>
+      <span class="sec-note" style="margin:-4px 0 4px">Where you&rsquo;ll actually work &mdash; this can be different from your home address.</span>
+      <!-- ─── WORKING LOCATION ─── Independent of the home address from
+           Step 1: she may live in one city and work in another. -->
+      <div class="row" style="margin-top:6px">
+        <div class="field">
+          <label class="field-lbl">Working Country <span class="req">*</span></label>
+          <select class="sel" id="f_work_country" data-sec="work"><option value="">Select country…</option></select>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Working City <span class="req">*</span></label>
+          <select class="sel" id="f_work_city_select" disabled><option value="">Pick country first…</option></select>
+          <input type="text" class="inp" id="f_work_city" placeholder="Type your city" style="display:none;margin-top:8px">
+        </div>
+      </div>
+      <div class="row-1" style="margin-top:14px">
+        <div class="field">
+          <label class="field-lbl"><span id="localAreaLabel">Working Area</span> <span class="req">*</span></label>
+          <div class="field-hint" style="margin:0 0 8px">The neighbourhood / zone you&rsquo;re mainly based in for work.</div>
+          <select class="sel" id="f_local_area" disabled><option value="">Pick city first…</option></select>
+          <input type="text" class="inp" id="f_local_area_work_text" placeholder="Type your working area" style="display:none;margin-top:8px">
+        </div>
+      </div>
+
+      <!-- ─── IN-HOUSE ADDRESS ─── Optional. The checkbox lets her skip it
+           entirely; ticking it disables the fields and records No in-house.
+           Extra top spacing + a hairline keep it clearly separate from the
+           Working Area field above (was feeling cramped). -->
+      <div class="row-1" style="margin-top:28px;padding-top:22px;border-top:1px solid var(--brd)">
+        <div class="field">
+          <label class="field-lbl">In-house Address</label>
+          <div class="field-hint" style="margin-bottom:8px">Where you host clients. Kept strictly confidential — never shown to clients before booking is confirmed.</div>
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--tx2);cursor:pointer">
+            <input type="checkbox" id="f_no_inhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile only)
+          </label>
+        </div>
+      </div>
+      <div id="inhouseFields">
+        <div class="row" style="margin-bottom:14px">
+          <div class="field" style="grid-column:span 2">
+            <label class="field-lbl">Street &amp; Number</label>
+            <input type="text" class="inp" id="f_inhouse_street" placeholder="16 Maddox Street" autocomplete="street-address">
+          </div>
+        </div>
+        <div class="row" style="margin-bottom:14px">
+          <div class="field">
+            <label class="field-lbl">Apartment / Flat</label>
+            <input type="text" class="inp" id="f_inhouse_apt" placeholder="2" inputmode="numeric" autocomplete="address-line2">
+          </div>
+          <div class="field">
+            <label class="field-lbl">Postcode</label>
+            <input type="text" class="inp" id="f_inhouse_postcode" placeholder="W1S 1PH" autocomplete="postal-code" autocapitalize="characters">
+          </div>
+        </div>
+      </div>
+      <!-- Hidden legacy field kept so the existing submit handler keeps
+           writing in_house_address as a single string until we update it. -->
+      <input type="hidden" id="f_inhouse_address">
+
+      <!-- ─── MOBILE ─── Provide Mobile → coverage zones (right after) →
+           Mobile 30+ → Airport. -->
+      <div class="row-1" style="margin-top:14px">
+        <div class="field">
+          <label class="field-lbl">Provide Mobile? <span class="req">*</span></label>
+          <select class="sel" id="f_mobile" data-sec="work">
+            <option value="">Select...</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+      <div id="mobileZonesWrap" style="display:none;margin-top:14px">
+        <div class="field">
+          <label class="field-lbl" style="margin-bottom:8px">Mobile coverage zones <span class="opt-note">Where you travel to</span></label>
+          <button type="button" id="zonesSelectAll" class="zones-all-btn">Select all zones</button>
+          <div class="chk-grid" id="mobileZonesGrid"></div>
+          <div class="field-hint" id="mobileZonesHint">Pick a working city above to see its zones.</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <div class="field">
+          <label class="field-lbl">Mobile 30+ min away? <span class="req">*</span></label>
+          <select class="sel" id="f_mobile_30">
+            <option value="">Select...</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+            <option value="Depends with special request">Depends — with special request</option>
+          </select>
+          <input type="text" class="inp" id="f_mobile_30_note" placeholder="Your conditions for travelling 30+ min…" style="display:none;margin-top:8px">
+        </div>
+        <div class="field">
+          <label class="field-lbl">Airport Bookings? <span class="req">*</span></label>
+          <select class="sel" id="f_airport">
+            <option value="">Select...</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+            <option value="Yes with special request">Yes — with special request</option>
+          </select>
+          <input type="text" class="inp" id="f_airport_note" placeholder="Your airport booking conditions…" style="display:none;margin-top:8px">
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20"/></svg></div>
+        <div class="sec-t">Second Working Country</div>
+        <span class="sec-note">If you also live &amp; work somewhere else</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:10px">Add another country / city you&rsquo;re based in and work from — e.g. Paris, Dubai, Rome. You can add up to two more.</div>
+      <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12.5px;color:var(--tx2);cursor:pointer">
+        <input type="checkbox" id="f_no_second_country" onchange="toggleSecondCountry(this.checked)" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have a second working country
+      </label>
+      <div id="secondCountryWrap">
+        <div id="extraLocations"></div>
+        <button type="button" id="addLocationBtn" class="avail-cta" style="justify-content:center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Add another working country</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg></div>
+        <div class="sec-t">Seasonal Destinations</div>
+        <span class="sec-note">Optional</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:10px">Tick the seasonal spots you&rsquo;re happy to travel to.</div>
+      <button type="button" class="zones-all-btn" id="abroadSelectAll" style="margin-bottom:10px">Select all</button>
+      <div class="chk-grid" id="abroadGrid"></div>
+      <div id="abroadOtherWrap" style="display:none;margin-top:14px">
+        <div class="field-lbl" style="margin-bottom:6px">Your other destination(s)</div>
+        <div id="abroadOtherList"></div>
+        <button type="button" class="zones-all-btn" id="abroadAddMore" style="margin-top:8px">+ Add another destination</button>
+      </div>
+      <div class="chk-grid" id="abroadNoTravelGrid" style="margin-top:12px"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="sec-t">Weekly Availability</div>
+      </div>
+      <div class="row" style="margin-bottom:16px">
+        <div class="field"><label class="field-lbl">How many days per week? <span class="req">*</span></label>
+          <select class="sel" id="f_days_week" data-sec="availability"><option value="">Select...</option><option>1-2 days a week</option><option>3-4 days a week</option><option>5 days a week</option><option>6-7 days a week</option><option>Occasionally (on request only)</option></select>
+        </div>
+        <div class="field"><label class="field-lbl">Late nights &amp; weekends?</label>
+          <select class="sel" id="f_late_hours">
+            <option value="">Select...</option>
+            <option value="No">No</option>
+            <option value="Yes always">Yes always</option>
+            <option value="Advance notice">Advance notice</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-lbl" style="margin-bottom:6px">Choose your weekly availability <span class="req">*</span></div>
+      <div class="field-hint" style="margin:0 0 12px">Tap each day you work to switch it <b>ON</b> (9 AM – 2 AM by default — adjust as you like). We need at least 4 days.</div>
+      <div class="avail-grid" id="availGrid"></div>
+      <div class="row-1" style="margin-top:10px">
+        <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
+          <textarea class="txa" id="f_avail_notes" rows="3" placeholder="e.g. I prefer 2 hours in advance, or 12 hours in advance."></textarea>
+        </div>
+      </div>
+    </div>
+
     <div class="actions">
       <div class="actions-left"><button class="btn btn-ghost" onclick="goStep(1)">← Back</button></div>
       <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save for Later</button><button class="btn btn-primary" onclick="goStep(3)">Continue →</button></div>
@@ -2300,7 +2293,7 @@ let formData = {
   // Mobile zones she covers within the working city.
   mobile_zones:[],
   // Up to two additional working countries she's based in / works from.
-  extra_locations:[],
+  extra_locations:[], no_second_country:false,
   mobile_30:'', mobile_30_note:'', late_hours:'',
   abroad:[], abroad_custom:[], travel_other:'',
   services:[], addons:[],
@@ -3647,6 +3640,18 @@ function toggleNo30(scope, checked){
   renderRateTable(scope);
   scheduleAutoSave && scheduleAutoSave();
 }
+// "I don't have a second working country" — hides the add-location UI.
+window.toggleSecondCountry = function(checked){
+  formData.no_second_country = !!checked;
+  const wrap = document.getElementById('secondCountryWrap');
+  if(wrap) wrap.style.display = checked ? 'none' : 'block';
+  if(checked){
+    formData.extra_locations = [];
+    const list = document.getElementById('extraLocations');
+    if(list) list.innerHTML = '';
+  }
+  scheduleAutoSave && scheduleAutoSave();
+};
 
 // ─── Render the rate table (read-only display) ───────────────────
 function renderRateTable(scope){
@@ -4867,6 +4872,9 @@ function loadDraft(){
       // "No in-house" checkbox + disabled state.
       const niChk = document.getElementById('f_no_inhouse');
       if(niChk && d.no_inhouse){ niChk.checked = true; niChk.dispatchEvent(new Event('change')); }
+      // "No second working country" checkbox.
+      const nsc = document.getElementById('f_no_second_country');
+      if(nsc && d.no_second_country){ nsc.checked = true; toggleSecondCountry(true); }
       // Per-module experience (Yes/No pills) + years + agency links.
       [['tantric','tantric_experience','tantricExpYearsWrap','f_tantric_exp_years'],
        ['escort','escort_experience','escortExpYearsWrap','f_escort_exp_years']].forEach(([scope, expKey, yearsWrap, yearsId]) => {
