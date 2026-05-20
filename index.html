@@ -64,8 +64,10 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 .sec-strip.compact .sec-badge{padding:6px;border-radius:50%;background:var(--wm);}
 .sec-strip.compact .sec-badge .sec-badge-label{max-width:0;opacity:0;margin-left:-6px}
 /* Hover restores the full label even when the strip is compact. */
-.sec-strip.compact .sec-badge:hover{padding:6px 12px;border-radius:999px;}
-.sec-strip.compact .sec-badge:hover .sec-badge-label{max-width:240px;opacity:1;margin-left:0}
+.sec-strip.compact .sec-badge:hover,
+.sec-strip.compact .sec-badge.cycle{padding:6px 12px;border-radius:999px;background:var(--wm);border-color:var(--ac);color:var(--tx);}
+.sec-strip.compact .sec-badge:hover .sec-badge-label,
+.sec-strip.compact .sec-badge.cycle .sec-badge-label{max-width:240px;opacity:1;margin-left:0}
 @media(max-width:900px){.sec-strip{gap:6px}}
 
 .safe-badge{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:var(--card);border:1px solid var(--brd2);border-radius:20px;font-size:9.5px;color:var(--ac);letter-spacing:.08em;font-weight:600;text-transform:uppercase;position:relative;}
@@ -747,10 +749,6 @@ html{scroll-behavior:smooth}
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
     <span class="sec-badge-label">100% Confidential</span>
   </div>
-  <div class="sec-badge" title="Private CEO Access">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v7c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/></svg>
-    <span class="sec-badge-label">Private CEO Access</span>
-  </div>
   <div class="sec-badge" title="GDPR Compliant">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
     <span class="sec-badge-label">GDPR Compliant</span>
@@ -759,18 +757,24 @@ html{scroll-behavior:smooth}
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>
     <span class="sec-badge-label">Premium Selection</span>
   </div>
-  <div class="sec-badge" title="Highly Selective">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7L9 18l-5-5"/></svg>
-    <span class="sec-badge-label">Highly Selective</span>
-  </div>
 </div>
 <script>
-  // Collapse the trust strip to icon-only pills after the applicant has
-  // had a beat to read the full labels. Hover any pill to expand it.
+  // Collapse the trust strip to icon pills, then auto-cycle: one label
+  // expands at a time and moves along on its own, so they "walk" while
+  // the applicant fills the form.
   window.addEventListener('DOMContentLoaded', function(){
     var strip = document.getElementById('secStrip');
     if(!strip) return;
-    setTimeout(function(){ strip.classList.add('compact'); }, 2400);
+    var badges = strip.querySelectorAll('.sec-badge');
+    setTimeout(function(){
+      strip.classList.add('compact');
+      var i = 0;
+      setInterval(function(){
+        badges.forEach(function(b){ b.classList.remove('cycle'); });
+        badges[i % badges.length].classList.add('cycle');
+        i++;
+      }, 2200);
+    }, 2400);
   });
 </script>
 
@@ -1055,8 +1059,9 @@ html{scroll-behavior:smooth}
         </div>
         <div class="field">
           <label class="field-lbl">Profile Age <span class="req">*</span></label>
-          <input type="number" class="inp" id="f_profile_age" placeholder="e.g. 25" min="18" max="55" data-sec="physical">
+          <input type="number" class="inp" id="f_profile_age" placeholder="e.g. 25" min="21" max="55" data-sec="physical" oninput="clampProfileAge(this)">
           <div class="field-hint">The age you&rsquo;d like to appear as on your profile.</div>
+          <div class="field-hint" id="profileAgeHint" style="display:none;color:var(--rd);font-weight:600">Profile age must be 21 or over.</div>
         </div>
       </div>
     </div>
@@ -1103,34 +1108,10 @@ html{scroll-behavior:smooth}
     </div>
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.35 4.76L20 8.63l-4 3.9.94 5.47L12 15.5l-4.94 2.5L8 12.53 4 8.63l5.65-1.87L12 2z"/></svg></div>
-        <div class="sec-t">Your Experience</div>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+        <div class="sec-t">A Few More Details</div>
       </div>
       <div class="row-1" style="margin-top:6px">
-        <div class="field"><label class="field-lbl">Years of Experience <span class="req">*</span></label>
-          <select class="sel" id="f_years" data-sec="experience"><option value="">Select...</option><option>No prior experience</option><option>0 – 1 year</option><option>1 – 3 years</option><option>3 – 5 years</option><option>5 – 10 years</option><option>10+ years</option></select>
-        </div>
-      </div>
-
-      <div class="row-1" style="margin-top:16px">
-        <div class="field">
-          <label class="field-lbl">More about your experience <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_prev_exp" rows="4" placeholder="Example: I have experience in tantric and adults services for a few years. I started to work in London in 2020 and the agency was..."></textarea>
-        </div>
-      </div>
-
-      <div class="row-1" style="margin-top:16px">
-        <div class="field"><label class="field-lbl">Professional photoshoot? <span class="req">*</span></label>
-          <select class="sel" id="f_photoshoot" data-sec="experience">
-            <option value="">Select...</option>
-            <option value="Yes I have">Yes, I have</option>
-            <option value="No but willing">No, but willing to invest</option>
-            <option value="Not interested">Not interested</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row-1" style="margin-top:16px">
         <div class="field"><label class="field-lbl">How did you hear about us?</label>
           <select class="sel" id="f_heard"><option value="">Select...</option><option>Social Media</option><option>From a Friend</option><option>Google Search</option><option>Another Agency</option><option>Other</option></select>
           <input type="text" class="inp" id="f_heard_other" placeholder="Tell us where you heard about us" style="display:none;margin-top:8px">
@@ -1174,7 +1155,7 @@ html{scroll-behavior:smooth}
            Working Area field above (was feeling cramped). -->
       <div class="row-1" style="margin-top:28px;padding-top:22px;border-top:1px solid var(--brd)">
         <div class="field">
-          <label class="field-lbl">In-house Address <span class="opt-note">If you offer in-house</span></label>
+          <label class="field-lbl">In-house Address</label>
           <div class="field-hint" style="margin-bottom:8px">Where you host clients. Kept strictly confidential — never shown to clients before booking is confirmed.</div>
           <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--tx2);cursor:pointer">
             <input type="checkbox" id="f_no_inhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile only)
@@ -1308,6 +1289,25 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
+    <!-- Photoshoot question sits right above its uploader so picking
+         "Yes, I have" reveals the 5-photo grid immediately below. -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <div class="sec-t">Professional Photoshoot</div>
+      </div>
+      <div class="row-1" style="margin-top:6px">
+        <div class="field"><label class="field-lbl">Do you have a professional photoshoot? <span class="req">*</span></label>
+          <select class="sel" id="f_photoshoot" data-sec="experience">
+            <option value="">Select...</option>
+            <option value="Yes I have">Yes, I have</option>
+            <option value="No but willing">No, but willing to make one</option>
+            <option value="Not interested">Not interested</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <!-- ─── PROFESSIONAL PHOTOSHOOT ─── revealed when "Yes, I have" is
          chosen for the photoshoot question. Lives here in Public Profile
          next to her profile photos. Up to 5 images. -->
@@ -1393,10 +1393,14 @@ html{scroll-behavior:smooth}
                 <div class="pill" data-val="No">No</div>
               </div>
             </div>
-            <div class="row-1" id="tantricExpYearsWrap" style="margin-top:12px;display:none">
+            <div id="tantricExpYearsWrap" style="margin-top:12px;display:none">
               <div class="field">
                 <label class="field-lbl">How many years?</label>
                 <select class="sel" id="f_tantric_exp_years" style="max-width:200px"><option value="">Select...</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select>
+              </div>
+              <div class="field" style="margin-top:12px">
+                <label class="field-lbl">Tell us about your experience <span class="opt-note">Optional</span></label>
+                <textarea class="txa" id="f_tantric_exp_note" rows="3" placeholder="What experience do you have here? Where and how long have you worked?"></textarea>
               </div>
             </div>
           </div>
@@ -1468,10 +1472,14 @@ html{scroll-behavior:smooth}
                 <div class="pill" data-val="No">No</div>
               </div>
             </div>
-            <div class="row-1" id="escortExpYearsWrap" style="margin-top:12px;display:none">
+            <div id="escortExpYearsWrap" style="margin-top:12px;display:none">
               <div class="field">
                 <label class="field-lbl">How many years?</label>
                 <select class="sel" id="f_escort_exp_years" style="max-width:200px"><option value="">Select...</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select>
+              </div>
+              <div class="field" style="margin-top:12px">
+                <label class="field-lbl">Tell us about your experience <span class="opt-note">Optional</span></label>
+                <textarea class="txa" id="f_escort_exp_note" rows="3" placeholder="What experience do you have here? Where and how long have you worked?"></textarea>
               </div>
             </div>
           </div>
@@ -2264,6 +2272,7 @@ let formData = {
   // Multi-agency link lists (per module) + experience years.
   tantric_agencies:[], escort_agencies:[],
   tantric_exp_years:'', escort_exp_years:'',
+  tantric_exp_note:'', escort_exp_note:'',
   english:'',
   // Social media link OR explicit "I don't have any" flag.
   ig:'', no_social:false,
@@ -3816,6 +3825,17 @@ window.clampDob = function(el, kind){
   updateDobHint();
 };
 
+// Profile age can never be under 21 — flag it live like the DOB.
+window.clampProfileAge = function(el){
+  if(!el) return;
+  formData.profile_age = el.value;
+  const hint = document.getElementById('profileAgeHint');
+  const n = parseInt(el.value, 10);
+  const under = el.value !== '' && (!isNaN(n) && n < 21);
+  if(hint) hint.style.display = under ? 'block' : 'none';
+  el.classList.toggle('field-missing', under);
+};
+
 // Live "under 21" message under the date-of-birth row. Explains exactly
 // why the year flags red instead of just colouring it.
 function updateDobHint(){
@@ -4080,7 +4100,6 @@ const STEP_REQ = {
     {key:'hair',         el:'f_hair',              sec:'physical'},
     {key:'breast',       el:'f_breast',            sec:'physical'},
     {key:'breast_type',  el:'f_breast_type',       sec:'physical'},
-    {key:'years',        el:'f_years',             sec:'experience'},
     {key:'photoshoot',   el:'f_photoshoot',        sec:'experience'},
     {key:'work_country', el:'f_work_country',      sec:'work'},
     {key:'work_city',    el:'f_work_city_select',  sec:'work'},
@@ -4165,6 +4184,13 @@ function validateStepBeforeAdvance(currentStep){
   // Step 2: a travel choice is mandatory — at least one seasonal
   // destination, "Other", or "I don't want to travel anywhere".
   if(currentStep === 2 && missing.length === 0){
+    const pAge = parseInt(formData.profile_age, 10);
+    if(!isNaN(pAge) && pAge < 21){
+      const pe = document.getElementById('f_profile_age');
+      if(pe){ pe.classList.add('field-missing'); try{ pe.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Profile age must be 21 or over','error');
+      return false;
+    }
     if(!formData.abroad || formData.abroad.length === 0){
       const ag = document.getElementById('abroadGrid');
       if(ag){ ag.classList.add('field-missing'); try{ ag.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
@@ -4261,7 +4287,7 @@ function updateProgress(){
   if(formData.height) s.physical++;
   if(formData.weight) s.physical++;
   if(formData.body) s.physical++;
-  if(formData.years) s.experience++;
+  if(formData.photoshoot) s.experience++;
   if(formData.workname && formData.workname.trim()) s.work++;
   if(formData.local_area) s.work++;
   if(formData.work_country) s.work++;
@@ -4954,7 +4980,7 @@ async function submitApplication(){
     'home_street','home_postcode',
     'phone_code','phone','email',
     'english',
-    'profile_age','height','weight','body','dress','eye','hair','breast','breast_type','years',
+    'profile_age','height','weight','body','dress','eye','hair','breast','breast_type',
     'workname','photoshoot','work_country','work_city','local_area','mobile','mobile_30','airport','late_hours','rate','days_week',
     'em_name','em_rel','em_phone_code','em_phone'
   ];
@@ -5316,6 +5342,7 @@ async function submitApplication(){
         offered: true,
         experience: formData.tantric_experience === 'Yes',
         experience_years: formData.tantric_experience === 'Yes' ? (formData.tantric_exp_years || null) : null,
+        experience_note: formData.tantric_experience === 'Yes' ? (formData.tantric_exp_note || null) : null,
         no_30min: !!formData.tantric_no_30min,
         tier: formData.tantric_tier,
         starting_price: parseFloat(formData.rate)||null,
@@ -5332,6 +5359,7 @@ async function submitApplication(){
         offered: true,
         experience: formData.escort_experience === 'Yes',
         experience_years: formData.escort_experience === 'Yes' ? (formData.escort_exp_years || null) : null,
+        experience_note: formData.escort_experience === 'Yes' ? (formData.escort_exp_note || null) : null,
         no_30min: !!formData.escort_no_30min,
         tier: formData.escort_tier,
         starting_price: parseFloat(formData.rate)||null,
