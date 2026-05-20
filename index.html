@@ -331,7 +331,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .resume-btn:hover{border-color:var(--ac);color:var(--tx)}
 .resume-btn.primary{background:var(--ac);color:var(--card);border-color:var(--ac)}
 
-.success-overlay{position:fixed;inset:0;background:rgba(250,248,246,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .6s;}
+.success-overlay{position:fixed;inset:0;background:var(--bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .6s;overflow-y:auto}
 .success-overlay.visible{opacity:1;pointer-events:auto}
 .success-card{max-width:560px;text-align:center;transform:translateY(20px);opacity:0;transition:all .8s .2s cubic-bezier(.22,.61,.36,1);}
 .success-overlay.visible .success-card{transform:translateY(0);opacity:1}
@@ -1791,9 +1791,10 @@ html{scroll-behavior:smooth}
       <div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>
       <div id="summaryContent"></div>
     </div>
-    <div class="actions" style="margin-top:20px;justify-content:center">
+    <div class="actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="editApplication()">Edit</button>
       <button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button>
-      <button class="btn btn-primary" onclick="location.reload()">Close</button>
+      <button class="btn btn-primary" onclick="shareAppLink()">Share link</button>
     </div>
   </div>
 </div>
@@ -5754,6 +5755,8 @@ async function submitApplication(){
       var _li = document.getElementById('successLink');
       if(_li){ _li.value = 'https://apply.mayriche.co.uk/?ref=' + applicationRef; }
       if(_lw){ _lw.style.display = 'block'; }
+      // Make the browser URL her own application link.
+      history.replaceState(null, '', '?ref=' + applicationRef);
     } catch(e){}
     renderSummary();
     document.getElementById('successOverlay').classList.add('visible');
@@ -5934,7 +5937,21 @@ async function showApplicationCard(ref){
       '<div class="success-sub">'+(d.stage||'Application')+' · '+(d.application_ref||'')+'</div>'+
     '</div>'+
     '<div class="summary-card"><div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Profile</div>'+rowsHtml+'</div>'+
-    '<div class="actions" style="margin-top:20px;justify-content:center"><button class="btn btn-primary" onclick="location.replace(\'/\')">New application</button></div>';
+    '<div class="actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap"><button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button><button class="btn btn-primary" onclick="shareAppLink()">Share link</button></div>';
+}
+function editApplication(){
+  var ov = document.getElementById('successOverlay');
+  if(ov) ov.classList.remove('visible');
+  var sb2 = document.getElementById('submitBtn');
+  if(sb2){ sb2.disabled = false; sb2.textContent = 'Submit Application'; }
+  // keep the ?ref in the URL so a reload still finds the application
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function shareAppLink(){
+  var el = document.getElementById('successLink');
+  var url = (el && el.value) || (window.__lastAppRef ? ('https://apply.mayriche.co.uk/?ref=' + window.__lastAppRef) : location.href);
+  if(navigator.share){ navigator.share({ title: 'Mayriche application', url: url }).catch(function(){}); }
+  else { copyAppLink(); }
 }
 function copyAppLink(){
   const el = document.getElementById('successLink');
