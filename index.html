@@ -4104,7 +4104,7 @@ async function namesTaken(list){
 // "Soso" / "Sophiie". Keys are lowercase; values are tasteful options.
 const NAME_VARIANTS = {
   sophia:['Sofia','Sisi','Soph'], sophie:['Sofia','Sisi','Soph'], sofia:['Sisi','Sofie','Soph'],
-  maria:['Mara','Marie','Mia'], marie:['Mara','Maria','Mia'], mariana:['Mara','Maria','Ana'],
+  maria:['Mary','Marie','Mara'], marie:['Mary','Maria','Mara'], mariana:['Mara','Maria','Ana'],
   isabella:['Isabel','Bella','Isa'], isabel:['Isabella','Bella','Isa'], gabriela:['Gabi','Ella','Bria'], gabriella:['Gabi','Ella','Bria'],
   alexandra:['Alexa','Sandra','Lexa'], alexia:['Lexi','Alex','Lexa'], valentina:['Valentina','Tina','Vale'], victoria:['Vicky','Tori','Vita'],
   daniela:['Dani','Ela','Dana'], andreea:['Andrea','Dia','Deea'], andrea:['Andra','Dia','Rea'], cristina:['Cris','Tina','Christy'],
@@ -4119,9 +4119,13 @@ const NAME_VARIANTS = {
   catalina:['Cata','Lina','Cat'], lavinia:['Lavi','Livia','Via'], oana:['Anna','Ana','Oania']
 };
 function generateSuggestions(baseName){
-  const seed = (baseName || formData.workname || formData.fullname || '').trim();
+  // Suggestions are ALWAYS derived from her real first name (from Step 1),
+  // never from an unrelated pool — e.g. Maria → Mara / Marie / Mary,
+  // Sophie → Sofia / Sisi / Soph. Curated variants first; otherwise we
+  // build close, name-like short forms. Never suggest an unrelated name.
+  const real = (formData.fullname || baseName || '').trim();
+  const firstName = real.split(/\s+/)[0] || '';
   const typed = (baseName || formData.workname || '').trim().toLowerCase();
-  const firstName = seed.split(/\s+/)[0] || '';
   const out = [];
   const push = v => {
     if(!v) return;
@@ -4136,17 +4140,17 @@ function generateSuggestions(baseName){
     if(NAME_VARIANTS[key]){
       NAME_VARIANTS[key].forEach(push);
     } else {
-      // Conservative, clean fallback for names we don't have curated:
-      // a short form and the name itself — nothing invented.
+      // Name-derived only: soft endings + short forms that still read as
+      // her name. Nicest first (e.g. "Mar" → Mara, Mari, Marie).
       const fn = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-      push(fn);                       // the name as-is
-      push(fn.slice(0, 4));           // e.g. Soph
+      const b3 = fn.slice(0, 3);
+      push(b3 + 'a');     // Mara
+      push(fn.slice(0, 4)); // Mari
+      push(b3 + 'ie');    // Marie
+      push(b3 + 'i');     // Mari
+      push(fn.slice(0, 5));
+      push(fn);           // the full first name as a fallback
     }
-  }
-  // Fill any remaining slots from the curated pool of real names.
-  for(const name of WORK_NAME_POOL){
-    if(out.length >= 8) break;
-    push(name);
   }
   return out;
 }
