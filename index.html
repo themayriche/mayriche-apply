@@ -1271,6 +1271,11 @@ html{scroll-behavior:smooth}
       </div>
       <div class="field-hint" style="margin-bottom:10px">Tick the seasonal spots you&rsquo;re happy to travel to.</div>
       <div class="chk-grid" id="abroadGrid"></div>
+      <div id="abroadOtherWrap" style="display:none;margin-top:14px">
+        <div class="field-lbl" style="margin-bottom:6px">Your other destination(s)</div>
+        <div id="abroadOtherList"></div>
+        <button type="button" class="zones-all-btn" id="abroadAddMore" style="margin-top:8px">+ Add another destination</button>
+      </div>
     </div>
 
     <div class="sec">
@@ -1292,13 +1297,51 @@ html{scroll-behavior:smooth}
         </div>
       </div>
       <div class="field-lbl" style="margin-bottom:6px">Choose your weekly availability <span class="req">*</span></div>
-      <div class="field-hint" style="margin:0 0 12px">Tap a day to switch it <b>ON</b>, then set the hours you&rsquo;d like to work. Tap again to turn it back off.</div>
+      <div class="field-hint" style="margin:0 0 12px">Click on every box to make your availability <b>ON</b> &mdash; each day defaults to <b>09:00 &ndash; 02:00</b> (we&rsquo;re open until 2am). Adjust the hours as you like, or tap again to turn a day off.</div>
       <div class="avail-grid" id="availGrid"></div>
       <div class="row-1" style="margin-top:10px">
         <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
           <textarea class="txa" id="f_avail_notes" rows="3" placeholder="e.g. I prefer 2 hours in advance, or 12 hours in advance."></textarea>
         </div>
       </div>
+    </div>
+
+    <!-- ─── PROFESSIONAL PHOTOSHOOT ─── revealed when "Yes, I have" is
+         chosen for the photoshoot question. Lives here in Public Profile
+         next to her profile photos. Up to 5 images. -->
+    <div class="sec" id="proPhotoSection" style="display:none">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <div class="sec-t">Add Your Professional Photoshoot</div>
+        <span class="sec-note">Up to 5 photos</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">Add up to 5 of your best professional photos — each slot takes one image. Clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
+      <div class="photo-grid" id="proPhotoGrid"></div>
+      <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
+      <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
+    </div>
+
+    <!-- ─── SELFIE VERIFICATION ─── confirms she is the person in the
+         photos. Strictly internal — never shown to clients. -->
+    <div class="sec" id="selfieBox">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 3-3"/></svg></div>
+        <div class="sec-t">Selfie Verification</div>
+        <span class="sec-note">Strictly confidential</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">A quick check that you&rsquo;re the same person in the photos &mdash; never shown to clients. One clear face selfie + one full-body photo.</div>
+      <div class="upload" onclick="document.getElementById('file_selfie').click()">
+        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
+        <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
+        <button type="button" class="upload-btn">Upload</button>
+      </div>
+      <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
+      <div class="upload" onclick="document.getElementById('file_fullbody').click()" style="margin-top:10px">
+        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v9m0 0l-3 5m3-5l3 5M7 9l5 1 5-1"/></svg></div>
+        <div class="upload-info"><div class="upload-ttl">Full-body photo <span class="req">*</span></div><div class="upload-h">One clear photo showing your full body, standing.</div><div id="fullbodyStatus" style="margin-top:4px"></div></div>
+        <button type="button" class="upload-btn">Upload</button>
+      </div>
+      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
     </div>
 
     <div class="actions">
@@ -1526,22 +1569,6 @@ html{scroll-behavior:smooth}
       </div>
       <input type="file" id="file_location" accept="video/*" onchange="handleLocationVideo(event)" style="display:none">
       <div class="upload-prog" id="prog_location"><div class="upload-prog-fill"></div></div>
-    </div>
-
-    <!-- ─── PROFESSIONAL PHOTOSHOOT ─── 5-photo grid (was the
-         "Portfolio" sub-row inside Supporting Documents). Each slot
-         renders the same card style as the rest of Step 4 so the
-         section reads consistently. -->
-    <div class="sec" id="proPhotoSection" style="display:none">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
-        <div class="sec-t">Professional Photoshoot</div>
-        <span class="sec-note">Minimum 5, up to 10</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">Five to ten of your best professional photos. Use the slots below — each slot accepts one image. Recommended: clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
-      <div class="photo-grid" id="proPhotoGrid"></div>
-      <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
-      <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
     </div>
 
     <div class="sec">
@@ -2235,7 +2262,7 @@ let formData = {
   // Up to two additional working countries she's based in / works from.
   extra_locations:[],
   mobile_30:'', mobile_30_note:'', late_hours:'',
-  abroad:[], travel_other:'',
+  abroad:[], abroad_custom:[], travel_other:'',
   services:[], addons:[],
   rate:'', competing:'', agency_website:'', dur_pref:[],
   // ─── New service modules ─────────────────────────────────────────
@@ -2348,7 +2375,9 @@ document.addEventListener('DOMContentLoaded', async function(){
       if(willCheck && loc === NO_TRAVEL){
         // "I don't want to travel" is exclusive — clear everything else.
         formData.abroad = [NO_TRAVEL];
+        formData.abroad_custom = [];
         abr.querySelectorAll('.chk').forEach(c => c.classList.toggle('checked', c.dataset.loc === NO_TRAVEL));
+        syncAbroadOther();
       } else {
         // Picking any real destination clears the "no travel" choice.
         if(willCheck){
@@ -2359,10 +2388,18 @@ document.addEventListener('DOMContentLoaded', async function(){
           formData.abroad.splice(idx,1);
         }
         el.classList.toggle('checked', willCheck);
+        if(loc === 'Other') syncAbroadOther();
       }
       updateProgress();
     });
     abr.appendChild(el);
+  });
+  const abroadAddMore = document.getElementById('abroadAddMore');
+  if(abroadAddMore) abroadAddMore.addEventListener('click', () => {
+    formData.abroad_custom.push('');
+    renderAbroadOther();
+    const inputs = document.querySelectorAll('#abroadOtherList input');
+    if(inputs.length) inputs[inputs.length-1].focus();
   });
 
   // Services grid
@@ -2427,7 +2464,7 @@ document.addEventListener('DOMContentLoaded', async function(){
       '<div class="time-inputs" style="display:none">'+
         '<input type="time" value="09:00" onchange="event.stopPropagation();setAvailTime(\''+day+'\',\'from\',this.value)" onclick="event.stopPropagation()">'+
         '<span class="time-sep">–</span>'+
-        '<input type="time" value="23:00" onchange="event.stopPropagation();setAvailTime(\''+day+'\',\'to\',this.value)" onclick="event.stopPropagation()">'+
+        '<input type="time" value="02:00" onchange="event.stopPropagation();setAvailTime(\''+day+'\',\'to\',this.value)" onclick="event.stopPropagation()">'+
       '</div>'+
       '<div class="avail-toggle">Tap to add</div>';
     cell.addEventListener('click', () => toggleDay(day));
@@ -3171,12 +3208,57 @@ function initHeardReveal(){
   inp.addEventListener('input', () => { formData.heard_other = inp.value.trim(); });
 }
 
+// ─── Seasonal "Other" → free-text destinations (add as many as you like)
+function syncAbroadOther(){
+  const wrap = document.getElementById('abroadOtherWrap');
+  if(!wrap) return;
+  const on = (formData.abroad||[]).includes('Other');
+  wrap.style.display = on ? 'block' : 'none';
+  if(on){
+    if(!formData.abroad_custom || formData.abroad_custom.length === 0) formData.abroad_custom = [''];
+    renderAbroadOther();
+  } else {
+    formData.abroad_custom = [];
+  }
+}
+function renderAbroadOther(){
+  const list = document.getElementById('abroadOtherList');
+  if(!list) return;
+  list.innerHTML = '';
+  (formData.abroad_custom||[]).forEach((val, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:8px';
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'inp';
+    inp.placeholder = 'e.g. Mallorca';
+    inp.value = val || '';
+    inp.addEventListener('input', () => { formData.abroad_custom[i] = inp.value; });
+    const x = document.createElement('button');
+    x.type = 'button';
+    x.className = 'lang-x';
+    x.setAttribute('aria-label','Remove destination');
+    x.textContent = '×';
+    x.onclick = () => {
+      formData.abroad_custom.splice(i,1);
+      if(formData.abroad_custom.length === 0) formData.abroad_custom = [''];
+      renderAbroadOther();
+    };
+    row.appendChild(inp);
+    row.appendChild(x);
+    list.appendChild(row);
+  });
+}
+
 // ─── Professional photoshoot reveal ──────────────────────────────
 // The photo-upload section (Step 4) only applies when she already has
 // a professional photoshoot. "No but willing" / "Not interested" hide it.
 function syncPhotoshootSection(){
   const sec = document.getElementById('proPhotoSection');
-  if(sec) sec.style.display = (formData.photoshoot === 'Yes I have') ? 'block' : 'none';
+  if(!sec) return;
+  const show = (formData.photoshoot === 'Yes I have');
+  sec.style.display = show ? 'block' : 'none';
+  if(show && typeof renderProPhotoGrid === 'function'){ ensureProPhotoInput(); renderProPhotoGrid(); }
 }
 function initPhotoshootReveal(){
   const sel = document.getElementById('f_photoshoot');
@@ -3739,7 +3821,7 @@ function toggleDay(day){
   d.enabled = !d.enabled;
   if(d.enabled){
     d.from = d.from || '09:00';
-    d.to = d.to || '23:00';
+    d.to = d.to || '02:00';
     cell.classList.remove('off');
     cell.classList.add('on');
     cell.querySelector('.avail-day-hrs').textContent = d.from+' – '+d.to;
@@ -3758,7 +3840,7 @@ function setAvailTime(day, kind, val){
   formData.availability[day][kind] = val;
   const cell = document.querySelector('[data-day="'+day+'"]');
   const d = formData.availability[day];
-  cell.querySelector('.avail-day-hrs').textContent = (d.from||'09:00')+' – '+(d.to||'23:00');
+  cell.querySelector('.avail-day-hrs').textContent = (d.from||'09:00')+' – '+(d.to||'02:00');
 }
 
 // ═══════════ WORK NAME SUGGESTIONS ═══════════
@@ -4118,7 +4200,7 @@ function handleFileUpload(ev, kind){
     // Multi-select fills the grid up to 5. Slot-based picker calls
     // renderProPhotoGrid directly; this path is the bulk-select
     // fallback that still works for compat.
-    formData.files.portfolio = Array.from(files).slice(0,10);
+    formData.files.portfolio = Array.from(files).slice(0,5);
     if(typeof renderProPhotoGrid === 'function') renderProPhotoGrid();
   } else if(kind === 'selfie'){
     formData.files.selfie = files[0];
@@ -4150,15 +4232,15 @@ function renderProPhotoGrid(){
   if(!grid) return;
   const photos = formData.files.portfolio || [];
   let html = '';
-  for(let i=0;i<10;i++){
+  for(let i=0;i<5;i++){
     const file = photos[i];
-    const required = (i < 5);
+    const required = (i < 1);
     const url = file ? URL.createObjectURL(file) : '';
     if(file){
       html += '<div class="photo-slot filled" onclick="document.getElementById(\'proPhotoInput\').dataset.idx='+i+';document.getElementById(\'proPhotoInput\').click()">' +
         '<img class="photo-slot-img" src="'+url+'" alt="">' +
         '<div class="photo-slot-overlay">' +
-          '<span class="photo-slot-badge">'+(i+1)+' / 10</span>' +
+          '<span class="photo-slot-badge">'+(i+1)+' / 5</span>' +
           '<button type="button" class="photo-slot-remove" onclick="event.stopPropagation();removeProPhoto('+i+')">Remove</button>' +
         '</div>' +
         '</div>';
@@ -4196,8 +4278,8 @@ function ensureProPhotoInput(){
     if(!f) return;
     const idx = parseInt(e.target.dataset.idx || '0', 10);
     if(!formData.files.portfolio) formData.files.portfolio = [];
-    // Cap at 10 slots.
-    const i = Math.min(Math.max(idx,0), 9);
+    // Cap at 5 slots.
+    const i = Math.min(Math.max(idx,0), 4);
     formData.files.portfolio[i] = f;
     // Reset value so re-selecting the same file fires change again.
     e.target.value = '';
@@ -4424,6 +4506,10 @@ function loadDraft(){
       } else if(k === 'abroad'){
         formData.abroad = d.abroad||[];
         formData.abroad.forEach(loc => document.querySelector('[data-loc="'+loc+'"]')?.classList.add('checked'));
+        formData.abroad_custom = d.abroad_custom || [];
+        syncAbroadOther();
+      } else if(k === 'abroad_custom'){
+        /* handled alongside 'abroad' above */
       } else if(k === 'services'){
         formData.services = d.services||[];
         formData.services.forEach(sv => document.querySelector('[data-svc="'+sv+'"]')?.classList.add('checked'));
@@ -4847,9 +4933,19 @@ async function submitApplication(){
     document.getElementById('locationBox')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  if(formData.photoshoot === 'Yes I have' && (formData.files.portfolio||[]).length < 5){
-    showToast('Please upload at least 5 professional photos','error');
+  if(formData.photoshoot === 'Yes I have' && (formData.files.portfolio||[]).length < 1){
+    showToast('Please add at least one professional photo','error');
     document.getElementById('proPhotoGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if(!formData.files.selfie){
+    showToast('Please add a face selfie for verification','error');
+    document.getElementById('selfieBox')?.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if(!formData.files.fullbody){
+    showToast('Please add a full-body photo for verification','error');
+    document.getElementById('selfieBox')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
   const allConsents = Object.values(formData.consents).every(v => v);
@@ -4879,7 +4975,8 @@ async function submitApplication(){
   // anything else.
   if(formData.files.idcopy)         filesToUpload.push({k:'idcopy',         type:'id_copy',        label:'ID copy',              f:formData.files.idcopy});
   if(formData.files.bank)           filesToUpload.push({k:'bank',           type:'bank_statement', label:'Bank statement',       f:formData.files.bank});
-  if(formData.files.selfie)         filesToUpload.push({k:'selfie',         type:'selfie_kyc',     label:'Selfie + ID',          f:formData.files.selfie});
+  if(formData.files.selfie)         filesToUpload.push({k:'selfie',         type:'selfie_kyc',     label:'Face selfie',          f:formData.files.selfie});
+  if(formData.files.fullbody)       filesToUpload.push({k:'fullbody',       type:'fullbody',       label:'Full-body photo',      f:formData.files.fullbody});
   // Three mandatory body angles — replaces the legacy single fullbody.
   if(formData.files.fullbody_front) filesToUpload.push({k:'fullbody_front', type:'fullbody_front', label:'Full-body (front)',    f:formData.files.fullbody_front});
   if(formData.files.fullbody_back)  filesToUpload.push({k:'fullbody_back',  type:'fullbody_back',  label:'Full-body (back)',     f:formData.files.fullbody_back});
@@ -4932,6 +5029,12 @@ async function submitApplication(){
 
   btn.textContent = 'Saving…';
   setProgress('Saving your application…');
+
+  // Expand the seasonal "Other" tick into the free-text destinations she
+  // typed, so the saved list reads "Ibiza, Mallorca, …" not "…, Other".
+  const abroadList = (formData.abroad||[]).flatMap(x =>
+    x === 'Other' ? (formData.abroad_custom||[]).map(s => (s||'').trim()).filter(Boolean) : [x]
+  );
 
   // ═══ SAVE TO `ladies` TABLE (stage='Just Applied') ═══
   // This makes the application appear automatically in MC OS → Ladies → Applications tab
@@ -4994,7 +5097,7 @@ async function submitApplication(){
     // Work preferences
     provide_inhouse: formData.inhouse,
     provide_mobile: formData.mobile,
-    open_to_travel: formData.abroad.length>0 ? 'Yes - '+formData.abroad.join(', ') : (formData.travel_other||'No'),
+    open_to_travel: abroadList.length>0 ? 'Yes - '+abroadList.join(', ') : (formData.travel_other||'No'),
     
     // Availability
     availability_schedule: formData.availability,
@@ -5037,7 +5140,7 @@ async function submitApplication(){
         : (((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() ? 'WhatsApp: ' + ((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() : ''),
       (formData.work_city || formData.work_country) ? 'Working location: ' + [formData.local_area, formData.work_city, formData.work_country].filter(Boolean).join(', ') : '',
       ...(formData.extra_locations||[]).filter(l => l.country || l.city).map((l, i) => 'Working location ' + (i+2) + ': ' + [l.area, l.city, l.country].filter(Boolean).join(', ') + (l.no_inhouse ? ' (mobile only)' : (([l.inhouse_street, l.inhouse_apt, l.inhouse_postcode].filter(Boolean).join(', ')) ? ' (in-house: ' + [l.inhouse_street, l.inhouse_apt, l.inhouse_postcode].filter(Boolean).join(', ') + ')' : ''))),
-      (formData.abroad && formData.abroad.length) ? 'Seasonal destinations: ' + formData.abroad.join(', ') : '',
+      (abroadList && abroadList.length) ? 'Seasonal destinations: ' + abroadList.join(', ') : '',
       formData.no_inhouse ? 'No in-house (mobile only)' : '',
       (formData.mobile_zones && formData.mobile_zones.length) ? 'Mobile zones: '+formData.mobile_zones.join(', ') : '',
       formData.prev_exp ? 'Experience: '+formData.prev_exp : '',
