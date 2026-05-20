@@ -3987,6 +3987,7 @@ function renderLangs(){
     const safe = language.replace(/'/g, "\\'");
     const row = document.createElement('div');
     row.className = 'lang-row';
+    row.dataset.lang = language;
     const placeholder = 'How well you speak?';
     row.innerHTML =
       '<span class="lang-name">' + language + '</span>' +
@@ -4224,6 +4225,19 @@ function validateStepBeforeAdvance(currentStep){
   // "available on WhatsApp" box is unticked. Only run once the required
   // fields above are present, so we surface them one issue at a time.
   if(currentStep === 1 && missing.length === 0){
+    // Any added language must have its level chosen.
+    const missLvl = (formData.languages||[]).find(l => !(typeof l === 'object' && l.level && l.level.trim()));
+    if(missLvl){
+      const lname = typeof missLvl === 'object' ? missLvl.language : missLvl;
+      showToast('Please pick how you speak ' + lname,'error');
+      const rows = document.querySelectorAll('#langList .lang-row');
+      let target = null;
+      rows.forEach(r => { if(r.dataset.lang === lname) target = r; });
+      const sel = target && target.querySelector('.lang-level');
+      if(sel) sel.classList.add('field-missing');
+      try{ (target || document.getElementById('langList'))?.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
+      return false;
+    }
     // Minimum age 21 (live from today's date).
     if(formData.dob_d && formData.dob_m && formData.dob_y){
       const dStr = formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0');
@@ -5116,6 +5130,17 @@ async function submitApplication(){
   if(missingLevel){
     const lname = typeof missingLevel === 'object' ? missingLevel.language : missingLevel;
     showToast('Please pick how you speak ' + lname,'error');
+    // Languages live on Step 1 — jump back there and scroll to the exact
+    // row so she doesn't have to hunt for it.
+    if(typeof goStep === 'function') goStep(1);
+    setTimeout(() => {
+      const rows = document.querySelectorAll('#langList .lang-row');
+      let target = null;
+      rows.forEach(r => { if(r.dataset.lang === lname) target = r; });
+      const sel = target && target.querySelector('.lang-level');
+      if(sel) sel.classList.add('field-missing');
+      try{ (target || document.getElementById('langList'))?.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
+    }, 300);
     return;
   }
   // Must offer at least one of the two service modules and configure
