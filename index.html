@@ -1126,19 +1126,6 @@ html{scroll-behavior:smooth}
         </div>
       </div>
     </div>
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
-        <div class="sec-t">A Few More Details</div>
-      </div>
-      <div class="row-1" style="margin-top:6px">
-        <div class="field"><label class="field-lbl">How did you hear about us?</label>
-          <select class="sel" id="f_heard"><option value="">Select...</option><option>Social Media</option><option>From a Friend</option><option>Google Search</option><option>Another Agency</option><option>Other</option></select>
-          <input type="text" class="inp" id="f_heard_other" placeholder="Tell us where you heard about us" style="display:none;margin-top:8px">
-        </div>
-      </div>
-    </div>
-
     <!-- ═══ #28 — WORK & AVAILABILITY moved into Public Profile ═══ -->
 
     <div class="sec">
@@ -1657,6 +1644,18 @@ html{scroll-behavior:smooth}
     </div>
     <div class="sec">
       <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+        <div class="sec-t">A Few More Details</div>
+      </div>
+      <div class="row-1" style="margin-top:6px">
+        <div class="field"><label class="field-lbl">How did you hear about us?</label>
+          <select class="sel" id="f_heard"><option value="">Select...</option><option>Social Media</option><option>From a Friend</option><option>Google Search</option><option>Another Agency</option><option>Other</option></select>
+          <input type="text" class="inp" id="f_heard_other" placeholder="Tell us where you heard about us" style="display:none;margin-top:8px">
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v7c0 5 3.5 9 8 10 4.5-1 8-5 8-10V5l-8-3z"/></svg></div>
         <div class="sec-t">Consent & Agreements</div>
       </div>
@@ -1882,7 +1881,7 @@ const CITIES_BY_COUNTRY = {
   'Romania':['Bucharest','Cluj-Napoca','Timisoara','Brasov','Constanta','Iasi','Other (Romania)'],
   'Poland':['Warsaw','Krakow','Wroclaw','Gdansk','Other (Poland)'],
   'Greece':['Athens','Thessaloniki','Mykonos','Santorini','Other (Greece)'],
-  'Ireland':['Dublin','Cork','Galway','Other (Ireland)'],
+  'Ireland':['Dublin','Cork','Galway','Limerick','Other (Ireland)'],
   'Denmark':['Copenhagen','Aarhus','Other (Denmark)'],
   'Sweden':['Stockholm','Gothenburg','Malmo','Other (Sweden)'],
   'Norway':['Oslo','Bergen','Other (Norway)'],
@@ -1894,6 +1893,7 @@ const CITIES_BY_COUNTRY = {
   'Turkey':['Istanbul','Ankara','Antalya','Bodrum','Other (Turkey)'],
   'Israel':['Tel Aviv','Jerusalem','Other (Israel)'],
   'United Arab Emirates':['Dubai','Abu Dhabi','Other (UAE)'],
+  'UAE':['Dubai','Abu Dhabi','Other (UAE)'],
   'Qatar':['Doha','Other (Qatar)'],
   'Saudi Arabia':['Riyadh','Jeddah','Other (Saudi Arabia)'],
   'Morocco':['Marrakesh','Casablanca','Other (Morocco)'],
@@ -1978,6 +1978,9 @@ const LOCAL_AREAS_BY_CITY = {
   'Mykonos':['Mykonos Town','Psarou','Other'],
   'Santorini':['Fira','Oia','Other'],
   'Dublin':['City Centre','Ballsbridge','Dublin 4','Other'],
+  'Cork':['City Centre','Douglas','Ballincollig','Blackrock','Other'],
+  'Galway':['City Centre','Salthill','Knocknacarra','Other'],
+  'Limerick':['City Centre','Castletroy','Other'],
   'Copenhagen':['Indre By','Frederiksberg','Østerbro','Other'],
   'Stockholm':['Östermalm','Södermalm','Vasastan','Other'],
   'Oslo':['Sentrum','Frogner','Other'],
@@ -3979,7 +3982,7 @@ function renderLangs(){
     const safe = language.replace(/'/g, "\\'");
     const row = document.createElement('div');
     row.className = 'lang-row';
-    const placeholder = 'How well?';
+    const placeholder = 'How well you speak?';
     row.innerHTML =
       '<span class="lang-name">' + language + '</span>' +
       '<select class="sel lang-level" onchange="setLangLevel(\'' + safe + '\', this.value)">' +
