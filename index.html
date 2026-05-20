@@ -1418,7 +1418,7 @@ html{scroll-behavior:smooth}
         <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         <div class="video-box-ttl" id="profVideoTtl">Professional video</div>
         <div class="video-box-sub">One clean, well-lit clip.</div>
-        <button class="btn btn-primary" type="button" onclick="document.getElementById('file_profvideo').click()" style="min-width:auto">Upload Video</button>
+        <button class="btn btn-primary" type="button" id="profVideoBtn" onclick="document.getElementById('file_profvideo').click()" style="min-width:auto">Upload Video</button>
         <div class="upload-prog" id="prog_profvideo"><div class="upload-prog-fill"></div></div>
       </div>
       <input type="file" id="file_profvideo" accept="video/*" onchange="handleProfVideo(event)">
@@ -1639,7 +1639,7 @@ html{scroll-behavior:smooth}
         <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         <div class="video-box-ttl" id="videoTtl">60-second video introduction</div>
         <div class="video-box-sub" id="videoSub">A 60-second clip, like a model casting. Prop your phone up in good light and film your whole body — face, then a slow pirouette. Wear black lingerie with a robe and heels.</div>
-        <button class="btn btn-primary" onclick="document.getElementById('videoUpload').click()" style="min-width:auto">Upload Video</button>
+        <button class="btn btn-primary" id="videoUploadBtn" onclick="document.getElementById('videoUpload').click()" style="min-width:auto">Upload Video</button>
         <div class="upload-prog" id="prog_video"><div class="upload-prog-fill"></div></div>
       </div>
       <input type="file" id="videoUpload" accept="video/*" onchange="handleVideoUpload(event)">
@@ -1657,7 +1657,7 @@ html{scroll-behavior:smooth}
         <div class="video-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         <div class="video-box-ttl" id="locationTtl">Location Walkthrough</div>
         <div class="video-box-sub" id="locationSub">One short video showing, in this order: <strong style="color:var(--tx)">how to enter</strong> (from outside &mdash; the way in to the building / apartment), then the <strong style="color:var(--tx)">room</strong> where you welcome clients, then the <strong style="color:var(--tx)">bathroom</strong>.</div>
-        <button class="btn btn-ghost" type="button" onclick="document.getElementById('file_location').click()" style="margin-top:14px">Upload Location Video</button>
+        <button class="btn btn-ghost" type="button" id="locationUploadBtn" onclick="document.getElementById('file_location').click()" style="margin-top:14px">Upload Location Video</button>
         <video id="locationPreview" controls style="display:none;width:100%;max-width:480px;margin:14px auto 0;border-radius:8px"></video>
       </div>
       <input type="file" id="file_location" accept="video/*" onchange="handleLocationVideo(event)" style="display:none">
@@ -3439,6 +3439,7 @@ function handleProfVideo(ev){
   const ttl = document.getElementById('profVideoTtl');
   try { if(prev){ prev.src = URL.createObjectURL(f); prev.style.display = 'block'; } } catch(e){}
   if(ttl) ttl.textContent = f.name.length > 36 ? f.name.slice(0,36)+'…' : f.name;
+  var pbtn = document.getElementById('profVideoBtn'); if(pbtn) pbtn.textContent = 'Replace video';
   updateProgress();
   scheduleAutoSave && scheduleAutoSave();
 }
@@ -4759,6 +4760,8 @@ function handleLocationVideo(ev){
   if(box) box.classList.add('done');
   const ttl = document.getElementById('locationTtl');
   if(ttl) ttl.textContent = 'Location video ready';
+  const lbtn = document.getElementById('locationUploadBtn');
+  if(lbtn) lbtn.textContent = 'Replace video';
   const sub = document.getElementById('locationSub');
   if(sub) sub.textContent = file.name + ' · ' + Math.round(file.size/1024/1024*10)/10 + ' MB';
   showToast('Location video selected', 'success');
@@ -4779,6 +4782,7 @@ function handleVideoUpload(ev){
   preview.style.display = 'block';
   document.getElementById('videoBox').classList.add('done');
   document.getElementById('videoTtl').textContent = 'Video ready';
+  var vbtn = document.getElementById('videoUploadBtn'); if(vbtn) vbtn.textContent = 'Replace video';
   document.getElementById('videoSub').textContent = file.name+' · '+Math.round(file.size/1024/1024*10)/10+'MB';
   showToast('Video selected', 'success');
 }
