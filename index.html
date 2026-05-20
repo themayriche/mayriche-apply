@@ -1169,7 +1169,7 @@ html{scroll-behavior:smooth}
           <label class="field-lbl">In-house Address <span class="opt-note">If you offer in-house</span></label>
           <div class="field-hint" style="margin-bottom:8px">Where you host clients. Kept strictly confidential — never shown to clients before booking is confirmed.</div>
           <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--tx2);cursor:pointer">
-            <input type="checkbox" id="f_no_inhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile / outcall only)
+            <input type="checkbox" id="f_no_inhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile only)
           </label>
         </div>
       </div>
@@ -1195,11 +1195,11 @@ html{scroll-behavior:smooth}
            writing in_house_address as a single string until we update it. -->
       <input type="hidden" id="f_inhouse_address">
 
-      <!-- ─── MOBILE / OUTCALL ─── Provide Mobile + the zones she covers,
+      <!-- ─── MOBILE ─── Provide Mobile + the zones she covers,
            pulled from the working city's neighbourhood list. -->
       <div class="row" style="margin-top:14px">
         <div class="field">
-          <label class="field-lbl">Provide Mobile / Outcall? <span class="req">*</span></label>
+          <label class="field-lbl">Provide Mobile? <span class="req">*</span></label>
           <select class="sel" id="f_mobile" data-sec="work">
             <option value="">Select...</option>
             <option value="Yes">Yes</option>
@@ -1522,13 +1522,13 @@ html{scroll-behavior:smooth}
          "Portfolio" sub-row inside Supporting Documents). Each slot
          renders the same card style as the rest of Step 4 so the
          section reads consistently. -->
-    <div class="sec">
+    <div class="sec" id="proPhotoSection" style="display:none">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
         <div class="sec-t">Professional Photoshoot</div>
-        <span class="sec-note">Minimum 5 photos</span>
+        <span class="sec-note">Minimum 5, up to 10</span>
       </div>
-      <div class="field-hint" style="margin-bottom:14px">Five (or more) of your best professional photos. Use the slots below — each slot accepts one image. Recommended: clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
+      <div class="field-hint" style="margin-bottom:14px">Five to ten of your best professional photos. Use the slots below — each slot accepts one image. Recommended: clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
       <div class="photo-grid" id="proPhotoGrid"></div>
       <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
       <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
@@ -1588,7 +1588,7 @@ html{scroll-behavior:smooth}
       <div class="consent-list">
         <div class="consent" data-consent="age" data-sec="consent">
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="consent-text">I confirm I am <b>over 18 years of age</b> and legally eligible to work.</div>
+          <div class="consent-text">I confirm I am <b>over 21 years of age</b> and legally eligible to work.</div>
         </div>
         <div class="consent" data-consent="gdpr" data-sec="consent">
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -2230,7 +2230,7 @@ let formData = {
   languages:[],
   height:'', weight:'', body:'', dress:'', eye:'', hair:'',
   breast:'', breast_type:'', profile_age:'',
-  years:'', heard:'', prev_exp:'',
+  years:'', heard:'', heard_other:'', prev_exp:'',
   photoshoot:'',
   workname:'',
   // Working location — independent of the home address from Step 1.
@@ -2240,7 +2240,7 @@ let formData = {
   // address" checkbox flips it to 'No' and disables the address fields.
   inhouse:'Yes', no_inhouse:false,
   mobile:'', airport:'', airport_note:'',
-  // Mobile / outcall zones she covers within the working city.
+  // Mobile zones she covers within the working city.
   mobile_zones:[],
   mobile_30:'', mobile_30_note:'', late_hours:'',
   abroad:[], travel_other:'',
@@ -2319,7 +2319,8 @@ document.addEventListener('DOMContentLoaded', async function(){
   initOtherReveal('f_country',     'f_country_other',     'country');
   initOtherReveal('f_hair',        'f_hair_other',        'hair');
   initOtherReveal('f_eye',         'f_eye_other',         'eye');
-  initOtherReveal('f_heard',       'f_heard_other',       'heard');
+  initHeardReveal();
+  initPhotoshootReveal();
   populatePhoneCodes('f_whatsapp_code');
   initEmailValidation();
   initNoSocialCheckbox();
@@ -2334,7 +2335,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   // Abroad grid
   const abr = document.getElementById('abroadGrid');
-  TRAVEL_DESTINATIONS.forEach(loc => {
+  if(abr) TRAVEL_DESTINATIONS.forEach(loc => {
     const el = document.createElement('div');
     el.className = 'chk';
     el.dataset.loc = loc;
@@ -2351,7 +2352,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   // Services grid
   const svcG = document.getElementById('servicesGrid');
-  SERVICES.forEach(s => {
+  if(svcG) SERVICES.forEach(s => {
     const el = document.createElement('div');
     el.className = 'svc';
     el.dataset.svc = s.name;
@@ -2368,7 +2369,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   
   // Add-ons grid
   const addG = document.getElementById('addonsGrid');
-  ADDONS.forEach(a => {
+  if(addG) ADDONS.forEach(a => {
     const el = document.createElement('div');
     el.className = 'svc';
     el.dataset.addon = a.name;
@@ -2384,7 +2385,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   // Duration
   const durG = document.getElementById('durationGrid');
-  DURATIONS.forEach(d => {
+  if(durG) DURATIONS.forEach(d => {
     const el = document.createElement('div');
     el.className = 'chk';
     el.dataset.dur = d;
@@ -2400,7 +2401,7 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   // Availability
   const avG = document.getElementById('availGrid');
-  DAYS.forEach(day => {
+  if(avG) DAYS.forEach(day => {
     formData.availability[day] = {enabled:false, from:'', to:''};
     const cell = document.createElement('div');
     cell.className = 'avail-day off';
@@ -2993,6 +2994,46 @@ function initOtherReveal(selectId, inputId, formKey){
   });
 }
 
+// ─── "How did you hear about us?" reveal ─────────────────────────
+// From a Friend → ask the friend's name; Another Agency → the agency
+// name; Other → free text. Detail is stored in formData.heard_other
+// (the dropdown choice stays in formData.heard).
+function initHeardReveal(){
+  const sel = document.getElementById('f_heard');
+  const inp = document.getElementById('f_heard_other');
+  if(!sel || !inp) return;
+  const apply = () => {
+    const v = sel.value;
+    let ph = '';
+    if(v === 'From a Friend') ph = "Your friend's name";
+    else if(v === 'Another Agency') ph = 'Which agency?';
+    else if(v === 'Other') ph = 'Tell us where you heard about us';
+    if(ph){
+      inp.placeholder = ph;
+      inp.style.display = 'block';
+    } else {
+      inp.style.display = 'none';
+      inp.value = '';
+      formData.heard_other = '';
+    }
+  };
+  sel.addEventListener('change', apply);
+  inp.addEventListener('input', () => { formData.heard_other = inp.value.trim(); });
+}
+
+// ─── Professional photoshoot reveal ──────────────────────────────
+// The photo-upload section (Step 4) only applies when she already has
+// a professional photoshoot. "No but willing" / "Not interested" hide it.
+function syncPhotoshootSection(){
+  const sec = document.getElementById('proPhotoSection');
+  if(sec) sec.style.display = (formData.photoshoot === 'Yes I have') ? 'block' : 'none';
+}
+function initPhotoshootReveal(){
+  const grp = document.querySelector('[data-pill="photoshoot"]');
+  if(grp) grp.addEventListener('click', e => { if(e.target.closest('.pill')) setTimeout(syncPhotoshootSection, 0); });
+  syncPhotoshootSection();
+}
+
 // ─── Email validation against a curated list of real domains ────────
 // Block typos like "gnail.com" before submit. Shows the inline hint
 // under the email field. Falls open on submit (still attempts) — this
@@ -3384,7 +3425,10 @@ function renderEscortServices(){
 window.clampDob = function(el, kind){
   if(!el) return;
   const now = new Date();
-  const maxY = now.getFullYear() - 18;
+  // Minimum age 21 — computed live from today's date so it stays correct
+  // every year without any manual update (2026 → max birth year 2005,
+  // 2027 → 2006, and so on).
+  const maxY = now.getFullYear() - 21;
   const minY = now.getFullYear() - 60;
   let raw = (el.value||'').replace(/[^0-9]/g,'').slice(0, kind === 'y' ? 4 : 2);
   if(kind === 'y' && raw.length < 4){
@@ -3684,6 +3728,17 @@ function validateStepBeforeAdvance(currentStep){
   // "available on WhatsApp" box is unticked. Only run once the required
   // fields above are present, so we surface them one issue at a time.
   if(currentStep === 1 && missing.length === 0){
+    // Minimum age 21 (live from today's date).
+    if(formData.dob_d && formData.dob_m && formData.dob_y){
+      const dStr = formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0');
+      const ageNow = (typeof calculateAge === 'function') ? calculateAge(dStr) : null;
+      if(ageNow === null || ageNow < 21){
+        const de = document.getElementById('f_dob_y') || document.getElementById('f_dob_d');
+        if(de){ de.classList.add('field-missing'); try{ de.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+        showToast('You must be at least 21 years old to apply','error');
+        return false;
+      }
+    }
     const phoneDigits = (formData.phone||'').replace(/\D/g,'');
     if(phoneDigits.length < 6 || phoneDigits.length > 13){
       const pe = document.getElementById('f_phone');
@@ -3830,7 +3885,7 @@ function handleFileUpload(ev, kind){
     // Multi-select fills the grid up to 5. Slot-based picker calls
     // renderProPhotoGrid directly; this path is the bulk-select
     // fallback that still works for compat.
-    formData.files.portfolio = Array.from(files).slice(0,5);
+    formData.files.portfolio = Array.from(files).slice(0,10);
     if(typeof renderProPhotoGrid === 'function') renderProPhotoGrid();
   } else if(kind === 'selfie'){
     formData.files.selfie = files[0];
@@ -3862,15 +3917,15 @@ function renderProPhotoGrid(){
   if(!grid) return;
   const photos = formData.files.portfolio || [];
   let html = '';
-  for(let i=0;i<5;i++){
+  for(let i=0;i<10;i++){
     const file = photos[i];
-    const required = (i === 0);
+    const required = (i < 5);
     const url = file ? URL.createObjectURL(file) : '';
     if(file){
       html += '<div class="photo-slot filled" onclick="document.getElementById(\'proPhotoInput\').dataset.idx='+i+';document.getElementById(\'proPhotoInput\').click()">' +
         '<img class="photo-slot-img" src="'+url+'" alt="">' +
         '<div class="photo-slot-overlay">' +
-          '<span class="photo-slot-badge">'+(i+1)+' / 5</span>' +
+          '<span class="photo-slot-badge">'+(i+1)+' / 10</span>' +
           '<button type="button" class="photo-slot-remove" onclick="event.stopPropagation();removeProPhoto('+i+')">Remove</button>' +
         '</div>' +
         '</div>';
@@ -3908,8 +3963,8 @@ function ensureProPhotoInput(){
     if(!f) return;
     const idx = parseInt(e.target.dataset.idx || '0', 10);
     if(!formData.files.portfolio) formData.files.portfolio = [];
-    // Cap at 5 — if the user clicks slot 6 it falls back to last.
-    const i = Math.min(Math.max(idx,0), 4);
+    // Cap at 10 slots.
+    const i = Math.min(Math.max(idx,0), 9);
     formData.files.portfolio[i] = f;
     // Reset value so re-selecting the same file fires change again.
     e.target.value = '';
@@ -4266,6 +4321,7 @@ function loadDraft(){
     }catch(e){ console.warn('post-restore wiring', e); }
     document.getElementById('resumeBanner').style.display='none';
     showToast('Draft restored', 'success');
+    if(typeof syncPhotoshootSection === 'function') syncPhotoshootSection();
     updateProgress();
   } catch(e){ console.warn('Load draft failed', e); }
 }
@@ -4449,6 +4505,15 @@ async function submitApplication(){
     if(dobEl){ try{ dobEl.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
     return;
   }
+  // Minimum age 21 — computed live from today's date.
+  const dobCheck = formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0');
+  const ageCheck = calculateAge(dobCheck);
+  if(ageCheck === null || ageCheck < 21){
+    showToast('You must be at least 21 years old to apply','error');
+    var dEl = document.getElementById('f_dob_d') || document.getElementById('f_dob');
+    if(dEl){ try{ dEl.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+    return;
+  }
   // Agency website is required only when "competing = Yes".
   if(formData.competing === 'Yes' && !formData.agency_website){
     showToast('Please add the agency website / profile link', 'error');
@@ -4525,7 +4590,7 @@ async function submitApplication(){
     document.getElementById('bodyPhotoGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  if((formData.files.portfolio||[]).length < 5){
+  if(formData.photoshoot === 'Yes I have' && (formData.files.portfolio||[]).length < 5){
     showToast('Please upload at least 5 professional photos','error');
     document.getElementById('proPhotoGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
@@ -4714,7 +4779,7 @@ async function submitApplication(){
         ? 'WhatsApp: same as phone'
         : (((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() ? 'WhatsApp: ' + ((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() : ''),
       (formData.work_city || formData.work_country) ? 'Working location: ' + [formData.work_city, formData.work_country].filter(Boolean).join(', ') : '',
-      formData.no_inhouse ? 'No in-house (mobile/outcall only)' : '',
+      formData.no_inhouse ? 'No in-house (mobile only)' : '',
       (formData.mobile_zones && formData.mobile_zones.length) ? 'Mobile zones: '+formData.mobile_zones.join(', ') : '',
       formData.prev_exp ? 'Experience: '+formData.prev_exp : '',
       formData.services.length>0 ? 'Services: '+formData.services.join(', ') : '',
@@ -4730,7 +4795,7 @@ async function submitApplication(){
       formData.mobile_30 ? 'Mobile 30+min: '+formData.mobile_30 + (formData.mobile_30_note ? ' ('+formData.mobile_30_note+')' : '') : '',
       formData.late_hours ? 'Late nights/weekends: '+formData.late_hours : '',
       formData.airport ? 'Airport bookings: '+formData.airport + (formData.airport_note ? ' ('+formData.airport_note+')' : '') : '',
-      formData.heard ? 'Heard from: '+formData.heard : '',
+      formData.heard ? 'Heard from: '+formData.heard + (formData.heard_other ? ' ('+formData.heard_other+')' : '') : '',
     ].filter(Boolean).join(' | ')||null,
     
     // Services as structured data (for filtering in MC OS)
