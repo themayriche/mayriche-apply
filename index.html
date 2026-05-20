@@ -4750,7 +4750,7 @@ function renderSignature(value){
 function handleLocationVideo(ev){
   const file = ev.target.files[0];
   if(!file) return;
-  if(file.size > 50*1024*1024){ showToast('Video too large — keep it under ~1 minute (max 50 MB). Tip: film at 720p, not 4K.', 'error'); return; }
+  if(file.size > 200*1024*1024){ showToast("Video too large — keep it under ~1 minute (max 200 MB).", "error"); return; }
   formData.files.location = file;
   const url = URL.createObjectURL(file);
   const preview = document.getElementById('locationPreview');
@@ -4771,8 +4771,8 @@ function handleLocationVideo(ev){
 function handleVideoUpload(ev){
   const file = ev.target.files[0];
   if(!file) return;
-  if(file.size > 50*1024*1024){
-    showToast('Video too large — keep it under ~1 minute (max 50 MB). Tip: film at 720p, not 4K.', 'error');
+  if(file.size > 200*1024*1024){
+    showToast('Video too large — keep it under ~1 minute (max 200 MB).', 'error');
     return;
   }
   formData.video = file;
@@ -4799,7 +4799,7 @@ function renderSummary(){
   html += row('Date of Birth', dob);
   html += row('Location', (formData.city||'—')+', '+(formData.country||'—'));
   html += row('Contact', (formData.phone||'—')+' · '+(formData.email||'—'));
-  html += row('Languages', formData.languages.length>0?formData.languages.join(', '):'—');
+  html += row('Languages', (formData.languages||[]).length>0 ? (formData.languages||[]).map(l => typeof l === 'string' ? l : (l.language + (l.level ? ' ('+l.level+')' : ''))).join(', ') : '—');
   html += row('Physical', (formData.height?formData.height+'cm':'—')+' · '+(formData.weight?formData.weight+'kg':'—')+' · '+(formData.body||'—'));
   html += row('Experience', formData.years||'—');
   html += row('Services', formData.services.length+' selected');
