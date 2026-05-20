@@ -662,9 +662,9 @@ html{scroll-behavior:smooth}
 .offer-card .offer-check svg{width:11px;height:11px;color:#fff;opacity:0}
 .offer-card.checked .offer-check svg{opacity:1}
 .offer-card .offer-body{flex:1;min-width:0}
-.offer-card .offer-row1{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px;flex-wrap:wrap}
-.offer-card .offer-name{font-family:var(--fd);font-size:17px;font-weight:600;color:var(--tx);letter-spacing:.01em}
-.offer-card .offer-price{font-size:11px;color:var(--ac);letter-spacing:.06em;text-transform:uppercase;font-weight:600;flex-shrink:0;background:rgba(196,168,130,.10);padding:4px 10px;border-radius:14px}
+.offer-card .offer-row1{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:4px;flex-wrap:nowrap}
+.offer-card .offer-name{font-family:var(--fd);font-size:17px;font-weight:600;color:var(--tx);letter-spacing:.01em;flex:1;min-width:0}
+.offer-card .offer-price{font-size:11px;color:var(--ac);letter-spacing:.06em;text-transform:uppercase;font-weight:600;flex-shrink:0;background:rgba(196,168,130,.10);padding:4px 10px;border-radius:14px;white-space:nowrap;align-self:flex-start}
 .offer-card .offer-desc{font-size:11.5px;color:var(--mt);line-height:1.55}
 
 /* Escort services list (lighter style, grouped). */
@@ -1580,12 +1580,11 @@ html{scroll-behavior:smooth}
         <div class="sec-t">Video Introduction</div>
         <span class="sec-note">Mandatory</span>
       </div>
-      <div class="field-hint" style="margin-bottom:12px">A 60-second clip, like a model casting. Prop your phone up on a high surface &mdash; clear camera, good light. Stand up and film your <strong style="color:var(--tx)">whole body — face, then turn left, right, and a slow full turn (pirouette)</strong>. Wear <strong style="color:var(--ac)">black lingerie with a robe and heels</strong>. <strong style="color:var(--rd);font-weight:600">You must be the same person as in your passport — if not, the application will not be accepted.</strong></div>
       <div class="video-box" id="videoBox">
         <video id="videoPreview" controls style="display:none"></video>
         <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         <div class="video-box-ttl" id="videoTtl">60-second video introduction</div>
-        <div class="video-box-sub" id="videoSub">Full body · black lingerie, robe &amp; heels · face + left + right + full turn.</div>
+        <div class="video-box-sub" id="videoSub">A 60-second clip, like a modern casting. Prop your phone up in good light and film your whole body — face, then a slow pirouette. Wear black lingerie with a robe and heels.<br><strong style="color:var(--rd)">You must be the same person as in your passport — if not, the application will not be accepted.</strong></div>
         <button class="btn btn-primary" onclick="document.getElementById('videoUpload').click()" style="min-width:auto">Upload Video</button>
         <div class="upload-prog" id="prog_video"><div class="upload-prog-fill"></div></div>
       </div>
@@ -2317,7 +2316,7 @@ let formData = {
   tantric_no_30min:false, escort_no_30min:false,
   // Companions extras: companionship/travel (key→{value,note}), fetish
   // multi-select + free text, and the client-screening right.
-  companionship_travel:{}, special_requests:[], special_requests_other:'', right_to_refuse:false,
+  companionship_travel:{}, special_requests:[], special_requests_prices:{}, special_requests_other:'', right_to_refuse:false,
   // Special offers selected for tantric (array of keys from TANTRIC_OFFERS)
   tantric_offers:[],
   // Escort services state — keyed by service key
@@ -3787,21 +3786,38 @@ function renderCompanionshipTravel(){
 function renderSpecialRequests(){
   const grid = document.getElementById('specialRequestsGrid');
   if(!grid) return;
+  if(!formData.special_requests_prices) formData.special_requests_prices = {};
   grid.innerHTML = '';
+  const sym = getCurrencySymbol(formData.currency);
   SPECIAL_REQUESTS.forEach(name => {
+    const selected = formData.special_requests.includes(name);
+    const priceVal = formData.special_requests_prices[name] || '';
     const card = document.createElement('div');
-    card.className = 'offer-card';
-    if(formData.special_requests.includes(name)) card.classList.add('checked');
+    card.className = 'offer-card' + (selected ? ' checked' : '');
     card.innerHTML =
       '<div class="offer-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
       '<div class="offer-body"><div class="offer-row1"><span class="offer-name">' + name + '</span>' +
-      '<span class="offer-price" style="font-style:italic;font-weight:500">price on request</span></div></div>';
-    card.addEventListener('click', () => {
+      '<span class="offer-price" style="font-style:italic;font-weight:500">' + (priceVal ? sym + priceVal : 'price on request') + '</span></div>' +
+      (selected ? '<div class="sr-price" style="margin-top:8px;display:flex;align-items:center;gap:8px"><span class="price-cur">' + sym + '</span><input type="number" class="inp" inputmode="numeric" placeholder="Add your price (optional)" value="' + priceVal + '" style="max-width:200px"></div>' : '') +
+      '</div>';
+    card.addEventListener('click', (e) => {
+      if(e.target.closest('.sr-price')) return; // taps inside the price field don't toggle
       const i = formData.special_requests.indexOf(name);
-      if(i >= 0){ formData.special_requests.splice(i,1); card.classList.remove('checked'); }
-      else { formData.special_requests.push(name); card.classList.add('checked'); }
+      if(i >= 0){ formData.special_requests.splice(i,1); delete formData.special_requests_prices[name]; }
+      else { formData.special_requests.push(name); }
+      renderSpecialRequests();
       scheduleAutoSave && scheduleAutoSave();
     });
+    const priceInp = card.querySelector('.sr-price input');
+    if(priceInp){
+      priceInp.addEventListener('click', e => e.stopPropagation());
+      priceInp.addEventListener('input', () => {
+        formData.special_requests_prices[name] = priceInp.value;
+        const lbl = card.querySelector('.offer-price');
+        if(lbl) lbl.textContent = priceInp.value ? (sym + priceInp.value) : 'price on request';
+        scheduleAutoSave && scheduleAutoSave();
+      });
+    }
     grid.appendChild(card);
   });
 }
@@ -4728,6 +4744,9 @@ function loadDraft(){
       } else if(k === 'special_requests'){
         formData.special_requests = d.special_requests || [];
         renderSpecialRequests();
+      } else if(k === 'special_requests_prices'){
+        formData.special_requests_prices = d.special_requests_prices || {};
+        renderSpecialRequests();
       } else if(k === 'right_to_refuse'){
         formData.right_to_refuse = !!d.right_to_refuse;
         const rt = document.getElementById('f_right_to_refuse');
@@ -5421,7 +5440,10 @@ async function submitApplication(){
             const meta = COMPANIONSHIP_TRAVEL.find(c => c.key === k);
             return { key:k, name: meta ? meta.name : k, value: formData.companionship_travel[k].value, note: formData.companionship_travel[k].note || null };
           }),
-        special_requests: (formData.special_requests||[]).slice(),
+        special_requests: (formData.special_requests||[]).map(n => ({
+          name: n,
+          price: (formData.special_requests_prices||{})[n] ? parseFloat(formData.special_requests_prices[n]) : null
+        })),
         special_requests_other: formData.special_requests_other || null,
         right_to_refuse_clients: !!formData.right_to_refuse,
         boundaries: formData.boundaries || null,
