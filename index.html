@@ -3762,16 +3762,28 @@ function setAvailTime(day, kind, val){
 }
 
 // ═══════════ WORK NAME SUGGESTIONS ═══════════
-let takenNames = [];
-async function loadTakenNames(){
-  if(!sb) return;
-  try {
-    const r = await sb.from('ladies').select('work_name');
-    if(r.data) takenNames = r.data.map(x => x.work_name).filter(Boolean).map(n => n.toLowerCase());
-  } catch(e){ console.warn('Load taken names failed', e); }
+// Availability is checked server-side via the `work_names_taken` RPC —
+// the public form key can't read the `ladies` table directly (RLS only
+// lets it INSERT), so a SECURITY DEFINER function answers "taken or not"
+// without exposing any lady data. Results are cached per name.
+const _nameTakenCache = new Map(); // lower(name) -> true|false
+async function namesTaken(list){
+  const arr = (list||[]).map(n => (n||'').trim()).filter(Boolean);
+  if(!sb || !arr.length) return [];
+  const need = arr.filter(n => !_nameTakenCache.has(n.toLowerCase()));
+  if(need.length){
+    try {
+      const r = await sb.rpc('work_names_taken', { p_names: need });
+      const taken = new Set((r.data||[]).map(x => String(x).toLowerCase()));
+      need.forEach(n => _nameTakenCache.set(n.toLowerCase(), taken.has(n.toLowerCase())));
+    } catch(e){
+      console.warn('Work-name check failed', e);
+      need.forEach(n => _nameTakenCache.set(n.toLowerCase(), false));
+    }
+  }
+  return arr.filter(n => _nameTakenCache.get(n.toLowerCase()));
 }
 function generateSuggestions(baseName){
-  const taken = new Set(takenNames);
   // Pull the applicant's first name as the seed for personalised suggestions.
   const seed = (baseName || formData.workname || formData.fullname || '').trim();
   const firstName = seed.split(/\s+/)[0] || '';
@@ -3780,50 +3792,51 @@ function generateSuggestions(baseName){
   if(firstName && firstName.length >= 3){
     const fn = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     const lower = fn.toLowerCase();
-    // Build smart variations driven by the real name.
-    // For "Sophia": Soph, Sofie, Sisi, Sophy, Sosi.
-    // For "Maria":  Mia, Mara, Marie, Mimi, Mary.
     const variations = new Set([
-      fn,                             // Sophia
-      fn.slice(0, 4),                 // Soph
-      fn.slice(0, 3),                 // Sop
-      fn.slice(0, 2) + fn.slice(0, 2),// SoSo
-      fn.slice(0, 1) + fn.slice(-1),  // Sa
-      fn.slice(0, -1) + 'ie',         // Sophiie -> Sofie (close)
-      fn.slice(0, 3) + 'ie',          // Sopie
-      fn.slice(0, 2) + 'si',          // Sosi / Sisi
-      fn.charAt(0) + lower.charAt(1) + 'si', // Sisi
-      fn.slice(0, 2) + fn.slice(-1) + 'a',   // Sopa
-      fn + 'y',                       // Sophiay -> trim
-      fn.slice(0, -1) + 'y',          // Sophy
-      fn.slice(0, 3) + 'a',           // Sopa
-      fn.charAt(0) + 'i' + (lower.includes('a') ? 'a' : fn.slice(-1)) // Si...
+      fn,
+      fn.slice(0, 4),
+      fn.slice(0, 3),
+      fn.slice(0, 2) + fn.slice(0, 2),
+      fn.slice(0, 1) + fn.slice(-1),
+      fn.slice(0, -1) + 'ie',
+      fn.slice(0, 3) + 'ie',
+      fn.slice(0, 2) + 'si',
+      fn.charAt(0) + lower.charAt(1) + 'si',
+      fn.slice(0, 2) + fn.slice(-1) + 'a',
+      fn + 'y',
+      fn.slice(0, -1) + 'y',
+      fn.slice(0, 3) + 'a',
+      fn.charAt(0) + 'i' + (lower.includes('a') ? 'a' : fn.slice(-1))
     ]);
     variations.forEach(raw => {
       let v = String(raw||'').replace(/\s+/g,'').replace(/[^a-zA-Z]/g,'');
       if(!v) return;
       v = v.charAt(0).toUpperCase() + v.slice(1).toLowerCase();
       if(v.length < 3 || v.length > 14) return;
-      if(taken.has(v.toLowerCase())) return;
       suggestions.add(v);
     });
   }
-  // Fill remaining slots from the curated pool (avoiding duplicates / taken).
+  // Fill from the curated pool. We over-collect (up to 14) so the async
+  // taken-filter in renderSuggestions can still surface 6 free names.
   for(const name of WORK_NAME_POOL){
-    if(suggestions.size >= 6) break;
-    if(!taken.has(name.toLowerCase())) suggestions.add(name);
+    if(suggestions.size >= 14) break;
+    suggestions.add(name);
   }
-  return Array.from(suggestions).slice(0, 6);
+  return Array.from(suggestions).slice(0, 14);
 }
 async function checkWorkName(){
   const el = document.getElementById('f_workname');
   const val = el.value.trim();
   formData.workname = val;
   const stEl = document.getElementById('wnStatus');
-  if(takenNames.length === 0) await loadTakenNames();
   if(!val){ stEl.style.display='none'; renderSuggestions(); return; }
-  const isTaken = takenNames.includes(val.toLowerCase());
   stEl.style.display='inline-flex';
+  stEl.className='wn-status';
+  stEl.textContent='Checking…';
+  const taken = await namesTaken([val]);
+  // Guard against a stale async result if she kept typing.
+  if(el.value.trim() !== val) return;
+  const isTaken = taken.length > 0;
   if(isTaken){
     stEl.className='wn-status err';
     stEl.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Already taken';
@@ -3833,9 +3846,12 @@ async function checkWorkName(){
   }
   renderSuggestions();
 }
-function renderSuggestions(){
+async function renderSuggestions(){
   const el = document.getElementById('wnSuggestions');
-  const sugs = generateSuggestions(formData.workname);
+  if(!el) return;
+  const candidates = generateSuggestions(formData.workname);
+  const taken = new Set((await namesTaken(candidates)).map(x => x.toLowerCase()));
+  const sugs = candidates.filter(s => !taken.has(s.toLowerCase())).slice(0, 6);
   el.innerHTML = '';
   sugs.forEach(s => {
     const btn = document.createElement('button');
@@ -4015,7 +4031,7 @@ function goStep(n){
   }
   updateProgress();
   window.scrollTo({top:0, behavior:'smooth'});
-  if(n === 3) loadTakenNames().then(renderSuggestions);
+  if(n === 3) renderSuggestions();
 }
 
 // Clear .field-missing as soon as the user types something. Listens
