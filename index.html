@@ -1338,6 +1338,9 @@ html{scroll-behavior:smooth}
         </div>
         <div class="reveal" id="tantricBody">
           <div class="svc-mod-block">
+            <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tx2);cursor:pointer;margin-bottom:6px"><input type="checkbox" id="f_tantric_experience" style="width:16px;height:16px;cursor:pointer"> I have experience in this</label>
+          </div>
+          <div class="svc-mod-block">
             <div class="field-lbl" style="margin-bottom:8px">Currency</div>
             <div class="currency-row" id="tantricCurrencyRow"></div>
 
@@ -1403,6 +1406,9 @@ html{scroll-behavior:smooth}
           </select>
         </div>
         <div class="reveal" id="escortBody">
+          <div class="svc-mod-block">
+            <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tx2);cursor:pointer;margin-bottom:6px"><input type="checkbox" id="f_escort_experience" style="width:16px;height:16px;cursor:pointer"> I have experience in this</label>
+          </div>
           <div class="svc-mod-block">
             <div class="field-lbl" style="margin-bottom:8px">Currency</div>
             <div class="currency-row" id="escortCurrencyRow"></div>
@@ -2233,6 +2239,8 @@ let formData = {
   currency:'GBP',
   // offers_tantric / offers_escort: 'Yes' or 'No' (Yes reveals the body)
   offers_tantric:'', offers_escort:'',
+  // Per-module experience flags ("I have experience in this").
+  tantric_experience:false, escort_experience:false,
   // tantric_tier / escort_tier: 'sold' | 'premium' | 'elite' (selected card)
   tantric_tier:'', escort_tier:'',
   // Editable rate tables — array of { duration, in_house, mobile }.
@@ -2310,6 +2318,10 @@ document.addEventListener('DOMContentLoaded', async function(){
   initWhatsappToggle();
   initAgencyReveal();
   initServiceModules();
+  ['tantric_experience','escort_experience'].forEach(k => {
+    const c = document.getElementById('f_'+k);
+    if(c) c.addEventListener('change', () => { formData[k] = c.checked; scheduleAutoSave && scheduleAutoSave(); });
+  });
   renderCurrencyRows();
   renderTierChips('tantric');
   renderTierChips('escort');
@@ -4461,6 +4473,11 @@ function loadDraft(){
       // "No in-house" checkbox + disabled state.
       const niChk = document.getElementById('f_no_inhouse');
       if(niChk && d.no_inhouse){ niChk.checked = true; niChk.dispatchEvent(new Event('change')); }
+      // Per-module experience checkboxes.
+      ['tantric_experience','escort_experience'].forEach(k => {
+        const c = document.getElementById('f_'+k);
+        if(c){ c.checked = !!d[k]; formData[k] = !!d[k]; }
+      });
       // Special-request note reveals.
       if(d.airport === 'Yes with special request'){ const an = document.getElementById('f_airport_note'); if(an){ an.style.display = 'block'; an.value = d.airport_note || ''; } }
       if(d.mobile_30 === 'Depends with special request'){ const mn = document.getElementById('f_mobile_30_note'); if(mn){ mn.style.display = 'block'; mn.value = d.mobile_30_note || ''; } }
@@ -4974,6 +4991,7 @@ async function submitApplication(){
       currency: formData.currency || 'GBP',
       tantric: formData.offers_tantric === 'Yes' ? {
         offered: true,
+        experience: !!formData.tantric_experience,
         tier: formData.tantric_tier,
         starting_price: parseFloat(formData.rate)||null,
         rates: formData.tantric_rates,
@@ -4987,6 +5005,7 @@ async function submitApplication(){
       } : { offered: false },
       escort: formData.offers_escort === 'Yes' ? {
         offered: true,
+        experience: !!formData.escort_experience,
         tier: formData.escort_tier,
         starting_price: parseFloat(formData.rate)||null,
         rates: formData.escort_rates,
