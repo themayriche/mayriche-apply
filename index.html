@@ -4096,46 +4096,56 @@ async function namesTaken(list){
   }
   return arr.filter(n => _nameTakenCache.get(n.toLowerCase()));
 }
+// Curated, real-sounding variants per common first name. We only suggest
+// names that actually look like names — no mechanical mangling like
+// "Soso" / "Sophiie". Keys are lowercase; values are tasteful options.
+const NAME_VARIANTS = {
+  sophia:['Sofia','Sofie','Soph'], sophie:['Sofia','Sofie','Soph'], sofia:['Sophie','Sofie','Soph'],
+  maria:['Mara','Marie','Mia'], marie:['Mara','Maria','Mia'], mariana:['Mara','Maria','Ana'],
+  isabella:['Isabel','Bella','Isa'], isabel:['Isabella','Bella','Isa'], gabriela:['Gabi','Ella','Bria'], gabriella:['Gabi','Ella','Bria'],
+  alexandra:['Alexa','Sandra','Lexa'], alexia:['Lexi','Alex','Lexa'], valentina:['Valentina','Tina','Vale'], victoria:['Vicky','Tori','Vita'],
+  daniela:['Dani','Ela','Dana'], andreea:['Andrea','Dia','Deea'], andrea:['Andra','Dia','Rea'], cristina:['Cris','Tina','Christy'],
+  elena:['Lena','Ela','Elia'], helena:['Lena','Ela','Elia'], ana:['Anna','Ania','Anya'], anna:['Ana','Ania','Anya'], ioana:['Ana','Iana','Joana'],
+  bianca:['Bia','Bianka','Bea'], antonia:['Toni','Tonia','Nia'], natalia:['Nat','Talia','Natalie'], natalie:['Nat','Talia','Natalia'],
+  carolina:['Carol','Lina','Carla'], caroline:['Carol','Lina','Carla'], francesca:['Fran','Cesca','Franca'],
+  beatrice:['Bea','Trice','Bia'], emma:['Em','Emmy','Ema'], olivia:['Liv','Olia','Livia'], amelia:['Amy','Mia','Lia'],
+  chloe:['Cleo','Coco','Chlo'], jessica:['Jess','Jessie','Sica'], nicole:['Nico','Nikki','Cole'], michelle:['Michele','Shelly','Mia'],
+  stephanie:['Steph','Stefi','Stephie'], vanessa:['Nessa','Vana','Vanya'], patricia:['Pat','Tricia','Patty'],
+  larisa:['Lara','Risa','Lari'], raluca:['Ralu','Luca','Lia'], denisa:['Deni','Nisa','Dia'], alina:['Lina','Alia','Aly'],
+  roxana:['Roxy','Roxi','Rana'], adriana:['Adi','Ana','Driana'], simona:['Simo','Mona','Sia'], teodora:['Teo','Dora','Tea'],
+  catalina:['Cata','Lina','Cat'], lavinia:['Lavi','Livia','Via'], oana:['Anna','Ana','Oania']
+};
 function generateSuggestions(baseName){
-  // Pull the applicant's first name as the seed for personalised suggestions.
   const seed = (baseName || formData.workname || formData.fullname || '').trim();
+  const typed = (baseName || formData.workname || '').trim().toLowerCase();
   const firstName = seed.split(/\s+/)[0] || '';
-  const suggestions = new Set();
-
-  if(firstName && firstName.length >= 3){
-    const fn = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-    const lower = fn.toLowerCase();
-    const variations = new Set([
-      fn,
-      fn.slice(0, 4),
-      fn.slice(0, 3),
-      fn.slice(0, 2) + fn.slice(0, 2),
-      fn.slice(0, 1) + fn.slice(-1),
-      fn.slice(0, -1) + 'ie',
-      fn.slice(0, 3) + 'ie',
-      fn.slice(0, 2) + 'si',
-      fn.charAt(0) + lower.charAt(1) + 'si',
-      fn.slice(0, 2) + fn.slice(-1) + 'a',
-      fn + 'y',
-      fn.slice(0, -1) + 'y',
-      fn.slice(0, 3) + 'a',
-      fn.charAt(0) + 'i' + (lower.includes('a') ? 'a' : fn.slice(-1))
-    ]);
-    variations.forEach(raw => {
-      let v = String(raw||'').replace(/\s+/g,'').replace(/[^a-zA-Z]/g,'');
-      if(!v) return;
-      v = v.charAt(0).toUpperCase() + v.slice(1).toLowerCase();
-      if(v.length < 3 || v.length > 14) return;
-      suggestions.add(v);
-    });
+  const out = [];
+  const push = v => {
+    if(!v) return;
+    v = String(v).replace(/[^a-zA-Z]/g,'');
+    if(v.length < 3 || v.length > 12) return;
+    v = v.charAt(0).toUpperCase() + v.slice(1).toLowerCase();
+    if(v.toLowerCase() === typed) return;     // don't suggest what she already typed
+    if(!out.includes(v)) out.push(v);
+  };
+  if(firstName.length >= 3){
+    const key = firstName.toLowerCase();
+    if(NAME_VARIANTS[key]){
+      NAME_VARIANTS[key].forEach(push);
+    } else {
+      // Conservative, clean fallback for names we don't have curated:
+      // a short form and the name itself — nothing invented.
+      const fn = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+      push(fn);                       // the name as-is
+      push(fn.slice(0, 4));           // e.g. Soph
+    }
   }
-  // Fill from the curated pool. We over-collect (up to 14) so the async
-  // taken-filter in renderSuggestions can still surface 6 free names.
+  // Fill any remaining slots from the curated pool of real names.
   for(const name of WORK_NAME_POOL){
-    if(suggestions.size >= 14) break;
-    suggestions.add(name);
+    if(out.length >= 8) break;
+    push(name);
   }
-  return Array.from(suggestions).slice(0, 14);
+  return out;
 }
 async function checkWorkName(){
   const el = document.getElementById('f_workname');
@@ -4164,7 +4174,7 @@ async function renderSuggestions(){
   if(!el) return;
   const candidates = generateSuggestions(formData.workname);
   const taken = new Set((await namesTaken(candidates)).map(x => x.toLowerCase()));
-  const sugs = candidates.filter(s => !taken.has(s.toLowerCase())).slice(0, 6);
+  const sugs = candidates.filter(s => !taken.has(s.toLowerCase())).slice(0, 3);
   el.innerHTML = '';
   sugs.forEach(s => {
     const btn = document.createElement('button');
