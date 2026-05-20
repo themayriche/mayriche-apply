@@ -1241,18 +1241,32 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
+    <!-- ─── ADDITIONAL WORKING COUNTRIES ─── Up to two more places she's
+         actually based in / works from (not seasonal trips). Each one
+         mirrors the primary: country → city → area + in-house. -->
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20"/></svg></div>
-        <div class="sec-t">Available for Travel</div>
+        <div class="sec-t">Other Working Countries</div>
+        <span class="sec-note">If you also live &amp; work somewhere else</span>
       </div>
-      <div class="field-hint" style="margin-bottom:10px">Select all destinations you&rsquo;re open to.</div>
+      <div class="field-hint" style="margin-bottom:12px">Add another country / city you&rsquo;re based in and work from — e.g. Paris, Dubai, Rome. You can add up to two more.</div>
+      <div id="extraLocations"></div>
+      <button type="button" id="addLocationBtn" class="avail-cta" style="justify-content:center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Add another working country</span>
+      </button>
+    </div>
+
+    <!-- ─── SEASONAL DESTINATIONS ─── Tick-only list of season spots. -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg></div>
+        <div class="sec-t">Available for Seasonal Destinations</div>
+        <span class="sec-note">Optional</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:10px">Tick the seasonal spots you&rsquo;re happy to travel to.</div>
       <div class="chk-grid" id="abroadGrid"></div>
-      <div class="row-1" style="margin-top:14px">
-        <div class="field"><label class="field-lbl">Other Travel Notes <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_travel_other" rows="3" placeholder="Additional travel preferences — e.g. I travel for a minimum of 3 days, or if I'm in town I can pick a city and work there for a few months."></textarea>
-        </div>
-      </div>
     </div>
 
     <div class="sec">
@@ -1732,6 +1746,7 @@ let SERVICES = [];
 let ADDONS = [];
 
 // Static UI constants (not business-specific)
+const SEASONAL_DESTINATIONS = ['Ibiza','Monaco','Saint-Tropez','Cannes','Mykonos','Saint-Moritz','Courchevel'];
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DURATIONS = ['30 min','60 min','90 min','120 min','3 hours','4 hours','6 hours','Overnight','Weekend','Trip'];
 
@@ -2242,6 +2257,8 @@ let formData = {
   mobile:'', airport:'', airport_note:'',
   // Mobile zones she covers within the working city.
   mobile_zones:[],
+  // Up to two additional working countries she's based in / works from.
+  extra_locations:[],
   mobile_30:'', mobile_30_note:'', late_hours:'',
   abroad:[], travel_other:'',
   services:[], addons:[],
@@ -2305,6 +2322,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   initStep1LocalArea();
   initWorkAreaCascade();
   initMobileZones();
+  initExtraLocations();
   initNoInhouseCheckbox();
   initSpecialRequestReveal('f_airport', 'f_airport_note', ['Yes with special request']);
   initSpecialRequestReveal('f_mobile_30', 'f_mobile_30_note', ['Depends with special request']);
@@ -2333,9 +2351,9 @@ document.addEventListener('DOMContentLoaded', async function(){
   renderTantricOffers();
   renderEscortServices();
 
-  // Abroad grid
+  // Seasonal destinations grid
   const abr = document.getElementById('abroadGrid');
-  if(abr) TRAVEL_DESTINATIONS.forEach(loc => {
+  if(abr) SEASONAL_DESTINATIONS.forEach(loc => {
     const el = document.createElement('div');
     el.className = 'chk';
     el.dataset.loc = loc;
@@ -2856,6 +2874,141 @@ function initMobileZones(){
       if(sel.value === 'Yes') renderMobileZones();
     });
   }
+}
+
+// ─── Additional working countries (up to 2 more) ─────────────────
+// Each block mirrors the primary location: country → city → area +
+// in-house address with a "mobile only" checkbox. State lives in
+// formData.extra_locations; blocks bind to their object by reference.
+const MAX_EXTRA_LOCATIONS = 2;
+function escAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
+function buildExtraLocation(loc){
+  const wrap = document.getElementById('extraLocations');
+  if(!wrap) return;
+  const block = document.createElement('div');
+  block.style.cssText = 'border:1px solid var(--brd2);border-radius:12px;padding:14px;margin-bottom:12px';
+  const num = wrap.children.length + 2;
+  block.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+      '<div class="field-lbl" style="margin:0">Working country ' + num + '</div>' +
+      '<button type="button" class="loc-remove" style="background:none;border:none;color:var(--rd);font-family:var(--fb);font-size:11px;font-weight:600;letter-spacing:.06em;cursor:pointer;text-transform:uppercase">Remove</button>' +
+    '</div>' +
+    '<div class="row">' +
+      '<div class="field"><label class="field-lbl">Country</label><select class="sel loc-country"><option value="">Select country…</option></select></div>' +
+      '<div class="field"><label class="field-lbl">City</label><select class="sel loc-city" disabled><option value="">Pick country first…</option></select><input class="inp loc-city-free" placeholder="Type your city" style="display:none;margin-top:8px"></div>' +
+    '</div>' +
+    '<div class="row-1" style="margin-top:12px"><div class="field"><label class="field-lbl">Area</label><select class="sel loc-area" disabled><option value="">Pick city first…</option></select><input class="inp loc-area-free" placeholder="Type your area" style="display:none;margin-top:8px"></div></div>' +
+    '<label style="display:flex;align-items:center;gap:8px;margin:12px 0 6px;font-size:12px;color:var(--tx2);cursor:pointer"><input type="checkbox" class="loc-noinhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile only)</label>' +
+    '<div class="loc-inhouse">' +
+      '<div class="row" style="margin-bottom:10px"><div class="field" style="grid-column:span 2"><label class="field-lbl">Street &amp; Number</label><input class="inp loc-street" placeholder="16 Maddox Street"></div></div>' +
+      '<div class="row"><div class="field"><label class="field-lbl">Apartment / Flat</label><input class="inp loc-apt" inputmode="numeric" placeholder="2"></div><div class="field"><label class="field-lbl">Postcode</label><input class="inp loc-postcode" placeholder="W1S 1PH"></div></div>' +
+    '</div>';
+  wrap.appendChild(block);
+
+  const cSel = block.querySelector('.loc-country');
+  COUNTRIES.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; cSel.appendChild(o); });
+  const citySel = block.querySelector('.loc-city');
+  const cityFree = block.querySelector('.loc-city-free');
+  const areaSel = block.querySelector('.loc-area');
+  const areaFree = block.querySelector('.loc-area-free');
+  const noInhouse = block.querySelector('.loc-noinhouse');
+  const inhouseWrap = block.querySelector('.loc-inhouse');
+  const street = block.querySelector('.loc-street');
+  const apt = block.querySelector('.loc-apt');
+  const postcode = block.querySelector('.loc-postcode');
+
+  function fillAreas(){
+    const areas = loc.city ? LOCAL_AREAS_BY_CITY[loc.city] : null;
+    if(areas && areas.length){
+      areaSel.disabled = false;
+      areaSel.innerHTML = '<option value="">Select area…</option>' + areas.map(a => '<option value="'+a+'"'+(a===loc.area?' selected':'')+'>'+a+'</option>').join('');
+      areaFree.style.display = (loc.area && areas.indexOf(loc.area) < 0) ? 'block' : 'none';
+    } else {
+      areaSel.disabled = true;
+      areaSel.innerHTML = '<option value="">Type below…</option>';
+      areaFree.style.display = loc.city ? 'block' : 'none';
+    }
+    areaFree.value = (loc.area && (!areas || areas.indexOf(loc.area) < 0)) ? loc.area : '';
+  }
+  function fillCities(){
+    const cities = CITIES_BY_COUNTRY[loc.country];
+    if(cities && cities.length){
+      citySel.disabled = false;
+      citySel.innerHTML = '<option value="">Select city…</option>' + cities.map(ct => '<option value="'+ct+'"'+(ct===loc.city?' selected':'')+'>'+ct+'</option>').join('');
+      cityFree.style.display = (loc.city && cities.indexOf(loc.city) < 0) ? 'block' : 'none';
+    } else {
+      citySel.disabled = true;
+      citySel.innerHTML = '<option value="">—</option>';
+      cityFree.style.display = loc.country ? 'block' : 'none';
+    }
+    cityFree.value = (loc.city && (!cities || cities.indexOf(loc.city) < 0)) ? loc.city : '';
+    fillAreas();
+  }
+
+  // Restore existing values into the controls.
+  cSel.value = loc.country || '';
+  fillCities();
+  noInhouse.checked = !!loc.no_inhouse;
+  street.value = loc.inhouse_street || ''; apt.value = loc.inhouse_apt || ''; postcode.value = loc.inhouse_postcode || '';
+  const applyNoInhouse = () => {
+    loc.no_inhouse = noInhouse.checked;
+    inhouseWrap.style.opacity = noInhouse.checked ? '.45' : '1';
+    inhouseWrap.style.pointerEvents = noInhouse.checked ? 'none' : 'auto';
+    inhouseWrap.querySelectorAll('input').forEach(i => i.disabled = noInhouse.checked);
+    if(noInhouse.checked){ loc.inhouse_street = loc.inhouse_apt = loc.inhouse_postcode = ''; street.value = apt.value = postcode.value = ''; }
+  };
+  applyNoInhouse();
+
+  cSel.addEventListener('change', () => { loc.country = cSel.value; loc.city = ''; loc.area = ''; fillCities(); scheduleAutoSave && scheduleAutoSave(); });
+  citySel.addEventListener('change', () => {
+    if(citySel.value && citySel.value.toLowerCase().startsWith('other')){ cityFree.style.display = 'block'; cityFree.focus(); loc.city = cityFree.value || ''; }
+    else { cityFree.style.display = 'none'; cityFree.value = ''; loc.city = citySel.value; }
+    loc.area = ''; fillAreas(); scheduleAutoSave && scheduleAutoSave();
+  });
+  cityFree.addEventListener('input', () => { loc.city = cityFree.value; fillAreas(); scheduleAutoSave && scheduleAutoSave(); });
+  areaSel.addEventListener('change', () => {
+    if(areaSel.value.toLowerCase() === 'other'){ areaFree.style.display = 'block'; areaFree.focus(); loc.area = areaFree.value || ''; }
+    else { areaFree.style.display = 'none'; areaFree.value = ''; loc.area = areaSel.value; }
+    scheduleAutoSave && scheduleAutoSave();
+  });
+  areaFree.addEventListener('input', () => { loc.area = areaFree.value; scheduleAutoSave && scheduleAutoSave(); });
+  noInhouse.addEventListener('change', () => { applyNoInhouse(); scheduleAutoSave && scheduleAutoSave(); });
+  street.addEventListener('input', () => { loc.inhouse_street = street.value; scheduleAutoSave && scheduleAutoSave(); });
+  apt.addEventListener('input', () => { loc.inhouse_apt = apt.value; scheduleAutoSave && scheduleAutoSave(); });
+  postcode.addEventListener('input', () => { loc.inhouse_postcode = postcode.value; scheduleAutoSave && scheduleAutoSave(); });
+  block.querySelector('.loc-remove').addEventListener('click', () => {
+    const i = formData.extra_locations.indexOf(loc);
+    if(i >= 0) formData.extra_locations.splice(i, 1);
+    block.remove();
+    renumberExtraLocations();
+    updateAddLocationBtn();
+    scheduleAutoSave && scheduleAutoSave();
+  });
+}
+function renumberExtraLocations(){
+  const wrap = document.getElementById('extraLocations');
+  if(!wrap) return;
+  Array.from(wrap.children).forEach((b, i) => {
+    const lbl = b.querySelector('.field-lbl');
+    if(lbl) lbl.textContent = 'Working country ' + (i + 2);
+  });
+}
+function updateAddLocationBtn(){
+  const btn = document.getElementById('addLocationBtn');
+  if(!btn) return;
+  btn.style.display = (formData.extra_locations.length >= MAX_EXTRA_LOCATIONS) ? 'none' : 'flex';
+}
+function initExtraLocations(){
+  const btn = document.getElementById('addLocationBtn');
+  if(!btn) return;
+  btn.addEventListener('click', () => {
+    if(formData.extra_locations.length >= MAX_EXTRA_LOCATIONS) return;
+    const loc = {country:'',city:'',area:'',no_inhouse:false,inhouse_street:'',inhouse_apt:'',inhouse_postcode:''};
+    formData.extra_locations.push(loc);
+    buildExtraLocation(loc);
+    updateAddLocationBtn();
+  });
+  updateAddLocationBtn();
 }
 
 // ─── "I don't have an in-house address" checkbox ─────────────────
@@ -4312,6 +4465,11 @@ function loadDraft(){
       formData.mobile_zones = Array.isArray(d.mobile_zones) ? d.mobile_zones : [];
       if(formData.mobile === 'Yes'){ const mw = document.getElementById('mobileZonesWrap'); if(mw) mw.style.display = 'block'; }
       renderMobileZones();
+      // Rebuild additional working-country blocks.
+      formData.extra_locations = Array.isArray(d.extra_locations) ? d.extra_locations : [];
+      const elw = document.getElementById('extraLocations');
+      if(elw){ elw.innerHTML = ''; formData.extra_locations.forEach(loc => buildExtraLocation(loc)); }
+      if(typeof updateAddLocationBtn === 'function') updateAddLocationBtn();
       // "No in-house" checkbox + disabled state.
       const niChk = document.getElementById('f_no_inhouse');
       if(niChk && d.no_inhouse){ niChk.checked = true; niChk.dispatchEvent(new Event('change')); }
@@ -4778,7 +4936,9 @@ async function submitApplication(){
       formData.phone_is_whatsapp
         ? 'WhatsApp: same as phone'
         : (((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() ? 'WhatsApp: ' + ((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() : ''),
-      (formData.work_city || formData.work_country) ? 'Working location: ' + [formData.work_city, formData.work_country].filter(Boolean).join(', ') : '',
+      (formData.work_city || formData.work_country) ? 'Working location: ' + [formData.local_area, formData.work_city, formData.work_country].filter(Boolean).join(', ') : '',
+      ...(formData.extra_locations||[]).filter(l => l.country || l.city).map((l, i) => 'Working location ' + (i+2) + ': ' + [l.area, l.city, l.country].filter(Boolean).join(', ') + (l.no_inhouse ? ' (mobile only)' : (([l.inhouse_street, l.inhouse_apt, l.inhouse_postcode].filter(Boolean).join(', ')) ? ' (in-house: ' + [l.inhouse_street, l.inhouse_apt, l.inhouse_postcode].filter(Boolean).join(', ') + ')' : ''))),
+      (formData.abroad && formData.abroad.length) ? 'Seasonal destinations: ' + formData.abroad.join(', ') : '',
       formData.no_inhouse ? 'No in-house (mobile only)' : '',
       (formData.mobile_zones && formData.mobile_zones.length) ? 'Mobile zones: '+formData.mobile_zones.join(', ') : '',
       formData.prev_exp ? 'Experience: '+formData.prev_exp : '',
