@@ -849,8 +849,9 @@ html{scroll-behavior:smooth}
           <div class="dob-grid">
             <input type="number" class="inp" id="f_dob_d" placeholder="DD" min="1" max="31" data-sec="personal" inputmode="numeric" autocomplete="bday-day" oninput="clampDob(this,'d')">
             <input type="number" class="inp" id="f_dob_m" placeholder="MM" min="1" max="12" data-sec="personal" inputmode="numeric" autocomplete="bday-month" oninput="clampDob(this,'m')">
-            <input type="number" class="inp" id="f_dob_y" placeholder="YYYY" min="1965" max="2008" data-sec="personal" inputmode="numeric" autocomplete="bday-year" oninput="clampDob(this,'y')">
+            <input type="number" class="inp" id="f_dob_y" placeholder="YYYY" min="1965" max="2005" data-sec="personal" inputmode="numeric" autocomplete="bday-year" oninput="clampDob(this,'y')">
           </div>
+          <div class="field-hint" id="dobHint" style="display:none;color:var(--rd);margin-top:6px;font-weight:600"></div>
         </div>
         <div class="field">
           <label class="field-lbl">Nationality <span class="req">*</span></label>
@@ -3574,6 +3575,7 @@ window.clampDob = function(el, kind){
     el.value = raw;
     formData.dob_y = raw;
     el.classList.remove('field-missing');
+    updateDobHint();
     return;
   }
   let n = parseInt(raw, 10);
@@ -3582,6 +3584,7 @@ window.clampDob = function(el, kind){
   if(isNaN(n)){
     el.value = '';
     formData['dob_'+kind] = '';
+    updateDobHint();
     return;
   }
   // Clamp + flag if user typed something out of range.
@@ -3595,7 +3598,34 @@ window.clampDob = function(el, kind){
     el.value = String(n);
     formData['dob_'+kind] = String(n);
   }
+  updateDobHint();
 };
+
+// Live "under 21" message under the date-of-birth row. Explains exactly
+// why the year flags red instead of just colouring it.
+function updateDobHint(){
+  const hint = document.getElementById('dobHint');
+  if(!hint) return;
+  const ye = document.getElementById('f_dob_y');
+  const y = parseInt((ye && ye.value) || '', 10);
+  if(!y || String(y).length < 4){ hint.style.display = 'none'; return; }
+  const now = new Date();
+  const maxY = now.getFullYear() - 21;
+  let under = y > maxY;
+  const d = parseInt((document.getElementById('f_dob_d')||{}).value, 10);
+  const m = parseInt((document.getElementById('f_dob_m')||{}).value, 10);
+  if(d && m && typeof calculateAge === 'function'){
+    const age = calculateAge(y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0'));
+    under = (age !== null && age < 21);
+  }
+  if(under){
+    hint.textContent = "You are under 21 years old — we're sorry, we don't accept applications under 21.";
+    hint.style.display = 'block';
+    if(ye) ye.classList.add('field-missing');
+  } else {
+    hint.style.display = 'none';
+  }
+}
 
 // ═══════════ LIVE DATE/TIME ═══════════
 function updateLiveDateTime(){
