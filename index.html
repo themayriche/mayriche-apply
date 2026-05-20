@@ -1387,6 +1387,41 @@ html{scroll-behavior:smooth}
       <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
     </div>
 
+    <!-- Professional video shoot question + reveal (1 video) -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="sec-t">Professional Video Shoot</div>
+      </div>
+      <div class="row-1" style="margin-top:6px">
+        <div class="field"><label class="field-lbl">Do you have a professional video? <span class="req">*</span></label>
+          <select class="sel" id="f_videoshoot" data-sec="experience">
+            <option value="">Select...</option>
+            <option value="Yes I have">Yes, I have</option>
+            <option value="No but willing">No, but willing to make one</option>
+            <option value="Not interested">Not interested</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="sec" id="profVideoSection" style="display:none">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="sec-t">Add Your Professional Video</div>
+        <span class="sec-note">1 video</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">Upload one professional video — a showreel / promo clip that shows you at your best.</div>
+      <div class="video-box" id="profVideoBox">
+        <video id="profVideoPreview" controls style="display:none"></video>
+        <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="video-box-ttl" id="profVideoTtl">Professional video</div>
+        <div class="video-box-sub">One clean, well-lit clip.</div>
+        <button class="btn btn-primary" type="button" onclick="document.getElementById('file_profvideo').click()" style="min-width:auto">Upload Video</button>
+        <div class="upload-prog" id="prog_profvideo"><div class="upload-prog-fill"></div></div>
+      </div>
+      <input type="file" id="file_profvideo" accept="video/*" onchange="handleProfVideo(event)">
+    </div>
+
     <div class="sec" id="selfieBox">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 3-3"/></svg></div>
@@ -2281,7 +2316,7 @@ let formData = {
   height:'', weight:'', body:'', dress:'', eye:'', hair:'',
   breast:'', breast_type:'', profile_age:'',
   years:'', heard:'', heard_other:'', prev_exp:'',
-  photoshoot:'',
+  photoshoot:'', videoshoot:'',
   workname:'',
   // Working location — independent of the home address from Step 1.
   work_country:'', work_city:'',
@@ -2337,6 +2372,7 @@ let formData = {
   files:{
     idcopy:null, bank:null,
     selfie:null,
+    profvideo:null,
     portfolio:[],
     fullbody:null, fullbody_front:null, fullbody_back:null, fullbody_side:null,
     location:null
@@ -3384,6 +3420,25 @@ function initPhotoshootReveal(){
   const sel = document.getElementById('f_photoshoot');
   if(sel) sel.addEventListener('change', syncPhotoshootSection);
   syncPhotoshootSection();
+  // Professional video shoot — same reveal pattern (one video).
+  const vsel = document.getElementById('f_videoshoot');
+  if(vsel) vsel.addEventListener('change', syncProfVideoSection);
+  syncProfVideoSection();
+}
+function syncProfVideoSection(){
+  const sec = document.getElementById('profVideoSection');
+  if(sec) sec.style.display = (formData.videoshoot === 'Yes I have') ? 'block' : 'none';
+}
+function handleProfVideo(ev){
+  const f = ev.target.files && ev.target.files[0];
+  if(!f) return;
+  formData.files.profvideo = f;
+  const prev = document.getElementById('profVideoPreview');
+  const ttl = document.getElementById('profVideoTtl');
+  try { if(prev){ prev.src = URL.createObjectURL(f); prev.style.display = 'block'; } } catch(e){}
+  if(ttl) ttl.textContent = f.name.length > 36 ? f.name.slice(0,36)+'…' : f.name;
+  updateProgress();
+  scheduleAutoSave && scheduleAutoSave();
 }
 
 // ─── Email validation against a curated list of real domains ────────
@@ -4161,6 +4216,7 @@ const STEP_REQ = {
     {key:'breast',       el:'f_breast',            sec:'physical'},
     {key:'breast_type',  el:'f_breast_type',       sec:'physical'},
     {key:'photoshoot',   el:'f_photoshoot',        sec:'experience'},
+    {key:'videoshoot',   el:'f_videoshoot',        sec:'experience'},
     {key:'work_country', el:'f_work_country',      sec:'work'},
     {key:'work_city',    el:'f_work_city_select',  sec:'work'},
     {key:'local_area',   el:'f_local_area',        sec:'work'},
@@ -5211,19 +5267,29 @@ async function submitApplication(){
     document.getElementById('locationBox')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
+  // Photos / video / selfie live on Step 2 — jump back there to show the issue.
+  const jumpToProfile = (sel) => {
+    if(typeof goStep === 'function') goStep(2);
+    setTimeout(() => { try{ document.getElementById(sel)?.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }, 300);
+  };
   if(formData.photoshoot === 'Yes I have' && (formData.files.portfolio||[]).length < 1){
     showToast('Please add at least one professional photo','error');
-    document.getElementById('proPhotoGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+    jumpToProfile('proPhotoGrid');
+    return;
+  }
+  if(formData.videoshoot === 'Yes I have' && !formData.files.profvideo){
+    showToast('Please add your professional video','error');
+    jumpToProfile('profVideoSection');
     return;
   }
   if(!formData.files.selfie){
     showToast('Please add a face selfie for verification','error');
-    document.getElementById('selfieBox')?.scrollIntoView({behavior:'smooth',block:'center'});
+    jumpToProfile('selfieBox');
     return;
   }
   if(!formData.files.fullbody){
     showToast('Please add a full-body photo for verification','error');
-    document.getElementById('selfieBox')?.scrollIntoView({behavior:'smooth',block:'center'});
+    jumpToProfile('selfieBox');
     return;
   }
   const allConsents = Object.values(formData.consents).every(v => v);
@@ -5265,6 +5331,7 @@ async function submitApplication(){
   if(formData.files.location)       filesToUpload.push({k:'location',       type:'location_check', label:'Location walkthrough', f:formData.files.location});
   (formData.files.portfolio||[]).forEach((p, i) => filesToUpload.push({k:'portfolio', type:'portfolio', index:i, label:'Portfolio photo '+(i+1), f:p}));
   if(formData.video)                filesToUpload.push({k:'video',          type:'video_intro',    label:'Video introduction',   f:formData.video});
+  if(formData.files.profvideo)      filesToUpload.push({k:'profvideo',      type:'professional_video', label:'Professional video',  f:formData.files.profvideo});
   // Total steps = file uploads + 1 (db insert) + 1 (notifications/email).
   const totalSteps = filesToUpload.length + 2;
   let stepDone = 0;
@@ -5450,6 +5517,9 @@ async function submitApplication(){
     // their own extras.
     services_offering: {
       currency: formData.currency || 'GBP',
+      photoshoot: formData.photoshoot || null,
+      professional_video: formData.videoshoot || null,
+      professional_video_url: uploadedPaths.profvideo || null,
       tantric: formData.offers_tantric === 'Yes' ? {
         offered: true,
         experience: formData.tantric_experience === 'Yes',
