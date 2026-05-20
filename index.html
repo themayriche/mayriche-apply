@@ -4434,7 +4434,10 @@ function updateProgress(){
   if(formData.local_area) s.work++;
   if(formData.work_country) s.work++;
   if(formData.mobile) s.work++;
-  if(formData.services.length>0) s.services++;
+  // Services is complete once she's offering a module with a starting price.
+  if((formData.offers_tantric === 'Yes' && formData.tantric_tier) ||
+     (formData.offers_escort === 'Yes' && formData.escort_tier) ||
+     formData.services.length > 0) s.services++;
   // Days default to ON, so only count availability once she's actually
   // interacted with the calendar — keeps an untouched form at 0%.
   const anyDay = Object.values(formData.availability).some(d => d.enabled);
@@ -5169,7 +5172,8 @@ async function submitApplication(){
   // At least one agency link is required only when "competing = Yes".
   if(formData.competing === 'Yes' && !(formData.escort_agencies||[]).some(s => (s||'').trim())){
     showToast('Please add at least one agency profile link', 'error');
-    document.getElementById('agencyWebsiteWrap')?.scrollIntoView({behavior:'smooth',block:'center'});
+    if(typeof goStep === 'function') goStep(2);
+    setTimeout(() => { try{ document.getElementById('agencyWebsiteWrap')?.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }, 300);
     return;
   }
   // Emergency contact phone must be a valid number we can verify.
