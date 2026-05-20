@@ -160,7 +160,7 @@ body{background:radial-gradient(ellipse 70% 45% at 50% 0%, rgba(196,168,130,.10)
 .sec-note{font-size:10px;color:var(--mt);margin-left:auto;font-style:italic;letter-spacing:.02em;}
 
 .row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
-.row-3{grid-template-columns:1fr 1fr 1fr}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-bottom:18px}
 .row-1{grid-template-columns:1fr}
 @media(max-width:680px){.row,.row-3{grid-template-columns:1fr;gap:14px}}
 
@@ -1033,7 +1033,7 @@ html{scroll-behavior:smooth}
           <label class="field-lbl">Choose Your Name <span class="req">*</span></label>
           <input type="text" class="inp" id="f_workname" placeholder="Type your choice or pick a suggestion below" oninput="checkWorkName()">
           <div class="wn-status" id="wnStatus" style="display:none"></div>
-          <div class="field-hint">The name clients will see on your profile. Must be unique &mdash; we verify it.</div>
+          <div class="field-hint">Choose a name close to your real one so it feels natural to use &mdash; e.g. if you&rsquo;re Maria, pick Mara or Marie. This is the name clients will see, and it must be unique &mdash; we verify it.</div>
           <div class="wn-sug" id="wnSuggestions"></div>
         </div>
         <div class="field">
@@ -1087,23 +1087,22 @@ html{scroll-behavior:smooth}
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.35 4.76L20 8.63l-4 3.9.94 5.47L12 15.5l-4.94 2.5L8 12.53 4 8.63l5.65-1.87L12 2z"/></svg></div>
-        <div class="sec-t">Experience &amp; Training</div>
+        <div class="sec-t">Your Experience</div>
       </div>
-      <div class="row-1">
+      <div class="row-1" style="margin-top:6px">
         <div class="field"><label class="field-lbl">Years of Experience <span class="req">*</span></label>
           <select class="sel" id="f_years" data-sec="experience"><option value="">Select...</option><option>No prior experience</option><option>0 – 1 year</option><option>1 – 3 years</option><option>3 – 5 years</option><option>5 – 10 years</option><option>10+ years</option></select>
         </div>
       </div>
 
-      <div class="row-1">
+      <div class="row-1" style="margin-top:16px">
         <div class="field">
           <label class="field-lbl">More about your experience <span class="opt-note">Optional</span></label>
           <textarea class="txa" id="f_prev_exp" rows="4" placeholder="Example: I have experience in tantric and adults services for a few years. I started to work in London in 2020 and the agency was..."></textarea>
-          <div class="field-hint">Free-form &mdash; write in your own words. This stays strictly confidential.</div>
         </div>
       </div>
 
-      <div class="row">
+      <div class="row-1" style="margin-top:16px">
         <div class="field"><label class="field-lbl">Professional photoshoot?</label>
           <div class="pill-group" data-pill="photoshoot">
             <div class="pill" data-val="Yes I have">Yes I have</div>
@@ -1111,6 +1110,9 @@ html{scroll-behavior:smooth}
             <div class="pill" data-val="Not interested">Not interested</div>
           </div>
         </div>
+      </div>
+
+      <div class="row-1" style="margin-top:16px">
         <div class="field"><label class="field-lbl">How did you hear about us?</label>
           <select class="sel" id="f_heard"><option value="">Select...</option><option>Social Media</option><option>From a Friend</option><option>Google Search</option><option>Another Agency</option><option>Other</option></select>
           <input type="text" class="inp" id="f_heard_other" placeholder="Tell us where you heard about us" style="display:none;margin-top:8px">
@@ -1125,49 +1127,67 @@ html{scroll-behavior:smooth}
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <div class="sec-t">Your Working Area</div>
       </div>
-      <div class="field">
-        <label class="field-lbl"><span id="localAreaLabel">Local Area</span> <span class="req">*</span></label>
-        <select class="sel" id="f_local_area" data-sec="work"><option value="">Pick city first...</option></select>
-        <div class="field-hint">Where you work most often. The list updates based on your selected city.</div>
+      <span class="sec-note" style="margin:-4px 0 4px">Where you&rsquo;ll actually work &mdash; this can be different from your home address.</span>
+      <!-- ─── WORKING LOCATION ─── Independent of the home address from
+           Step 1: she may live in one city and work in another. -->
+      <div class="row" style="margin-top:6px">
+        <div class="field">
+          <label class="field-lbl">Working Country <span class="req">*</span></label>
+          <select class="sel" id="f_work_country" data-sec="work"><option value="">Select country…</option></select>
+        </div>
+        <div class="field">
+          <label class="field-lbl">Working City <span class="req">*</span></label>
+          <select class="sel" id="f_work_city_select" disabled><option value="">Pick country first…</option></select>
+          <input type="text" class="inp" id="f_work_city" placeholder="Type your city" style="display:none;margin-top:8px">
+        </div>
       </div>
-      <!-- ─── IN-HOUSE ADDRESS ─── Same structured pattern as Home Address.
-           Optional unless the applicant offers in-house. Country / city /
-           area are already captured in Step 1. -->
       <div class="row-1" style="margin-top:14px">
+        <div class="field">
+          <label class="field-lbl"><span id="localAreaLabel">Working Area</span> <span class="req">*</span></label>
+          <select class="sel" id="f_local_area" disabled><option value="">Pick city first…</option></select>
+          <input type="text" class="inp" id="f_local_area_work_text" placeholder="Type your working area" style="display:none;margin-top:8px">
+          <div class="field-hint">The neighbourhood / zone you&rsquo;re mainly based in for work.</div>
+        </div>
+      </div>
+
+      <!-- ─── IN-HOUSE ADDRESS ─── Optional. The checkbox lets her skip it
+           entirely; ticking it disables the fields and records No in-house. -->
+      <div class="row-1" style="margin-top:18px">
         <div class="field">
           <label class="field-lbl">In-house Address <span class="opt-note">If you offer in-house</span></label>
           <div class="field-hint" style="margin-bottom:8px">Where you host clients. Kept strictly confidential — never shown to clients before booking is confirmed.</div>
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--tx2);cursor:pointer">
+            <input type="checkbox" id="f_no_inhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile / outcall only)
+          </label>
         </div>
       </div>
-      <div class="row" style="margin-bottom:14px">
-        <div class="field" style="grid-column:span 2">
-          <label class="field-lbl">Street &amp; Number</label>
-          <input type="text" class="inp" id="f_inhouse_street" placeholder="16 Maddox Street" autocomplete="street-address">
+      <div id="inhouseFields">
+        <div class="row" style="margin-bottom:14px">
+          <div class="field" style="grid-column:span 2">
+            <label class="field-lbl">Street &amp; Number</label>
+            <input type="text" class="inp" id="f_inhouse_street" placeholder="16 Maddox Street" autocomplete="street-address">
+          </div>
         </div>
-      </div>
-      <div class="row" style="margin-bottom:14px">
-        <div class="field">
-          <label class="field-lbl">Apartment / Flat</label>
-          <input type="text" class="inp" id="f_inhouse_apt" placeholder="Flat 2" autocomplete="address-line2">
-        </div>
-        <div class="field">
-          <label class="field-lbl">Postcode</label>
-          <input type="text" class="inp" id="f_inhouse_postcode" placeholder="W1S 1PH" autocomplete="postal-code" autocapitalize="characters">
+        <div class="row" style="margin-bottom:14px">
+          <div class="field">
+            <label class="field-lbl">Apartment / Flat</label>
+            <input type="text" class="inp" id="f_inhouse_apt" placeholder="2" inputmode="numeric" autocomplete="address-line2">
+          </div>
+          <div class="field">
+            <label class="field-lbl">Postcode</label>
+            <input type="text" class="inp" id="f_inhouse_postcode" placeholder="W1S 1PH" autocomplete="postal-code" autocapitalize="characters">
+          </div>
         </div>
       </div>
       <!-- Hidden legacy field kept so the existing submit handler keeps
            writing in_house_address as a single string until we update it. -->
       <input type="hidden" id="f_inhouse_address">
-      <div class="row-3" style="margin-top:14px">
+
+      <!-- ─── MOBILE / OUTCALL ─── Provide Mobile + the zones she covers,
+           pulled from the working city's neighbourhood list. -->
+      <div class="row" style="margin-top:14px">
         <div class="field">
-          <label class="field-lbl">Provide In-house? <span class="req">*</span></label>
-          <div class="pill-group" data-pill="inhouse">
-            <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="No">No</div>
-          </div>
-        </div>
-        <div class="field">
-          <label class="field-lbl">Provide Mobile? <span class="req">*</span></label>
+          <label class="field-lbl">Provide Mobile / Outcall? <span class="req">*</span></label>
           <div class="pill-group" data-pill="mobile">
             <div class="pill" data-val="Yes">Yes</div>
             <div class="pill" data-val="No">No</div>
@@ -1177,26 +1197,31 @@ html{scroll-behavior:smooth}
           <label class="field-lbl">Airport Bookings?</label>
           <div class="pill-group" data-pill="airport">
             <div class="pill" data-val="Yes">Yes</div>
+            <div class="pill" data-val="Yes with special request">Yes, with special request</div>
             <div class="pill" data-val="No">No</div>
           </div>
+          <input type="text" class="inp" id="f_airport_note" placeholder="Your airport booking conditions…" style="display:none;margin-top:8px">
         </div>
       </div>
-      <div class="row">
+      <div id="mobileZonesWrap" style="display:none;margin-top:14px">
+        <div class="field">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <label class="field-lbl" style="margin:0">Mobile coverage zones <span class="opt-note">Where you travel to</span></label>
+            <button type="button" id="zonesSelectAll" style="background:none;border:none;color:var(--ac);font-family:var(--fb);font-size:11px;font-weight:600;letter-spacing:.06em;cursor:pointer;text-transform:uppercase">Select all</button>
+          </div>
+          <div class="chk-grid" id="mobileZonesGrid"></div>
+          <div class="field-hint" id="mobileZonesHint">Pick a working city above to see its zones.</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px">
         <div class="field">
           <label class="field-lbl">Mobile 30+ min away?</label>
           <div class="pill-group" data-pill="mobile_30">
             <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="Depends">Depends</div>
+            <div class="pill" data-val="Depends with special request">Depends, with special request</div>
             <div class="pill" data-val="No">No</div>
           </div>
-        </div>
-        <div class="field">
-          <label class="field-lbl">Late nights &amp; weekends?</label>
-          <div class="pill-group" data-pill="late_hours">
-            <div class="pill" data-val="Yes always">Yes always</div>
-            <div class="pill" data-val="Advance notice">Advance notice</div>
-            <div class="pill" data-val="No">No</div>
-          </div>
+          <input type="text" class="inp" id="f_mobile_30_note" placeholder="Your conditions for travelling 30+ min…" style="display:none;margin-top:8px">
         </div>
       </div>
     </div>
@@ -1210,7 +1235,7 @@ html{scroll-behavior:smooth}
       <div class="chk-grid" id="abroadGrid"></div>
       <div class="row-1" style="margin-top:14px">
         <div class="field"><label class="field-lbl">Other Travel Notes <span class="opt-note">Optional</span></label>
-          <input type="text" class="inp" id="f_travel_other" placeholder="Additional travel preferences...">
+          <textarea class="txa" id="f_travel_other" rows="3" placeholder="Additional travel preferences — e.g. I travel for a minimum of 3 days, or if I'm in town I can pick a city and work there for a few months."></textarea>
         </div>
       </div>
     </div>
@@ -1220,21 +1245,24 @@ html{scroll-behavior:smooth}
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <div class="sec-t">Weekly Availability</div>
       </div>
-      <div class="row-1" style="margin-bottom:16px">
+      <div class="row" style="margin-bottom:16px">
         <div class="field"><label class="field-lbl">How many days per week? <span class="req">*</span></label>
           <select class="sel" id="f_days_week" data-sec="availability"><option value="">Select...</option><option>1-2 days a week</option><option>3-4 days a week</option><option>5 days a week</option><option>6-7 days a week</option><option>Occasionally (on request only)</option></select>
         </div>
+        <div class="field"><label class="field-lbl">Late nights &amp; weekends?</label>
+          <div class="pill-group" data-pill="late_hours">
+            <div class="pill" data-val="Yes always">Yes always</div>
+            <div class="pill" data-val="Advance notice">Advance notice</div>
+            <div class="pill" data-val="No">No</div>
+          </div>
+        </div>
       </div>
-      <button type="button" class="avail-cta" onclick="document.getElementById('availGrid').scrollIntoView({behavior:'smooth',block:'start'})">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>Choose your weekly availability &mdash; <b>mandatory</b></span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="field-hint" style="margin:6px 0 12px">Tap each day to mark it ON, then set the hours you&rsquo;d like to work. Off days stay off.</div>
+      <div class="field-lbl" style="margin-bottom:6px">Choose your weekly availability <span class="req">*</span></div>
+      <div class="field-hint" style="margin:0 0 12px">Tap a day to switch it <b>ON</b>, then set the hours you&rsquo;d like to work. Tap again to turn it back off.</div>
       <div class="avail-grid" id="availGrid"></div>
       <div class="row-1" style="margin-top:10px">
         <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_avail_notes" placeholder="e.g. &lsquo;I prefer 48h advance notice...&rsquo;"></textarea>
+          <textarea class="txa" id="f_avail_notes" rows="3" placeholder="e.g. I prefer 2 hours in advance, or 12 hours in advance."></textarea>
         </div>
       </div>
     </div>
@@ -2189,8 +2217,16 @@ let formData = {
   years:'', heard:'', prev_exp:'',
   photoshoot:'',
   workname:'',
-  local_area:'', inhouse_address:'', inhouse:'', mobile:'', airport:'',
-  mobile_30:'', late_hours:'',
+  // Working location — independent of the home address from Step 1.
+  work_country:'', work_city:'',
+  local_area:'', inhouse_address:'',
+  // In-house defaults to offered ('Yes'); the "I don't have an in-house
+  // address" checkbox flips it to 'No' and disables the address fields.
+  inhouse:'Yes', no_inhouse:false,
+  mobile:'', airport:'', airport_note:'',
+  // Mobile / outcall zones she covers within the working city.
+  mobile_zones:[],
+  mobile_30:'', mobile_30_note:'', late_hours:'',
   abroad:[], travel_other:'',
   services:[], addons:[],
   rate:'', competing:'', agency_website:'', dur_pref:[],
@@ -2245,12 +2281,17 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   populateDropdown('f_nationality', NATIONALITIES);
   populateDropdown('f_country', COUNTRIES);
-  populateDropdown('f_local_area', LOCAL_AREAS);
+  populateDropdown('f_work_country', COUNTRIES);
   populateLangDropdown();
   populatePhoneCodes('f_phone_code');
   populatePhoneCodes('f_em_phone_code');
   initCityCascade();
   initStep1LocalArea();
+  initWorkAreaCascade();
+  initMobileZones();
+  initNoInhouseCheckbox();
+  initSpecialRequestReveal('airport', 'f_airport_note', ['Yes with special request']);
+  initSpecialRequestReveal('mobile_30', 'f_mobile_30_note', ['Depends with special request']);
   initTantricCompetingReveal();
   initHomeAddressInputs();
   initInhouseAddressInputs();
@@ -2356,7 +2397,7 @@ document.addEventListener('DOMContentLoaded', async function(){
         '<span class="time-sep">–</span>'+
         '<input type="time" value="23:00" onchange="event.stopPropagation();setAvailTime(\''+day+'\',\'to\',this.value)" onclick="event.stopPropagation()">'+
       '</div>'+
-      '<div class="avail-toggle">Toggle</div>';
+      '<div class="avail-toggle">Tap to add</div>';
     cell.addEventListener('click', () => toggleDay(day));
     avG.appendChild(cell);
   });
@@ -2505,8 +2546,6 @@ function initCityCascade(){
   const country = document.getElementById('f_country');
   const citySel = document.getElementById('f_city_select');
   const cityFree = document.getElementById('f_city');
-  const localLabel = document.getElementById('localAreaLabel');
-  const localSel = document.getElementById('f_local_area');
   if(!country || !citySel) return;
 
   function refreshCities(){
@@ -2541,12 +2580,6 @@ function initCityCascade(){
 
   country.addEventListener('change', () => {
     refreshCities();
-    // Updating the country wipes the local-area selection; updates label too.
-    if(localLabel) localLabel.textContent = 'Local Area' + (country.value ? ' in ' + country.value : '');
-    if(localSel){
-      localSel.value = '';
-      formData.local_area = '';
-    }
   });
 
   citySel.addEventListener('change', () => {
@@ -2560,9 +2593,6 @@ function initCityCascade(){
       cityFree.style.display = 'none';
       cityFree.value = '';
       formData.city = v;
-    }
-    if(localLabel && v && !v.toLowerCase().startsWith('other')){
-      localLabel.textContent = 'Local Area in ' + v;
     }
     refreshStep1LocalArea();
     updateProgress();
@@ -2639,6 +2669,219 @@ function initStep1LocalArea(){
       scheduleAutoSave && scheduleAutoSave();
     });
   }
+}
+
+// ─── Working location cascade (Step 2) ───────────────────────────
+// Independent of the home address: Working Country → Working City →
+// Working Area. Reuses the same CITIES_BY_COUNTRY / LOCAL_AREAS_BY_CITY
+// data as Step 1. Working area writes to formData.local_area (the
+// existing submit column) and drives the mobile-coverage zone list.
+function initWorkAreaCascade(){
+  const country  = document.getElementById('f_work_country');
+  const citySel   = document.getElementById('f_work_city_select');
+  const cityFree  = document.getElementById('f_work_city');
+  const areaSel   = document.getElementById('f_local_area');
+  const areaFree  = document.getElementById('f_local_area_work_text');
+  const label     = document.getElementById('localAreaLabel');
+  if(!country || !citySel || !areaSel) return;
+
+  function refreshAreas(){
+    const city = (formData.work_city || '').trim();
+    const areas = city ? LOCAL_AREAS_BY_CITY[city] : null;
+    if(!city){
+      areaSel.innerHTML = '<option value="">Pick city first…</option>';
+      areaSel.disabled = true;
+      if(areaFree) areaFree.style.display = 'none';
+    } else if(!areas || areas.length === 0){
+      areaSel.innerHTML = '<option value="">Type below…</option>';
+      areaSel.disabled = true;
+      if(areaFree) areaFree.style.display = 'block';
+    } else {
+      areaSel.disabled = false;
+      areaSel.innerHTML = '<option value="">Select your working area…</option>' +
+        areas.map(a => '<option value="'+a+'">'+a+'</option>').join('');
+      if(areaFree) areaFree.style.display = 'none';
+    }
+    if(label) label.textContent = 'Working Area' + (city ? ' in ' + city : '');
+  }
+
+  function refreshCities(){
+    const c = country.value || '';
+    const cities = CITIES_BY_COUNTRY[c];
+    formData.work_country = c;
+    if(!c){
+      citySel.innerHTML = '<option value="">Pick country first…</option>';
+      citySel.disabled = true;
+      cityFree.style.display = 'none'; cityFree.value = '';
+      formData.work_city = '';
+    } else if(cities && cities.length){
+      citySel.disabled = false;
+      citySel.innerHTML = '<option value="">Select your city…</option>' +
+        cities.map(ct => '<option value="'+ct+'">'+ct+'</option>').join('');
+      cityFree.style.display = 'none';
+    } else {
+      citySel.innerHTML = '<option value="Other">Other / Type below</option>';
+      citySel.value = 'Other';
+      cityFree.style.display = 'block';
+      formData.work_city = '';
+    }
+    formData.work_city = '';
+    refreshAreas();
+    renderMobileZones();
+  }
+
+  country.addEventListener('change', () => { refreshCities(); updateProgress(); });
+
+  citySel.addEventListener('change', () => {
+    const v = citySel.value;
+    if(v && v.toLowerCase().startsWith('other')){
+      cityFree.style.display = 'block'; cityFree.focus();
+      formData.work_city = cityFree.value || '';
+    } else {
+      cityFree.style.display = 'none'; cityFree.value = '';
+      formData.work_city = v;
+    }
+    formData.local_area = '';
+    refreshAreas();
+    renderMobileZones();
+    updateProgress();
+  });
+
+  cityFree.addEventListener('input', () => {
+    formData.work_city = cityFree.value;
+    refreshAreas();
+    renderMobileZones();
+    updateProgress();
+  });
+
+  areaSel.addEventListener('change', () => {
+    const v = areaSel.value;
+    if(v.toLowerCase() === 'other'){
+      if(areaFree){ areaFree.style.display = 'block'; areaFree.focus(); }
+      formData.local_area = areaFree ? (areaFree.value || '') : '';
+    } else {
+      if(areaFree){ areaFree.style.display = 'none'; areaFree.value = ''; }
+      formData.local_area = v;
+    }
+    updateProgress();
+  });
+  if(areaFree){
+    areaFree.addEventListener('input', () => {
+      formData.local_area = areaFree.value;
+      updateProgress();
+    });
+  }
+}
+
+// ─── Mobile coverage zones ───────────────────────────────────────
+// Multi-select of neighbourhoods within the chosen working city, with
+// a "Select all" shortcut. Only shown when Provide Mobile = Yes.
+function renderMobileZones(){
+  const grid = document.getElementById('mobileZonesGrid');
+  const hint = document.getElementById('mobileZonesHint');
+  if(!grid) return;
+  const city = (formData.work_city || '').trim();
+  const zones = (city && LOCAL_AREAS_BY_CITY[city]) ? LOCAL_AREAS_BY_CITY[city].filter(z => z.toLowerCase() !== 'other') : [];
+  grid.innerHTML = '';
+  if(zones.length === 0){
+    if(hint) hint.textContent = city ? 'No preset zones for this city — note them in your travel notes below.' : 'Pick a working city above to see its zones.';
+    return;
+  }
+  if(hint) hint.textContent = 'Tap each zone you cover. Use “Select all” to pick the whole city.';
+  // Drop any previously-selected zones that aren't in the new city's list.
+  formData.mobile_zones = (formData.mobile_zones || []).filter(z => zones.indexOf(z) >= 0);
+  zones.forEach(zone => {
+    const el = document.createElement('div');
+    el.className = 'chk' + (formData.mobile_zones.indexOf(zone) >= 0 ? ' checked' : '');
+    el.dataset.zone = zone;
+    el.innerHTML = '<div class="chk-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>'+zone+'</span>';
+    el.addEventListener('click', () => {
+      el.classList.toggle('checked');
+      const idx = formData.mobile_zones.indexOf(zone);
+      if(idx >= 0) formData.mobile_zones.splice(idx,1);
+      else formData.mobile_zones.push(zone);
+      syncZonesSelectAllLabel();
+      scheduleAutoSave && scheduleAutoSave();
+    });
+    grid.appendChild(el);
+  });
+  syncZonesSelectAllLabel();
+}
+function syncZonesSelectAllLabel(){
+  const btn = document.getElementById('zonesSelectAll');
+  if(!btn) return;
+  const city = (formData.work_city || '').trim();
+  const zones = (city && LOCAL_AREAS_BY_CITY[city]) ? LOCAL_AREAS_BY_CITY[city].filter(z => z.toLowerCase() !== 'other') : [];
+  const allOn = zones.length > 0 && zones.every(z => formData.mobile_zones.indexOf(z) >= 0);
+  btn.textContent = allOn ? 'Clear all' : 'Select all';
+}
+function initMobileZones(){
+  const btn = document.getElementById('zonesSelectAll');
+  if(btn){
+    btn.addEventListener('click', () => {
+      const city = (formData.work_city || '').trim();
+      const zones = (city && LOCAL_AREAS_BY_CITY[city]) ? LOCAL_AREAS_BY_CITY[city].filter(z => z.toLowerCase() !== 'other') : [];
+      const allOn = zones.length > 0 && zones.every(z => formData.mobile_zones.indexOf(z) >= 0);
+      formData.mobile_zones = allOn ? [] : zones.slice();
+      btn.textContent = allOn ? 'Select all' : 'Clear all';
+      document.querySelectorAll('#mobileZonesGrid .chk').forEach(el => {
+        el.classList.toggle('checked', !allOn);
+      });
+      scheduleAutoSave && scheduleAutoSave();
+    });
+  }
+  // Reveal the zone block only when Provide Mobile = Yes.
+  const grp = document.querySelector('[data-pill="mobile"]');
+  const wrap = document.getElementById('mobileZonesWrap');
+  if(grp && wrap){
+    grp.addEventListener('click', (e) => {
+      const pill = e.target.closest('.pill');
+      if(!pill) return;
+      wrap.style.display = pill.dataset.val === 'Yes' ? 'block' : 'none';
+      if(pill.dataset.val === 'Yes') renderMobileZones();
+    });
+  }
+}
+
+// ─── "I don't have an in-house address" checkbox ─────────────────
+// Ticking it disables the in-house address fields and records No
+// in-house; unticking re-enables them and records Yes.
+function initNoInhouseCheckbox(){
+  const chk = document.getElementById('f_no_inhouse');
+  const fields = document.getElementById('inhouseFields');
+  if(!chk) return;
+  const apply = () => {
+    formData.no_inhouse = chk.checked;
+    formData.inhouse = chk.checked ? 'No' : 'Yes';
+    if(fields){
+      fields.style.opacity = chk.checked ? '.45' : '1';
+      fields.style.pointerEvents = chk.checked ? 'none' : 'auto';
+      fields.querySelectorAll('input').forEach(i => { i.disabled = chk.checked; });
+    }
+    if(chk.checked){
+      ['inhouse_street','inhouse_apt','inhouse_postcode'].forEach(k => { formData[k] = ''; });
+      ['f_inhouse_street','f_inhouse_apt','f_inhouse_postcode'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
+    }
+    updateProgress();
+    scheduleAutoSave && scheduleAutoSave();
+  };
+  chk.addEventListener('change', apply);
+}
+
+// ─── Generic "with special request" reveal for pill groups ───────
+// Shows the note input when the active pill value is in revealVals.
+function initSpecialRequestReveal(pillKey, inputId, revealVals){
+  const grp = document.querySelector('[data-pill="'+pillKey+'"]');
+  const inp = document.getElementById(inputId);
+  if(!grp || !inp) return;
+  grp.addEventListener('click', (e) => {
+    const pill = e.target.closest('.pill');
+    if(!pill) return;
+    const show = revealVals.indexOf(pill.dataset.val) >= 0;
+    inp.style.display = show ? 'block' : 'none';
+    if(!show){ inp.value = ''; formData[inputId.replace('f_','')] = ''; }
+    else inp.focus();
+  });
 }
 
 // ─── Tantric "Other agencies?" Yes/No reveal ─────────────────────
@@ -3243,13 +3486,13 @@ function toggleDay(day){
     cell.classList.add('on');
     cell.querySelector('.avail-day-hrs').textContent = d.from+' – '+d.to;
     cell.querySelector('.time-inputs').style.display = 'flex';
-    cell.querySelector('.avail-toggle').textContent = 'On';
+    cell.querySelector('.avail-toggle').textContent = 'ON · tap to remove';
   } else {
     cell.classList.remove('on');
     cell.classList.add('off');
     cell.querySelector('.avail-day-hrs').textContent = 'Off';
     cell.querySelector('.time-inputs').style.display = 'none';
-    cell.querySelector('.avail-toggle').textContent = 'Toggle';
+    cell.querySelector('.avail-toggle').textContent = 'Tap to add';
   }
   updateProgress();
 }
@@ -3372,15 +3615,22 @@ const STEP_REQ = {
     {key:'english',      el:'f_english',          sec:'personal'}
   ],
   2: [
-    {key:'workname',    el:'f_workname',          sec:'work'},
-    {key:'height',      el:'f_height',            sec:'physical'},
-    {key:'weight',      el:'f_weight',            sec:'physical'},
-    {key:'body',        el:'f_body',              sec:'physical'},
-    {key:'years',       el:'f_years',             sec:'experience'},
-    {key:'local_area',  el:'f_local_area',        sec:'work'},
-    {key:'inhouse',     el:'[data-pill="inhouse"]',sec:'work'},
-    {key:'mobile',      el:'[data-pill="mobile"]', sec:'work'},
-    {key:'days_week',   el:'f_days_week',         sec:'availability'}
+    {key:'workname',     el:'f_workname',          sec:'work'},
+    {key:'profile_age',  el:'f_profile_age',       sec:'physical'},
+    {key:'height',       el:'f_height',            sec:'physical'},
+    {key:'weight',       el:'f_weight',            sec:'physical'},
+    {key:'body',         el:'f_body',              sec:'physical'},
+    {key:'dress',        el:'f_dress',             sec:'physical'},
+    {key:'eye',          el:'f_eye',               sec:'physical'},
+    {key:'hair',         el:'f_hair',              sec:'physical'},
+    {key:'breast',       el:'f_breast',            sec:'physical'},
+    {key:'breast_type',  el:'f_breast_type',       sec:'physical'},
+    {key:'years',        el:'f_years',             sec:'experience'},
+    {key:'work_country', el:'f_work_country',      sec:'work'},
+    {key:'work_city',    el:'f_work_city_select',  sec:'work'},
+    {key:'local_area',   el:'f_local_area',        sec:'work'},
+    {key:'mobile',       el:'[data-pill="mobile"]', sec:'work'},
+    {key:'days_week',    el:'f_days_week',         sec:'availability'}
   ],
   3: [], // Step 3 services validation runs in submitApplication
   4: []
@@ -3890,7 +4140,7 @@ function loadDraft(){
               cell.classList.add('on');
               cell.querySelector('.avail-day-hrs').textContent = (formData.availability[day].from||'09:00')+' – '+(formData.availability[day].to||'23:00');
               cell.querySelector('.time-inputs').style.display = 'flex';
-              cell.querySelector('.avail-toggle').textContent = 'On';
+              cell.querySelector('.avail-toggle').textContent = 'ON · tap to remove';
             }
           }
         });
@@ -3967,6 +4217,40 @@ function loadDraft(){
       formData.inhouse_address = [formData.inhouse_street, formData.inhouse_apt, formData.inhouse_postcode].filter(Boolean).join(', ');
       const hidden = document.getElementById('f_inhouse_address');
       if(hidden) hidden.value = formData.inhouse_address;
+
+      // ── Working-area cascade restore (Country → City → Area) ──
+      const savedWorkCity = d.work_city || '';
+      const savedWorkArea = d.local_area || '';
+      const wcSel = document.getElementById('f_work_country');
+      if(wcSel && d.work_country){
+        wcSel.value = d.work_country;
+        formData.work_country = d.work_country;
+        const cities = CITIES_BY_COUNTRY[d.work_country];
+        const wCitySel = document.getElementById('f_work_city_select');
+        if(wCitySel && cities && cities.length){
+          wCitySel.disabled = false;
+          wCitySel.innerHTML = '<option value="">Select your city…</option>' + cities.map(ct=>'<option value="'+ct+'">'+ct+'</option>').join('');
+          if(savedWorkCity && cities.indexOf(savedWorkCity) >= 0){ wCitySel.value = savedWorkCity; formData.work_city = savedWorkCity; }
+        }
+        const areas = savedWorkCity ? LOCAL_AREAS_BY_CITY[savedWorkCity] : null;
+        const aSel = document.getElementById('f_local_area');
+        if(aSel && areas && areas.length){
+          aSel.disabled = false;
+          aSel.innerHTML = '<option value="">Select your working area…</option>' + areas.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
+          if(savedWorkArea && areas.indexOf(savedWorkArea) >= 0){ aSel.value = savedWorkArea; formData.local_area = savedWorkArea; }
+        }
+        const lbl = document.getElementById('localAreaLabel');
+        if(lbl) lbl.textContent = 'Working Area' + (savedWorkCity ? ' in ' + savedWorkCity : '');
+      }
+      formData.mobile_zones = Array.isArray(d.mobile_zones) ? d.mobile_zones : [];
+      if(formData.mobile === 'Yes'){ const mw = document.getElementById('mobileZonesWrap'); if(mw) mw.style.display = 'block'; }
+      renderMobileZones();
+      // "No in-house" checkbox + disabled state.
+      const niChk = document.getElementById('f_no_inhouse');
+      if(niChk && d.no_inhouse){ niChk.checked = true; niChk.dispatchEvent(new Event('change')); }
+      // Special-request note reveals.
+      if(d.airport === 'Yes with special request'){ const an = document.getElementById('f_airport_note'); if(an){ an.style.display = 'block'; an.value = d.airport_note || ''; } }
+      if(d.mobile_30 === 'Depends with special request'){ const mn = document.getElementById('f_mobile_30_note'); if(mn){ mn.style.display = 'block'; mn.value = d.mobile_30_note || ''; } }
     }catch(e){ console.warn('post-restore wiring', e); }
     document.getElementById('resumeBanner').style.display='none';
     showToast('Draft restored', 'success');
@@ -4027,12 +4311,20 @@ const FIELD_LABELS = {
   phone:       'Phone number',
   email:       'Email address',
   english:     'English level',
+  profile_age: 'Profile age',
   height:      'Height',
   weight:      'Weight',
   body:        'Body type',
+  dress:       'Dress size',
+  eye:         'Eye colour',
+  hair:        'Hair colour',
+  breast:      'Breast size',
+  breast_type: 'Breast type',
   years:       'Years of experience',
   workname:    'Work name',
-  local_area:  'Local area in your city',
+  work_country:'Working country',
+  work_city:   'Working city',
+  local_area:  'Working area',
   inhouse:     'In-house availability',
   mobile:      'Mobile availability',
   rate:        'Starting rate',
@@ -4057,11 +4349,19 @@ const FIELD_ELEMENT_IDS = {
   phone:       'f_phone',
   email:       'f_email',
   english:     'f_english',
+  profile_age: 'f_profile_age',
   height:      'f_height',
   weight:      'f_weight',
   body:        'f_body',
+  dress:       'f_dress',
+  eye:         'f_eye',
+  hair:        'f_hair',
+  breast:      'f_breast',
+  breast_type: 'f_breast_type',
   years:       'f_years',
   workname:    'f_workname',
+  work_country:'f_work_country',
+  work_city:   'f_work_city_select',
   local_area:  'f_local_area',
   inhouse:     'f_inhouse',
   mobile:      'f_mobile',
@@ -4108,13 +4408,19 @@ async function submitApplication(){
   if(citySelEl && citySelEl.value && !citySelEl.value.toLowerCase().startsWith('other')) formData.city = citySelEl.value;
   else if(cityFreeEl && cityFreeEl.value) formData.city = cityFreeEl.value;
 
+  // Same sync for the working-city cascade in Step 2.
+  const workCitySel = document.getElementById('f_work_city_select');
+  const workCityFree = document.getElementById('f_work_city');
+  if(workCitySel && workCitySel.value && !workCitySel.value.toLowerCase().startsWith('other')) formData.work_city = workCitySel.value;
+  else if(workCityFree && workCityFree.value) formData.work_city = workCityFree.value;
+
   const required = [
     'fullname','nationality','country','city',
     'home_street','home_postcode',
     'phone_code','phone','email',
     'rtw','english',
-    'height','weight','body','years',
-    'workname','local_area','inhouse','mobile','rate','days_week',
+    'profile_age','height','weight','body','dress','eye','hair','breast','breast_type','years',
+    'workname','work_country','work_city','local_area','mobile','rate','days_week',
     'em_name','em_rel','em_phone_code','em_phone'
   ];
   for(const k of required){
@@ -4395,6 +4701,9 @@ async function submitApplication(){
       formData.phone_is_whatsapp
         ? 'WhatsApp: same as phone'
         : (((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() ? 'WhatsApp: ' + ((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() : ''),
+      (formData.work_city || formData.work_country) ? 'Working location: ' + [formData.work_city, formData.work_country].filter(Boolean).join(', ') : '',
+      formData.no_inhouse ? 'No in-house (mobile/outcall only)' : '',
+      (formData.mobile_zones && formData.mobile_zones.length) ? 'Mobile zones: '+formData.mobile_zones.join(', ') : '',
       formData.prev_exp ? 'Experience: '+formData.prev_exp : '',
       formData.services.length>0 ? 'Services: '+formData.services.join(', ') : '',
       formData.addons.length>0 ? 'Add-ons: '+formData.addons.join(', ') : '',
@@ -4402,12 +4711,13 @@ async function submitApplication(){
       formData.competing ? 'Other agencies: '+formData.competing : '',
       formData.agency_website ? 'Agency website: '+formData.agency_website : '',
       formData.avail_notes ? 'Availability notes: '+formData.avail_notes : '',
+      formData.travel_other ? 'Travel notes: '+formData.travel_other : '',
       formData.english ? 'English: '+formData.english : '',
       formData.photoshoot ? 'Photoshoot: '+formData.photoshoot : '',
       formData.days_week ? 'Days/week: '+formData.days_week : '',
-      formData.mobile_30 ? 'Mobile 30+min: '+formData.mobile_30 : '',
+      formData.mobile_30 ? 'Mobile 30+min: '+formData.mobile_30 + (formData.mobile_30_note ? ' ('+formData.mobile_30_note+')' : '') : '',
       formData.late_hours ? 'Late nights/weekends: '+formData.late_hours : '',
-      formData.airport ? 'Airport bookings: '+formData.airport : '',
+      formData.airport ? 'Airport bookings: '+formData.airport + (formData.airport_note ? ' ('+formData.airport_note+')' : '') : '',
       formData.heard ? 'Heard from: '+formData.heard : '',
     ].filter(Boolean).join(' | ')||null,
     
