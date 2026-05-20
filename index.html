@@ -451,9 +451,10 @@ html{scroll-behavior:smooth}
   .row{gap:12px;margin-bottom:10px}
   .field-lbl{font-size:9px;letter-spacing:.16em}
   .field-hint{font-size:10.5px}
-  /* ✨ iOS zoom fix — inputs need >=16px to prevent auto-zoom on focus. */
-  .inp,.sel,.txa{font-size:16px;padding:12px 14px;border-radius:10px;min-height:48px}
-  .txa{min-height:96px}
+  /* ✨ iOS zoom fix — inputs need >=16px to prevent auto-zoom on focus.
+     Padding + min-height kept compact so fields don't feel oversized. */
+  .inp,.sel,.txa{font-size:16px;padding:9px 13px;border-radius:10px;min-height:42px}
+  .txa{min-height:84px}
   .sel{padding-right:36px;background-position:right 12px center}
   /* Touch-friendly pills (Yes/No/etc). */
   .pill{padding:11px 18px;font-size:14px;min-height:44px;display:inline-flex;align-items:center;border-radius:10px}
@@ -476,12 +477,12 @@ html{scroll-behavior:smooth}
   .svc{padding:14px 14px 14px 16px;border-radius:10px}
   .svc-name{font-size:15px}
   .svc-desc{font-size:10.5px}
-  /* Upload zones: full-width, 56px+ height for thumb. */
-  .upload{padding:14px 14px;border-radius:10px;gap:12px;min-height:64px}
-  .upload-icon{width:36px;height:36px}
-  .upload-ttl{font-size:13.5px}
-  .upload-h{font-size:10.5px}
-  .upload-btn{padding:9px 14px;font-size:11px;min-height:38px}
+  /* Upload zones: full-width, compact but still thumb-friendly. */
+  .upload{padding:10px 12px;border-radius:10px;gap:10px;min-height:52px}
+  .upload-icon{width:30px;height:30px}
+  .upload-ttl{font-size:12.5px}
+  .upload-h{font-size:10px}
+  .upload-btn{padding:8px 13px;font-size:10.5px;min-height:34px}
   .selfie-box{padding:14px;border-radius:10px}
   .selfie-icon{width:48px;height:48px;margin-bottom:10px}
   .selfie-t{font-size:17px}
@@ -499,12 +500,15 @@ html{scroll-behavior:smooth}
      into the page background. Uses var(--bg) so it inherits cream
      in light mode and luxury noir in dark, instead of the previous
      hardcoded #faf8f6 that stood out as a white slab on dark. */
-  .actions{position:sticky;bottom:0;background:linear-gradient(180deg,transparent 0%,var(--bg) 50%,var(--bg) 100%);padding:16px 12px;margin:18px -12px 0;justify-content:stretch;flex-direction:column;gap:8px;z-index:60;box-shadow:0 -4px 18px rgba(0,0,0,.10)}
-  :root[data-theme="dark"] .actions{box-shadow:0 -4px 18px rgba(0,0,0,.45)}
+  .actions{position:sticky;bottom:0;background:var(--bg);padding:14px 12px;margin:18px -12px 0;justify-content:stretch;flex-direction:column;gap:8px;z-index:60;border-top:1px solid var(--brd2);box-shadow:0 -6px 18px rgba(0,0,0,.10)}
+  :root[data-theme="dark"] .actions{box-shadow:0 -6px 18px rgba(0,0,0,.45)}
   .actions-left,.actions-right{width:100%;display:flex;gap:8px}
   .actions-right{order:1}
   .actions-left{order:2}
-  .btn{flex:1;min-width:0;padding:14px 18px;font-size:11.5px;letter-spacing:.16em;min-height:50px}
+  .btn{flex:1;min-width:0;padding:13px 18px;font-size:11.5px;letter-spacing:.16em;min-height:48px}
+  /* Solid backgrounds so buttons never read as see-through over the bar. */
+  .btn-ghost{background:var(--card)}
+  .btn-primary{background:var(--ac)}
   /* Toast becomes bottom-center, full-width-ish on phone. */
   .toast{top:auto;bottom:20px;right:12px;left:12px;max-width:none;transform:translateY(140px);font-size:13px;padding:14px 18px;text-align:center}
   .toast.visible{transform:translateY(0)}
@@ -855,12 +859,10 @@ html{scroll-behavior:smooth}
       </div>
       <div class="row-1">
         <div class="field">
-          <label class="field-lbl">Local Area / Neighbourhood <span class="opt-note">Optional</span></label>
-          <!-- Cascades from country + city. Populates via NEIGHBOURHOODS_BY_CITY
-               in the JS section. "Other" reveals a free-text fallback. -->
+          <label class="field-lbl">Local Area <span class="req">*</span></label>
           <select class="sel" id="f_local_area_select" disabled><option value="">Pick city first...</option></select>
-          <input type="text" class="inp" id="f_local_area_text" placeholder="Type your neighbourhood" autocomplete="address-level3" style="display:none;margin-top:8px">
-          <div class="field-hint">Where you currently live within the city.</div>
+          <input type="text" class="inp" id="f_local_area_text" placeholder="Type your local area" autocomplete="address-level3" style="display:none;margin-top:8px">
+          <div class="field-hint">Which area of the city you currently live in.</div>
         </div>
       </div>
 
@@ -882,17 +884,49 @@ html{scroll-behavior:smooth}
       </div>
       <div class="row">
         <div class="field">
-          <label class="field-lbl">Apartment / Flat</label>
-          <input type="text" class="inp" id="f_home_apt" placeholder="Flat 2" autocomplete="address-line2">
+          <label class="field-lbl">Apartment / Flat No.</label>
+          <input type="text" class="inp" id="f_home_apt" placeholder="2" autocomplete="address-line2" inputmode="numeric">
         </div>
         <div class="field">
           <label class="field-lbl">Postcode <span class="req">*</span></label>
           <input type="text" class="inp" id="f_home_postcode" placeholder="W1S 1PH" autocomplete="postal-code" autocapitalize="characters" data-sec="personal">
         </div>
       </div>
+    </div>
+
+    <!-- ─── IDENTITY & DOCUMENTS ─── Two documents only:
+         ID Copy (identity verification) + Proof of Bank Account
+         (payouts/payments only). Proof of Address removed — the bank
+         statement already evidences the address. -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
+        <div class="sec-t">Identity &amp; Documents</div>
+        <span class="sec-note">Strictly confidential</span>
+      </div>
+      <div class="upload-list">
+        <div class="upload" id="upl_idcopy" onclick="document.getElementById('file_idcopy').click()">
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">ID Copy <span class="req">*</span></div><div class="upload-h">For identity verification — passport, driving licence or national ID. Clear scan or photo, both sides.</div></div>
+          <button class="upload-btn">Upload</button>
+        </div>
+        <input type="file" id="file_idcopy" accept="image/*,application/pdf" onchange="handleFileUpload(event,'idcopy')">
+        <div class="upload-prog" id="prog_idcopy"><div class="upload-prog-fill"></div></div>
+
+        <div class="upload" id="upl_bank" onclick="document.getElementById('file_bank').click()">
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 14h2M7 17h6"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">Proof of Bank Account <span class="req">*</span></div><div class="upload-h">For payouts and payments only — one bank statement confirming your account number.</div></div>
+          <button class="upload-btn">Upload</button>
+        </div>
+        <input type="file" id="file_bank" accept="image/*,application/pdf" onchange="handleFileUpload(event,'bank')">
+        <div class="upload-prog" id="prog_bank"><div class="upload-prog-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="sec">
       <div class="row">
         <div class="field">
-          <label class="field-lbl">Phone (WhatsApp) <span class="req">*</span></label>
+          <label class="field-lbl">Phone <span class="req">*</span></label>
           <div class="phone-combo">
             <select class="sel phone-prefix" id="f_phone_code" data-sec="personal" aria-label="Country code">
               <option value="">Add prefix</option>
@@ -900,6 +934,19 @@ html{scroll-behavior:smooth}
             <input type="tel" class="inp phone-number" id="f_phone" placeholder="7700 900 123" data-sec="personal" inputmode="tel" autocomplete="tel-national">
           </div>
           <div class="field-hint">Pick your country code. Number without prefix won&rsquo;t work.</div>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--tx2);cursor:pointer">
+            <input type="checkbox" id="f_phone_is_whatsapp" checked style="width:16px;height:16px;cursor:pointer"> This number is available on WhatsApp
+          </label>
+          <div id="whatsappWrap" style="display:none;margin-top:10px">
+            <label class="field-lbl">What&rsquo;s your WhatsApp number? <span class="req">*</span></label>
+            <div class="phone-combo">
+              <select class="sel phone-prefix" id="f_whatsapp_code" aria-label="WhatsApp country code">
+                <option value="">Add prefix</option>
+              </select>
+              <input type="tel" class="inp phone-number" id="f_whatsapp" placeholder="7700 900 123" inputmode="tel" autocomplete="off">
+            </div>
+            <div class="field-hint">This is where our team will contact you.</div>
+          </div>
         </div>
         <div class="field">
           <label class="field-lbl">Email <span class="req">*</span></label>
@@ -936,46 +983,6 @@ html{scroll-behavior:smooth}
             <option>None - I am learning</option>
           </select>
         </div>
-      </div>
-    </div>
-
-    <!-- ─── IDENTITY & DOCUMENTS ─── ID Copy + Proof of Address +
-         Bank Statement. ID Copy is a quick scan/photo of passport
-         or government ID (NOT the selfie+ID at Step 4 — that's a
-         separate liveness check the applicant takes while holding
-         the doc). Proof of Address moved here from Step 4 so all
-         identity bundle lives together at Step 1; Bank Statement
-         covers payout verification. -->
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
-        <div class="sec-t">Identity &amp; Documents</div>
-        <span class="sec-note">For identification purposes</span>
-      </div>
-      <div class="upload-list">
-        <div class="upload" id="upl_idcopy" onclick="document.getElementById('file_idcopy').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">ID Copy <span class="req">*</span></div><div class="upload-h">Passport, driving licence or national ID — clear scan or photo, both sides</div></div>
-          <button class="upload-btn">Upload</button>
-        </div>
-        <input type="file" id="file_idcopy" accept="image/*,application/pdf" onchange="handleFileUpload(event,'idcopy')">
-        <div class="upload-prog" id="prog_idcopy"><div class="upload-prog-fill"></div></div>
-
-        <div class="upload" id="upl_utility" onclick="document.getElementById('file_utility').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">Proof of Address <span class="req">*</span></div><div class="upload-h">One utility bill (gas, water, council tax) showing your home address</div></div>
-          <button class="upload-btn">Upload</button>
-        </div>
-        <input type="file" id="file_utility" accept="image/*,application/pdf" onchange="handleFileUpload(event,'utility')">
-        <div class="upload-prog" id="prog_utility"><div class="upload-prog-fill"></div></div>
-
-        <div class="upload" id="upl_bank" onclick="document.getElementById('file_bank').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 14h2M7 17h6"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">Proof of Bank Account <span class="req">*</span></div><div class="upload-h">One bank statement confirming your account number — used for payouts</div></div>
-          <button class="upload-btn">Upload</button>
-        </div>
-        <input type="file" id="file_bank" accept="image/*,application/pdf" onchange="handleFileUpload(event,'bank')">
-        <div class="upload-prog" id="prog_bank"><div class="upload-prog-fill"></div></div>
       </div>
     </div>
 
@@ -2160,6 +2167,10 @@ let curStep = 1;
 let formData = {
   fullname:'', dob_d:'', dob_m:'', dob_y:'',
   nationality:'', city:'', country:'', phone:'', phone_code:'', email:'', ig:'',
+  // WhatsApp: phone_is_whatsapp defaults true (the phone above is reachable
+  // on WhatsApp). If unticked, whatsapp_code + whatsapp capture a separate
+  // number our team uses to reach the applicant.
+  phone_is_whatsapp:true, whatsapp:'', whatsapp_code:'',
   // local_area_text is the chosen / typed neighbourhood from the cascade.
   local_area_text:'',
   // Home address — three structured boxes in Step 1 (mandatory).
@@ -2213,7 +2224,7 @@ let formData = {
   // fullbody_* = the 3 mandatory body-check angles (front/back/side).
   // bank = Bank Statement proof. location = room walkthrough video.
   files:{
-    idcopy:null, utility:null, bank:null,
+    idcopy:null, bank:null,
     selfie:null,
     portfolio:[],
     fullbody:null, fullbody_front:null, fullbody_back:null, fullbody_side:null,
@@ -2252,8 +2263,10 @@ document.addEventListener('DOMContentLoaded', async function(){
   initOtherReveal('f_hair',        'f_hair_other',        'hair');
   initOtherReveal('f_eye',         'f_eye_other',         'eye');
   initOtherReveal('f_heard',       'f_heard_other',       'heard');
+  populatePhoneCodes('f_whatsapp_code');
   initEmailValidation();
   initNoSocialCheckbox();
+  initWhatsappToggle();
   initAgencyReveal();
   initServiceModules();
   renderCurrencyRows();
@@ -2793,6 +2806,31 @@ function initNoSocialCheckbox(){
   });
 }
 
+// WhatsApp availability toggle. Checked (default) = the phone number
+// above is reachable on WhatsApp. Unchecked reveals a separate
+// WhatsApp number the team will use to make contact.
+function initWhatsappToggle(){
+  const chk  = document.getElementById('f_phone_is_whatsapp');
+  const wrap = document.getElementById('whatsappWrap');
+  const code = document.getElementById('f_whatsapp_code');
+  const num  = document.getElementById('f_whatsapp');
+  if(!chk || !wrap) return;
+  const sync = () => {
+    formData.phone_is_whatsapp = chk.checked;
+    wrap.style.display = chk.checked ? 'none' : 'block';
+    if(chk.checked){
+      if(code) code.value = '';
+      if(num)  num.value  = '';
+      formData.whatsapp = '';
+      formData.whatsapp_code = '';
+    }
+  };
+  chk.addEventListener('change', sync);
+  if(code) code.addEventListener('change', () => { formData.whatsapp_code = code.value; });
+  if(num)  num.addEventListener('input',  () => { formData.whatsapp = num.value; });
+  sync();
+}
+
 function initAgencyReveal(){
   const grp = document.querySelector('[data-pill="competing"]');
   const wrap = document.getElementById('agencyWebsiteWrap');
@@ -3325,6 +3363,7 @@ const STEP_REQ = {
     {key:'nationality',  el:'f_nationality',      sec:'personal'},
     {key:'country',      el:'f_country',          sec:'personal'},
     {key:'city',         el:'f_city_select',      sec:'personal'},
+    {key:'local_area_text', el:'f_local_area_select', sec:'personal'},
     {key:'home_street',  el:'f_home_street',      sec:'personal'},
     {key:'home_postcode',el:'f_home_postcode',    sec:'personal'},
     {key:'phone_code',   el:'f_phone_code',       sec:'personal'},
@@ -3378,6 +3417,30 @@ function validateStepBeforeAdvance(currentStep){
       if(el) el.classList.add('field-missing');
     }
   });
+
+  // Step 1 extra checks: phone digit count + WhatsApp number when the
+  // "available on WhatsApp" box is unticked. Only run once the required
+  // fields above are present, so we surface them one issue at a time.
+  if(currentStep === 1 && missing.length === 0){
+    const phoneDigits = (formData.phone||'').replace(/\D/g,'');
+    if(phoneDigits.length < 6 || phoneDigits.length > 13){
+      const pe = document.getElementById('f_phone');
+      if(pe) pe.classList.add('field-missing');
+      showToast('Please enter a valid phone number (6–13 digits)','error');
+      if(pe){ try{ pe.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      return false;
+    }
+    if(formData.phone_is_whatsapp === false){
+      const waDigits = (formData.whatsapp||'').replace(/\D/g,'');
+      if(waDigits.length < 6 || waDigits.length > 13){
+        const we = document.getElementById('f_whatsapp');
+        if(we) we.classList.add('field-missing');
+        showToast('Please enter your WhatsApp number (6–13 digits)','error');
+        if(we){ try{ we.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+        return false;
+      }
+    }
+  }
 
   if(missing.length === 0) return true;
 
@@ -3475,7 +3538,7 @@ function updateProgress(){
   if(formData.services.length>0) s.services++;
   const anyDay = Object.values(formData.availability).some(d => d.enabled);
   if(anyDay) s.availability++;
-  if(formData.files.selfie || formData.files.utility || formData.files.portfolio.length>0) s.documents++;
+  if(formData.files.selfie || formData.files.idcopy || formData.files.portfolio.length>0) s.documents++;
   s.consent = Object.values(formData.consents).filter(v => v).length;
 
   Object.keys(s).forEach(k => {
@@ -3731,7 +3794,7 @@ function handleVideoUpload(ev){
 function renderSummary(){
   const dob = formData.dob_d&&formData.dob_m&&formData.dob_y ? formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0') : '—';
   const daysOn = Object.keys(formData.availability).filter(d => formData.availability[d].enabled);
-  const filesCount = (formData.files.selfie?1:0)+(formData.files.utility?1:0)+formData.files.portfolio.length+(formData.video?1:0)+(formData.files.fullbody?1:0);
+  const filesCount = (formData.files.selfie?1:0)+(formData.files.idcopy?1:0)+formData.files.portfolio.length+(formData.video?1:0)+(formData.files.fullbody?1:0);
   
   let html = '';
   html += row('Name', formData.fullname||'—');
@@ -3979,7 +4042,9 @@ const FIELD_LABELS = {
   em_phone_code:'Emergency contact phone code',
   em_phone:    'Emergency contact phone',
   home_street: 'Home address — street & number',
-  home_postcode:'Home address — postcode'
+  home_postcode:'Home address — postcode',
+  local_area_text:'Local area',
+  whatsapp:    'WhatsApp number'
 };
 // Map field key -> DOM element id so we can scroll the user to the
 // missing field and visually highlight it.
@@ -4126,11 +4191,6 @@ async function submitApplication(){
     document.getElementById('upl_idcopy')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  if(!formData.files.utility){
-    showToast('Please upload Proof of Address in Step 1','error');
-    document.getElementById('upl_utility')?.scrollIntoView({behavior:'smooth',block:'center'});
-    return;
-  }
   if(!formData.files.bank){
     showToast('Please upload Proof of Bank Account in Step 1','error');
     document.getElementById('upl_bank')?.scrollIntoView({behavior:'smooth',block:'center'});
@@ -4178,7 +4238,6 @@ async function submitApplication(){
   // the kanban card sees ID + address + bank confirmation before
   // anything else.
   if(formData.files.idcopy)         filesToUpload.push({k:'idcopy',         type:'id_copy',        label:'ID copy',              f:formData.files.idcopy});
-  if(formData.files.utility)        filesToUpload.push({k:'utility',        type:'utility',        label:'Proof of Address',     f:formData.files.utility});
   if(formData.files.bank)           filesToUpload.push({k:'bank',           type:'bank_statement', label:'Bank statement',       f:formData.files.bank});
   if(formData.files.selfie)         filesToUpload.push({k:'selfie',         type:'selfie_kyc',     label:'Selfie + ID',          f:formData.files.selfie});
   // Three mandatory body angles — replaces the legacy single fullbody.
@@ -4313,7 +4372,7 @@ async function submitApplication(){
     file_fullbody_back:  uploadedPaths.fullbody_back  || null,
     file_fullbody_side:  uploadedPaths.fullbody_side  || null,
     file_id_copy: uploadedPaths.idcopy || null,
-    file_utility_bill: uploadedPaths.utility || null,
+    file_utility_bill: null,
     file_bank_statement: uploadedPaths.bank || null,
     file_portfolio: uploadedPaths.portfolio || [],
     file_video_intro: uploadedPaths.video || null,
@@ -4333,6 +4392,9 @@ async function submitApplication(){
     
     // All other application data bundled as rich detail
     special_requests: [
+      formData.phone_is_whatsapp
+        ? 'WhatsApp: same as phone'
+        : (((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() ? 'WhatsApp: ' + ((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim() : ''),
       formData.prev_exp ? 'Experience: '+formData.prev_exp : '',
       formData.services.length>0 ? 'Services: '+formData.services.join(', ') : '',
       formData.addons.length>0 ? 'Add-ons: '+formData.addons.join(', ') : '',
@@ -4566,12 +4628,16 @@ async function sendConfirmationEmail(toEmail, fullName, appRef){
   if(!sb || !toEmail) return;
   try {
     const phoneFull = ((formData.phone_code||'') + ' ' + (formData.phone||'')).trim();
+    const whatsappFull = formData.phone_is_whatsapp
+      ? phoneFull
+      : ((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'')).trim();
     const res = await sb.functions.invoke('send-apply-email', {
       body: {
         to: toEmail,
         name: fullName,
         application_ref: appRef,
         phone: phoneFull || null,
+        whatsapp: whatsappFull || null,
         city: formData.city || null,
         country: formData.country || null,
         nationality: formData.nationality || null,
