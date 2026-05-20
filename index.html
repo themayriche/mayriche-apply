@@ -582,6 +582,8 @@ html{scroll-behavior:smooth}
    content (rate table + 9 tantric extras OR escort sections totaling
    ~3500px) is never clipped regardless of how tall it grows. Browsers
    without JS still see the open content via the .open rules below. */
+.zones-all-btn{display:inline-block;margin-bottom:10px;padding:8px 16px;background:var(--card);border:1px solid var(--ac);border-radius:var(--rs);color:var(--ac);font-family:var(--fb);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;min-height:38px}
+.zones-all-btn:hover,.zones-all-btn.on{background:var(--ac);color:var(--card)}
 .reveal{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.22,.61,.36,1),opacity .3s;opacity:0}
 .reveal.open{max-height:none;opacity:1;overflow:visible}
 
@@ -1115,12 +1117,13 @@ html{scroll-behavior:smooth}
       </div>
 
       <div class="row-1" style="margin-top:16px">
-        <div class="field"><label class="field-lbl">Professional photoshoot?</label>
-          <div class="pill-group" data-pill="photoshoot">
-            <div class="pill" data-val="Yes I have">Yes I have</div>
-            <div class="pill" data-val="No but willing">No but willing to invest</div>
-            <div class="pill" data-val="Not interested">Not interested</div>
-          </div>
+        <div class="field"><label class="field-lbl">Professional photoshoot? <span class="req">*</span></label>
+          <select class="sel" id="f_photoshoot" data-sec="experience">
+            <option value="">Select...</option>
+            <option value="Yes I have">Yes, I have</option>
+            <option value="No but willing">No, but willing to invest</option>
+            <option value="Not interested">Not interested</option>
+          </select>
         </div>
       </div>
 
@@ -1195,9 +1198,9 @@ html{scroll-behavior:smooth}
            writing in_house_address as a single string until we update it. -->
       <input type="hidden" id="f_inhouse_address">
 
-      <!-- ─── MOBILE ─── Provide Mobile + the zones she covers,
-           pulled from the working city's neighbourhood list. -->
-      <div class="row" style="margin-top:14px">
+      <!-- ─── MOBILE ─── Provide Mobile → coverage zones (right after) →
+           Mobile 30+ → Airport. -->
+      <div class="row-1" style="margin-top:14px">
         <div class="field">
           <label class="field-lbl">Provide Mobile? <span class="req">*</span></label>
           <select class="sel" id="f_mobile" data-sec="work">
@@ -1206,30 +1209,18 @@ html{scroll-behavior:smooth}
             <option value="No">No</option>
           </select>
         </div>
-        <div class="field">
-          <label class="field-lbl">Airport Bookings?</label>
-          <select class="sel" id="f_airport">
-            <option value="">Select...</option>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-            <option value="Yes with special request">Yes — with special request</option>
-          </select>
-          <input type="text" class="inp" id="f_airport_note" placeholder="Your airport booking conditions…" style="display:none;margin-top:8px">
-        </div>
       </div>
       <div id="mobileZonesWrap" style="display:none;margin-top:14px">
         <div class="field">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <label class="field-lbl" style="margin:0">Mobile coverage zones <span class="opt-note">Where you travel to</span></label>
-            <button type="button" id="zonesSelectAll" style="background:none;border:none;color:var(--ac);font-family:var(--fb);font-size:11px;font-weight:600;letter-spacing:.06em;cursor:pointer;text-transform:uppercase">Select all</button>
-          </div>
+          <label class="field-lbl" style="margin-bottom:8px">Mobile coverage zones <span class="opt-note">Where you travel to</span></label>
+          <button type="button" id="zonesSelectAll" class="zones-all-btn">Select all zones</button>
           <div class="chk-grid" id="mobileZonesGrid"></div>
           <div class="field-hint" id="mobileZonesHint">Pick a working city above to see its zones.</div>
         </div>
       </div>
       <div class="row" style="margin-top:14px">
         <div class="field">
-          <label class="field-lbl">Mobile 30+ min away?</label>
+          <label class="field-lbl">Mobile 30+ min away? <span class="req">*</span></label>
           <select class="sel" id="f_mobile_30">
             <option value="">Select...</option>
             <option value="No">No</option>
@@ -1237,6 +1228,16 @@ html{scroll-behavior:smooth}
             <option value="Depends with special request">Depends — with special request</option>
           </select>
           <input type="text" class="inp" id="f_mobile_30_note" placeholder="Your conditions for travelling 30+ min…" style="display:none;margin-top:8px">
+        </div>
+        <div class="field">
+          <label class="field-lbl">Airport Bookings? <span class="req">*</span></label>
+          <select class="sel" id="f_airport">
+            <option value="">Select...</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+            <option value="Yes with special request">Yes — with special request</option>
+          </select>
+          <input type="text" class="inp" id="f_airport_note" placeholder="Your airport booking conditions…" style="display:none;margin-top:8px">
         </div>
       </div>
     </div>
@@ -1329,10 +1330,11 @@ html{scroll-behavior:smooth}
         </div>
         <div class="svc-mod-toggle">
           <span class="svc-mod-q">Do you offer Tantric Massage Services?</span>
-          <div class="pill-group" data-pill="offers_tantric">
-            <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="No">No</div>
-          </div>
+          <select class="sel" id="f_offers_tantric" style="max-width:170px">
+            <option value="">Select...</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
         </div>
         <div class="reveal" id="tantricBody">
           <div class="svc-mod-block">
@@ -1394,10 +1396,11 @@ html{scroll-behavior:smooth}
         </div>
         <div class="svc-mod-toggle">
           <span class="svc-mod-q">Do you offer Companions Services?</span>
-          <div class="pill-group" data-pill="offers_escort">
-            <div class="pill" data-val="Yes">Yes</div>
-            <div class="pill" data-val="No">No</div>
-          </div>
+          <select class="sel" id="f_offers_escort" style="max-width:170px">
+            <option value="">Select...</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
         </div>
         <div class="reveal" id="escortBody">
           <div class="svc-mod-block">
@@ -1483,35 +1486,19 @@ html{scroll-behavior:smooth}
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         <div class="sec-t">Video Introduction</div>
-        <span class="sec-note">Highly recommended</span>
+        <span class="sec-note">Mandatory</span>
       </div>
+      <div class="field-hint" style="margin-bottom:12px">A 60-second clip, like a model casting. Prop your phone up and film your <strong style="color:var(--tx)">whole body — face, then turn left, right, and a slow full turn (pirouette)</strong>. Wear <strong style="color:var(--ac)">black lingerie with a robe and heels</strong>. This is how we see how you look, your smile, your presence. <strong style="color:var(--rd);font-weight:600">You must be the same person as in your passport — if not, the application will not be accepted.</strong></div>
       <div class="video-box" id="videoBox">
         <video id="videoPreview" controls style="display:none"></video>
         <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="video-benefit">Reviewed 3× faster</div>
-        <div class="video-box-ttl" id="videoTtl">30–60 second introduction</div>
-        <div class="video-box-sub" id="videoSub">A short video lets us see your personality.<br>Most ladies who submit a video are approved in under 24 hours.</div>
+        <div class="video-box-ttl" id="videoTtl">60-second video introduction</div>
+        <div class="video-box-sub" id="videoSub">Full body · black lingerie, robe &amp; heels · face + left + right + full turn.</div>
         <button class="btn btn-primary" onclick="document.getElementById('videoUpload').click()" style="min-width:auto">Upload Video</button>
         <div class="upload-prog" id="prog_video"><div class="upload-prog-fill"></div></div>
       </div>
       <input type="file" id="videoUpload" accept="video/*" onchange="handleVideoUpload(event)">
     </div>
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/></svg></div>
-        <div class="sec-t">Identity Verification (KYC)</div>
-      </div>
-      <div class="selfie-box">
-        <div class="selfie-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-        <div class="selfie-t">Selfie Holding Your ID</div>
-        <div class="selfie-s">Photo of yourself holding passport or driving licence next to your face. Encrypted and strictly confidential.</div>
-        <button class="btn" onclick="document.getElementById('file_selfie').click()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>Upload Selfie + ID</button>
-      </div>
-      <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
-      <div id="selfieStatus" style="text-align:center;margin-top:8px"></div>
-      <div class="upload-prog" id="prog_selfie"><div class="upload-prog-fill"></div></div>
-    </div>
-
     <!-- ─── LOCATION CHECK ─── New section per CEO request. Short video
          walking through the room where clients are received and the
          bathroom. Standards: clean, immaculate, white towels, lit. -->
@@ -1519,12 +1506,12 @@ html{scroll-behavior:smooth}
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div>
         <div class="sec-t">Location Check</div>
-        <span class="sec-note">Required if you offer in-house</span>
+        <span class="sec-note">Mandatory</span>
       </div>
       <div class="video-box" id="locationBox">
         <div class="video-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
         <div class="video-box-ttl" id="locationTtl">Room &amp; Bathroom Walkthrough</div>
-        <div class="video-box-sub" id="locationSub">A short 30–60 s clip of the room where you welcome clients and the bathroom. Standards: spotless, white towels, soft lighting, calm atmosphere.</div>
+        <div class="video-box-sub" id="locationSub">A short clip with your camera of the room where you welcome clients and the bathroom. Standard: super clean, white soft towels, soft warm light and a calm, spa-like atmosphere.</div>
         <button class="btn btn-ghost" type="button" onclick="document.getElementById('file_location').click()" style="margin-top:14px">Upload Location Video</button>
         <video id="locationPreview" controls style="display:none;width:100%;max-width:480px;margin:14px auto 0;border-radius:8px"></video>
       </div>
@@ -1548,28 +1535,6 @@ html{scroll-behavior:smooth}
       <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
     </div>
 
-    <!-- ─── FULL-BODY PHOTOS — 3 mandatory angles ─── Front / back / side
-         in black lingerie, no filters, no face-editing. Modelled after a
-         model-fit body check so the CEO can verify the applicant matches
-         the work-name profile before approving. -->
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v13"/><path d="M5 12h14"/></svg></div>
-        <div class="sec-t">Full-Body Photos</div>
-        <span class="sec-note">3 angles · mandatory</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">Three full-length shots — <strong style="color:var(--tx)">front, back, side</strong> — in <strong style="color:var(--ac)">black lingerie</strong>. <strong style="color:var(--rd);font-weight:600">No filter, no face-editing, natural daylight.</strong> Model-style body check — gives us a clear view to confirm the work-name profile before approval.</div>
-      <div class="photo-grid photo-grid-3" id="bodyPhotoGrid"></div>
-      <input type="file" id="file_fullbody_front" accept="image/*" onchange="handleBodyPhoto(event,'front')" style="display:none">
-      <input type="file" id="file_fullbody_back"  accept="image/*" onchange="handleBodyPhoto(event,'back')"  style="display:none">
-      <input type="file" id="file_fullbody_side"  accept="image/*" onchange="handleBodyPhoto(event,'side')"  style="display:none">
-      <!-- Hidden legacy single-photo input kept so any prior draft restore
-           that points at f_fullbody doesn't error. Submit pulls the front
-           shot as the primary profile photo. -->
-      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')" style="display:none">
-      <div class="upload-prog" id="prog_fullbody"><div class="upload-prog-fill"></div></div>
-    </div>
-
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/><path d="M9 12l2 2 4-4"/></svg></div>
@@ -1577,11 +1542,11 @@ html{scroll-behavior:smooth}
         <span class="sec-note">Required for your safety</span>
       </div>
       <div class="row">
-        <div class="field"><label class="field-lbl">Contact Name <span class="req">*</span></label>
-          <input type="text" class="inp" id="f_em_name" placeholder="Full name" autocomplete="off" autocapitalize="words">
-        </div>
         <div class="field"><label class="field-lbl">Relationship <span class="req">*</span></label>
           <select class="sel" id="f_em_rel"><option value="">Select...</option><option>Partner</option><option>Parent</option><option>Sibling</option><option>Close friend</option><option>Other family</option><option>Other</option></select>
+        </div>
+        <div class="field"><label class="field-lbl">Contact Name <span class="req">*</span></label>
+          <input type="text" class="inp" id="f_em_name" placeholder="Full name" autocomplete="off" autocapitalize="words">
         </div>
       </div>
       <div class="row-1" style="margin-top:14px">
@@ -1628,12 +1593,11 @@ html{scroll-behavior:smooth}
         <span class="sec-note">Legally binding</span>
       </div>
       <div class="field">
-        <label class="field-lbl">Type your full legal name <span class="req">*</span></label>
-        <input type="text" class="inp" id="f_signature" placeholder="As shown on your passport / government ID" oninput="renderSignature(this.value)" autocomplete="off" autocapitalize="words">
-        <div class="field-hint">Your typed name is rendered as a cursive signature below. By signing you certify the entire form is true and accurate.</div>
+        <label class="field-lbl">Type your full name <span class="req">*</span></label>
+        <input type="text" class="inp" id="f_signature" placeholder="Type your full name" oninput="renderSignature(this.value)" autocomplete="off" autocapitalize="words">
       </div>
       <div class="sig-preview" id="sigPreview">
-        <div class="sig-preview-empty">Your signature will appear here</div>
+        <div class="sig-preview-empty">&nbsp;</div>
         <div class="sig-preview-name" id="sigPreviewName" style="display:none"></div>
         <div class="sig-preview-line"></div>
         <div class="sig-preview-meta">
@@ -1746,7 +1710,8 @@ let SERVICES = [];
 let ADDONS = [];
 
 // Static UI constants (not business-specific)
-const SEASONAL_DESTINATIONS = ['Ibiza','Monaco','Saint-Tropez','Cannes','Mykonos','Saint-Moritz','Courchevel'];
+const SEASONAL_DESTINATIONS = ['Ibiza','Monaco','Saint-Tropez','Cannes','Mykonos','Saint-Moritz','Courchevel','Other',"I don't want to travel anywhere"];
+const NO_TRAVEL = "I don't want to travel anywhere";
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DURATIONS = ['30 min','60 min','90 min','120 min','3 hours','4 hours','6 hours','Overnight','Weekend','Trip'];
 
@@ -2359,10 +2324,23 @@ document.addEventListener('DOMContentLoaded', async function(){
     el.dataset.loc = loc;
     el.innerHTML = '<div class="chk-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>'+loc+'</span>';
     el.addEventListener('click', () => {
-      el.classList.toggle('checked');
       const idx = formData.abroad.indexOf(loc);
-      if(idx >= 0) formData.abroad.splice(idx,1);
-      else formData.abroad.push(loc);
+      const willCheck = idx < 0;
+      if(willCheck && loc === NO_TRAVEL){
+        // "I don't want to travel" is exclusive — clear everything else.
+        formData.abroad = [NO_TRAVEL];
+        abr.querySelectorAll('.chk').forEach(c => c.classList.toggle('checked', c.dataset.loc === NO_TRAVEL));
+      } else {
+        // Picking any real destination clears the "no travel" choice.
+        if(willCheck){
+          const ni = formData.abroad.indexOf(NO_TRAVEL);
+          if(ni >= 0){ formData.abroad.splice(ni,1); abr.querySelector('[data-loc="'+NO_TRAVEL+'"]')?.classList.remove('checked'); }
+          formData.abroad.push(loc);
+        } else {
+          formData.abroad.splice(idx,1);
+        }
+        el.classList.toggle('checked', willCheck);
+      }
       updateProgress();
     });
     abr.appendChild(el);
@@ -3182,8 +3160,8 @@ function syncPhotoshootSection(){
   if(sec) sec.style.display = (formData.photoshoot === 'Yes I have') ? 'block' : 'none';
 }
 function initPhotoshootReveal(){
-  const grp = document.querySelector('[data-pill="photoshoot"]');
-  if(grp) grp.addEventListener('click', e => { if(e.target.closest('.pill')) setTimeout(syncPhotoshootSection, 0); });
+  const sel = document.getElementById('f_photoshoot');
+  if(sel) sel.addEventListener('change', syncPhotoshootSection);
   syncPhotoshootSection();
 }
 
@@ -3326,19 +3304,14 @@ function closeReveal(body){
 
 function initServiceModules(){
   ['offers_tantric','offers_escort'].forEach(key => {
-    const grp = document.querySelector('[data-pill="' + key + '"]');
+    const sel = document.getElementById('f_' + key);
     const body = document.getElementById(key === 'offers_tantric' ? 'tantricBody' : 'escortBody');
-    if(!grp || !body) return;
-    grp.addEventListener('click', e => {
-      const target = e.target.closest('.pill');
-      if(!target) return;
-      setTimeout(() => {
-        const val = grp.querySelector('.pill.active')?.dataset.val || '';
-        formData[key] = val;
-        if(val === 'Yes') openReveal(body);
-        else closeReveal(body);
-        scheduleAutoSave && scheduleAutoSave();
-      }, 0);
+    if(!sel || !body) return;
+    sel.addEventListener('change', () => {
+      formData[key] = sel.value;
+      if(sel.value === 'Yes') openReveal(body);
+      else closeReveal(body);
+      scheduleAutoSave && scheduleAutoSave();
     });
   });
 }
@@ -3835,10 +3808,14 @@ const STEP_REQ = {
     {key:'breast',       el:'f_breast',            sec:'physical'},
     {key:'breast_type',  el:'f_breast_type',       sec:'physical'},
     {key:'years',        el:'f_years',             sec:'experience'},
+    {key:'photoshoot',   el:'f_photoshoot',        sec:'experience'},
     {key:'work_country', el:'f_work_country',      sec:'work'},
     {key:'work_city',    el:'f_work_city_select',  sec:'work'},
     {key:'local_area',   el:'f_local_area',        sec:'work'},
     {key:'mobile',       el:'f_mobile',            sec:'work'},
+    {key:'mobile_30',    el:'f_mobile_30',         sec:'work'},
+    {key:'airport',      el:'f_airport',           sec:'work'},
+    {key:'late_hours',   el:'f_late_hours',        sec:'availability'},
     {key:'days_week',    el:'f_days_week',         sec:'availability'}
   ],
   3: [], // Step 3 services validation runs in submitApplication
@@ -3909,6 +3886,17 @@ function validateStepBeforeAdvance(currentStep){
         if(we){ try{ we.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
         return false;
       }
+    }
+  }
+
+  // Step 2: a travel choice is mandatory — at least one seasonal
+  // destination, "Other", or "I don't want to travel anywhere".
+  if(currentStep === 2 && missing.length === 0){
+    if(!formData.abroad || formData.abroad.length === 0){
+      const ag = document.getElementById('abroadGrid');
+      if(ag){ ag.classList.add('field-missing'); try{ ag.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Please choose a travel option (or “I don’t want to travel anywhere”)','error');
+      return false;
     }
   }
 
@@ -4008,7 +3996,7 @@ function updateProgress(){
   if(formData.services.length>0) s.services++;
   const anyDay = Object.values(formData.availability).some(d => d.enabled);
   if(anyDay) s.availability++;
-  if(formData.files.selfie || formData.files.idcopy || formData.files.portfolio.length>0) s.documents++;
+  if(formData.files.idcopy || formData.video || formData.files.location || formData.files.portfolio.length>0) s.documents++;
   s.consent = Object.values(formData.consents).filter(v => v).length;
 
   Object.keys(s).forEach(k => {
@@ -4364,24 +4352,24 @@ function loadDraft(){
             }
           }
         });
-      } else if(['competing','tantric_competing','photoshoot','offers_tantric','offers_escort'].includes(k)){
+      } else if(['offers_tantric','offers_escort'].includes(k)){
+        formData[k] = d[k];
+        const osel = document.getElementById('f_'+k);
+        if(osel) osel.value = d[k] || '';
+        if(d[k] === 'Yes'){
+          const body = document.getElementById(k === 'offers_tantric' ? 'tantricBody' : 'escortBody');
+          if(body){ body.classList.add('open'); body.style.maxHeight = 'none'; }
+        }
+      } else if(k === 'photoshoot'){
+        formData.photoshoot = d[k];
+        const psel = document.getElementById('f_photoshoot');
+        if(psel) psel.value = d[k] || '';
+      } else if(['competing','tantric_competing'].includes(k)){
         formData[k] = d[k];
         if(d[k]){
           const p = document.querySelector('[data-pill="'+k+'"] [data-val="'+d[k]+'"]');
           if(p) p.classList.add('active');
         }
-        // Open service module body if user previously said Yes.
-        // Use the JS helper so max-height is dropped after the transition
-        // and the full content stays visible.
-        if(k === 'offers_tantric' && d[k] === 'Yes'){
-          const tb = document.getElementById('tantricBody');
-          if(tb){ tb.classList.add('open'); tb.style.maxHeight = 'none'; }
-        }
-        if(k === 'offers_escort'  && d[k] === 'Yes'){
-          const eb = document.getElementById('escortBody');
-          if(eb){ eb.classList.add('open'); eb.style.maxHeight = 'none'; }
-        }
-        // Reveal the Tantric agency-website input if competing = Yes
         if(k === 'tantric_competing' && d[k] === 'Yes'){
           const wrap = document.getElementById('tantricAgencyWebsiteWrap');
           if(wrap) wrap.style.display = 'grid';
@@ -4553,6 +4541,10 @@ const FIELD_LABELS = {
   local_area:  'Working area',
   inhouse:     'In-house availability',
   mobile:      'Mobile availability',
+  mobile_30:   'Mobile 30+ min away',
+  airport:     'Airport bookings',
+  late_hours:  'Late nights & weekends',
+  photoshoot:  'Professional photoshoot',
   rate:        'Starting rate',
   days_week:   'Available days per week',
   em_name:     'Emergency contact name',
@@ -4591,6 +4583,10 @@ const FIELD_ELEMENT_IDS = {
   local_area:  'f_local_area',
   inhouse:     'f_inhouse',
   mobile:      'f_mobile',
+  mobile_30:   'f_mobile_30',
+  airport:     'f_airport',
+  late_hours:  'f_late_hours',
+  photoshoot:  'f_photoshoot',
   rate:        'f_rate',
   days_week:   'f_days_week',
   em_name:     'f_em_name',
@@ -4644,9 +4640,9 @@ async function submitApplication(){
     'fullname','nationality','country','city',
     'home_street','home_postcode',
     'phone_code','phone','email',
-    'rtw','english',
+    'english',
     'profile_age','height','weight','body','dress','eye','hair','breast','breast_type','years',
-    'workname','work_country','work_city','local_area','mobile','rate','days_week',
+    'workname','photoshoot','work_country','work_city','local_area','mobile','mobile_30','airport','late_hours','rate','days_week',
     'em_name','em_rel','em_phone_code','em_phone'
   ];
   for(const k of required){
@@ -4676,6 +4672,13 @@ async function submitApplication(){
   if(formData.competing === 'Yes' && !formData.agency_website){
     showToast('Please add the agency website / profile link', 'error');
     flashMissingField('agency_website');
+    return;
+  }
+  // Emergency contact phone must be a valid number we can verify.
+  const emDigits = (formData.em_phone||'').replace(/\D/g,'');
+  if(emDigits.length < 6 || emDigits.length > 13){
+    showToast('Please enter a valid emergency contact number (6–13 digits)','error');
+    flashMissingField('em_phone');
     return;
   }
   if(!formData.languages || formData.languages.length===0){ showToast('Add at least one language with its level','error'); return; }
@@ -4737,15 +4740,14 @@ async function submitApplication(){
     document.getElementById('upl_bank')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  if(!formData.files.selfie){
-    showToast('Please upload the Selfie + ID (Identity Verification)','error');
-    document.getElementById('upl_idcopy')?.parentElement?.scrollIntoView({behavior:'smooth',block:'center'});
+  if(!formData.video){
+    showToast('Please upload your video introduction — it is mandatory','error');
+    document.getElementById('videoBox')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
-  const bodyMissing = ['front','back','side'].filter(a => !formData.files['fullbody_'+a]);
-  if(bodyMissing.length > 0){
-    showToast('Full-body photos missing: '+bodyMissing.join(', '),'error');
-    document.getElementById('bodyPhotoGrid')?.scrollIntoView({behavior:'smooth',block:'center'});
+  if(!formData.files.location){
+    showToast('Please upload your location check video — it is mandatory','error');
+    document.getElementById('locationBox')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
   if(formData.photoshoot === 'Yes I have' && (formData.files.portfolio||[]).length < 5){
@@ -4919,7 +4921,7 @@ async function submitApplication(){
     file_video_intro: uploadedPaths.video || null,
     file_location_check: uploadedPaths.location || null,
     // Main client-facing photo = front body shot.
-    profile_photo_url: uploadedPaths.fullbody_front || uploadedPaths.fullbody || null,
+    profile_photo_url: (uploadedPaths.portfolio && uploadedPaths.portfolio[0]) || uploadedPaths.fullbody_front || uploadedPaths.fullbody || null,
     
     // Consents (3 required: age + GDPR + terms; NDA & photo discussed at interview)
     gdpr_signed: formData.consents.gdpr ? 'Yes' : 'Not yet',
