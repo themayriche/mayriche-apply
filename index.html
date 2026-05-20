@@ -233,6 +233,9 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .avail-day.on{background:rgba(93,140,114,.12);border-color:var(--gn);}
 .avail-day.on .avail-day-lbl{color:var(--gn);}
 .avail-day.on .avail-day-hrs{color:var(--gn);}
+/* When ON, the editable time inputs already show the hours, so hide the
+   static text to free room (stops the toggle overflowing on phones). */
+.avail-day.on .avail-day-hrs{display:none}
 .avail-day-lbl{font-size:10px;color:var(--mt);letter-spacing:.2em;text-transform:uppercase;font-weight:600;}
 .avail-day-hrs{font-family:var(--fd);font-size:13px;color:var(--tx);font-weight:500;}
 /* OFF state — red label so the day visibly signals "not working" at a glance.
@@ -587,7 +590,7 @@ html{scroll-behavior:smooth}
   .avail-day{min-height:auto;padding:14px;flex-direction:row;align-items:center;justify-content:space-between;text-align:left;gap:14px}
   .avail-day-lbl{flex-shrink:0;width:48px}
   .avail-day-hrs{flex:1;text-align:left}
-  .avail-toggle{margin-top:0;flex-shrink:0}
+  .avail-toggle{margin-top:0;flex-shrink:0;font-size:9px;letter-spacing:.04em;white-space:nowrap}
   .time-inputs{flex-shrink:0}
   /* Footer action stays sticky but compact */
   .actions{padding:12px 10px}
@@ -2137,14 +2140,14 @@ const ESCORT_SERVICES = [
     name: 'Kissing (Light / Deep)',
     desc: 'A natural level of closeness, from soft to more passionate connection.',
     price: 100 },
-  { key: 'oral_protected',
-    name: 'Oral Services Protected',
-    desc: 'Offered with protection.',
-    price: 150 },
-  { key: 'oral_unprotected',
-    name: 'Oral Services Unprotected',
-    desc: 'May be available upon agreement.',
+  { key: 'oral_services',
+    name: 'Oral Services',
+    desc: 'Available upon agreement.',
     price: 400 },
+  { key: 'anal_services',
+    name: 'Anal Services',
+    desc: 'Available upon agreement.',
+    price: 600 },
 
   { key: 'finish_external_face',
     name: 'External Finish on Face',
@@ -2180,7 +2183,7 @@ const COMPANIONSHIP_TRAVEL = [
 
 // ─── SPECIAL REQUESTS & FETISHES ─── multi-select, price on request.
 const SPECIAL_REQUESTS = [
-  'Anal Services — Protected', 'Anal Services — Unprotected',
+  'Unprotected Services (+£300)',
   'BDSM', 'Domination (giving)', 'Submission (receiving)', 'Role-play & costumes',
   'Water sports', 'Foot fetish', 'Spanking', 'Bondage', 'Toys', 'Fantasy scenarios'
 ];
@@ -4056,7 +4059,7 @@ function toggleDay(day){
     cell.classList.add('on');
     cell.querySelector('.avail-day-hrs').textContent = d.from+' – '+d.to;
     cell.querySelector('.time-inputs').style.display = 'flex';
-    cell.querySelector('.avail-toggle').textContent = 'ON · Tap to remove';
+    cell.querySelector('.avail-toggle').textContent = 'Tap to remove';
   } else {
     cell.classList.remove('on');
     cell.classList.add('off');
@@ -4797,7 +4800,7 @@ function loadDraft(){
             cell.classList.remove('off'); cell.classList.add('on');
             cell.querySelector('.avail-day-hrs').textContent = (dd.from||'09:00')+' – '+(dd.to||'02:00');
             cell.querySelector('.time-inputs').style.display = 'flex';
-            cell.querySelector('.avail-toggle').textContent = 'ON · Tap to remove';
+            cell.querySelector('.avail-toggle').textContent = 'Tap to remove';
           } else {
             cell.classList.remove('on'); cell.classList.add('off');
             cell.querySelector('.avail-day-hrs').textContent = 'OFF';
