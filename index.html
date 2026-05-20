@@ -1512,16 +1512,34 @@ html{scroll-behavior:smooth}
 
           <div class="svc-mod-block">
             <div class="field-lbl" style="margin-bottom:8px">Services You Offer <span class="opt-note">Tap each one</span></div>
-            <div class="field-hint" style="margin-bottom:10px">All optional. Some have Yes / On request / No so you can be precise.</div>
+            <div class="field-hint" style="margin-bottom:10px">All optional — tap the ones you offer. Prices are added on top of your base rate.</div>
             <div class="escort-svc-list" id="escortServicesList"></div>
+          </div>
+
+          <!-- ─── Companionship & Travel ─── Yes / No / On request + note. -->
+          <div class="svc-mod-block">
+            <div class="field-lbl" style="margin-bottom:8px">Companionship &amp; Travel</div>
+            <div class="field-hint" style="margin-bottom:10px">Do you offer time out with the client? Choose for each — add a note if it&rsquo;s on request.</div>
+            <div id="companionshipTravelList"></div>
+          </div>
+
+          <!-- ─── Special Requests & Fetishes ─── multi-select + Other. -->
+          <div class="svc-mod-block">
+            <div class="field-lbl" style="margin-bottom:8px">Special Requests &amp; Fetishes <span class="opt-note">Price on request</span></div>
+            <div class="field-hint" style="margin-bottom:10px">Tap anything you&rsquo;re open to. All discussed and priced individually.</div>
+            <div class="offer-grid" id="specialRequestsGrid"></div>
+            <input type="text" class="inp" id="f_special_requests_other" placeholder="Anything else you offer — write it here" style="margin-top:10px">
           </div>
 
           <div class="svc-mod-block">
             <div class="field">
               <label class="field-lbl">Boundaries <span class="opt-note">Optional but recommended</span></label>
-              <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have. Be honest — this helps us match you to the right clients. Examples: 'No facial finishing', 'No kissing on first booking', 'Prefer mature clients only'..." rows="4"></textarea>
+              <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have, in your own words. Be honest — this helps us match you to the right clients. Examples: 'No facial finishing', 'No kissing on first booking', 'No anal'..." rows="4"></textarea>
               <div class="field-hint">Anything we should know upfront before sending you a booking.</div>
             </div>
+            <label style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:12.5px;color:var(--tx2);cursor:pointer;line-height:1.5">
+              <input type="checkbox" id="f_right_to_refuse" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:1px"> I have the right to select my clients and to refuse any booking &mdash; for example if the client is drunk, disrespectful, unhygienic, or feels unsafe.
+            </label>
           </div>
         </div>
       </div>
@@ -2093,14 +2111,10 @@ const ESCORT_SERVICES = [
     name: 'External Finish on Face',
     desc: 'External finish on the face.',
     price: 200 },
-  { key: 'finish_external_body',
-    name: 'External Finish on Body',
-    desc: 'External finish on the body.',
-    price: 100 },
   { key: 'finish_internal',
     name: 'Internal Finish (Mouth)',
     desc: 'Internal finish option.',
-    price_label: 'price on request' },
+    price: 500 },
 
   { key: 'sixty_nine',
     name: '69 Position',
@@ -2109,47 +2123,26 @@ const ESCORT_SERVICES = [
   { key: 'face_sitting',
     name: 'Face Sitting',
     desc: 'Available upon preference.',
-    price_label: 'price on request' },
+    price: 300 },
 
-  { key: 'light_dominance',
-    name: 'Light Dominance',
-    desc: 'Light, controlled dominance (giving).',
-    price: 100 },
   { key: 'rimming_giving',
     name: 'Rimming (Giving only)',
     desc: 'Offered as a giving service only.',
-    price: 400 },
+    price: 400 }
+];
 
-  { key: 'extreme_activities',
-    name: 'Extreme Activities',
-    desc: 'Discussed and agreed individually.',
-    price_label: 'price on request' },
-  { key: 'water_sports',
-    name: 'Water Sports',
-    desc: 'Available upon agreement.',
-    price: 1000 },
+// ─── COMPANIONSHIP & TRAVEL ─── Yes / No / On request (+ her note).
+const COMPANIONSHIP_TRAVEL = [
+  { key: 'dinner_date', name: 'Dinner Date',  desc: 'Dinner / drinks out with the client.' },
+  { key: 'overnight',   name: 'Overnight',    desc: 'Overnight stay (8h+).' },
+  { key: 'weekend',     name: 'Weekend Away', desc: 'A full weekend with the client.' },
+  { key: 'trip_abroad', name: 'Trip Abroad',  desc: 'A proper trip / holiday in another country.' }
+];
 
-  // ── Bookings & durations (replacing the old Duration Preferences) ──
-  { key: 'four_hours',
-    name: '4 Hours',
-    desc: 'Half-day booking.',
-    price_label: 'price on request' },
-  { key: 'overnight',
-    name: 'Overnight Booking',
-    desc: '8h minimum, includes overnight stay.',
-    price_label: 'price on request' },
-  { key: 'six_hours',
-    name: '6 Hours',
-    desc: 'Long evening booking.',
-    price_label: 'price on request' },
-  { key: 'weekend_trips',
-    name: 'Weekend Trip',
-    desc: 'Weekend travel away with the client.',
-    price_label: 'price on request' },
-  { key: 'party_bookings',
-    name: 'Party Bookings',
-    desc: 'Group / event bookings.',
-    price_label: 'price on request' }
+// ─── SPECIAL REQUESTS & FETISHES ─── multi-select, price on request.
+const SPECIAL_REQUESTS = [
+  'BDSM', 'Domination (giving)', 'Submission (receiving)', 'Role-play & costumes',
+  'Water sports', 'Foot fetish', 'Spanking', 'Bondage', 'Toys', 'Fantasy scenarios'
 ];
 const WORK_NAME_POOL = [
   'Aria','Bella','Celine','Diana','Elena','Fiona','Grace','Harper',
@@ -2309,6 +2302,9 @@ let formData = {
   tantric_rates:[], escort_rates:[],
   // "I don't do 30-minute sessions" per module (strikes the 30-min row).
   tantric_no_30min:false, escort_no_30min:false,
+  // Companions extras: companionship/travel (key→{value,note}), fetish
+  // multi-select + free text, and the client-screening right.
+  companionship_travel:{}, special_requests:[], special_requests_other:'', right_to_refuse:false,
   // Special offers selected for tantric (array of keys from TANTRIC_OFFERS)
   tantric_offers:[],
   // Escort services state — keyed by service key
@@ -2390,6 +2386,12 @@ document.addEventListener('DOMContentLoaded', async function(){
   renderCurrencyRows();
   renderTantricOffers();
   renderEscortServices();
+  renderCompanionshipTravel();
+  renderSpecialRequests();
+  const srOther = document.getElementById('f_special_requests_other');
+  if(srOther) srOther.addEventListener('input', () => { formData.special_requests_other = srOther.value; scheduleAutoSave && scheduleAutoSave(); });
+  const rtr = document.getElementById('f_right_to_refuse');
+  if(rtr) rtr.addEventListener('change', () => { formData.right_to_refuse = rtr.checked; scheduleAutoSave && scheduleAutoSave(); });
 
   // Seasonal destinations grid
   const abr = document.getElementById('abroadGrid');
@@ -3711,6 +3713,62 @@ function renderEscortServices(){
   });
 }
 
+// ─── Companionship & Travel (Yes / On request / No + note) ───────
+function renderCompanionshipTravel(){
+  const list = document.getElementById('companionshipTravelList');
+  if(!list) return;
+  list.innerHTML = '';
+  COMPANIONSHIP_TRAVEL.forEach(item => {
+    const cur = formData.companionship_travel[item.key] || { value:'', note:'' };
+    const row = document.createElement('div');
+    row.className = 'svc-mod-block';
+    row.style.cssText = 'border:1px solid var(--brd);border-radius:var(--rs);padding:12px;margin-bottom:10px';
+    row.innerHTML =
+      '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap">' +
+        '<div style="min-width:0"><div class="offer-name">' + item.name + '</div><div class="offer-desc">' + item.desc + '</div></div>' +
+        '<select class="sel" style="max-width:150px;flex-shrink:0">' +
+          ['','Yes','On request','No'].map(v => '<option value="'+v+'"'+(cur.value===v?' selected':'')+'>'+(v||'Select…')+'</option>').join('') +
+        '</select>' +
+      '</div>' +
+      '<input type="text" class="inp ct-note" placeholder="Add a note (optional)" value="'+(cur.note||'').replace(/"/g,'&quot;')+'" style="margin-top:8px;display:'+(cur.value==='On request'?'block':'none')+'">';
+    const sel = row.querySelector('select');
+    const note = row.querySelector('.ct-note');
+    sel.addEventListener('change', () => {
+      formData.companionship_travel[item.key] = { value: sel.value, note: note.value };
+      note.style.display = (sel.value === 'On request') ? 'block' : 'none';
+      scheduleAutoSave && scheduleAutoSave();
+    });
+    note.addEventListener('input', () => {
+      formData.companionship_travel[item.key] = { value: sel.value, note: note.value };
+      scheduleAutoSave && scheduleAutoSave();
+    });
+    list.appendChild(row);
+  });
+}
+
+// ─── Special Requests & Fetishes (multi-select, price on request) ─
+function renderSpecialRequests(){
+  const grid = document.getElementById('specialRequestsGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  SPECIAL_REQUESTS.forEach(name => {
+    const card = document.createElement('div');
+    card.className = 'offer-card';
+    if(formData.special_requests.includes(name)) card.classList.add('checked');
+    card.innerHTML =
+      '<div class="offer-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+      '<div class="offer-body"><div class="offer-row1"><span class="offer-name">' + name + '</span>' +
+      '<span class="offer-price" style="font-style:italic;font-weight:500">price on request</span></div></div>';
+    card.addEventListener('click', () => {
+      const i = formData.special_requests.indexOf(name);
+      if(i >= 0){ formData.special_requests.splice(i,1); card.classList.remove('checked'); }
+      else { formData.special_requests.push(name); card.classList.add('checked'); }
+      scheduleAutoSave && scheduleAutoSave();
+    });
+    grid.appendChild(card);
+  });
+}
+
 // ═══════════ DOB CLAMP / VALIDATION ═══════════
 // Clamps day / month / year inputs to sensible ranges in real time so
 // the applicant can't accidentally type 2855 as a year. Day 1-31,
@@ -4599,6 +4657,16 @@ function loadDraft(){
       } else if(k === 'escort_services'){
         formData.escort_services = d.escort_services || {};
         renderEscortServices();
+      } else if(k === 'companionship_travel'){
+        formData.companionship_travel = d.companionship_travel || {};
+        renderCompanionshipTravel();
+      } else if(k === 'special_requests'){
+        formData.special_requests = d.special_requests || [];
+        renderSpecialRequests();
+      } else if(k === 'right_to_refuse'){
+        formData.right_to_refuse = !!d.right_to_refuse;
+        const rt = document.getElementById('f_right_to_refuse');
+        if(rt) rt.checked = !!d.right_to_refuse;
       } else if(k === 'tantric_rates' || k === 'escort_rates'){
         // Skip — these get rebuilt by applyStartingPrice() below.
         formData[k] = d[k] || [];
@@ -5280,6 +5348,15 @@ async function submitApplication(){
             price_label: meta && meta.price_label ? meta.price_label : null
           };
         }),
+        companionship_travel: Object.keys(formData.companionship_travel||{})
+          .filter(k => formData.companionship_travel[k] && formData.companionship_travel[k].value)
+          .map(k => {
+            const meta = COMPANIONSHIP_TRAVEL.find(c => c.key === k);
+            return { key:k, name: meta ? meta.name : k, value: formData.companionship_travel[k].value, note: formData.companionship_travel[k].note || null };
+          }),
+        special_requests: (formData.special_requests||[]).slice(),
+        special_requests_other: formData.special_requests_other || null,
+        right_to_refuse_clients: !!formData.right_to_refuse,
         boundaries: formData.boundaries || null,
         competing: formData.competing || null,
         agencies: (formData.escort_agencies||[]).map(s => (s||'').trim()).filter(Boolean)
