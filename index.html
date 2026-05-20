@@ -4003,7 +4003,7 @@ function updateProgress(){
   if(formData.years) s.experience++;
   if(formData.workname && formData.workname.trim()) s.work++;
   if(formData.local_area) s.work++;
-  if(formData.inhouse) s.work++;
+  if(formData.work_country) s.work++;
   if(formData.mobile) s.work++;
   if(formData.services.length>0) s.services++;
   const anyDay = Object.values(formData.availability).some(d => d.enabled);
