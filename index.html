@@ -4212,7 +4212,10 @@ const STEP_REQ = {
     {key:'phone_code',   el:'f_phone_code',       sec:'personal'},
     {key:'phone',        el:'f_phone',            sec:'personal'},
     {key:'email',        el:'f_email',            sec:'personal'},
-    {key:'english',      el:'f_english',          sec:'personal'}
+    {key:'english',      el:'f_english',          sec:'personal'},
+    {key:'em_rel',       el:'f_em_rel',           sec:'personal'},
+    {key:'em_name',      el:'f_em_name',          sec:'personal'},
+    {key:'em_phone',     el:'f_em_phone',         sec:'personal'}
   ],
   2: [
     {key:'workname',     el:'f_workname',          sec:'work'},
@@ -4317,6 +4320,39 @@ function validateStepBeforeAdvance(currentStep){
         return false;
       }
     }
+    // Emergency phone must be a valid number.
+    const emD = (formData.em_phone||'').replace(/\D/g,'');
+    if(emD.length < 6 || emD.length > 13){
+      const ee = document.getElementById('f_em_phone');
+      if(ee){ ee.classList.add('field-missing'); try{ ee.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Please enter a valid emergency contact number','error');
+      return false;
+    }
+    // Social media: a link OR the "I don't have social media" box.
+    if(!formData.no_social && !(formData.ig||'').trim()){
+      const ig = document.getElementById('f_ig');
+      if(ig){ ig.classList.add('field-missing'); try{ ig.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Add a social media link, or tick “I don’t have social media”','error');
+      return false;
+    }
+    if(!formData.heard){
+      const h = document.getElementById('f_heard');
+      if(h){ h.classList.add('field-missing'); try{ h.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Please tell us how you heard about us','error');
+      return false;
+    }
+    if(!formData.files.idcopy){
+      const u = document.getElementById('upl_idcopy');
+      if(u){ u.classList.add('field-missing'); try{ u.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Please upload your ID Copy','error');
+      return false;
+    }
+    if(!formData.files.bank){
+      const u = document.getElementById('upl_bank');
+      if(u){ u.classList.add('field-missing'); try{ u.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Please upload your Proof of Bank Account','error');
+      return false;
+    }
   }
 
   // Step 2: a travel choice is mandatory — at least one seasonal
@@ -4341,6 +4377,43 @@ function validateStepBeforeAdvance(currentStep){
       if(ag){ ag.classList.add('field-missing'); try{ ag.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
       showToast('Please choose a travel option (or “I don’t want to travel anywhere”)','error');
       return false;
+    }
+    const flag2 = (sel, msg) => {
+      const el = sel[0]==='[' ? document.querySelector(sel) : document.getElementById(sel);
+      if(el){ el.classList.add('field-missing'); try{ el.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast(msg,'error');
+    };
+    // At least one service module, with a starting price.
+    if(formData.offers_tantric !== 'Yes' && formData.offers_escort !== 'Yes'){
+      flag2('modTantric','Select Yes for at least one service (Tantric or Companions)'); return false;
+    }
+    if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){ flag2('tantricStartingPrice','Please enter your Tantric starting price'); return false; }
+    if(formData.offers_escort === 'Yes' && !formData.escort_tier){ flag2('escortStartingPrice','Please enter your Companions starting price'); return false; }
+    // Companionship & Travel — required when offering Companions.
+    if(formData.offers_escort === 'Yes'){
+      const missCT = COMPANIONSHIP_TRAVEL.find(it => !(formData.companionship_travel[it.key] && formData.companionship_travel[it.key].value));
+      if(missCT){
+        const list = document.getElementById('companionshipTravelList');
+        const sel = list && list.querySelector('select');
+        if(sel) sel.classList.add('field-missing');
+        if(list){ try{ list.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+        showToast('Please answer every Companionship & Travel option','error');
+        return false;
+      }
+    }
+    // Second working country: add one or tick "I don't have a second working country".
+    if(!formData.no_second_country && (formData.extra_locations||[]).length === 0){
+      const c = document.getElementById('f_no_second_country');
+      if(c){ try{ c.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Add a second working country, or tick “I don’t have a second working country”','error');
+      return false;
+    }
+    // Photoshoot / professional video uploads when "Yes, I have".
+    if(formData.photoshoot === 'Yes I have' && (formData.files.portfolio||[]).length < 1){ flag2('proPhotoGrid','Please add at least one professional photo'); return false; }
+    if(formData.videoshoot === 'Yes I have' && !formData.files.profvideo){ flag2('profVideoSection','Please add your professional video'); return false; }
+    // Selfie verification — both photos required.
+    if(!formData.files.selfie || !formData.files.fullbody){
+      flag2('selfieBox','Please add your face selfie and full-body photo'); return false;
     }
   }
 
