@@ -306,6 +306,8 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 
 .summary-card{background:linear-gradient(180deg,rgba(196,168,130,.04),rgba(139,115,85,.02));border:1px solid var(--brd2);border-radius:var(--r);padding:22px 26px;margin-top:18px;}
 .summary-t{font-family:var(--fd);font-size:22px;color:var(--tx);margin-bottom:14px;font-weight:500;letter-spacing:.01em;display:flex;align-items:center;gap:10px;}
+.summary-sec{font-family:var(--fd);font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ac);margin:18px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--brd2);}
+.summary-sec:first-child{margin-top:0}
 .summary-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12px;border-bottom:1px solid var(--brd);gap:16px;}
 .summary-row:last-child{border:0}
 .summary-key{color:var(--mt);letter-spacing:.05em}
@@ -1781,8 +1783,8 @@ html{scroll-behavior:smooth}
         <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--champagne);margin-bottom:8px;text-align:center">What happens next</div>
         <div style="padding-left:14px">
           <div style="margin-bottom:6px">— Within 24–48 hours, the Mayriche team will personally review your application.</div>
-          <div style="margin-bottom:6px">— If you progress, you will be contacted on WhatsApp or by email to arrange the next step.</div>
-          <div style="margin-bottom:6px">— If we are unable to proceed at this time, we will let you know with a brief message.</div>
+          <div style="margin-bottom:6px">— You might be contacted via email or WhatsApp for the online final decision.</div>
+          <div style="margin-bottom:6px">— You will find all of this information in your email, so you don't need to keep this page open.</div>
         </div>
         <div id="successEmailLine" style="margin-top:14px;text-align:center;color:var(--tx);font-size:12px"></div>
       </div>
@@ -2401,8 +2403,8 @@ document.addEventListener('DOMContentLoaded', async function(){
   // If opened with ?ref=APP-… show that application as a read-only card
   // (the shareable application link) instead of the blank form.
   try {
-    var _ref = new URLSearchParams(location.search).get('ref');
-    if(_ref && /^APP-[A-Za-z0-9-]{6,60}$/.test(_ref)){ await showApplicationCard(_ref); return; }
+    var _ref = refFromUrl();
+    if(_ref){ await showApplicationCard(_ref); return; }
   } catch(e){}
   await loadConfig();
   applyFallbackDefaults();
@@ -4803,27 +4805,139 @@ function handleVideoUpload(ev){
 }
 
 // ═══════════ SUMMARY ═══════════
+// Full application summary across all three steps. Nothing is omitted:
+// every section the applicant filled in is shown back to her (and on her
+// personal link / email). Empty fields show "—" so she can see at a glance
+// what is still blank.
 function renderSummary(){
-  const dob = formData.dob_d&&formData.dob_m&&formData.dob_y ? formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0') : '—';
-  const daysOn = Object.keys(formData.availability).filter(d => formData.availability[d].enabled);
-  const filesCount = (formData.files.selfie?1:0)+(formData.files.idcopy?1:0)+formData.files.portfolio.length+(formData.video?1:0)+(formData.files.fullbody?1:0);
-  
+  const f = formData;
+  const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const v = x => (x===0||x) && String(x).trim() !== '' ? x : '—';
+  const cur = (f.currency==='EUR'?'€':f.currency==='USD'?'$':'£');
   let html = '';
-  html += row('Name', formData.fullname||'—');
-  html += row('Work Name', formData.workname||'—');
-  html += row('Date of Birth', dob);
-  html += row('Location', (formData.city||'—')+', '+(formData.country||'—'));
-  html += row('Contact', (formData.phone||'—')+' · '+(formData.email||'—'));
-  html += row('Languages', (formData.languages||[]).length>0 ? (formData.languages||[]).map(l => typeof l === 'string' ? l : (l.language + (l.level ? ' ('+l.level+')' : ''))).join(', ') : '—');
-  html += row('Physical', (formData.height?formData.height+'cm':'—')+' · '+(formData.weight?formData.weight+'kg':'—')+' · '+(formData.body||'—'));
-  html += row('Experience', formData.years||'—');
-  html += row('Services', formData.services.length+' selected');
-  html += row('Starting rate', formData.rate?'£'+formData.rate:'—');
-  html += row('Availability', daysOn.length>0?daysOn.length+' days/week':'—');
-  html += row('Documents', filesCount+' file(s) uploaded');
-  html += row('Consents', Object.values(formData.consents).filter(v=>v).length+' / 5');
+  const sec = t => { html += '<div class="summary-sec">'+esc(t)+'</div>'; };
+  const row = (k,val) => { html += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+esc(val)+'</span></div>'; };
+
+  // ── STEP 1 · About you ──
+  const dob = f.dob_d&&f.dob_m&&f.dob_y ? f.dob_y+'-'+String(f.dob_m).padStart(2,'0')+'-'+String(f.dob_d).padStart(2,'0') : '—';
+  sec('Personal information');
+  row('Full legal name', v(f.fullname));
+  row('Date of birth', dob);
+  row('Nationality', v(f.nationality));
+
+  sec('Residential address');
+  row('Street', v(f.home_street));
+  row('Apartment / unit', v(f.home_apt));
+  row('Postcode', v(f.home_postcode));
+  row('Neighbourhood', v(f.local_area_text));
+  row('City', v(f.city));
+  row('Country', v(f.country));
+
+  sec('Contact details');
+  row('Phone', ((f.phone_code||'')+' '+(f.phone||'')).trim()||'—');
+  row('WhatsApp', f.phone_is_whatsapp ? 'Same as phone' : (((f.whatsapp_code||'')+' '+(f.whatsapp||'')).trim()||'—'));
+  row('Email', v(f.email));
+  row('Social media', f.no_social ? 'None' : v(f.ig));
+  row('Emergency contact', [f.em_name, f.em_rel, ((f.em_phone_code||'')+' '+(f.em_phone||'')).trim()].filter(Boolean).join(' · ')||'—');
+  row('How she heard of us', v(f.heard==='Other'?(f.heard_other||'Other'):f.heard));
+
+  // ── STEP 2 · Public profile ──
+  sec('Public profile');
+  row('Working name', v(f.workname));
+  row('Profile age', v(f.profile_age));
+  row('English level', v(f.english));
+  row('Languages', (f.languages||[]).length ? f.languages.map(l => typeof l==='string'?l:(l.language+(l.level?' ('+l.level+')':''))).join(', ') : '—');
+
+  sec('Physical');
+  row('Height', f.height?f.height+' cm':'—');
+  row('Weight', f.weight?f.weight+' kg':'—');
+  row('Body type', v(f.body));
+  row('Dress size', v(f.dress));
+  row('Bust', [f.breast, f.breast_type].filter(Boolean).join(' · ')||'—');
+  row('Eyes / hair', [f.eye, f.hair].filter(Boolean).join(' · ')||'—');
+
+  // Tantric module
+  if(f.offers_tantric){
+    sec('Tantric — services');
+    row('Offered', v(f.offers_tantric));
+    if(f.offers_tantric==='Yes'){
+      row('Experience', f.tantric_experience==='Yes' ? ('Yes'+(f.tantric_exp_years?' · '+f.tantric_exp_years+' yrs':'')) : v(f.tantric_experience));
+      if(f.tantric_exp_note) row('Experience notes', f.tantric_exp_note);
+      row('With other agencies', v(f.tantric_competing));
+      (f.tantric_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
+      (f.tantric_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
+      if((f.tantric_offers||[]).length) row('Special offers', f.tantric_offers.join(', '));
+    }
+  }
+
+  // Companions module
+  if(f.offers_escort){
+    sec('Companions — services');
+    row('Offered', v(f.offers_escort));
+    if(f.offers_escort==='Yes'){
+      row('Experience', f.escort_experience==='Yes' ? ('Yes'+(f.escort_exp_years?' · '+f.escort_exp_years+' yrs':'')) : v(f.escort_experience));
+      if(f.escort_exp_note) row('Experience notes', f.escort_exp_note);
+      row('With other agencies', v(f.competing||f.tantric_competing));
+      (f.escort_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
+      (f.escort_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
+      const es = f.escort_services||{};
+      const esSel = Object.keys(es).filter(k=>es[k]&&es[k]!=='No').map(k=>k+(es[k]!==true&&es[k]!=='Yes'?' ('+es[k]+')':''));
+      if(esSel.length) row('Selected services', esSel.join(', '));
+      const ct = f.companionship_travel||{};
+      Object.keys(ct).forEach(k=>{ const o=ct[k]||{}; row(k, (o.value||'—')+(o.note?' — '+o.note:'')); });
+      if((f.special_requests||[]).length){
+        const sp = f.special_requests.map(k=>{ const p=(f.special_requests_prices||{})[k]; return k+(p?' ('+cur+p+')':''); });
+        row('Special requests', sp.join(', '));
+      }
+      if(f.special_requests_other) row('Other requests', f.special_requests_other);
+      if(f.boundaries) row('Boundaries', f.boundaries);
+      row('Right to refuse unsafe clients', f.right_to_refuse?'Yes':'—');
+    }
+  }
+
+  // Legacy generic services (still captured on some flows)
+  if((f.services||[]).length || f.rate){
+    sec('Services & rate');
+    if((f.services||[]).length) row('Services selected', f.services.join(', '));
+    if((f.addons||[]).length) row('Add-ons', f.addons.join(', '));
+    if(f.rate) row('Starting rate', cur+f.rate);
+  }
+
+  sec('Working areas');
+  row('Working location', [f.work_city, f.work_country].filter(Boolean).join(', ')||'—');
+  row('Working neighbourhood', v(f.local_area));
+  row('In-house available', f.no_inhouse?'No':v(f.inhouse));
+  if(!f.no_inhouse) row('In-house address', [f.inhouse_street, f.inhouse_apt, f.inhouse_postcode].filter(Boolean).join(', ')||v(f.inhouse_address));
+  row('Mobile / outcall', v(f.mobile));
+  if((f.mobile_zones||[]).length) row('Mobile zones', f.mobile_zones.join(', '));
+  (f.extra_locations||[]).forEach((loc,i)=>row('Also based in '+(i+1), [loc.city,loc.country].filter(Boolean).join(', ')||loc));
+  const seasonal = (f.abroad||[]).concat(f.abroad_custom||[]);
+  row('Seasonal destinations', seasonal.length?seasonal.join(', '):'—');
+  if(f.travel_other) row('Other travel', f.travel_other);
+
+  sec('Availability');
+  const daysOn = Object.keys(f.availability||{}).filter(d => f.availability[d] && f.availability[d].enabled);
+  daysOn.forEach(d=>{ const dd=f.availability[d]; row(d, (dd.from||'09:00')+' – '+(dd.to||'02:00')); });
+  if(!daysOn.length) row('Days', '—');
+  if(f.avail_notes) row('Notes', f.avail_notes);
+
+  // ── STEP 3 · Verification & files ──
+  sec('Photos, videos & documents');
+  row('Professional photos', (f.files.portfolio||[]).length+' uploaded');
+  row('Full-body photos', ['front','back','side'].filter(a=>f.files['fullbody_'+a]).length+' / 3');
+  row('Intro video', f.video?'Uploaded':'—');
+  row('Professional shoot video', f.files.profvideo?'Uploaded':'—');
+  row('Selfie verification', f.files.selfie?'Uploaded':'—');
+  row('Location walkthrough', f.files.location?'Uploaded':'—');
+  row('ID / passport copy', f.files.idcopy?'Uploaded':'—');
+  row('Bank statement', f.files.bank?'Uploaded':'—');
+
+  sec('Verification');
+  row('Signature', v(f.signature_name));
+  row('Signed at', f.signature_signed_at ? new Date(f.signature_signed_at).toLocaleString() : '—');
+  row('Consents accepted', Object.values(f.consents||{}).filter(Boolean).length+' / '+Object.keys(f.consents||{}).length);
+
   document.getElementById('summaryContent').innerHTML = html;
-  function row(k,v){ return '<div class="summary-row"><span class="summary-key">'+k+'</span><span class="summary-val">'+v+'</span></div>'; }
 }
 
 // ═══════════ DRAFT (local cache only — form in progress) ═══════════
@@ -5763,16 +5877,18 @@ async function submitApplication(){
     const subEl = document.getElementById('successSub');
     if(subEl) subEl.textContent = 'Thank you, ' + firstName + '. Your application has been received.';
     const emailLine = document.getElementById('successEmailLine');
-    if(emailLine && formData.email) emailLine.textContent = 'A confirmation email has been sent to ' + formData.email + '.';
+    if(emailLine && formData.email) emailLine.textContent = 'A copy of this application and your personal link have been sent to ' + formData.email + '.';
     document.getElementById('successRef').textContent = applicationRef;
     window.__lastAppRef = applicationRef;
     try {
       var _lw = document.getElementById('successLinkWrap');
       var _li = document.getElementById('successLink');
-      if(_li){ _li.value = 'https://apply.mayriche.co.uk/?ref=' + applicationRef; }
+      var _link = buildAppLink(applicationRef, formData.fullname);
+      if(_li){ _li.value = _link; }
       if(_lw){ _lw.style.display = 'block'; }
-      // Make the browser URL her own application link.
-      history.replaceState(null, '', '?ref=' + applicationRef);
+      // Make the browser URL her own personal application link
+      // (apply.mayriche.co.uk/<name-slug>-APP-…).
+      history.replaceState(null, '', '/' + appSlug(formData.fullname) + '-' + applicationRef);
     } catch(e){}
     renderSummary();
     document.getElementById('successOverlay').classList.add('visible');
@@ -5918,7 +6034,29 @@ function calculateAge(dob){
   return Math.floor((Date.now()-d.getTime()) / (365.25*24*60*60*1000));
 }
 
-// Read-only application card shown when the page is opened with ?ref=APP-…
+// ─── Applicant personal link: apply.mayriche.co.uk/<name-slug>-<REF> ───
+function appSlug(name){
+  return (name||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60);
+}
+function buildAppLink(ref, name){
+  var slug = appSlug(name);
+  return 'https://apply.mayriche.co.uk/' + (slug ? slug + '-' : '') + ref;
+}
+// Pull the APP-… reference from either ?ref=APP-XXXX or a
+// /<name-slug>-APP-XXXX path so the shared link resolves either way.
+function refFromUrl(){
+  try {
+    var q = new URLSearchParams(location.search).get('ref');
+    if(q && /^APP-[A-Za-z0-9-]{4,60}$/.test(q)) return q;
+    var m = (location.pathname||'').match(/(APP-[A-Za-z0-9]+-[A-Za-z0-9]+)\/?$/i);
+    if(m) return m[1].toUpperCase();
+  } catch(e){}
+  return null;
+}
+
+// Read-only application card shown when the page is opened with the
+// applicant's personal link (/<name-slug>-APP-… or ?ref=APP-…)
 async function showApplicationCard(ref){
   var ov = document.getElementById('successOverlay');
   var card = ov ? ov.querySelector('.success-card') : null;
@@ -5931,28 +6069,140 @@ async function showApplicationCard(ref){
     card.innerHTML = '<div style="text-align:center"><div class="success-t" style="font-size:30px">Not found</div><div class="success-sub">We couldn’t find an application for this link.</div><button class="btn btn-primary" onclick="location.replace(\'/\')">Start a new application</button></div>';
     return;
   }
+  window.__lastAppRef = d.application_ref || ref;
   var so = d.services_offering || {};
-  function money(v){ return v!=null ? '£'+v : '—'; }
-  var rows = [
-    ['Work name', d.work_name || d.profile_nickname || '—'],
-    ['Profile age', d.profile_age!=null ? d.profile_age : '—'],
-    ['Location', [d.local_area, d.city].filter(Boolean).join(', ') || '—'],
-    ['Nationality', d.nationality || '—'],
-    ['Languages', d.languages || '—'],
-    ['Physical', [d.height_cm?d.height_cm+'cm':null, d.weight_kg?d.weight_kg+'kg':null, d.body_type].filter(Boolean).join(' · ') || '—'],
-    ['Measurements', [d.dress_size?'Dress '+d.dress_size:null, d.breast_size, d.breast_type, d.eye_colour, d.hair_colour].filter(Boolean).join(' · ') || '—']
-  ];
-  if(so.tantric && so.tantric.offered) rows.push(['Tantric', 'from '+money(so.tantric.starting_price)]);
-  if(so.escort && so.escort.offered) rows.push(['Companions', 'from '+money(so.escort.starting_price)]);
-  var rowsHtml = rows.map(function(r){ return '<div style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--brd)"><span style="color:var(--mt);font-size:11px;letter-spacing:.08em;text-transform:uppercase">'+r[0]+'</span><span style="color:var(--tx);font-size:13px;text-align:right">'+r[1]+'</span></div>'; }).join('');
-  card.style.maxWidth = '620px'; card.style.textAlign = 'left';
+  var esc = function(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+  var v = function(x){ return (x===0||x) && String(x).trim()!=='' ? x : '—'; };
+  var cur = (d.starting_rate_currency==='EUR'?'€':d.starting_rate_currency==='USD'?'$':'£');
+  var body = '';
+  var sec = function(t){ body += '<div class="summary-sec">'+esc(t)+'</div>'; };
+  var row = function(k,val){ body += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+esc(val)+'</span></div>'; };
+  var money = function(x){ return x!=null && x!=='' ? cur+x : '—'; };
+
+  sec('Personal information');
+  row('Full legal name', v(d.lady_name));
+  row('Date of birth', v(d.date_of_birth));
+  row('Nationality', v(d.nationality));
+
+  sec('Residential address');
+  row('Address', v(d.residential_address || d.home_address));
+  row('Neighbourhood', v(d.home_neighbourhood));
+  row('City', v(d.city));
+  row('Country', v(d.country_residence));
+
+  sec('Contact details');
+  row('Phone', ((d.phone_code||'')+' '+(d.phone_local||d.phone||'')).trim()||'—');
+  row('Email', v(d.email));
+  row('Social media', v(d.social_media));
+  row('Emergency contact', [d.em_c_name, d.em_c_rel, d.em_c_phone].filter(Boolean).join(' · ') || v(d.emergency_contact));
+  row('How she heard of us', v(d.source));
+
+  sec('Public profile');
+  row('Working name', v(d.work_name || d.profile_nickname));
+  row('Profile age', v(d.profile_age));
+  var langs = '—';
+  if(Array.isArray(d.languages_detail) && d.languages_detail.length){
+    langs = d.languages_detail.map(function(l){ return typeof l==='string'?l:(l.language+(l.level?' ('+l.level+')':'')); }).join(', ');
+  } else if(d.languages){ langs = d.languages; }
+  row('Languages', langs);
+
+  sec('Physical');
+  row('Height', d.height_cm?d.height_cm+' cm':'—');
+  row('Weight', d.weight_kg?d.weight_kg+' kg':'—');
+  row('Body type', v(d.body_type));
+  row('Dress size', v(d.dress_size));
+  row('Bust', [d.breast_size, d.breast_type].filter(Boolean).join(' · ')||'—');
+  row('Eyes / hair', [d.eye_colour, d.hair_colour].filter(Boolean).join(' · ')||'—');
+
+  function renderModule(title, m){
+    if(!m || m.offered===false) return;
+    sec(title);
+    row('Offered', m.offered?'Yes':v(m.offered));
+    if(m.experience!=null) row('Experience', (m.experience===true?'Yes':v(m.experience))+(m.experience_years?' · '+m.experience_years+' yrs':''));
+    if(m.experience_note) row('Experience notes', m.experience_note);
+    if(m.competing!=null) row('With other agencies', v(m.competing));
+    (m.agencies||[]).forEach(function(a,i){ row('Agency link '+(i+1), a); });
+    (m.rates||[]).forEach(function(r){ row(r.duration||'Rate', [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'); });
+    if(m.starting_price!=null) row('From', money(m.starting_price));
+    if(Array.isArray(m.offers) && m.offers.length){
+      row('Special offers', m.offers.map(function(o){ return typeof o==='string'?o:(o.name||o.key)+(o.price?' ('+cur+o.price+')':''); }).join(', '));
+    }
+    if(Array.isArray(m.services) && m.services.length){
+      var sel = m.services.filter(function(s){ return s.value && s.value!=='No'; })
+        .map(function(s){ var lbl=s.name||s.key; var extra=(s.price!=null?cur+s.price:s.price_label)||(s.value!==true&&s.value!=='Yes'?s.value:''); return lbl+(extra?' ('+extra+')':''); });
+      if(sel.length) row('Selected services', sel.join(', '));
+    }
+    if(Array.isArray(m.companionship_travel) && m.companionship_travel.length){
+      m.companionship_travel.forEach(function(o){ row(o.name||o.key, (o.value||'—')+(o.note?' — '+o.note:'')); });
+    }
+    if(Array.isArray(m.special_requests) && m.special_requests.length){
+      row('Special requests', m.special_requests.map(function(s){ return (s.name||s)+(s.price?' ('+cur+s.price+')':''); }).join(', '));
+    }
+    if(m.special_requests_other) row('Other requests', m.special_requests_other);
+    if(m.boundaries) row('Boundaries', m.boundaries);
+    if(m.right_to_refuse_clients || m.right_to_refuse) row('Right to refuse unsafe clients', 'Yes');
+  }
+  renderModule('Tantric — services', so.tantric);
+  renderModule('Companions — services', so.escort);
+
+  if((d.services_offered||[]).length || d.starting_rate || d.current_rate){
+    sec('Services & rate');
+    if((d.services_offered||[]).length) row('Services selected', d.services_offered.join(', '));
+    if((d.addons_offered||[]).length) row('Add-ons', d.addons_offered.join(', '));
+    if((d.duration_preferences||[]).length) row('Durations', d.duration_preferences.join(', '));
+    row('Starting rate', d.starting_rate?money(d.starting_rate):v(d.current_rate));
+  }
+  if(d.boundaries) { sec('Boundaries'); row('Boundaries', d.boundaries); }
+  if(d.special_requests) { sec('Special requests'); row('Requests', d.special_requests); }
+
+  sec('Working areas');
+  row('Working neighbourhood', v(d.local_area));
+  row('In-house available', v(d.provide_inhouse));
+  row('In-house address', v(d.in_house_address || d.inhouse_address));
+  row('Mobile / outcall', v(d.provide_mobile));
+  row('Open to travel', v(d.open_to_travel));
+
+  sec('Availability');
+  row('Status', v(d.availability_status));
+  if(d.availability_schedule && typeof d.availability_schedule==='object'){
+    Object.keys(d.availability_schedule).forEach(function(day){
+      var dd=d.availability_schedule[day]; if(!dd) return;
+      if(dd.enabled || dd.from || dd.to) row(day, (dd.from||'09:00')+' – '+(dd.to||'02:00'));
+    });
+  }
+  if(d.availability_notes) row('Notes', d.availability_notes);
+
+  sec('Photos, videos & documents');
+  row('Professional photos', (d.file_portfolio||[]).length+' uploaded');
+  row('Full-body photos', ['front','back','side'].filter(function(a){ return d['file_fullbody_'+a]; }).length+' / 3');
+  row('Intro video', d.file_video_intro?'Uploaded':'—');
+  row('Selfie verification', d.file_selfie_kyc?'Uploaded':'—');
+  row('Location walkthrough', d.file_location_check?'Uploaded':'—');
+  row('ID / passport copy', d.copy_id?'Uploaded':'—');
+  row('Bank statement', d.file_bank_statement?'Uploaded':'—');
+
+  sec('Verification');
+  row('Signature', v(d.signature_name));
+  row('Signed at', d.signature_signed_at ? new Date(d.signature_signed_at).toLocaleString() : '—');
+  var consents = [d.gdpr_signed?'GDPR':null, d.consent_age_verified?'Age verified':null, d.consent_photo_release?'Photo release':null].filter(Boolean);
+  row('Consents accepted', consents.length?consents.join(', '):'—');
+
+  var link = location.href;
+  card.style.maxWidth = '640px'; card.style.textAlign = 'left';
   card.innerHTML =
-    '<div style="text-align:center;margin-bottom:22px">'+
-      '<div style="font-family:var(--fd);font-size:24px;font-weight:300;letter-spacing:.32em;color:var(--ac);text-transform:uppercase">Mayriche</div>'+
-      '<div class="success-t" style="font-size:36px;margin-top:8px">'+(d.work_name||d.profile_nickname||'Application')+'</div>'+
-      '<div class="success-sub">'+(d.stage||'Application')+' · '+(d.application_ref||'')+'</div>'+
+    '<div style="text-align:center;margin-bottom:18px">'+
+      '<div class="hero-wordmark" style="font-size:22px;margin-bottom:10px">MAYRICHE</div>'+
+      '<div class="success-t" style="font-size:36px;margin-top:4px">'+esc(d.work_name||d.profile_nickname||'Application')+'</div>'+
+      '<div class="success-sub">'+esc(d.stage||'Application received')+' · '+esc(d.application_ref||'')+'</div>'+
+      '<div id="successLinkWrap" style="max-width:480px;margin:14px auto 0">'+
+        '<div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mt);margin-bottom:6px;text-align:center">Your application link</div>'+
+        '<div style="display:flex;gap:8px;align-items:center">'+
+          '<input id="successLink" type="text" readonly class="inp" style="flex:1;min-width:0;font-size:12px;text-align:center" value="'+esc(link)+'">'+
+          '<button type="button" class="btn btn-ghost" style="flex-shrink:0;min-width:auto;padding:10px 14px" onclick="copyAppLink()">Copy</button>'+
+        '</div>'+
+      '</div>'+
     '</div>'+
-    '<div class="summary-card"><div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Profile</div>'+rowsHtml+'</div>'+
+    '<div class="summary-card" style="max-height:60vh;overflow-y:auto"><div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>'+body+'</div>'+
     '<div class="actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap"><button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button><button class="btn btn-primary" onclick="shareAppLink()">Share link</button></div>';
 }
 function editApplication(){
