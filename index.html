@@ -5093,14 +5093,30 @@ function checkDraft(){
 // ═══════════ STORAGE UPLOAD (to Supabase Storage) ═══════════
 async function uploadFileToStorage(file, appRef, fileType, index){
   if(!sb || !file) return null;
+  const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+  const safeName = index !== undefined ? fileType+'_'+index+'.'+ext : fileType+'.'+ext;
+  const path = appRef+'/'+safeName;
   try {
-    const ext = file.name.split('.').pop().toLowerCase();
-    const safeName = index !== undefined ? fileType+'_'+index+'.'+ext : fileType+'.'+ext;
-    const path = appRef+'/'+safeName;
-    const res = await sb.storage.from('applications').upload(path, file, {
-      cacheControl: '3600',
-      upsert: true
+    // Uploads go through a server-minted SIGNED UPLOAD URL. The public form
+    // uses the anon publishable key, which this project's Storage service
+    // does NOT resolve to a role it will accept for inserts (direct anon
+    // uploads fail with an RLS error). The sign-upload edge function mints a
+    // signed token with the service role; uploadToSignedUrl needs no role.
+    const resp = await fetch(SUPABASE_URL + '/functions/v1/sign-upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({ ref: appRef, paths: [path] })
     });
+    if(!resp.ok){ throw new Error('sign-upload HTTP '+resp.status); }
+    const json = await resp.json();
+    const entry = json && json.tokens && json.tokens[path];
+    if(!entry || !entry.token){ throw new Error('no token returned for '+path); }
+    const res = await sb.storage.from('applications')
+      .uploadToSignedUrl(path, entry.token, file, { upsert: true });
     if(res.error) throw res.error;
     console.log('[Storage] Uploaded:', path);
     return path;
