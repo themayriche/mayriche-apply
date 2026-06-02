@@ -1202,6 +1202,9 @@ html{scroll-behavior:smooth}
           <label class="line-pill" data-line="companions"><input type="radio" name="serviceLine" value="companions" onchange="setServiceLine('companions')"><span class="line-title">Companions</span><span class="line-sub">Companionship</span></label>
           <label class="line-pill" data-line="both"><input type="radio" name="serviceLine" value="both" onchange="setServiceLine('both')"><span class="line-title">Both</span><span class="line-sub">Tantric + Companions</span></label>
         </div>
+        <label style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:12.5px;color:var(--tx2);cursor:pointer;line-height:1.5">
+          <input type="checkbox" id="f_right_to_refuse" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:1px"> I want to have the right to refuse any client who is not safe.
+        </label>
       </div>
 
       <!-- ─── Tantric module (hidden until service-line picks tantric/both) ─── -->
@@ -1333,8 +1336,8 @@ html{scroll-behavior:smooth}
 
       <!-- ─── More Ladies (shared, shown when any service selected) ─── -->
       <div class="svc-mod-block" id="moreLadiesBlock" style="display:none;margin-top:18px">
-        <div class="field-lbl" style="margin-bottom:8px">More Ladies <span class="opt-note">Tap any you offer</span></div>
-        <div class="field-hint" style="margin-bottom:10px">Priced on time at your standard rate.</div>
+        <div class="field-lbl" style="margin-bottom:8px">More Ladies <span class="req">*</span></div>
+        <div class="field-hint" style="margin-bottom:10px">Pick at least one. Priced on time at your standard rate.</div>
         <div class="line-row line-row-multi" id="moreLadiesRow"></div>
       </div>
 
@@ -1345,17 +1348,6 @@ html{scroll-behavior:smooth}
         <div class="line-row line-row-multi" id="travelRow"></div>
       </div>
 
-      <!-- ─── Boundaries + right to refuse (shared) ─── -->
-      <div class="svc-mod-block" id="boundariesBlock" style="display:none;margin-top:18px">
-        <div class="field">
-          <label class="field-lbl">Boundaries <span class="opt-note">Optional but recommended</span></label>
-          <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have, in your own words. Be honest — this helps us match you to the right clients." rows="4"></textarea>
-          <div class="field-hint">Anything we should know upfront before sending you a booking.</div>
-        </div>
-        <label style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:12.5px;color:var(--tx2);cursor:pointer;line-height:1.5">
-          <input type="checkbox" id="f_right_to_refuse" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:1px"> I want to have the right to refuse any client who is not safe.
-        </label>
-      </div>
 
       <!-- Hidden legacy mounts kept so existing JS that targets them
            continues to work without breaking. The new UI controls these. -->
@@ -1366,90 +1358,6 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
-        <div class="sec-t">Professional Photoshoot</div>
-      </div>
-      <div class="row-1" style="margin-top:6px">
-        <div class="field"><label class="field-lbl">Do you have a professional photoshoot? <span class="req">*</span></label>
-          <select class="sel" id="f_photoshoot" data-sec="experience">
-            <option value="">Select...</option>
-            <option value="Yes I have">Yes, I have</option>
-            <option value="No but willing">No, but willing to make one</option>
-            <option value="Not interested">Not interested</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="sec" id="proPhotoSection" style="display:none">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
-        <div class="sec-t">Add Your Professional Photoshoot</div>
-        <span class="sec-note">Minimum 5 photos</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">Add at least 5 of your best professional photos — each slot takes one image. Clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
-      <div class="photo-grid" id="proPhotoGrid"></div>
-      <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
-      <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
-    </div>
-
-    <!-- Professional video shoot question + reveal (1 video) -->
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="sec-t">Professional Video Shoot</div>
-      </div>
-      <div class="row-1" style="margin-top:6px">
-        <div class="field"><label class="field-lbl">Do you have a professional video? <span class="req">*</span></label>
-          <select class="sel" id="f_videoshoot" data-sec="experience">
-            <option value="">Select...</option>
-            <option value="Yes I have">Yes, I have</option>
-            <option value="No but willing">No, but willing to make one</option>
-            <option value="Not interested">Not interested</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="sec" id="profVideoSection" style="display:none">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="sec-t">Add Your Professional Video</div>
-        <span class="sec-note">1 video</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">Upload one professional video — a showreel / promo clip that shows you at your best.</div>
-      <div class="video-box" id="profVideoBox">
-        <video id="profVideoPreview" controls style="display:none"></video>
-        <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="video-box-ttl" id="profVideoTtl">Professional video</div>
-        <div class="video-box-sub">One clean, well-lit clip.</div>
-        <button class="btn btn-primary" type="button" id="profVideoBtn" onclick="document.getElementById('file_profvideo').click()" style="min-width:auto">Upload Video</button>
-        <div class="upload-prog" id="prog_profvideo"><div class="upload-prog-fill"></div></div>
-      </div>
-      <input type="file" id="file_profvideo" accept="video/*" onchange="handleProfVideo(event)">
-    </div>
-
-    <div class="sec" id="selfieBox">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 3-3"/></svg></div>
-        <div class="sec-t">Selfie Verification</div>
-        <span class="sec-note">Strictly confidential</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">A quick check that you&rsquo;re a real person &mdash; never posted online, never shown to clients. One clear face selfie + one full-body photo.</div>
-      <div class="upload" onclick="document.getElementById('file_selfie').click()">
-        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
-        <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
-        <button type="button" class="upload-btn">Upload</button>
-      </div>
-      <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
-      <div class="upload" onclick="document.getElementById('file_fullbody').click()" style="margin-top:10px">
-        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v9m0 0l-3 5m3-5l3 5M7 9l5 1 5-1"/></svg></div>
-        <div class="upload-info"><div class="upload-ttl">Full-body photo <span class="req">*</span></div><div class="upload-h">One clear photo showing your full body, standing.</div><div id="fullbodyStatus" style="margin-top:4px"></div></div>
-        <button type="button" class="upload-btn">Upload</button>
-      </div>
-      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
-    </div>
 
     <div class="sec">
       <div class="sec-head">
@@ -1564,7 +1472,7 @@ html{scroll-behavior:smooth}
         <div class="sec-t">Second Working Country</div>
         <span class="sec-note">If you also live &amp; work somewhere else</span>
       </div>
-      <div class="field-hint" style="margin-bottom:10px">Add another country / city you&rsquo;re based in and work from — e.g. Paris, Dubai, Rome. You can add up to two more.</div>
+      <div class="field-hint" style="margin-bottom:10px">Add another country / city you&rsquo;re based in and work from — e.g. Paris, Milan, Rome. You can add up to two more.</div>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12.5px;color:var(--tx2);cursor:pointer">
         <input type="checkbox" id="f_no_second_country" onchange="toggleSecondCountry(this.checked)" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have a second working country
       </label>
@@ -1620,6 +1528,91 @@ html{scroll-behavior:smooth}
           <textarea class="txa" id="f_avail_notes" rows="3" placeholder="e.g. I prefer 2 hours in advance, or 12 hours in advance."></textarea>
         </div>
       </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <div class="sec-t">Professional Photoshoot</div>
+      </div>
+      <div class="row-1" style="margin-top:6px">
+        <div class="field"><label class="field-lbl">Do you have a professional photoshoot? <span class="req">*</span></label>
+          <select class="sel" id="f_photoshoot" data-sec="experience">
+            <option value="">Select...</option>
+            <option value="Yes I have">Yes, I have</option>
+            <option value="No but willing">No, but willing to make one</option>
+            <option value="Not interested">Not interested</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec" id="proPhotoSection" style="display:none">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <div class="sec-t">Add Your Professional Photoshoot</div>
+        <span class="sec-note">Minimum 5 photos</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">Add at least 5 of your best professional photos — each slot takes one image. Clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
+      <div class="photo-grid" id="proPhotoGrid"></div>
+      <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
+      <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
+    </div>
+
+    <!-- Professional video shoot question + reveal (1 video) -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="sec-t">Professional Video Shoot</div>
+      </div>
+      <div class="row-1" style="margin-top:6px">
+        <div class="field"><label class="field-lbl">Do you have a professional video? <span class="req">*</span></label>
+          <select class="sel" id="f_videoshoot" data-sec="experience">
+            <option value="">Select...</option>
+            <option value="Yes I have">Yes, I have</option>
+            <option value="No but willing">No, but willing to make one</option>
+            <option value="Not interested">Not interested</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="sec" id="profVideoSection" style="display:none">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="sec-t">Add Your Professional Video</div>
+        <span class="sec-note">1 video</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">Upload one professional video — a showreel / promo clip that shows you at your best.</div>
+      <div class="video-box" id="profVideoBox">
+        <video id="profVideoPreview" controls style="display:none"></video>
+        <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="video-box-ttl" id="profVideoTtl">Professional video</div>
+        <div class="video-box-sub">One clean, well-lit clip.</div>
+        <button class="btn btn-primary" type="button" id="profVideoBtn" onclick="document.getElementById('file_profvideo').click()" style="min-width:auto">Upload Video</button>
+        <div class="upload-prog" id="prog_profvideo"><div class="upload-prog-fill"></div></div>
+      </div>
+      <input type="file" id="file_profvideo" accept="video/*" onchange="handleProfVideo(event)">
+    </div>
+
+    <div class="sec" id="selfieBox">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 3-3"/></svg></div>
+        <div class="sec-t">Selfie Verification</div>
+        <span class="sec-note">Strictly confidential</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">A quick check that you&rsquo;re a real person &mdash; never posted online, never shown to clients. One clear face selfie + one full-body photo.</div>
+      <div class="upload" onclick="document.getElementById('file_selfie').click()">
+        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
+        <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
+        <button type="button" class="upload-btn">Upload</button>
+      </div>
+      <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
+      <div class="upload" onclick="document.getElementById('file_fullbody').click()" style="margin-top:10px">
+        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v9m0 0l-3 5m3-5l3 5M7 9l5 1 5-1"/></svg></div>
+        <div class="upload-info"><div class="upload-ttl">Full-body photo <span class="req">*</span></div><div class="upload-h">One clear photo showing your full body, standing.</div><div id="fullbodyStatus" style="margin-top:4px"></div></div>
+        <button type="button" class="upload-btn">Upload</button>
+      </div>
+      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
     </div>
 
     <div class="actions">
@@ -1917,8 +1910,6 @@ const CITIES_BY_COUNTRY = {
   'Ukraine':['Kyiv','Lviv','Odesa','Other (Ukraine)'],
   'Turkey':['Istanbul','Ankara','Antalya','Bodrum','Other (Turkey)'],
   'Israel':['Tel Aviv','Jerusalem','Other (Israel)'],
-  'United Arab Emirates':['Dubai','Abu Dhabi','Other (UAE)'],
-  'UAE':['Dubai','Abu Dhabi','Other (UAE)'],
   'Qatar':['Doha','Other (Qatar)'],
   'Saudi Arabia':['Riyadh','Jeddah','Other (Saudi Arabia)'],
   'Morocco':['Marrakesh','Casablanca','Other (Morocco)'],
@@ -2020,8 +2011,6 @@ const LOCAL_AREAS_BY_CITY = {
   'Bodrum':['Bodrum Center','Yalıkavak','Other'],
   'Tel Aviv':['Rothschild','Neve Tzedek','Other'],
   'Jerusalem':['City Center','Other'],
-  'Dubai':['Downtown','Marina','Palm Jumeirah','JBR','Business Bay','DIFC','Other'],
-  'Abu Dhabi':['Corniche','Yas Island','Saadiyat','Other'],
   'Doha':['West Bay','The Pearl','Other'],
   'Riyadh':['Olaya','Diplomatic Quarter','Other'],
   'Jeddah':['Al Hamra','Other'],
@@ -2130,10 +2119,10 @@ const MORE_LADIES_OPTIONS = [
 
 // ─── Travel offerings (standard travel fees handled at booking time). ─
 const TRAVEL_OPTIONS = [
-  { key: 'in_house',     name: 'In-house',     sub: 'At her own location' },
-  { key: 'mobile',       name: 'Mobile',       sub: '+£50 close / +£100 airport' },
-  { key: 'dinner_event', name: 'Dinner / Event', sub: 'Time-based' },
-  { key: 'trip_abroad',  name: 'Trip abroad',  sub: '+£1,000 + costs' }
+  { key: 'in_house',     name: 'In-house',     sub: 'At your location' },
+  { key: 'mobile',       name: 'Mobile',       sub: 'At his location' },
+  { key: 'dinner_event', name: 'Dinner / Event', sub: 'Priced separately' },
+  { key: 'trip_abroad',  name: 'Trip abroad',  sub: '72h+ · transportation covered · +£1,000 (depends on distance)' }
 ];
 
 // ─── Legacy per-act lists kept defined so older code paths that still
@@ -2285,7 +2274,7 @@ function applyFallbackDefaults(){
     NATIONALITIES = ['British','Brazilian','Romanian','Portuguese','Spanish','Italian','French','Polish','Ukrainian','Russian','Hungarian','Bulgarian','Colombian','Venezuelan','Argentinian','Mexican','American','Canadian','Australian','Chinese','Japanese','Korean','Thai','Vietnamese','Filipino','Indian','Iranian','Turkish','Moroccan','Egyptian','Nigerian','South African','Other'];
   }
   if(COUNTRIES.length === 0){
-    COUNTRIES = ['United Kingdom','Ireland','France','Germany','Spain','Italy','Portugal','Netherlands','Belgium','Switzerland','Austria','Romania','Poland','Greece','United States','Canada','Australia','Brazil','United Arab Emirates','Other'];
+    COUNTRIES = ['United Kingdom','Ireland','France','Germany','Spain','Italy','Portugal','Netherlands','Belgium','Switzerland','Austria','Romania','Poland','Greece','United States','Canada','Australia','Brazil','Other'];
   }
   if(LOCAL_AREAS.length === 0){
     LOCAL_AREAS = ['Central','North','South','East','West','Other area','Outside main city'];
@@ -3763,7 +3752,7 @@ function setServiceLine(line){
   var modE = document.getElementById('modEscort');
   if(modT) modT.style.display = formData.offers_tantric === 'Yes' ? '' : 'none';
   if(modE) modE.style.display = formData.offers_escort  === 'Yes' ? '' : 'none';
-  ['moreLadiesBlock','travelBlock','boundariesBlock'].forEach(function(id){
+  ['moreLadiesBlock','travelBlock'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = line ? '' : 'none';
   });
   document.querySelectorAll('#serviceLineRow .line-pill').forEach(function(p){
@@ -4539,6 +4528,9 @@ function validateStepBeforeAdvance(currentStep){
     if(formData.offers_escort === 'Yes' && !formData.escort_tier){
       flag2('escortLevelGrid','Please choose your Companions level (Premium / Elite / First Class)'); return false;
     }
+    if((formData.more_ladies||[]).length === 0){
+      flag2('moreLadiesRow','Pick at least one More Ladies option (Four Hands, Couples, or More Ladies)'); return false;
+    }
     // Second working country: add one or tick "I don't have a second working country".
     if(!formData.no_second_country && (formData.extra_locations||[]).length === 0){
       const c = document.getElementById('f_no_second_country');
@@ -4998,10 +4990,9 @@ function renderSummary(){
     sec('Travel');
     f.travel.forEach(k => { const t = TRAVEL_OPTIONS.find(o=>o.key===k); row(t?t.name:k, t?t.sub:''); });
   }
-  if((f.offers_tantric==='Yes' || f.offers_escort==='Yes') && (f.boundaries || f.right_to_refuse)){
-    sec('Boundaries');
-    if(f.boundaries) row('Boundaries', f.boundaries);
-    if(f.right_to_refuse) row('Right to refuse unsafe clients', 'Yes');
+  if(f.service_line && f.right_to_refuse){
+    sec('Safety');
+    row('Right to refuse unsafe clients', 'Yes');
   }
 
   // Legacy generic services (still captured on some flows)
@@ -5580,6 +5571,11 @@ async function submitApplication(){
     jumpToService('escortLevelGrid');
     return;
   }
+  if((formData.more_ladies||[]).length === 0){
+    showToast('Pick at least one More Ladies option (Four Hands, Couples, or More Ladies)','error');
+    jumpToService('moreLadiesRow');
+    return;
+  }
   // Legacy `services` array kept simple: the service-line name(s) the
   // applicant picked. No per-act entries — Service Lines is time-only.
   formData.services = [];
@@ -5863,7 +5859,6 @@ async function submitApplication(){
     duration_preferences: formData.dur_pref,
     starting_rate: parseFloat(formData.rate)||null,
     starting_rate_currency: formData.currency || 'GBP',
-    boundaries: formData.boundaries || null,
     // Structured service offering: keeps the rich data so the lady profile
     // can render it. Two service "modules" each with tier + rate table +
     // their own extras.
@@ -5904,7 +5899,6 @@ async function submitApplication(){
         starting_price: parseFloat(formData.rate) || null,
         rates: formData.escort_rates,
         right_to_refuse_clients: !!formData.right_to_refuse,
-        boundaries: formData.boundaries || null,
         competing: formData.competing || null,
         agencies: (formData.escort_agencies||[]).map(s => (s||'').trim()).filter(Boolean)
       } : { offered: false }
