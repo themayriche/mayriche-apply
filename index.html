@@ -981,17 +981,17 @@ html{scroll-behavior:smooth}
       <div class="row" style="margin:14px 0">
         <div class="field" style="grid-column:span 2">
           <label class="field-lbl">Street &amp; Number <span class="req">*</span></label>
-          <input type="text" class="inp" id="f_home_street" placeholder="16 Maddox Street" autocomplete="street-address" data-sec="personal">
+          <input type="text" class="inp" id="f_home_street" placeholder="10 Bond Street" autocomplete="street-address" data-sec="personal">
         </div>
       </div>
       <div class="row">
         <div class="field">
           <label class="field-lbl">Apartment / Flat No.</label>
-          <input type="text" class="inp" id="f_home_apt" placeholder="2" autocomplete="address-line2" inputmode="numeric">
+          <input type="text" class="inp" id="f_home_apt" placeholder="1" autocomplete="address-line2" inputmode="numeric">
         </div>
         <div class="field">
           <label class="field-lbl">Postcode <span class="req">*</span></label>
-          <input type="text" class="inp" id="f_home_postcode" placeholder="W1S 1PH" autocomplete="postal-code" autocapitalize="characters" data-sec="personal">
+          <input type="text" class="inp" id="f_home_postcode" placeholder="W1S 1SS" autocomplete="postal-code" autocapitalize="characters" data-sec="personal">
         </div>
       </div>
     </div>
@@ -1496,17 +1496,17 @@ html{scroll-behavior:smooth}
         <div class="row" style="margin-bottom:14px">
           <div class="field" style="grid-column:span 2">
             <label class="field-lbl">Street &amp; Number</label>
-            <input type="text" class="inp" id="f_inhouse_street" placeholder="16 Maddox Street" autocomplete="street-address">
+            <input type="text" class="inp" id="f_inhouse_street" placeholder="10 Bond Street" autocomplete="street-address">
           </div>
         </div>
         <div class="row" style="margin-bottom:14px">
           <div class="field">
             <label class="field-lbl">Apartment / Flat</label>
-            <input type="text" class="inp" id="f_inhouse_apt" placeholder="2" inputmode="numeric" autocomplete="address-line2">
+            <input type="text" class="inp" id="f_inhouse_apt" placeholder="1" inputmode="numeric" autocomplete="address-line2">
           </div>
           <div class="field">
             <label class="field-lbl">Postcode</label>
-            <input type="text" class="inp" id="f_inhouse_postcode" placeholder="W1S 1PH" autocomplete="postal-code" autocapitalize="characters">
+            <input type="text" class="inp" id="f_inhouse_postcode" placeholder="W1S 1SS" autocomplete="postal-code" autocapitalize="characters">
           </div>
         </div>
       </div>
@@ -1832,7 +1832,7 @@ let ADDONS = [];
 // Static UI constants (not business-specific)
 // Real seasonal spots (NO_TRAVEL is rendered separately, after the
 // "Other" free-text destinations). "Other" stays at the end of the grid.
-const SEASONAL_DESTINATIONS = ['Ibiza','Marbella','Mallorca','Monaco','Saint-Tropez','Cannes','Mykonos','Dubai','Saint-Barths','Porto Cervo (Sardinia)','Capri','Lake Como','Bodrum','Aspen','Courchevel','Gstaad','Saint-Moritz','Miami','Las Vegas','Maldives','Other'];
+const SEASONAL_DESTINATIONS = ['Ibiza','Marbella','Mallorca','Monaco','Saint-Tropez','Cannes','Mykonos','Saint-Barths','Porto Cervo (Sardinia)','Capri','Lake Como','Bodrum','Aspen','Courchevel','Gstaad','Saint-Moritz','Miami','Las Vegas','Maldives','Other'];
 const NO_TRAVEL = "I don't want to travel anywhere";
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DURATIONS = ['30 min','60 min','90 min','120 min','3 hours','4 hours','6 hours','Overnight','Weekend','Trip'];
@@ -3088,8 +3088,8 @@ function buildExtraLocation(loc){
     '<div class="row-1" style="margin-top:12px"><div class="field"><label class="field-lbl">Area</label><select class="sel loc-area" disabled><option value="">Pick city first…</option></select><input class="inp loc-area-free" placeholder="Type your area" style="display:none;margin-top:8px"></div></div>' +
     '<label style="display:flex;align-items:center;gap:8px;margin:12px 0 6px;font-size:12px;color:var(--tx2);cursor:pointer"><input type="checkbox" class="loc-noinhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile only)</label>' +
     '<div class="loc-inhouse">' +
-      '<div class="row" style="margin-bottom:10px"><div class="field" style="grid-column:span 2"><label class="field-lbl">Street &amp; Number</label><input class="inp loc-street" placeholder="16 Maddox Street"></div></div>' +
-      '<div class="row"><div class="field"><label class="field-lbl">Apartment / Flat</label><input class="inp loc-apt" inputmode="numeric" placeholder="2"></div><div class="field"><label class="field-lbl">Postcode</label><input class="inp loc-postcode" placeholder="W1S 1PH"></div></div>' +
+      '<div class="row" style="margin-bottom:10px"><div class="field" style="grid-column:span 2"><label class="field-lbl">Street &amp; Number</label><input class="inp loc-street" placeholder="10 Bond Street"></div></div>' +
+      '<div class="row"><div class="field"><label class="field-lbl">Apartment / Flat</label><input class="inp loc-apt" inputmode="numeric" placeholder="1"></div><div class="field"><label class="field-lbl">Postcode</label><input class="inp loc-postcode" placeholder="W1S 1SS"></div></div>' +
     '</div>';
   wrap.appendChild(block);
 
