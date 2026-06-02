@@ -636,6 +636,10 @@ html{scroll-behavior:smooth}
 .svc-mod-head{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--brd)}
 .svc-mod-title{font-family:var(--fd);font-size:24px;font-weight:600;color:var(--tx);letter-spacing:.01em;margin-bottom:4px;line-height:1.15}
 .svc-mod-desc{font-size:12.5px;color:var(--mt);line-height:1.6;font-style:italic}
+.svc-disclaimer{font-size:11.5px;color:var(--mt);line-height:1.7;background:var(--sf);border:1px solid var(--brd);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-style:italic}
+.level-card{padding:16px 14px;background:var(--card);border:1.5px solid var(--brd2);border-radius:12px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s;display:flex;flex-direction:column;gap:4px;min-height:1px}
+.level-card .level-tier{font-size:11px;letter-spacing:.18em;color:var(--ac);font-weight:600}
+.level-card .level-desc{font-size:11.5px;color:var(--mt);line-height:1.55;margin-top:4px}
 .svc-mod-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
 .svc-mod-q{font-size:13px;color:var(--tx);font-weight:600;letter-spacing:.01em}
 .svc-mod-block{margin-top:18px;padding-top:18px;border-top:1px solid var(--brd)}
@@ -659,11 +663,10 @@ html{scroll-behavior:smooth}
 /* Premium / Elite / First Class level cards. */
 .level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 @media (max-width:540px){.level-grid{grid-template-columns:1fr}}
-.level-card{padding:16px 14px;background:var(--card);border:1.5px solid var(--brd2);border-radius:12px;cursor:pointer;text-align:center;transition:border-color .2s,background .2s}
 .level-card:hover{border-color:var(--ac)}
 .level-card.selected{border-color:var(--ac);background:linear-gradient(180deg,rgba(196,168,130,.10),rgba(196,168,130,.02));box-shadow:0 0 0 2px rgba(196,168,130,.18) inset}
-.level-card .level-name{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);letter-spacing:.04em;margin-bottom:4px}
-.level-card .level-price{font-size:11.5px;color:var(--mt);letter-spacing:.02em}
+.level-card .level-name{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--tx);letter-spacing:.04em}
+.level-card .level-price{font-size:11.5px;color:var(--ac);letter-spacing:.02em;font-weight:500}
 
 /* Starting-price combo (input £xxx + 3 quick tier chips). */
 .price-combo{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
@@ -1185,6 +1188,11 @@ html{scroll-behavior:smooth}
         <span class="sec-note">Time-based. No menu of acts.</span>
       </div>
 
+      <!-- ─── Legal disclaimer — sits above everything in this section. ─── -->
+      <div class="svc-disclaimer">
+        We are not an employer, only an introductory agency. Services are priced on time. Fees are for the session time booked through our platform. Anything beyond that is a private matter between two consenting adults.
+      </div>
+
       <!-- ─── Service-line picker — pick Tantric, Companions, or both ─── -->
       <div class="svc-mod-block" style="padding-top:4px">
         <div class="field-lbl" style="margin-bottom:6px">Which service(s) do you offer? <span class="req">*</span></div>
@@ -1202,7 +1210,7 @@ html{scroll-behavior:smooth}
       <div class="svc-mod" id="modTantric" style="margin-top:18px;display:none">
         <div class="svc-mod-head">
           <div class="svc-mod-title">Tantric Massage</div>
-          <div class="svc-mod-desc">A tantric massage with a mix of deep-tissue techniques and sensual body-to-body moves, ending with a slow hand climax.</div>
+          <div class="svc-mod-desc">As an independent, you will offer a premium tantric massage with relaxing and sensual body-to-body techniques to clients coming from our platform.</div>
         </div>
         <div class="reveal open" id="tantricBody" style="max-height:none">
           <div class="svc-mod-block">
@@ -1245,9 +1253,21 @@ html{scroll-behavior:smooth}
             <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
             <div class="field-hint" style="margin-bottom:12px">You start at Premium (£250/hour). As you receive 5-star ratings, you unlock Elite and First Class.</div>
             <div class="level-grid" id="tantricLevelGrid">
-              <div class="level-card" data-level="premium" onclick="setLevel('tantric','premium')"><div class="level-name">Premium</div><div class="level-price">from £250 / hour</div></div>
-              <div class="level-card" data-level="elite" onclick="setLevel('tantric','elite')"><div class="level-name">Elite</div><div class="level-price">from £350 / hour</div></div>
-              <div class="level-card" data-level="first_class" onclick="setLevel('tantric','first_class')"><div class="level-name">First Class</div><div class="level-price">from £450 / hour</div></div>
+              <div class="level-card" data-level="premium" onclick="setLevel('tantric','premium')">
+                <div class="level-tier">◆ PREMIUM</div>
+                <div class="level-name">from £250 / hour</div>
+                <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
+              </div>
+              <div class="level-card" data-level="elite" onclick="setLevel('tantric','elite')">
+                <div class="level-tier">◆◆ ELITE</div>
+                <div class="level-name">from £350 / hour</div>
+                <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
+              </div>
+              <div class="level-card" data-level="first_class" onclick="setLevel('tantric','first_class')">
+                <div class="level-tier">◆◆◆ FIRST CLASS</div>
+                <div class="level-name">from £450 / hour</div>
+                <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
+              </div>
             </div>
             <input type="hidden" id="tantricStartingPrice">
             <span id="tantricPriceCur" style="display:none">£</span>
@@ -1264,8 +1284,8 @@ html{scroll-behavior:smooth}
       <!-- ─── Companions module (hidden until service-line picks companions/both) ─── -->
       <div class="svc-mod" id="modEscort" style="margin-top:18px;display:none">
         <div class="svc-mod-head">
-          <div class="svc-mod-title">Companions Services</div>
-          <div class="svc-mod-desc">A sensual companionship experience between two consenting adults, which may include a girlfriend experience (GFE) and a relaxed level of intimacy.</div>
+          <div class="svc-mod-title">Companionship</div>
+          <div class="svc-mod-desc">As an independent, you will offer a refined company for the occasion — an evening, dinner, event or travel — to clients coming from our platform.</div>
         </div>
         <div class="reveal open" id="escortBody" style="max-height:none">
           <div class="svc-mod-block">
@@ -1293,7 +1313,6 @@ html{scroll-behavior:smooth}
               <div class="pill-group" data-pill="competing">
                 <div class="pill" data-val="Yes">Yes</div>
                 <div class="pill" data-val="No">No</div>
-                <div class="pill" data-val="Prefer not to say">Prefer not to say</div>
               </div>
             </div>
             <div id="agencyWebsiteWrap" style="margin-top:14px;display:none">
@@ -1309,9 +1328,21 @@ html{scroll-behavior:smooth}
             <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
             <div class="field-hint" style="margin-bottom:12px">You start at Premium (£350/booking). As you receive 5-star ratings, you unlock Elite and First Class.</div>
             <div class="level-grid" id="escortLevelGrid">
-              <div class="level-card" data-level="premium" onclick="setLevel('escort','premium')"><div class="level-name">Premium</div><div class="level-price">from £350 / booking</div></div>
-              <div class="level-card" data-level="elite" onclick="setLevel('escort','elite')"><div class="level-name">Elite</div><div class="level-price">from £550 / booking</div></div>
-              <div class="level-card" data-level="first_class" onclick="setLevel('escort','first_class')"><div class="level-name">First Class</div><div class="level-price">from £900 / booking</div></div>
+              <div class="level-card" data-level="premium" onclick="setLevel('escort','premium')">
+                <div class="level-tier">◆ PREMIUM</div>
+                <div class="level-name">from £350 / booking</div>
+                <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
+              </div>
+              <div class="level-card" data-level="elite" onclick="setLevel('escort','elite')">
+                <div class="level-tier">◆◆ ELITE</div>
+                <div class="level-name">from £550 / booking</div>
+                <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
+              </div>
+              <div class="level-card" data-level="first_class" onclick="setLevel('escort','first_class')">
+                <div class="level-tier">◆◆◆ FIRST CLASS</div>
+                <div class="level-name">from £900 / booking</div>
+                <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
+              </div>
             </div>
             <input type="hidden" id="escortStartingPrice">
             <span id="escortPriceCur" style="display:none">£</span>
@@ -1500,7 +1531,7 @@ html{scroll-behavior:smooth}
       </div>
       <div class="row" style="margin-bottom:16px">
         <div class="field"><label class="field-lbl">How many days per week? <span class="req">*</span></label>
-          <select class="sel" id="f_days_week" data-sec="availability"><option value="">Select...</option><option>1-2 days a week</option><option>3-4 days a week</option><option>5 days a week</option><option>6-7 days a week</option><option>Occasionally (on request only)</option></select>
+          <select class="sel" id="f_days_week" data-sec="availability"><option value="">Select...</option><option>3-4 days a week</option><option>5 days a week</option><option>6-7 days a week</option><option>Occasionally (on request only)</option></select>
         </div>
         <div class="field"><label class="field-lbl">Late nights &amp; weekends?</label>
           <select class="sel" id="f_late_hours">
@@ -1512,7 +1543,7 @@ html{scroll-behavior:smooth}
         </div>
       </div>
       <div class="field-lbl" style="margin-bottom:6px">Choose your weekly availability <span class="req">*</span></div>
-      <div class="field-hint" style="margin:0 0 12px">Tap each day you work to switch it <b>ON</b> (9 AM – 2 AM by default — adjust as you like). We need at least 4 days.</div>
+      <div class="field-hint" style="margin:0 0 12px">Tap each day you work to switch it <b>ON</b> (9 AM – 2 AM by default — adjust as you like). <b>Minimum 3 days.</b></div>
       <div class="avail-grid" id="availGrid"></div>
       <div class="row-1" style="margin-top:10px">
         <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
@@ -2091,6 +2122,15 @@ const RATE_PLAN = [
   { duration: '4 hours',    mult: 4.0 },
   { duration: 'Extra 1 hour', mult: 1.0 },
   { duration: 'Extra 30 min', mult: 0.6, floor: 150 }
+];
+
+// Extra rate rows shown only for the Companionship module — overnight and
+// weekend packages, priced as a discounted multiple of the hourly baseline
+// (these aren't strict time × rate; the applicant can edit them as she
+// wishes once the table is generated).
+const ESCORT_EXTRA_ROWS = [
+  { duration: 'Overnight (6h)', mult: 5.0 },
+  { duration: 'Weekend (48h)',  mult: 14.0 }
 ];
 
 // ─── Service tiers — applicant picks one card per service. The number
@@ -3687,8 +3727,13 @@ function setTierByChip(){ /* no-op */ }
 function renderTierGrid(){ /* no-op */ }
 
 // ─── Build the rate rows from her entered starting price ──────────
-function buildRatesFromPrice(price){
-  return RATE_PLAN.map(p => {
+// scope is 'tantric' or 'escort' — Companionship adds Overnight + Weekend
+// rows on top of the shared plan.
+function buildRatesFromPrice(price, scope){
+  const plan = (scope === 'escort')
+    ? RATE_PLAN.concat(ESCORT_EXTRA_ROWS)
+    : RATE_PLAN;
+  return plan.map(p => {
     // 30-minute session is a fixed £200 in-house regardless of her base
     // rate, and is not offered as a mobile booking (shown as "—").
     if(p.isThirty){
@@ -3715,7 +3760,7 @@ function applyStartingPrice(scope, priceVal){
     return;
   }
   formData[scope + '_tier'] = 'custom';
-  formData[scope + '_rates'] = buildRatesFromPrice(price);
+  formData[scope + '_rates'] = buildRatesFromPrice(price, scope);
   formData.rate = String(price);
   const legacyRate = document.getElementById('f_rate');
   if(legacyRate) legacyRate.value = price;
@@ -5594,8 +5639,13 @@ async function submitApplication(){
     var meta = TRAVEL_OPTIONS.find(function(o){return o.key===k;});
     formData.addons.push(meta ? meta.name : k);
   });
-  const anyDay = Object.values(formData.availability).some(d => d.enabled);
-  if(!anyDay){ showToast('Set your weekly availability — tap each day you can work','error'); return; }
+  const daysOnCount = Object.values(formData.availability).filter(d => d && d.enabled).length;
+  if(daysOnCount < 3){
+    showToast('Set your weekly availability — minimum 3 days','error');
+    const grid = document.getElementById('availGrid');
+    if(grid){ try{ grid.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+    return;
+  }
   // Step 4 mandatory uploads — surfaced as a soft block here so the
   // applicant can't submit without the three body angles + minimum
   // five professional photos. Selfie + ID stays required too.
