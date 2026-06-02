@@ -645,6 +645,7 @@ html{scroll-behavior:smooth}
    shared multi-select rows (More Ladies, Travel). Cards click as a unit;
    the radio/checkbox inside is purely for keyboard/state, not visible. */
 .line-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.line-row-2{grid-template-columns:repeat(2,1fr)}
 .line-row-multi{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
 .line-pill{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px 16px;background:var(--card);border:1.5px solid var(--brd2);border-radius:12px;cursor:pointer;transition:border-color .2s,background .2s;font-family:var(--fd)}
 .line-pill input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
@@ -853,16 +854,6 @@ html{scroll-behavior:smooth}
       </div>
     </div>
     <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
-    <div class="prog-sections">
-      <div class="prog-sec" data-sec="personal"><span class="prog-sec-dot"></span>Personal</div>
-      <div class="prog-sec" data-sec="physical"><span class="prog-sec-dot"></span>Physical</div>
-      <div class="prog-sec" data-sec="experience"><span class="prog-sec-dot"></span>Experience</div>
-      <div class="prog-sec" data-sec="work"><span class="prog-sec-dot"></span>Work</div>
-      <div class="prog-sec" data-sec="services"><span class="prog-sec-dot"></span>Services</div>
-      <div class="prog-sec" data-sec="availability"><span class="prog-sec-dot"></span>Availability</div>
-      <div class="prog-sec" data-sec="documents"><span class="prog-sec-dot"></span>Documents</div>
-      <div class="prog-sec" data-sec="consent"><span class="prog-sec-dot"></span>Consent</div>
-    </div>
   </div>
 
   <!-- Stepper -->
@@ -1194,13 +1185,13 @@ html{scroll-behavior:smooth}
         <span class="sec-note">Time-based. No menu of acts.</span>
       </div>
 
-      <!-- ─── Single service-line choice — Tantric / Companions / Both ─── -->
+      <!-- ─── Service-line picker — pick Tantric, Companions, or both ─── -->
       <div class="svc-mod-block" style="padding-top:4px">
-        <div class="field-lbl" style="margin-bottom:10px">Which service do you offer? <span class="req">*</span></div>
-        <div class="line-row" id="serviceLineRow">
-          <label class="line-pill" data-line="tantric"><input type="radio" name="serviceLine" value="tantric" onchange="setServiceLine('tantric')"><span class="line-title">Tantric</span><span class="line-sub">Tantric massage</span></label>
-          <label class="line-pill" data-line="companions"><input type="radio" name="serviceLine" value="companions" onchange="setServiceLine('companions')"><span class="line-title">Companions</span><span class="line-sub">Companionship</span></label>
-          <label class="line-pill" data-line="both"><input type="radio" name="serviceLine" value="both" onchange="setServiceLine('both')"><span class="line-title">Both</span><span class="line-sub">Tantric + Companions</span></label>
+        <div class="field-lbl" style="margin-bottom:6px">Which service(s) do you offer? <span class="req">*</span></div>
+        <div class="field-hint" style="margin-bottom:10px">Tick one or both. For each one you tick, you'll set your level (Premium / Elite / First Class).</div>
+        <div class="line-row line-row-2" id="serviceLineRow">
+          <label class="line-pill" data-line="tantric"><input type="checkbox" onchange="toggleServiceLine('tantric', this.checked)"><span class="line-title">Tantric</span><span class="line-sub">Tantric massage</span></label>
+          <label class="line-pill" data-line="companions"><input type="checkbox" onchange="toggleServiceLine('companions', this.checked)"><span class="line-title">Companions</span><span class="line-sub">Companionship</span></label>
         </div>
         <label style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:12.5px;color:var(--tx2);cursor:pointer;line-height:1.5">
           <input type="checkbox" id="f_right_to_refuse" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:1px"> I want to have the right to refuse any client who is not safe.
@@ -3744,24 +3735,32 @@ function toggleNo30(scope, checked){
 // Drives formData.offers_tantric / offers_escort and shows/hides each
 // service module body. Also reveals the shared More Ladies / Travel /
 // Boundaries blocks once any service has been picked.
-function setServiceLine(line){
-  formData.service_line = line;
-  formData.offers_tantric = (line === 'tantric' || line === 'both') ? 'Yes' : 'No';
-  formData.offers_escort  = (line === 'companions' || line === 'both') ? 'Yes' : 'No';
+// Multi-select service lines: Tantric and Companions are independent
+// checkboxes. service_line is derived from the two — 'tantric', 'companions'
+// or 'both' (or '' when none). At least one is required at submit time.
+function toggleServiceLine(line, on){
+  if(line === 'tantric')    formData.offers_tantric = on ? 'Yes' : 'No';
+  if(line === 'companions') formData.offers_escort  = on ? 'Yes' : 'No';
+  var t = formData.offers_tantric === 'Yes';
+  var c = formData.offers_escort  === 'Yes';
+  formData.service_line = t && c ? 'both' : t ? 'tantric' : c ? 'companions' : '';
   var modT = document.getElementById('modTantric');
   var modE = document.getElementById('modEscort');
-  if(modT) modT.style.display = formData.offers_tantric === 'Yes' ? '' : 'none';
-  if(modE) modE.style.display = formData.offers_escort  === 'Yes' ? '' : 'none';
+  if(modT) modT.style.display = t ? '' : 'none';
+  if(modE) modE.style.display = c ? '' : 'none';
+  var anyOn = t || c;
   ['moreLadiesBlock','travelBlock'].forEach(function(id){
-    var el = document.getElementById(id); if(el) el.style.display = line ? '' : 'none';
+    var el = document.getElementById(id); if(el) el.style.display = anyOn ? '' : 'none';
   });
   document.querySelectorAll('#serviceLineRow .line-pill').forEach(function(p){
-    p.classList.toggle('selected', p.getAttribute('data-line') === line);
+    var key = p.getAttribute('data-line');
+    var ticked = (key === 'tantric' && t) || (key === 'companions' && c);
+    p.classList.toggle('selected', ticked);
   });
   scheduleAutoSave && scheduleAutoSave();
   updateProgress && updateProgress();
 }
-window.setServiceLine = setServiceLine;
+window.toggleServiceLine = toggleServiceLine;
 
 // ─── Level cards (Premium / Elite / First Class) ───────────────────
 // Each picks the per-service baseline price (see LEVELS) and pipes it
@@ -4520,7 +4519,7 @@ function validateStepBeforeAdvance(currentStep){
     // Time-only model: one service line picked, and a level chosen for
     // each module she offers. No per-act counts, no per-act mandatory.
     if(!formData.service_line){
-      flag2('serviceLineRow','Please choose Tantric, Companions or Both'); return false;
+      flag2('serviceLineRow','Tick at least one — Tantric or Companions'); return false;
     }
     if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){
       flag2('tantricLevelGrid','Please choose your Tantric level (Premium / Elite / First Class)'); return false;
@@ -5131,11 +5130,14 @@ function loadDraft(){
         });
       } else if(['offers_tantric','offers_escort'].includes(k)){
         formData[k] = d[k];
-        const osel = document.getElementById('f_'+k);
-        if(osel) osel.value = d[k] || '';
         if(d[k] === 'Yes'){
-          const body = document.getElementById(k === 'offers_tantric' ? 'tantricBody' : 'escortBody');
-          if(body){ body.classList.add('open'); body.style.maxHeight = 'none'; }
+          // Sync the new checkbox + module visibility via the same handler
+          // the live form uses, so the draft restore looks identical.
+          var lineKey = k === 'offers_tantric' ? 'tantric' : 'companions';
+          var pill = document.querySelector('#serviceLineRow .line-pill[data-line="' + lineKey + '"]');
+          var cb = pill && pill.querySelector('input[type="checkbox"]');
+          if(cb){ cb.checked = true; }
+          if(typeof toggleServiceLine === 'function') toggleServiceLine(lineKey, true);
         }
       } else if(k === 'photoshoot'){
         formData.photoshoot = d[k];
@@ -5547,7 +5549,7 @@ async function submitApplication(){
   const jumpToService = (sel) => jumpAndFlag(2, sel);
   // Must pick the service line and a level for each module she offers.
   if(!formData.service_line){
-    showToast('Please choose Tantric, Companions or Both','error');
+    showToast('Tick at least one — Tantric or Companions','error');
     jumpToService('serviceLineRow');
     return;
   }
