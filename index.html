@@ -641,6 +641,29 @@ html{scroll-behavior:smooth}
 .svc-mod-block{margin-top:18px;padding-top:18px;border-top:1px solid var(--brd)}
 .svc-mod-block:first-child{border-top:0;padding-top:0;margin-top:0}
 
+/* Single-choice service-line pills (Tantric / Companions / Both) and the
+   shared multi-select rows (More Ladies, Travel). Cards click as a unit;
+   the radio/checkbox inside is purely for keyboard/state, not visible. */
+.line-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.line-row-multi{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.line-pill{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px 16px;background:var(--card);border:1.5px solid var(--brd2);border-radius:12px;cursor:pointer;transition:border-color .2s,background .2s;font-family:var(--fd)}
+.line-pill input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.line-pill .line-title{font-size:14px;font-weight:600;color:var(--tx);letter-spacing:.01em}
+.line-pill .line-sub{font-size:11px;color:var(--mt);letter-spacing:.04em}
+.line-pill:hover{border-color:var(--ac)}
+.line-pill.selected,.line-pill input:checked ~ .line-title{border-color:var(--ac)}
+.line-pill.selected{background:linear-gradient(180deg,rgba(196,168,130,.10),rgba(196,168,130,.02));box-shadow:0 0 0 2px rgba(196,168,130,.18) inset}
+@media (max-width:540px){.line-row{grid-template-columns:1fr}}
+
+/* Premium / Elite / First Class level cards. */
+.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+@media (max-width:540px){.level-grid{grid-template-columns:1fr}}
+.level-card{padding:16px 14px;background:var(--card);border:1.5px solid var(--brd2);border-radius:12px;cursor:pointer;text-align:center;transition:border-color .2s,background .2s}
+.level-card:hover{border-color:var(--ac)}
+.level-card.selected{border-color:var(--ac);background:linear-gradient(180deg,rgba(196,168,130,.10),rgba(196,168,130,.02));box-shadow:0 0 0 2px rgba(196,168,130,.18) inset}
+.level-card .level-name{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--tx);letter-spacing:.04em;margin-bottom:4px}
+.level-card .level-price{font-size:11.5px;color:var(--mt);letter-spacing:.02em}
+
 /* Starting-price combo (input £xxx + 3 quick tier chips). */
 .price-combo{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .price-input-wrap{display:flex;align-items:stretch;flex-shrink:0}
@@ -1168,24 +1191,26 @@ html{scroll-behavior:smooth}
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
         <div class="sec-t">Services &amp; Pricing</div>
-        <span class="sec-note">Tell us which services you offer and your rates.</span>
+        <span class="sec-note">Time-based. No menu of acts.</span>
       </div>
 
-      <!-- ─── Service Module 1: TANTRIC MASSAGE SERVICES ─── -->
-      <div class="svc-mod" id="modTantric">
+      <!-- ─── Single service-line choice — Tantric / Companions / Both ─── -->
+      <div class="svc-mod-block" style="padding-top:4px">
+        <div class="field-lbl" style="margin-bottom:10px">Which service do you offer? <span class="req">*</span></div>
+        <div class="line-row" id="serviceLineRow">
+          <label class="line-pill" data-line="tantric"><input type="radio" name="serviceLine" value="tantric" onchange="setServiceLine('tantric')"><span class="line-title">Tantric</span><span class="line-sub">Tantric massage</span></label>
+          <label class="line-pill" data-line="companions"><input type="radio" name="serviceLine" value="companions" onchange="setServiceLine('companions')"><span class="line-title">Companions</span><span class="line-sub">Companionship</span></label>
+          <label class="line-pill" data-line="both"><input type="radio" name="serviceLine" value="both" onchange="setServiceLine('both')"><span class="line-title">Both</span><span class="line-sub">Tantric + Companions</span></label>
+        </div>
+      </div>
+
+      <!-- ─── Tantric module (hidden until service-line picks tantric/both) ─── -->
+      <div class="svc-mod" id="modTantric" style="margin-top:18px;display:none">
         <div class="svc-mod-head">
-          <div class="svc-mod-title">Tantric Massage Services</div>
+          <div class="svc-mod-title">Tantric Massage</div>
           <div class="svc-mod-desc">A tantric massage with a mix of deep-tissue techniques and sensual body-to-body moves, ending with a slow hand climax.</div>
         </div>
-        <div class="svc-mod-toggle">
-          <span class="svc-mod-q">Do you offer Tantric Massage Services?</span>
-          <select class="sel" id="f_offers_tantric" style="max-width:170px">
-            <option value="">Select...</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-        <div class="reveal" id="tantricBody">
+        <div class="reveal open" id="tantricBody" style="max-height:none">
           <div class="svc-mod-block">
             <div class="field">
               <label class="field-lbl">Do you have experience in this? <span class="req">*</span></label>
@@ -1223,14 +1248,15 @@ html{scroll-behavior:smooth}
             <div class="field-lbl" style="margin-bottom:8px">Currency</div>
             <div class="currency-row" id="tantricCurrencyRow"></div>
 
-            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Starting price <span class="req">*</span></div>
-            <div class="field-hint" style="margin-bottom:12px">Your 60-minute in-house rate. The full rate table appears below based on the closest tier.</div>
-            <div class="price-combo">
-              <div class="price-input-wrap">
-                <span class="price-cur" id="tantricPriceCur">£</span>
-                <input type="number" class="inp price-input" id="tantricStartingPrice" inputmode="numeric" min="100" max="2000" step="10" placeholder="250" oninput="applyStartingPrice('tantric', this.value)">
-              </div>
+            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
+            <div class="field-hint" style="margin-bottom:12px">You start at Premium (£250/hour). As you receive 5-star ratings, you unlock Elite and First Class.</div>
+            <div class="level-grid" id="tantricLevelGrid">
+              <div class="level-card" data-level="premium" onclick="setLevel('tantric','premium')"><div class="level-name">Premium</div><div class="level-price">from £250 / hour</div></div>
+              <div class="level-card" data-level="elite" onclick="setLevel('tantric','elite')"><div class="level-name">Elite</div><div class="level-price">from £350 / hour</div></div>
+              <div class="level-card" data-level="first_class" onclick="setLevel('tantric','first_class')"><div class="level-name">First Class</div><div class="level-price">from £450 / hour</div></div>
             </div>
+            <input type="hidden" id="tantricStartingPrice">
+            <span id="tantricPriceCur" style="display:none">£</span>
             <div class="rate-table-wrap" id="tantricRateTableWrap" style="display:none">
               <div class="rate-table-title" id="tantricRateTitle">Your rates</div>
               <table class="rate-table" id="tantricRateTable"></table>
@@ -1238,33 +1264,16 @@ html{scroll-behavior:smooth}
               <div class="field-hint" style="margin-top:8px">We discuss and finalise rates at interview.</div>
             </div>
           </div>
-          <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Services You Offer <span class="opt-note">Select all that apply</span></div>
-            <div class="field-hint" style="margin-bottom:10px">These are charged on top of your base rate. Tap each one you'd like to offer.</div>
-            <div class="offer-grid" id="tantricOffersGrid"></div>
-          </div>
         </div>
       </div>
 
-      <!-- ─── Service Module 2: COMPANIONS SERVICES (user-facing name).
-           Internal ids / JS keys (modEscort, offers_escort, escort_services,
-           escort_rates, escort_tier) stay as `escort` because the submit
-           handler + MC OS lady-profile reader index on those keys. Only the
-           visible copy is renamed. ─── -->
-      <div class="svc-mod" id="modEscort" style="margin-top:18px">
+      <!-- ─── Companions module (hidden until service-line picks companions/both) ─── -->
+      <div class="svc-mod" id="modEscort" style="margin-top:18px;display:none">
         <div class="svc-mod-head">
           <div class="svc-mod-title">Companions Services</div>
           <div class="svc-mod-desc">A sensual companionship experience between two consenting adults, which may include a girlfriend experience (GFE) and a relaxed level of intimacy.</div>
         </div>
-        <div class="svc-mod-toggle">
-          <span class="svc-mod-q">Do you offer Companions Services?</span>
-          <select class="sel" id="f_offers_escort" style="max-width:170px">
-            <option value="">Select...</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-        <div class="reveal" id="escortBody">
+        <div class="reveal open" id="escortBody" style="max-height:none">
           <div class="svc-mod-block">
             <div class="field">
               <label class="field-lbl">Do you have experience in this? <span class="req">*</span></label>
@@ -1303,14 +1312,15 @@ html{scroll-behavior:smooth}
             <div class="field-lbl" style="margin-bottom:8px">Currency</div>
             <div class="currency-row" id="escortCurrencyRow"></div>
 
-            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Starting price <span class="req">*</span></div>
-            <div class="field-hint" style="margin-bottom:12px">Your 60-minute in-house rate for companionship. The full rate table appears below.</div>
-            <div class="price-combo">
-              <div class="price-input-wrap">
-                <span class="price-cur" id="escortPriceCur">£</span>
-                <input type="number" class="inp price-input" id="escortStartingPrice" inputmode="numeric" min="100" max="2000" step="10" placeholder="250" oninput="applyStartingPrice('escort', this.value)">
-              </div>
+            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
+            <div class="field-hint" style="margin-bottom:12px">You start at Premium (£350/booking). As you receive 5-star ratings, you unlock Elite and First Class.</div>
+            <div class="level-grid" id="escortLevelGrid">
+              <div class="level-card" data-level="premium" onclick="setLevel('escort','premium')"><div class="level-name">Premium</div><div class="level-price">from £350 / booking</div></div>
+              <div class="level-card" data-level="elite" onclick="setLevel('escort','elite')"><div class="level-name">Elite</div><div class="level-price">from £550 / booking</div></div>
+              <div class="level-card" data-level="first_class" onclick="setLevel('escort','first_class')"><div class="level-name">First Class</div><div class="level-price">from £900 / booking</div></div>
             </div>
+            <input type="hidden" id="escortStartingPrice">
+            <span id="escortPriceCur" style="display:none">£</span>
             <div class="rate-table-wrap" id="escortRateTableWrap" style="display:none">
               <div class="rate-table-title" id="escortRateTitle">Your rates</div>
               <table class="rate-table" id="escortRateTable"></table>
@@ -1318,39 +1328,33 @@ html{scroll-behavior:smooth}
               <div class="field-hint" style="margin-top:8px">We discuss and finalise rates at interview.</div>
             </div>
           </div>
-
-          <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Services You Offer <span class="opt-note">Tap each one</span></div>
-            <div class="field-hint" style="margin-bottom:10px">All optional — tap the ones you offer. Prices are added on top of your base rate.</div>
-            <div class="escort-svc-list" id="escortServicesList"></div>
-          </div>
-
-          <!-- ─── Companionship & Travel ─── Yes / No / On request + note. -->
-          <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Companionship &amp; Travel</div>
-            <div class="field-hint" style="margin-bottom:10px">Do you offer time out with the client? Choose for each — add a note if it&rsquo;s on request.</div>
-            <div id="companionshipTravelList"></div>
-          </div>
-
-          <!-- ─── Special Requests & Fetishes ─── multi-select + Other. -->
-          <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Special Requests &amp; Fetishes <span class="opt-note">Price on request</span></div>
-            <div class="field-hint" style="margin-bottom:10px">Tap anything you&rsquo;re open to. All discussed and priced individually.</div>
-            <div class="offer-grid" id="specialRequestsGrid"></div>
-            <input type="text" class="inp" id="f_special_requests_other" placeholder="Anything else you offer — write it here" style="margin-top:10px">
-          </div>
-
-          <div class="svc-mod-block">
-            <div class="field">
-              <label class="field-lbl">Boundaries <span class="opt-note">Optional but recommended</span></label>
-              <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have, in your own words. Be honest — this helps us match you to the right clients." rows="4"></textarea>
-              <div class="field-hint">Anything we should know upfront before sending you a booking.</div>
-            </div>
-            <label style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:12.5px;color:var(--tx2);cursor:pointer;line-height:1.5">
-              <input type="checkbox" id="f_right_to_refuse" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:1px"> I want to have the right to refuse any client who is not safe.
-            </label>
-          </div>
         </div>
+      </div>
+
+      <!-- ─── More Ladies (shared, shown when any service selected) ─── -->
+      <div class="svc-mod-block" id="moreLadiesBlock" style="display:none;margin-top:18px">
+        <div class="field-lbl" style="margin-bottom:8px">More Ladies <span class="opt-note">Tap any you offer</span></div>
+        <div class="field-hint" style="margin-bottom:10px">Priced on time at your standard rate.</div>
+        <div class="line-row line-row-multi" id="moreLadiesRow"></div>
+      </div>
+
+      <!-- ─── Travel (shared) ─── -->
+      <div class="svc-mod-block" id="travelBlock" style="display:none;margin-top:18px">
+        <div class="field-lbl" style="margin-bottom:8px">Travel <span class="opt-note">Tap any you offer</span></div>
+        <div class="field-hint" style="margin-bottom:10px">Standard travel fees: close mobile +£50, airport +£100, abroad +£1,000.</div>
+        <div class="line-row line-row-multi" id="travelRow"></div>
+      </div>
+
+      <!-- ─── Boundaries + right to refuse (shared) ─── -->
+      <div class="svc-mod-block" id="boundariesBlock" style="display:none;margin-top:18px">
+        <div class="field">
+          <label class="field-lbl">Boundaries <span class="opt-note">Optional but recommended</span></label>
+          <textarea class="txa" id="f_boundaries" placeholder="Write any boundaries you have, in your own words. Be honest — this helps us match you to the right clients." rows="4"></textarea>
+          <div class="field-hint">Anything we should know upfront before sending you a booking.</div>
+        </div>
+        <label style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:12.5px;color:var(--tx2);cursor:pointer;line-height:1.5">
+          <input type="checkbox" id="f_right_to_refuse" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:1px"> I want to have the right to refuse any client who is not safe.
+        </label>
       </div>
 
       <!-- Hidden legacy mounts kept so existing JS that targets them
@@ -2109,7 +2113,33 @@ const RATE_PLAN = [
   { duration: 'Extra 30 min', mult: 0.6, floor: 150 }
 ];
 
-// ─── TANTRIC SPECIAL OFFERS (charged "on top") ───────────────────
+// ─── Service tiers — applicant picks one card per service. The number
+//     here is the 60-minute baseline; the rate table builds out from it.
+const LEVELS = {
+  tantric:    { premium: 250, elite: 350, first_class: 450 },
+  escort:     { premium: 350, elite: 550, first_class: 900 }
+};
+const LEVEL_LABEL = { premium: 'Premium', elite: 'Elite', first_class: 'First Class' };
+
+// ─── More Ladies (priced on time at standard rate, not per act). ──
+const MORE_LADIES_OPTIONS = [
+  { key: 'four_hands', name: 'Four Hands',  sub: 'Two ladies together' },
+  { key: 'couples',    name: 'Couples',     sub: 'Booking for a couple' },
+  { key: 'more_ladies',name: 'More Ladies', sub: 'Three or more ladies' }
+];
+
+// ─── Travel offerings (standard travel fees handled at booking time). ─
+const TRAVEL_OPTIONS = [
+  { key: 'in_house',     name: 'In-house',     sub: 'At her own location' },
+  { key: 'mobile',       name: 'Mobile',       sub: '+£50 close / +£100 airport' },
+  { key: 'dinner_event', name: 'Dinner / Event', sub: 'Time-based' },
+  { key: 'trip_abroad',  name: 'Trip abroad',  sub: '+£1,000 + costs' }
+];
+
+// ─── Legacy per-act lists kept defined so older code paths that still
+//     reference them (draft loader, OS read of historical applications)
+//     don't crash. They are NEVER rendered in the new form — Service
+//     Lines is time-only.
 const TANTRIC_OFFERS = [
   { key: 'vip_package', name: 'VIP Package', price: 250,
     desc: 'Includes 3 add-ons: mutual touching, nuru slides, assisted shower (separately worth double). Complimentary head, neck and shoulders — great for jet lag.' },
@@ -2359,14 +2389,20 @@ let formData = {
   tantric_rates:[], escort_rates:[],
   // "I don't do 30-minute sessions" per module (strikes the 30-min row).
   tantric_no_30min:false, escort_no_30min:false,
-  // Companions extras: companionship/travel (key→{value,note}), fetish
-  // multi-select + free text, and the client-screening right.
+  // Time-based model: no menu of acts. The legacy fetish / per-act lists
+  // (companionship_travel, special_requests, tantric_offers, escort_services)
+  // are kept empty so existing draft-load code doesn't crash, but the UI no
+  // longer collects them — Service Lines is time-only.
   companionship_travel:{}, special_requests:[], special_requests_prices:{}, special_requests_other:'', right_to_refuse:false,
-  // Special offers selected for tantric (array of keys from TANTRIC_OFFERS)
   tantric_offers:[],
-  // Escort services state — keyed by service key
-  //   { kissing:true, oral_unprotected:false, extreme_activities:'Yes', ... }
   escort_services:{},
+  // Service line picked: 'tantric' | 'companions' | 'both'.
+  service_line:'',
+  // Shared multi-select extras priced on time (not per act).
+  more_ladies:[],
+  // Travel offerings (in_house / mobile / dinner_event / trip_abroad)
+  // with standard travel fees baked into the OS profile, not the form.
+  travel:[],
   boundaries:'',
   days_week:'',
   availability:{}, availability_touched:false, avail_notes:'',
@@ -2448,12 +2484,12 @@ document.addEventListener('DOMContentLoaded', async function(){
   initExperienceReveal('tantric', '[data-pill="tantric_experience"]', 'tantricExpYearsWrap');
   initExperienceReveal('escort', '[data-pill="escort_experience"]', 'escortExpYearsWrap');
   renderCurrencyRows();
-  renderTantricOffers();
-  renderEscortServices();
-  renderCompanionshipTravel();
-  renderSpecialRequests();
-  const srOther = document.getElementById('f_special_requests_other');
-  if(srOther) srOther.addEventListener('input', () => { formData.special_requests_other = srOther.value; scheduleAutoSave && scheduleAutoSave(); });
+  // The per-act render*() calls (Tantric offers, Escort services,
+  // Companionship & Travel, Special Requests) are intentionally removed —
+  // Service Lines is time-only. The two new shared blocks below replace
+  // all of that with a clean "More Ladies" + "Travel" multi-select.
+  renderMoreLadies();
+  renderTravel();
   const rtr = document.getElementById('f_right_to_refuse');
   if(rtr) rtr.addEventListener('change', () => { formData.right_to_refuse = rtr.checked; scheduleAutoSave && scheduleAutoSave(); });
 
@@ -3640,7 +3676,6 @@ function renderCurrencyRows(){
         formData.currency = c.code;
         renderCurrencyRows();
         updateCurrencyDisplays();
-        renderTantricOffers();
         renderRateTable('tantric');
         renderRateTable('escort');
         scheduleAutoSave && scheduleAutoSave();
@@ -3715,6 +3750,92 @@ function toggleNo30(scope, checked){
   renderRateTable(scope);
   scheduleAutoSave && scheduleAutoSave();
 }
+
+// ─── Single service-line radio: Tantric / Companions / Both ────────
+// Drives formData.offers_tantric / offers_escort and shows/hides each
+// service module body. Also reveals the shared More Ladies / Travel /
+// Boundaries blocks once any service has been picked.
+function setServiceLine(line){
+  formData.service_line = line;
+  formData.offers_tantric = (line === 'tantric' || line === 'both') ? 'Yes' : 'No';
+  formData.offers_escort  = (line === 'companions' || line === 'both') ? 'Yes' : 'No';
+  var modT = document.getElementById('modTantric');
+  var modE = document.getElementById('modEscort');
+  if(modT) modT.style.display = formData.offers_tantric === 'Yes' ? '' : 'none';
+  if(modE) modE.style.display = formData.offers_escort  === 'Yes' ? '' : 'none';
+  ['moreLadiesBlock','travelBlock','boundariesBlock'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = line ? '' : 'none';
+  });
+  document.querySelectorAll('#serviceLineRow .line-pill').forEach(function(p){
+    p.classList.toggle('selected', p.getAttribute('data-line') === line);
+  });
+  scheduleAutoSave && scheduleAutoSave();
+  updateProgress && updateProgress();
+}
+window.setServiceLine = setServiceLine;
+
+// ─── Level cards (Premium / Elite / First Class) ───────────────────
+// Each picks the per-service baseline price (see LEVELS) and pipes it
+// through the existing applyStartingPrice → rate-table generator.
+function setLevel(scope, level){
+  var base = (LEVELS[scope] || {})[level];
+  if(!base) return;
+  formData[scope + '_tier'] = level;
+  applyStartingPrice(scope, base);
+  document.querySelectorAll('#' + scope + 'LevelGrid .level-card').forEach(function(c){
+    c.classList.toggle('selected', c.getAttribute('data-level') === level);
+  });
+  scheduleAutoSave && scheduleAutoSave();
+  updateProgress && updateProgress();
+}
+window.setLevel = setLevel;
+
+// ─── More Ladies (Four Hands / Couples / More Ladies) ───────────────
+function renderMoreLadies(){
+  var row = document.getElementById('moreLadiesRow');
+  if(!row) return;
+  row.innerHTML = '';
+  MORE_LADIES_OPTIONS.forEach(function(o){
+    var on = (formData.more_ladies || []).indexOf(o.key) >= 0;
+    var pill = document.createElement('div');
+    pill.className = 'line-pill' + (on ? ' selected' : '');
+    pill.setAttribute('data-key', o.key);
+    pill.innerHTML = '<span class="line-title">' + o.name + '</span><span class="line-sub">' + o.sub + '</span>';
+    pill.addEventListener('click', function(){
+      formData.more_ladies = formData.more_ladies || [];
+      var i = formData.more_ladies.indexOf(o.key);
+      if(i >= 0) formData.more_ladies.splice(i, 1);
+      else formData.more_ladies.push(o.key);
+      renderMoreLadies();
+      scheduleAutoSave && scheduleAutoSave();
+    });
+    row.appendChild(pill);
+  });
+}
+
+// ─── Travel (In-house / Mobile / Dinner-event / Trip abroad) ────────
+function renderTravel(){
+  var row = document.getElementById('travelRow');
+  if(!row) return;
+  row.innerHTML = '';
+  TRAVEL_OPTIONS.forEach(function(o){
+    var on = (formData.travel || []).indexOf(o.key) >= 0;
+    var pill = document.createElement('div');
+    pill.className = 'line-pill' + (on ? ' selected' : '');
+    pill.setAttribute('data-key', o.key);
+    pill.innerHTML = '<span class="line-title">' + o.name + '</span><span class="line-sub">' + o.sub + '</span>';
+    pill.addEventListener('click', function(){
+      formData.travel = formData.travel || [];
+      var i = formData.travel.indexOf(o.key);
+      if(i >= 0) formData.travel.splice(i, 1);
+      else formData.travel.push(o.key);
+      renderTravel();
+      scheduleAutoSave && scheduleAutoSave();
+    });
+    row.appendChild(pill);
+  });
+}
+
 // "I don't have a second working country" — hides the add-location UI.
 window.toggleSecondCountry = function(checked){
   formData.no_second_country = !!checked;
@@ -4407,29 +4528,16 @@ function validateStepBeforeAdvance(currentStep){
       if(el){ el.classList.add('field-missing'); try{ el.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
       showToast(msg,'error');
     };
-    // At least one service module, with a starting price.
-    if(formData.offers_tantric !== 'Yes' && formData.offers_escort !== 'Yes'){
-      flag2('modTantric','Select Yes for at least one service (Tantric or Companions)'); return false;
+    // Time-only model: one service line picked, and a level chosen for
+    // each module she offers. No per-act counts, no per-act mandatory.
+    if(!formData.service_line){
+      flag2('serviceLineRow','Please choose Tantric, Companions or Both'); return false;
     }
-    if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){ flag2('tantricStartingPrice','Please enter your Tantric starting price'); return false; }
-    if(formData.offers_tantric === 'Yes' && (formData.tantric_offers||[]).length < 4){
-      flag2('tantricOffersGrid','Please choose at least 4 Tantric services you offer'); return false;
+    if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){
+      flag2('tantricLevelGrid','Please choose your Tantric level (Premium / Elite / First Class)'); return false;
     }
-    if(formData.offers_escort === 'Yes' && !formData.escort_tier){ flag2('escortStartingPrice','Please enter your Companions starting price'); return false; }
-    if(formData.offers_escort === 'Yes' && Object.values(formData.escort_services||{}).filter(v => v === true || (typeof v === 'string' && v && v !== 'No')).length < 4){
-      flag2('escortServicesList','Please choose at least 4 Companions services you offer'); return false;
-    }
-    // Companionship & Travel — required when offering Companions.
-    if(formData.offers_escort === 'Yes'){
-      const missCT = COMPANIONSHIP_TRAVEL.find(it => !(formData.companionship_travel[it.key] && formData.companionship_travel[it.key].value));
-      if(missCT){
-        const list = document.getElementById('companionshipTravelList');
-        const sel = list && list.querySelector('select');
-        if(sel) sel.classList.add('field-missing');
-        if(list){ try{ list.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
-        showToast('Please answer every Companionship & Travel option','error');
-        return false;
-      }
+    if(formData.offers_escort === 'Yes' && !formData.escort_tier){
+      flag2('escortLevelGrid','Please choose your Companions level (Premium / Elite / First Class)'); return false;
     }
     // Second working country: add one or tick "I don't have a second working country".
     if(!formData.no_second_country && (formData.extra_locations||[]).length === 0){
@@ -4856,43 +4964,44 @@ function renderSummary(){
   row('Bust', [f.breast, f.breast_type].filter(Boolean).join(' · ')||'—');
   row('Eyes / hair', [f.eye, f.hair].filter(Boolean).join(' · ')||'—');
 
-  // Tantric module
-  if(f.offers_tantric){
-    sec('Tantric — services');
-    row('Offered', v(f.offers_tantric));
-    if(f.offers_tantric==='Yes'){
-      row('Experience', f.tantric_experience==='Yes' ? ('Yes'+(f.tantric_exp_years?' · '+f.tantric_exp_years+' yrs':'')) : v(f.tantric_experience));
-      if(f.tantric_exp_note) row('Experience notes', f.tantric_exp_note);
-      row('With other agencies', v(f.tantric_competing));
-      (f.tantric_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
-      (f.tantric_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
-      if((f.tantric_offers||[]).length) row('Special offers', f.tantric_offers.join(', '));
-    }
+  // Service line (Tantric / Companions / Both) — time only, no per-act lists.
+  if(f.service_line){
+    sec('Service line');
+    row('Offers', f.service_line === 'both' ? 'Tantric + Companions' : (f.service_line === 'tantric' ? 'Tantric' : 'Companions'));
   }
 
-  // Companions module
-  if(f.offers_escort){
-    sec('Companions — services');
-    row('Offered', v(f.offers_escort));
-    if(f.offers_escort==='Yes'){
-      row('Experience', f.escort_experience==='Yes' ? ('Yes'+(f.escort_exp_years?' · '+f.escort_exp_years+' yrs':'')) : v(f.escort_experience));
-      if(f.escort_exp_note) row('Experience notes', f.escort_exp_note);
-      row('With other agencies', v(f.competing||f.tantric_competing));
-      (f.escort_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
-      (f.escort_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
-      const es = f.escort_services||{};
-      const esSel = Object.keys(es).filter(k=>es[k]&&es[k]!=='No').map(k=>k+(es[k]!==true&&es[k]!=='Yes'?' ('+es[k]+')':''));
-      if(esSel.length) row('Selected services', esSel.join(', '));
-      const ct = f.companionship_travel||{};
-      Object.keys(ct).forEach(k=>{ const o=ct[k]||{}; row(k, (o.value||'—')+(o.note?' — '+o.note:'')); });
-      if((f.special_requests||[]).length){
-        const sp = f.special_requests.map(k=>{ const p=(f.special_requests_prices||{})[k]; return k+(p?' ('+cur+p+')':''); });
-        row('Special requests', sp.join(', '));
-      }
-      if(f.special_requests_other) row('Other requests', f.special_requests_other);
-      if(f.boundaries) row('Boundaries', f.boundaries);
-      row('Right to refuse unsafe clients', f.right_to_refuse?'Yes':'—');
-    }
+  if(f.offers_tantric === 'Yes'){
+    sec('Tantric');
+    row('Level', LEVEL_LABEL[f.tantric_tier] || v(f.tantric_tier));
+    row('Experience', f.tantric_experience==='Yes' ? ('Yes'+(f.tantric_exp_years?' · '+f.tantric_exp_years+' yrs':'')) : v(f.tantric_experience));
+    if(f.tantric_exp_note) row('Experience notes', f.tantric_exp_note);
+    row('With other agencies', v(f.tantric_competing));
+    (f.tantric_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
+    (f.tantric_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
+  }
+
+  if(f.offers_escort === 'Yes'){
+    sec('Companions');
+    row('Level', LEVEL_LABEL[f.escort_tier] || v(f.escort_tier));
+    row('Experience', f.escort_experience==='Yes' ? ('Yes'+(f.escort_exp_years?' · '+f.escort_exp_years+' yrs':'')) : v(f.escort_experience));
+    if(f.escort_exp_note) row('Experience notes', f.escort_exp_note);
+    row('With other agencies', v(f.competing||f.tantric_competing));
+    (f.escort_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
+    (f.escort_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
+  }
+
+  if((f.more_ladies||[]).length){
+    sec('More Ladies');
+    f.more_ladies.forEach(k => { const m = MORE_LADIES_OPTIONS.find(o=>o.key===k); row(m?m.name:k, m?m.sub:''); });
+  }
+  if((f.travel||[]).length){
+    sec('Travel');
+    f.travel.forEach(k => { const t = TRAVEL_OPTIONS.find(o=>o.key===k); row(t?t.name:k, t?t.sub:''); });
+  }
+  if((f.offers_tantric==='Yes' || f.offers_escort==='Yes') && (f.boundaries || f.right_to_refuse)){
+    sec('Boundaries');
+    if(f.boundaries) row('Boundaries', f.boundaries);
+    if(f.right_to_refuse) row('Right to refuse unsafe clients', 'Yes');
   }
 
   // Legacy generic services (still captured on some flows)
@@ -5445,11 +5554,10 @@ async function submitApplication(){
   }
   // Services live on Step 2 now — jump back there + flag the field red.
   const jumpToService = (sel) => jumpAndFlag(2, sel);
-  // Must offer at least one of the two service modules and configure
-  // pricing for whichever they offer.
-  if(formData.offers_tantric !== 'Yes' && formData.offers_escort !== 'Yes'){
-    showToast('Select Yes for at least one service module (Tantric or Companions)','error');
-    jumpToService('modTantric');
+  // Must pick the service line and a level for each module she offers.
+  if(!formData.service_line){
+    showToast('Please choose Tantric, Companions or Both','error');
+    jumpToService('serviceLineRow');
     return;
   }
   if(formData.offers_tantric === 'Yes' && !formData.tantric_experience){
@@ -5458,8 +5566,8 @@ async function submitApplication(){
     return;
   }
   if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){
-    showToast('Please enter your Tantric starting price','error');
-    jumpToService('tantricStartingPrice');
+    showToast('Please choose your Tantric level (Premium / Elite / First Class)','error');
+    jumpToService('tantricLevelGrid');
     return;
   }
   if(formData.offers_escort === 'Yes' && !formData.escort_experience){
@@ -5468,28 +5576,25 @@ async function submitApplication(){
     return;
   }
   if(formData.offers_escort === 'Yes' && !formData.escort_tier){
-    showToast('Please enter your Companions starting price','error');
-    jumpToService('escortStartingPrice');
+    showToast('Please choose your Companions level (Premium / Elite / First Class)','error');
+    jumpToService('escortLevelGrid');
     return;
   }
-  // Sync legacy `services` array from the new escort_services map so the
-  // existing app/lady profile keeps a flat list to display.
+  // Legacy `services` array kept simple: the service-line name(s) the
+  // applicant picked. No per-act entries — Service Lines is time-only.
   formData.services = [];
   if(formData.offers_tantric === 'Yes') formData.services.push('Tantric Massage');
   if(formData.offers_escort === 'Yes') formData.services.push('Companions Services');
-  Object.keys(formData.escort_services||{}).forEach(k => {
-    const v = formData.escort_services[k];
-    const meta = ESCORT_SERVICES.find(s => s.key === k);
-    if(!meta) return;
-    if(v === true) formData.services.push(meta.name);
-    else if(typeof v === 'string' && v && v !== 'No') formData.services.push(meta.name + ' (' + v + ')');
+  // Legacy `addons` column carries More Ladies + Travel as plain labels so
+  // OS views that read the flat array show something meaningful.
+  formData.addons = [];
+  (formData.more_ladies||[]).forEach(function(k){
+    var meta = MORE_LADIES_OPTIONS.find(function(o){return o.key===k;});
+    formData.addons.push(meta ? meta.name : k);
   });
-  // Tantric add-ons map -> addons (legacy column). Use the active
-  // currency symbol so the lady profile shows the right glyph.
-  const sym = getCurrencySymbol(formData.currency);
-  formData.addons = (formData.tantric_offers||[]).map(k => {
-    const meta = TANTRIC_OFFERS.find(o => o.key === k);
-    return meta ? meta.name + ' (' + sym + meta.price + ' on top)' : k;
+  (formData.travel||[]).forEach(function(k){
+    var meta = TRAVEL_OPTIONS.find(function(o){return o.key===k;});
+    formData.addons.push(meta ? meta.name : k);
   });
   const anyDay = Object.values(formData.availability).some(d => d.enabled);
   if(!anyDay){ showToast('Set your weekly availability — tap each day you can work','error'); return; }
@@ -5767,20 +5872,24 @@ async function submitApplication(){
       photoshoot: formData.photoshoot || null,
       professional_video: formData.videoshoot || null,
       professional_video_url: uploadedPaths.profvideo || null,
+      // Service Lines is TIME-ONLY. Per-act lists (Tantric offers, Escort
+      // services, Companionship & Travel, Special Requests) are not
+      // collected anywhere in the new form — the JSON below carries only
+      // the line, the level, the rate table, agencies, and the shared
+      // boundaries + right-to-refuse.
+      service_line: formData.service_line || null,
+      more_ladies: (formData.more_ladies || []).slice(),
+      travel: (formData.travel || []).slice(),
       tantric: formData.offers_tantric === 'Yes' ? {
         offered: true,
         experience: formData.tantric_experience === 'Yes',
         experience_years: formData.tantric_experience === 'Yes' ? (formData.tantric_exp_years || null) : null,
         experience_note: formData.tantric_experience === 'Yes' ? (formData.tantric_exp_note || null) : null,
         no_30min: !!formData.tantric_no_30min,
-        tier: formData.tantric_tier,
-        starting_price: parseFloat(formData.rate)||null,
+        tier: formData.tantric_tier || null,
+        level_label: LEVEL_LABEL[formData.tantric_tier] || null,
+        starting_price: parseFloat(formData.rate) || null,
         rates: formData.tantric_rates,
-        offers: (formData.tantric_offers||[]).map(k => {
-          const meta = TANTRIC_OFFERS.find(o => o.key === k);
-          return meta ? { key:k, name:meta.name, price:meta.price } : { key:k };
-        }),
-        // Mirrors the escort module's "Currently with other agencies?"
         competing: formData.tantric_competing || null,
         agencies: (formData.tantric_agencies||[]).map(s => (s||'').trim()).filter(Boolean)
       } : { offered: false },
@@ -5790,32 +5899,10 @@ async function submitApplication(){
         experience_years: formData.escort_experience === 'Yes' ? (formData.escort_exp_years || null) : null,
         experience_note: formData.escort_experience === 'Yes' ? (formData.escort_exp_note || null) : null,
         no_30min: !!formData.escort_no_30min,
-        tier: formData.escort_tier,
-        starting_price: parseFloat(formData.rate)||null,
+        tier: formData.escort_tier || null,
+        level_label: LEVEL_LABEL[formData.escort_tier] || null,
+        starting_price: parseFloat(formData.rate) || null,
         rates: formData.escort_rates,
-        services: Object.keys(formData.escort_services||{}).map(k => {
-          const meta = ESCORT_SERVICES.find(s => s.key === k);
-          // Carry the price (numeric) or price_label (string) so the OS
-          // can render the lady profile with the same labels she saw.
-          return {
-            key:k,
-            name: meta ? meta.name : k,
-            value: formData.escort_services[k],
-            price: meta && typeof meta.price === 'number' ? meta.price : null,
-            price_label: meta && meta.price_label ? meta.price_label : null
-          };
-        }),
-        companionship_travel: Object.keys(formData.companionship_travel||{})
-          .filter(k => formData.companionship_travel[k] && formData.companionship_travel[k].value)
-          .map(k => {
-            const meta = COMPANIONSHIP_TRAVEL.find(c => c.key === k);
-            return { key:k, name: meta ? meta.name : k, value: formData.companionship_travel[k].value, note: formData.companionship_travel[k].note || null };
-          }),
-        special_requests: (formData.special_requests||[]).map(n => ({
-          name: n,
-          price: (formData.special_requests_prices||{})[n] ? parseFloat(formData.special_requests_prices[n]) : null
-        })),
-        special_requests_other: formData.special_requests_other || null,
         right_to_refuse_clients: !!formData.right_to_refuse,
         boundaries: formData.boundaries || null,
         competing: formData.competing || null,
@@ -6118,32 +6205,49 @@ async function showApplicationCard(ref){
     if(!m || m.offered===false) return;
     sec(title);
     row('Offered', m.offered?'Yes':v(m.offered));
+    if(m.level_label || m.tier) row('Level', m.level_label || (m.tier ? String(m.tier).replace(/_/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}) : '—'));
     if(m.experience!=null) row('Experience', (m.experience===true?'Yes':v(m.experience))+(m.experience_years?' · '+m.experience_years+' yrs':''));
     if(m.experience_note) row('Experience notes', m.experience_note);
     if(m.competing!=null) row('With other agencies', v(m.competing));
     (m.agencies||[]).forEach(function(a,i){ row('Agency link '+(i+1), a); });
     (m.rates||[]).forEach(function(r){ row(r.duration||'Rate', [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'); });
     if(m.starting_price!=null) row('From', money(m.starting_price));
+    // Legacy per-act fields kept here so the read-only card still
+    // renders applications submitted BEFORE the time-only switch. New
+    // submissions don't include any of these blocks.
     if(Array.isArray(m.offers) && m.offers.length){
-      row('Special offers', m.offers.map(function(o){ return typeof o==='string'?o:(o.name||o.key)+(o.price?' ('+cur+o.price+')':''); }).join(', '));
+      row('Special offers (legacy)', m.offers.map(function(o){ return typeof o==='string'?o:(o.name||o.key)+(o.price?' ('+cur+o.price+')':''); }).join(', '));
     }
     if(Array.isArray(m.services) && m.services.length){
       var sel = m.services.filter(function(s){ return s.value && s.value!=='No'; })
         .map(function(s){ var lbl=s.name||s.key; var extra=(s.price!=null?cur+s.price:s.price_label)||(s.value!==true&&s.value!=='Yes'?s.value:''); return lbl+(extra?' ('+extra+')':''); });
-      if(sel.length) row('Selected services', sel.join(', '));
+      if(sel.length) row('Selected services (legacy)', sel.join(', '));
     }
     if(Array.isArray(m.companionship_travel) && m.companionship_travel.length){
       m.companionship_travel.forEach(function(o){ row(o.name||o.key, (o.value||'—')+(o.note?' — '+o.note:'')); });
     }
     if(Array.isArray(m.special_requests) && m.special_requests.length){
-      row('Special requests', m.special_requests.map(function(s){ return (s.name||s)+(s.price?' ('+cur+s.price+')':''); }).join(', '));
+      row('Special requests (legacy)', m.special_requests.map(function(s){ return (s.name||s)+(s.price?' ('+cur+s.price+')':''); }).join(', '));
     }
     if(m.special_requests_other) row('Other requests', m.special_requests_other);
     if(m.boundaries) row('Boundaries', m.boundaries);
     if(m.right_to_refuse_clients || m.right_to_refuse) row('Right to refuse unsafe clients', 'Yes');
   }
-  renderModule('Tantric — services', so.tantric);
-  renderModule('Companions — services', so.escort);
+  if(so.service_line){ sec('Service line'); row('Offers', so.service_line === 'both' ? 'Tantric + Companions' : (so.service_line === 'tantric' ? 'Tantric' : 'Companions')); }
+  renderModule('Tantric', so.tantric);
+  renderModule('Companions', so.escort);
+  var moreLadies = Array.isArray(so.more_ladies) ? so.more_ladies : [];
+  if(moreLadies.length){
+    sec('More Ladies');
+    var ML = [{key:'four_hands',name:'Four Hands'},{key:'couples',name:'Couples'},{key:'more_ladies',name:'More Ladies'}];
+    moreLadies.forEach(function(k){ var hit = ML.find(function(o){ return o.key===k; }); row(hit?hit.name:k, ''); });
+  }
+  var travel = Array.isArray(so.travel) ? so.travel : [];
+  if(travel.length){
+    sec('Travel');
+    var TR = [{key:'in_house',name:'In-house'},{key:'mobile',name:'Mobile (+£50 close / +£100 airport)'},{key:'dinner_event',name:'Dinner / Event'},{key:'trip_abroad',name:'Trip abroad (+£1,000)'}];
+    travel.forEach(function(k){ var hit = TR.find(function(o){ return o.key===k; }); row(hit?hit.name:k, ''); });
+  }
 
   if((d.services_offered||[]).length || d.starting_rate || d.current_rate){
     sec('Services & rate');
