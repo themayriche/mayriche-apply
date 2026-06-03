@@ -2553,6 +2553,12 @@ document.addEventListener('DOMContentLoaded', async function(){
   // all of that with a clean "More Ladies" + "Travel" multi-select.
   renderMoreLadies();
   renderTravel();
+  // Live progress: every input / change anywhere in the form bumps the
+  // top progress bar. updateProgress is cheap and idempotent — it just
+  // reads formData and walks a small bucket map.
+  ['input','change'].forEach(function(evt){
+    document.addEventListener(evt, function(){ try { updateProgress(); } catch(e){} }, true);
+  });
   const rtr = document.getElementById('f_right_to_refuse');
   if(rtr) rtr.addEventListener('change', () => { formData.right_to_refuse = rtr.checked; scheduleAutoSave && scheduleAutoSave(); });
 
@@ -4811,32 +4817,40 @@ document.addEventListener('click', function(e){
 
 // ═══════════ PROGRESS ═══════════
 function updateProgress(){
+  // Helper: a field is "filled" only if it has a meaningful value.
+  // "No", "Select…" and falsy strings don't count as progress — otherwise
+  // defaults set programmatically (e.g. formData.mobile = "No" when the
+  // applicant hasn't picked Mobile yet) would show false progress on a
+  // blank form.
+  const filled = v => {
+    if(v == null) return false;
+    if(typeof v === 'string'){ const t = v.trim().toLowerCase(); return !!t && t !== 'no' && t !== 'select...' && t !== 'select…'; }
+    if(typeof v === 'number') return v > 0;
+    if(typeof v === 'boolean') return v;
+    if(Array.isArray(v)) return v.length > 0;
+    return true;
+  };
   const s = { personal:0, physical:0, experience:0, work:0, services:0, availability:0, documents:0, consent:0 };
-  ['fullname','nationality','city','country','phone','email'].forEach(k => { if(formData[k]&&formData[k].trim()) s.personal++; });
+  ['fullname','nationality','city','country','phone','email'].forEach(k => { if(filled(formData[k])) s.personal++; });
   if(formData.dob_d && formData.dob_m && formData.dob_y) s.personal++;
-  if(formData.languages.length>0) s.personal++;
-  if(formData.height) s.physical++;
-  if(formData.weight) s.physical++;
-  if(formData.body) s.physical++;
-  if(formData.photoshoot) s.experience++;
-  if(formData.workname && formData.workname.trim()) s.work++;
-  if(formData.local_area) s.work++;
-  if(formData.work_country) s.work++;
-  if(formData.mobile) s.work++;
-  // Services is complete once she's offering a module with a starting price.
+  if((formData.languages||[]).length > 0) s.personal++;
+  if(filled(formData.height)) s.physical++;
+  if(filled(formData.weight)) s.physical++;
+  if(filled(formData.body)) s.physical++;
+  if(filled(formData.photoshoot)) s.experience++;
+  if(filled(formData.workname)) s.work++;
+  if(filled(formData.local_area)) s.work++;
+  if(filled(formData.work_country)) s.work++;
+  // Mobile only counts when she's actually offering it (formData.mobile is
+  // forced to "No" by applyTravelVisibility before any Travel pick).
+  if(formData.mobile === 'Yes') s.work++;
   if((formData.offers_tantric === 'Yes' && formData.tantric_tier) ||
-     (formData.offers_escort === 'Yes' && formData.escort_tier) ||
-     formData.services.length > 0) s.services++;
-  // Days default to ON, so only count availability once she's actually
-  // interacted with the calendar — keeps an untouched form at 0%.
-  const anyDay = Object.values(formData.availability).some(d => d.enabled);
+     (formData.offers_escort === 'Yes' && formData.escort_tier)) s.services++;
+  const anyDay = Object.values(formData.availability).some(d => d && d.enabled);
   if(anyDay && formData.availability_touched) s.availability++;
-  if(formData.files.idcopy || formData.video || formData.files.location || formData.files.portfolio.length>0) s.documents++;
-  s.consent = Object.values(formData.consents).filter(v => v).length;
+  if(formData.files.idcopy || formData.video || formData.files.location || (formData.files.portfolio||[]).length>0) s.documents++;
+  s.consent = Object.values(formData.consents||{}).filter(v => v).length;
 
-  // Section dots: green when complete, red while still incomplete.
-  // Only flip the class when the state actually changes so the red
-  // pulse doesn't restart on every keystroke.
   Object.keys(s).forEach(k => {
     const el = document.querySelector('[data-sec="'+k+'"]');
     if(!el) return;
@@ -4850,11 +4864,14 @@ function updateProgress(){
   const totalReq = Object.values(SEC_REQ).reduce((a,b) => a+b, 0);
   const totalGot = Object.keys(s).reduce((a,k) => a+Math.min(s[k], SEC_REQ[k]), 0);
   const pct = Math.round((totalGot / totalReq) * 100);
-  document.getElementById('progPct').textContent = pct;
-  document.getElementById('progFill').style.width = pct + '%';
-  
+  const pctEl = document.getElementById('progPct');
+  if(pctEl) pctEl.textContent = pct;
+  const fillEl = document.getElementById('progFill');
+  if(fillEl) fillEl.style.width = pct + '%';
+
   const stepNames = ['','About You','Public Profile','Identity Verification'];
-  document.getElementById('progStep').innerHTML = 'Step <b>'+curStep+'</b> of 3 · '+stepNames[curStep];
+  const stepEl = document.getElementById('progStep');
+  if(stepEl) stepEl.innerHTML = 'Step <b>'+curStep+'</b> of 3 · '+stepNames[curStep];
 }
 
 // ═══════════ FILE UPLOAD ═══════════
