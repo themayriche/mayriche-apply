@@ -227,7 +227,9 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .wn-status{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;margin-top:4px;font-weight:500;letter-spacing:.02em;}
 .wn-status.ok{color:var(--gn)}.wn-status.err{color:var(--rd)}
 
-.avail-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px;}
+.avail-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-bottom:12px;}
+.avail-grid .avail-day{min-width:0}
+.avail-grid input[type="time"]{width:100%;min-width:0;box-sizing:border-box}
 .avail-day{padding:10px 4px;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);text-align:center;cursor:pointer;transition:all .2s;min-height:100px;display:flex;flex-direction:column;gap:5px;}
 .avail-day:hover{border-color:var(--acL)}
 .avail-day.off{background:rgba(192,96,96,.05);border-color:rgba(192,96,96,.20);}
@@ -639,7 +641,34 @@ html{scroll-behavior:smooth}
 .svc-mod-head{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--brd)}
 .svc-mod-title{font-family:var(--fd);font-size:24px;font-weight:600;color:var(--tx);letter-spacing:.01em;margin-bottom:4px;line-height:1.15}
 .svc-mod-desc{font-size:12.5px;color:var(--mt);line-height:1.6;font-style:italic}
-.svc-disclaimer{font-size:11.5px;color:var(--mt);line-height:1.7;background:var(--sf);border:1px solid var(--brd);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-style:italic}
+/* "I confirm I provide..." checkbox card at the top of each service
+   module. Styled like the availability day cell — red border while
+   unticked, green once ticked. Reveals the body below it. */
+.svc-confirm{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--card);border:1.5px solid var(--rd);border-radius:12px;cursor:pointer;transition:border-color .2s,background .2s;margin-top:14px}
+.svc-confirm input[type="checkbox"]{width:20px;height:20px;flex-shrink:0;cursor:pointer;accent-color:var(--gn);margin-top:2px}
+.svc-confirm .svc-confirm-body{flex:1;min-width:0}
+.svc-confirm .svc-confirm-ttl{font-family:var(--fd);font-weight:600;color:var(--tx);font-size:14px;margin-bottom:4px;letter-spacing:.01em}
+.svc-confirm .svc-confirm-txt{font-size:13px;color:var(--tx2);line-height:1.55}
+.svc-confirm:hover{border-color:var(--ac)}
+.svc-confirm.confirmed{border-color:var(--gn);background:linear-gradient(180deg,rgba(93,140,114,.10),rgba(93,140,114,.02))}
+.svc-confirm.confirmed .svc-confirm-ttl{color:var(--gn)}
+
+/* Locked level cards (Elite / First Class) — visible but not selectable. */
+.level-card.locked{opacity:.55;cursor:not-allowed}
+.level-card.locked:hover{border-color:var(--brd2)}
+
+/* Red warning below the level cards — tells her she starts at Premium. */
+.level-warning{margin:12px 0 14px;padding:11px 14px;border-left:3px solid var(--rd);background:rgba(192,96,96,.05);color:var(--rd);font-size:12px;line-height:1.6;border-radius:6px;font-weight:500}
+.level-warning b{font-weight:700}
+
+/* Sub-checkbox row used by the Mobile travel sub-block + right-to-refuse. */
+.rtr-line{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--tx);cursor:pointer;line-height:1.5;margin-bottom:10px}
+.rtr-line:last-child{margin-bottom:0}
+.rtr-line input[type="checkbox"]{width:18px;height:18px;flex-shrink:0;cursor:pointer;margin-top:1px;accent-color:var(--gn)}
+
+.svc-disclaimer{background:linear-gradient(180deg,rgba(196,168,130,.04),rgba(255,255,255,0));border:1px solid var(--brd2);border-radius:14px;padding:18px 22px;margin-bottom:24px;}
+.svc-disclaimer .svc-discl-label{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--ac);margin-bottom:8px;display:block}
+.svc-disclaimer .svc-discl-body{font-size:13px;line-height:1.7;color:var(--tx2);font-style:italic}
 .level-card{padding:16px 14px;background:var(--card);border:1.5px solid var(--brd2);border-radius:12px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s;display:flex;flex-direction:column;gap:4px;min-height:1px}
 .level-card .level-tier{font-size:11px;letter-spacing:.18em;color:var(--ac);font-weight:600}
 .level-card .level-desc{font-size:11.5px;color:var(--mt);line-height:1.55;margin-top:4px}
@@ -1127,19 +1156,22 @@ html{scroll-behavior:smooth}
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M16 4v4h4"/><circle cx="11" cy="14" r="3"/><path d="M7 21c.6-2.4 2-4 4-4s3.4 1.6 4 4"/></svg></div>
         <div class="sec-t">Your Profile</div>
-        <span class="sec-note">This is where we start seeing your profile</span>
+      </div>
+      <div class="field-hint" style="margin:-10px 0 16px 0;font-size:13px;line-height:1.6">
+        Add your alias name, profile age and physical stats as close as possible to your identity.<br>
+        <span style="color:var(--mt)">This is how you will see your profile promoted.</span>
       </div>
       <div class="row">
         <div class="field">
           <label class="field-lbl">Choose Your Name <span class="req">*</span></label>
-          <input type="text" class="inp" id="f_workname" placeholder="Type your choice or pick a suggestion below" oninput="checkWorkName()">
+          <input type="text" class="inp" id="f_workname" placeholder="Your alias name" oninput="checkWorkName()">
           <div class="wn-status" id="wnStatus" style="display:none"></div>
-          <div class="field-hint">Choose a name close to your real one so it feels natural to use &mdash; e.g. if you&rsquo;re Maria, pick Mara or Marie. This is the name clients will see, and it must be unique &mdash; we verify it.</div>
+          <div class="field-hint">Choose a name close to your real one, to feel natural. Must be unique, we verify it.</div>
           <div class="wn-sug" id="wnSuggestions"></div>
         </div>
         <div class="field">
           <label class="field-lbl">Profile Age <span class="req">*</span></label>
-          <input type="number" class="inp" id="f_profile_age" placeholder="e.g. 25" min="21" max="55" data-sec="physical" oninput="clampProfileAge(this)">
+          <input type="text" class="inp no-spin" id="f_profile_age" placeholder="e.g. 25" inputmode="numeric" pattern="[0-9]*" maxlength="2" data-sec="physical" oninput="clampProfileAge(this)">
           <div class="field-hint">The age you&rsquo;d like to appear as on your profile.</div>
           <div class="field-hint" id="profileAgeHint" style="display:none;color:var(--rd);font-weight:600">Profile age must be 21 or over.</div>
         </div>
@@ -1190,35 +1222,33 @@ html{scroll-behavior:smooth}
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
-        <div class="sec-t">Services &amp; Pricing</div>
-        <span class="sec-note">Time-based. No menu of acts.</span>
+        <div class="sec-t">Service Lines</div>
+        <span class="sec-note">Promoted on time-based · 40% fee</span>
       </div>
 
-      <!-- ─── Legal disclaimer — sits above everything in this section. ─── -->
+      <!-- ─── Disclaimer ─── styled box (same look as Tantric / Companions). -->
       <div class="svc-disclaimer">
-        We are not an employer, only an introductory agency. Services are priced on time. Fees are for the session time booked through our platform. Anything beyond that is a private matter between two consenting adults.
+        <span class="svc-discl-label">Disclaimer</span>
+        <div class="svc-discl-body">We are not your employer! We only act as an introductory agency. Services below are priced on time, fees are for promoting your profile and for the session time booked through us. Anything beyond that is a private matter between two consenting adults.</div>
       </div>
 
-      <!-- ─── Service-line picker — pick Tantric, Companions, or both ─── -->
-      <div class="svc-mod-block" style="padding-top:4px">
-        <div class="field-lbl" style="margin-bottom:6px">Which service(s) do you offer? <span class="req">*</span></div>
-        <div class="field-hint" style="margin-bottom:10px">Tick one or both. For each one you tick, you'll set your level (Premium / Elite / First Class).</div>
-        <div class="line-row line-row-2" id="serviceLineRow">
-          <label class="line-pill" data-line="tantric"><input type="checkbox" onchange="toggleServiceLine('tantric', this.checked)"><span class="line-title">Tantric</span><span class="line-sub">Tantric massage</span></label>
-          <label class="line-pill" data-line="companions"><input type="checkbox" onchange="toggleServiceLine('companions', this.checked)"><span class="line-title">Companions</span><span class="line-sub">Companionship</span></label>
-        </div>
-        <label style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:12.5px;color:var(--tx2);cursor:pointer;line-height:1.5">
-          <input type="checkbox" id="f_right_to_refuse" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:1px"> I want to have the right to refuse any client who is not safe.
-        </label>
-      </div>
+      <!-- ─── Intro line above the two service modules (always visible) ─── -->
+      <div class="field-hint" style="margin:0 0 18px 0;font-size:13px">Tick one or both services you provide independently.</div>
 
-      <!-- ─── Tantric module (hidden until service-line picks tantric/both) ─── -->
-      <div class="svc-mod" id="modTantric" style="margin-top:18px;display:none">
+      <!-- ─── Tantric module — ALWAYS VISIBLE. The "I offer..." checkbox at
+           the top is the confirm; ticking it reveals the body. ─── -->
+      <div class="svc-mod" id="modTantric" style="margin-top:18px">
         <div class="svc-mod-head">
-          <div class="svc-mod-title">Tantric Massage</div>
-          <div class="svc-mod-desc">As an independent, you will offer a premium tantric massage with relaxing and sensual body-to-body techniques to clients coming from our platform.</div>
+          <div class="svc-mod-title">Tantric Services</div>
         </div>
-        <div class="reveal open" id="tantricBody" style="max-height:none">
+        <label class="svc-confirm" data-line="tantric">
+          <input type="checkbox" id="f_confirm_tantric" onchange="toggleServiceLine('tantric', this.checked)">
+          <div class="svc-confirm-body">
+            <div class="svc-confirm-ttl">Tantric:</div>
+            <div class="svc-confirm-txt">I confirm that I independently provide a premium tantric massage, with relaxing and sensual body-to-body techniques.</div>
+          </div>
+        </label>
+        <div class="reveal open" id="tantricBody" style="max-height:none;display:none">
           <div class="svc-mod-block">
             <div class="field">
               <label class="field-lbl">Do you have experience in this? <span class="req">*</span></label>
@@ -1257,43 +1287,50 @@ html{scroll-behavior:smooth}
             <div class="currency-row" id="tantricCurrencyRow"></div>
 
             <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
-            <div class="field-hint" style="margin-bottom:12px">You start at Premium (£250/hour). As you receive 5-star ratings, you unlock Elite and First Class.</div>
             <div class="level-grid" id="tantricLevelGrid">
-              <div class="level-card" data-level="premium" onclick="setLevel('tantric','premium')">
+              <div class="level-card selected" data-level="premium" onclick="setLevel('tantric','premium')">
                 <div class="level-tier">◆ PREMIUM</div>
                 <div class="level-name">from £250 / hour</div>
                 <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
               </div>
-              <div class="level-card" data-level="elite" onclick="setLevel('tantric','elite')">
+              <div class="level-card locked" data-level="elite" onclick="lockedLevelClick('elite')">
                 <div class="level-tier">◆◆ ELITE</div>
                 <div class="level-name">from £350 / hour</div>
                 <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
               </div>
-              <div class="level-card" data-level="first_class" onclick="setLevel('tantric','first_class')">
+              <div class="level-card locked" data-level="first_class" onclick="lockedLevelClick('first_class')">
                 <div class="level-tier">◆◆◆ FIRST CLASS</div>
                 <div class="level-name">from £450 / hour</div>
                 <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
               </div>
             </div>
+            <div class="level-warning" id="tantricLevelWarning">
+              Everyone starts at <b>Premium</b> level. It&rsquo;s your responsibility to receive 5★ reviews — that&rsquo;s what unlocks Elite or First Class. Repeated bad reviews (3★ and below) will get your profile removed.
+            </div>
             <input type="hidden" id="tantricStartingPrice">
             <span id="tantricPriceCur" style="display:none">£</span>
-            <div class="rate-table-wrap" id="tantricRateTableWrap" style="display:none">
+            <div class="rate-table-wrap" id="tantricRateTableWrap">
               <div class="rate-table-title" id="tantricRateTitle">Your rates</div>
               <table class="rate-table" id="tantricRateTable"></table>
               <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--tx2);cursor:pointer"><input type="checkbox" id="f_tantric_no_30min" onchange="toggleNo30('tantric', this.checked)" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t do 30-minute sessions</label>
-              <div class="field-hint" style="margin-top:8px">We discuss and finalise rates at interview.</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ─── Companions module (hidden until service-line picks companions/both) ─── -->
-      <div class="svc-mod" id="modEscort" style="margin-top:18px;display:none">
+      <!-- ─── Companionship module — ALWAYS VISIBLE, same shape as Tantric ─── -->
+      <div class="svc-mod" id="modEscort" style="margin-top:18px">
         <div class="svc-mod-head">
-          <div class="svc-mod-title">Companionship</div>
-          <div class="svc-mod-desc">As an independent, you will offer a refined company for the occasion — an evening, dinner, event or travel — to clients coming from our platform.</div>
+          <div class="svc-mod-title">Companions Services</div>
         </div>
-        <div class="reveal open" id="escortBody" style="max-height:none">
+        <label class="svc-confirm" data-line="companions">
+          <input type="checkbox" id="f_confirm_escort" onchange="toggleServiceLine('companions', this.checked)">
+          <div class="svc-confirm-body">
+            <div class="svc-confirm-ttl">Companions:</div>
+            <div class="svc-confirm-txt">I confirm that I independently provide refined company for the occasion: an evening, dinner, event or travel.</div>
+          </div>
+        </label>
+        <div class="reveal open" id="escortBody" style="max-height:none;display:none">
           <div class="svc-mod-block">
             <div class="field">
               <label class="field-lbl">Do you have experience in this? <span class="req">*</span></label>
@@ -1332,48 +1369,71 @@ html{scroll-behavior:smooth}
             <div class="currency-row" id="escortCurrencyRow"></div>
 
             <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
-            <div class="field-hint" style="margin-bottom:12px">You start at Premium (£350/booking). As you receive 5-star ratings, you unlock Elite and First Class.</div>
             <div class="level-grid" id="escortLevelGrid">
-              <div class="level-card" data-level="premium" onclick="setLevel('escort','premium')">
+              <div class="level-card selected" data-level="premium" onclick="setLevel('escort','premium')">
                 <div class="level-tier">◆ PREMIUM</div>
                 <div class="level-name">from £350 / booking</div>
                 <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
               </div>
-              <div class="level-card" data-level="elite" onclick="setLevel('escort','elite')">
+              <div class="level-card locked" data-level="elite" onclick="lockedLevelClick('elite')">
                 <div class="level-tier">◆◆ ELITE</div>
                 <div class="level-name">from £550 / booking</div>
                 <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
               </div>
-              <div class="level-card" data-level="first_class" onclick="setLevel('escort','first_class')">
+              <div class="level-card locked" data-level="first_class" onclick="lockedLevelClick('first_class')">
                 <div class="level-tier">◆◆◆ FIRST CLASS</div>
                 <div class="level-name">from £900 / booking</div>
                 <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
               </div>
             </div>
+            <div class="level-warning" id="escortLevelWarning">
+              Everyone starts at <b>Premium</b> level. It&rsquo;s your responsibility to receive 5★ reviews — that&rsquo;s what unlocks Elite or First Class. Repeated bad reviews (3★ and below) will get your profile removed.
+            </div>
             <input type="hidden" id="escortStartingPrice">
             <span id="escortPriceCur" style="display:none">£</span>
-            <div class="rate-table-wrap" id="escortRateTableWrap" style="display:none">
+            <div class="rate-table-wrap" id="escortRateTableWrap">
               <div class="rate-table-title" id="escortRateTitle">Your rates</div>
               <table class="rate-table" id="escortRateTable"></table>
               <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--tx2);cursor:pointer"><input type="checkbox" id="f_escort_no_30min" onchange="toggleNo30('escort', this.checked)" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t do 30-minute sessions</label>
-              <div class="field-hint" style="margin-top:8px">We discuss and finalise rates at interview.</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ─── More Ladies (shared, shown when any service selected) ─── -->
+      <!-- ─── Right to refuse (shared, shown after at least one module confirmed) ─── -->
+      <div id="rightToRefuseWrap" style="display:none;margin-top:18px;padding:14px 16px;background:var(--sf);border:1px solid var(--brd);border-radius:10px">
+        <label style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--tx);cursor:pointer;line-height:1.5">
+          <input type="checkbox" id="f_right_to_refuse" style="width:18px;height:18px;cursor:pointer;flex-shrink:0;margin-top:1px">
+          <span><b>I want to have the right to refuse any client who is not safe.</b></span>
+        </label>
+      </div>
+
+      <!-- ─── Final pre-pricing note ─── -->
+      <div id="ratesNote" class="field-hint" style="display:none;margin-top:14px;font-style:italic">
+        If your application is accepted, we will discuss and finalise the rates before your profile is live.
+      </div>
+
+      <!-- ─── More Options (shared, shown when any service selected) ─── -->
       <div class="svc-mod-block" id="moreLadiesBlock" style="display:none;margin-top:18px">
-        <div class="field-lbl" style="margin-bottom:8px">More Ladies <span class="req">*</span></div>
+        <div class="field-lbl" style="margin-bottom:8px">More Options <span class="req">*</span></div>
         <div class="field-hint" style="margin-bottom:10px">Pick at least one. Priced on time at your standard rate.</div>
         <div class="line-row line-row-multi" id="moreLadiesRow"></div>
       </div>
 
-      <!-- ─── Travel (shared) ─── -->
+      <!-- ─── Travel (shared) — In-house and Mobile only. Ticking In-house
+           opens Working Area; ticking Mobile opens its sub-checkboxes
+           (airport / dinner / trips). ─── -->
       <div class="svc-mod-block" id="travelBlock" style="display:none;margin-top:18px">
-        <div class="field-lbl" style="margin-bottom:8px">Travel <span class="opt-note">Tap any you offer</span></div>
-        <div class="field-hint" style="margin-bottom:10px">Standard travel fees: close mobile +£50, airport +£100, abroad +£1,000.</div>
-        <div class="line-row line-row-multi" id="travelRow"></div>
+        <div class="field-lbl" style="margin-bottom:8px">Travel <span class="req">*</span></div>
+        <div class="field-hint" style="margin-bottom:10px">Select how you provide your services: choose one or both.</div>
+        <div class="line-row line-row-2" id="travelRow"></div>
+        <!-- Mobile sub-checkboxes — only shown once Mobile is ticked. -->
+        <div id="mobileSubBlock" style="display:none;margin-top:14px;padding:14px 16px;background:var(--sf);border:1px solid var(--brd);border-radius:10px">
+          <div class="field-lbl" style="margin-bottom:8px;font-size:12px">When you travel to clients:</div>
+          <label class="rtr-line"><input type="checkbox" id="f_travel_airport"> I accept airport bookings <span class="opt-note">(travel cost covered by the client)</span></label>
+          <label class="rtr-line"><input type="checkbox" id="f_travel_dinner"> I accept dinner dates and events <span class="opt-note">(minimum two hours booking)</span></label>
+          <label class="rtr-line"><input type="checkbox" id="f_travel_trips"> I accept travel and trips <span class="opt-note">(all expenses covered by the client)</span></label>
+        </div>
       </div>
 
 
@@ -1387,7 +1447,7 @@ html{scroll-behavior:smooth}
     </div>
 
 
-    <div class="sec">
+    <div class="sec" id="workingAreaSec" style="display:none">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <div class="sec-t">Your Working Area</div>
@@ -1415,17 +1475,13 @@ html{scroll-behavior:smooth}
         </div>
       </div>
 
-      <!-- ─── IN-HOUSE ADDRESS ─── Optional. The checkbox lets her skip it
-           entirely; ticking it disables the fields and records No in-house.
-           Extra top spacing + a hairline keep it clearly separate from the
-           Working Area field above (was feeling cramped). -->
+      <!-- ─── IN-HOUSE ADDRESS ─── In-house was ticked in the Travel block
+           above, so the address fields appear directly. No "I don't have an
+           in-house address" toggle here any more — the Travel pick replaces it. -->
       <div class="row-1" style="margin-top:28px;padding-top:22px;border-top:1px solid var(--brd)">
         <div class="field">
           <label class="field-lbl">In-house Address</label>
           <div class="field-hint" style="margin-bottom:8px">Where you host clients. Kept strictly confidential — never shown to clients before booking is confirmed.</div>
-          <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--tx2);cursor:pointer">
-            <input type="checkbox" id="f_no_inhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile only)
-          </label>
         </div>
       </div>
       <div id="inhouseFields">
@@ -1446,50 +1502,29 @@ html{scroll-behavior:smooth}
           </div>
         </div>
       </div>
-      <!-- Hidden legacy field kept so the existing submit handler keeps
-           writing in_house_address as a single string until we update it. -->
+      <!-- Legacy single-string field kept so the submit handler can still
+           write in_house_address. -->
       <input type="hidden" id="f_inhouse_address">
-
-      <!-- ─── MOBILE ─── Provide Mobile → coverage zones (right after) →
-           Mobile 30+ → Airport. -->
-      <div class="row-1" style="margin-top:14px">
-        <div class="field">
-          <label class="field-lbl">Provide Mobile? <span class="req">*</span></label>
-          <select class="sel" id="f_mobile" data-sec="work">
-            <option value="">Select...</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+      <!-- Hidden legacy selects kept so existing JS / draft loader / submit
+           handler keep functioning. Their values are derived from the new
+           Travel selection (Mobile ticked = mobile yes; airport sub-checkbox
+           drives f_airport; etc.). -->
+      <div style="display:none">
+        <select id="f_mobile" data-sec="work"><option value="">Select...</option><option value="Yes">Yes</option><option value="No">No</option></select>
+        <select id="f_mobile_30"><option value="">Select...</option><option value="No">No</option><option value="Yes">Yes</option></select>
+        <input type="text" id="f_mobile_30_note">
+        <select id="f_airport"><option value="">Select...</option><option value="No">No</option><option value="Yes">Yes</option></select>
+        <input type="text" id="f_airport_note">
+        <input type="checkbox" id="f_no_inhouse">
       </div>
-      <div id="mobileZonesWrap" style="display:none;margin-top:14px">
+      <!-- Mobile coverage zones — still useful for the OS; reveals when
+           Mobile is ticked in the Travel block. -->
+      <div id="mobileZonesWrap" style="display:none;margin-top:18px;padding-top:18px;border-top:1px solid var(--brd)">
         <div class="field">
           <label class="field-lbl" style="margin-bottom:8px">Mobile coverage zones <span class="opt-note">Where you travel to</span></label>
           <button type="button" id="zonesSelectAll" class="zones-all-btn">Select all zones</button>
           <div class="chk-grid" id="mobileZonesGrid"></div>
           <div class="field-hint" id="mobileZonesHint">Pick a working city above to see its zones.</div>
-        </div>
-      </div>
-      <div class="row" style="margin-top:14px">
-        <div class="field">
-          <label class="field-lbl">Mobile 30+ min away? <span class="req">*</span></label>
-          <select class="sel" id="f_mobile_30">
-            <option value="">Select...</option>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-            <option value="Depends with special request">Depends — with special request</option>
-          </select>
-          <input type="text" class="inp" id="f_mobile_30_note" placeholder="Your conditions for travelling 30+ min…" style="display:none;margin-top:8px">
-        </div>
-        <div class="field">
-          <label class="field-lbl">Airport Bookings? <span class="req">*</span></label>
-          <select class="sel" id="f_airport">
-            <option value="">Select...</option>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-            <option value="Yes with special request">Yes — with special request</option>
-          </select>
-          <input type="text" class="inp" id="f_airport_note" placeholder="Your airport booking conditions…" style="display:none;margin-top:8px">
         </div>
       </div>
     </div>
@@ -1513,7 +1548,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
-    <div class="sec">
+    <div class="sec" id="seasonalSec" style="display:none">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg></div>
         <div class="sec-t">Seasonal Destinations</div>
@@ -1569,7 +1604,7 @@ html{scroll-behavior:smooth}
             <option value="">Select...</option>
             <option value="Yes I have">Yes, I have</option>
             <option value="No but willing">No, but willing to make one</option>
-            <option value="Not interested">Not interested</option>
+            <option value="Waiting">Not yet, I am waiting for my photos to be ready</option>
           </select>
         </div>
       </div>
@@ -1581,7 +1616,7 @@ html{scroll-behavior:smooth}
         <div class="sec-t">Add Your Professional Photoshoot</div>
         <span class="sec-note">Minimum 5 photos</span>
       </div>
-      <div class="field-hint" style="margin-bottom:14px">Add at least 5 of your best professional photos — each slot takes one image. Clean composition, soft natural lighting, no heavy filters, varied poses / outfits so we see your range.</div>
+      <div class="field-hint" style="margin-bottom:14px">Add at least 5 of your best professional photos. Make sure they are in a high-quality resolution, not screenshots or poor lighting.</div>
       <div class="photo-grid" id="proPhotoGrid"></div>
       <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
       <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
@@ -1599,7 +1634,7 @@ html{scroll-behavior:smooth}
             <option value="">Select...</option>
             <option value="Yes I have">Yes, I have</option>
             <option value="No but willing">No, but willing to make one</option>
-            <option value="Not interested">Not interested</option>
+            <option value="Waiting">Not yet, I am waiting for my video to be ready</option>
           </select>
         </div>
       </div>
@@ -1610,7 +1645,7 @@ html{scroll-behavior:smooth}
         <div class="sec-t">Add Your Professional Video</div>
         <span class="sec-note">1 video</span>
       </div>
-      <div class="field-hint" style="margin-bottom:14px">Upload one professional video — a showreel / promo clip that shows you at your best.</div>
+      <div class="field-hint" style="margin-bottom:14px">Upload one professional video. Make sure it&rsquo;s a high-quality resolution clip, not a screenshot or poor lighting.</div>
       <div class="video-box" id="profVideoBox">
         <video id="profVideoPreview" controls style="display:none"></video>
         <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
@@ -1626,9 +1661,9 @@ html{scroll-behavior:smooth}
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 3-3"/></svg></div>
         <div class="sec-t">Selfie Verification</div>
-        <span class="sec-note">Strictly confidential</span>
+        <span class="sec-note" style="display:inline-flex;align-items:center;gap:5px;color:var(--rd);font-weight:600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Strictly confidential</span>
       </div>
-      <div class="field-hint" style="margin-bottom:14px">A quick check that you&rsquo;re a real person &mdash; never posted online, never shown to clients. One clear face selfie + one full-body photo.</div>
+      <div class="field-hint" style="margin-bottom:14px">We will never post it online and never shown to clients without your permission. One clear face selfie + one full-body photo.</div>
       <div class="upload" onclick="document.getElementById('file_selfie').click()">
         <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
         <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
@@ -1854,7 +1889,7 @@ let ADDONS = [];
 // Real seasonal spots (NO_TRAVEL is rendered separately, after the
 // "Other" free-text destinations). "Other" stays at the end of the grid.
 const SEASONAL_DESTINATIONS = ['Ibiza','Marbella','Mallorca','Monaco','Saint-Tropez','Cannes','Mykonos','Saint-Barths','Porto Cervo (Sardinia)','Capri','Lake Como','Bodrum','Aspen','Courchevel','Gstaad','Saint-Moritz','Miami','Las Vegas','Maldives','Other'];
-const NO_TRAVEL = "I don't want to travel anywhere";
+const NO_TRAVEL = "I don't want to travel anywhere beside London";
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DURATIONS = ['30 min','60 min','90 min','120 min','3 hours','4 hours','6 hours','Overnight','Weekend','Trip'];
 
@@ -2154,12 +2189,12 @@ const MORE_LADIES_OPTIONS = [
   { key: 'more_ladies',name: 'More Ladies', sub: 'Three or more ladies' }
 ];
 
-// ─── Travel offerings (standard travel fees handled at booking time). ─
+// ─── Travel offerings — only In-house and Mobile.
+//     In-house ticked → Working Area section opens.
+//     Mobile ticked   → sub-checkboxes (airport / dinner / trips) appear.
 const TRAVEL_OPTIONS = [
-  { key: 'in_house',     name: 'In-house',     sub: 'At your location' },
-  { key: 'mobile',       name: 'Mobile',       sub: 'At his location' },
-  { key: 'dinner_event', name: 'Dinner / Event', sub: 'Priced separately' },
-  { key: 'trip_abroad',  name: 'Trip abroad',  sub: '72h+ · transportation covered · +£1,000 (depends on distance)' }
+  { key: 'in_house', name: 'In-house', sub: 'I provide my services independently at my own location, where clients come to me.' },
+  { key: 'mobile',   name: 'Mobile',   sub: 'I provide my services independently at the client’s location, travelling to them.' }
 ];
 
 // ─── Legacy per-act lists kept defined so older code paths that still
@@ -2426,9 +2461,10 @@ let formData = {
   service_line:'',
   // Shared multi-select extras priced on time (not per act).
   more_ladies:[],
-  // Travel offerings (in_house / mobile / dinner_event / trip_abroad)
-  // with standard travel fees baked into the OS profile, not the form.
+  // Travel offerings: only 'in_house' and 'mobile'. Mobile carries 3
+  // independent sub-flags (airport / dinner / trips) when she ticks it.
   travel:[],
+  travel_airport:false, travel_dinner:false, travel_trips:false,
   boundaries:'',
   days_week:'',
   availability:{}, availability_touched:false, avail_notes:'',
@@ -2479,6 +2515,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   populatePhoneCodes('f_em_phone_code');
   initCityCascade();
   initStep1LocalArea();
+  initMobileSubChecks();
   initWorkAreaCascade();
   initMobileZones();
   initExtraLocations();
@@ -3112,8 +3149,7 @@ function buildExtraLocation(loc){
       '<div class="field"><label class="field-lbl">City</label><select class="sel loc-city" disabled><option value="">Pick country first…</option></select><input class="inp loc-city-free" placeholder="Type your city" style="display:none;margin-top:8px"></div>' +
     '</div>' +
     '<div class="row-1" style="margin-top:12px"><div class="field"><label class="field-lbl">Area</label><select class="sel loc-area" disabled><option value="">Pick city first…</option></select><input class="inp loc-area-free" placeholder="Type your area" style="display:none;margin-top:8px"></div></div>' +
-    '<label style="display:flex;align-items:center;gap:8px;margin:12px 0 6px;font-size:12px;color:var(--tx2);cursor:pointer"><input type="checkbox" class="loc-noinhouse" style="width:16px;height:16px;cursor:pointer"> I don&rsquo;t have an in-house address (mobile only)</label>' +
-    '<div class="loc-inhouse">' +
+    '<div class="loc-inhouse" style="margin-top:12px">' +
       '<div class="row" style="margin-bottom:10px"><div class="field" style="grid-column:span 2"><label class="field-lbl">Street &amp; Number</label><input class="inp loc-street" placeholder="10 Bond Street"></div></div>' +
       '<div class="row"><div class="field"><label class="field-lbl">Flat number</label><input class="inp loc-apt" inputmode="numeric" placeholder="1"></div><div class="field"><label class="field-lbl">Postcode</label><input class="inp loc-postcode" placeholder="W1S 1SS"></div></div>' +
     '</div>';
@@ -3805,31 +3841,46 @@ function toggleNo30(scope, checked){
 // service module body. Also reveals the shared More Ladies / Travel /
 // Boundaries blocks once any service has been picked.
 // Multi-select service lines: Tantric and Companions are independent
-// checkboxes. service_line is derived from the two — 'tantric', 'companions'
-// or 'both' (or '' when none). At least one is required at submit time.
+// confirm checkboxes at the top of each (always-visible) module. Ticking
+// either reveals the rest of that module + auto-selects Premium so the
+// rate table appears immediately. service_line is derived for the OS.
 function toggleServiceLine(line, on){
   if(line === 'tantric')    formData.offers_tantric = on ? 'Yes' : 'No';
   if(line === 'companions') formData.offers_escort  = on ? 'Yes' : 'No';
   var t = formData.offers_tantric === 'Yes';
   var c = formData.offers_escort  === 'Yes';
   formData.service_line = t && c ? 'both' : t ? 'tantric' : c ? 'companions' : '';
-  var modT = document.getElementById('modTantric');
-  var modE = document.getElementById('modEscort');
-  if(modT) modT.style.display = t ? '' : 'none';
-  if(modE) modE.style.display = c ? '' : 'none';
+  // Body reveal — modules are always rendered, only the body shows on tick.
+  var tBody = document.getElementById('tantricBody');
+  var eBody = document.getElementById('escortBody');
+  if(tBody) tBody.style.display = t ? '' : 'none';
+  if(eBody) eBody.style.display = c ? '' : 'none';
+  // Confirm-card visual state.
+  var tConf = document.querySelector('.svc-confirm[data-line="tantric"]');
+  var eConf = document.querySelector('.svc-confirm[data-line="companions"]');
+  if(tConf) tConf.classList.toggle('confirmed', t);
+  if(eConf) eConf.classList.toggle('confirmed', c);
+  // Auto-pick Premium the first time a module is confirmed so the rate
+  // table appears without an extra tap. Skipped if she already has a tier.
+  if(line === 'tantric' && on && !formData.tantric_tier){ setLevel('tantric', 'premium'); }
+  if(line === 'companions' && on && !formData.escort_tier){ setLevel('escort', 'premium'); }
+  // Shared blocks (right-to-refuse, rates note, more options, travel) only
+  // show once at least one service is confirmed.
   var anyOn = t || c;
-  ['moreLadiesBlock','travelBlock'].forEach(function(id){
+  ['rightToRefuseWrap','ratesNote','moreLadiesBlock','travelBlock'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = anyOn ? '' : 'none';
-  });
-  document.querySelectorAll('#serviceLineRow .line-pill').forEach(function(p){
-    var key = p.getAttribute('data-line');
-    var ticked = (key === 'tantric' && t) || (key === 'companions' && c);
-    p.classList.toggle('selected', ticked);
   });
   scheduleAutoSave && scheduleAutoSave();
   updateProgress && updateProgress();
 }
 window.toggleServiceLine = toggleServiceLine;
+
+// Elite / First Class cards are visible but not selectable — they're a
+// preview of what's coming. Clicking flashes a red toast so she sees why.
+function lockedLevelClick(level){
+  showToast('You start at Premium. Elite and First Class unlock with 5★ reviews.', 'error');
+}
+window.lockedLevelClick = lockedLevelClick;
 
 // ─── Level cards (Premium / Elite / First Class) ───────────────────
 // Each picks the per-service baseline price (see LEVELS) and pipes it
@@ -3887,9 +3938,76 @@ function renderTravel(){
       if(i >= 0) formData.travel.splice(i, 1);
       else formData.travel.push(o.key);
       renderTravel();
+      applyTravelVisibility();
       scheduleAutoSave && scheduleAutoSave();
     });
     row.appendChild(pill);
+  });
+  applyTravelVisibility();
+}
+
+// Working Area opens with In-house; Mobile sub-checkboxes + Seasonal
+// Destinations open with Mobile. Called whenever travel selection changes.
+function applyTravelVisibility(){
+  var t = (formData.travel || []);
+  var inHouse = t.indexOf('in_house') >= 0;
+  var mobile  = t.indexOf('mobile')   >= 0;
+  var wa = document.getElementById('workingAreaSec');
+  var ms = document.getElementById('mobileSubBlock');
+  var sd = document.getElementById('seasonalSec');
+  var mz = document.getElementById('mobileZonesWrap');
+  // Working Area opens with In-house OR Mobile — even mobile-only providers
+  // need to declare their base city / area for the OS to know where they
+  // operate. The in-house address fields inside only show when In-house.
+  if(wa) wa.style.display = (inHouse || mobile) ? '' : 'none';
+  var inhouseFields = document.getElementById('inhouseFields');
+  if(inhouseFields) inhouseFields.style.display = inHouse ? '' : 'none';
+  if(ms) ms.style.display = mobile  ? '' : 'none';
+  if(sd) sd.style.display = mobile  ? '' : 'none';
+  if(mz) mz.style.display = mobile  ? '' : 'none';
+  // Re-render mobile coverage zones when Mobile is ticked, so the chip
+  // grid is populated immediately.
+  if(mobile && typeof renderMobileZones === 'function') renderMobileZones();
+  // Sync the hidden legacy selects so existing OS readers still work:
+  // Mobile ticked → f_mobile = "Yes" + provide_mobile = "Yes" in formData.
+  var fm = document.getElementById('f_mobile');
+  if(fm){ fm.value = mobile ? 'Yes' : 'No'; }
+  formData.mobile = mobile ? 'Yes' : 'No';
+  // Mobile unticked clears the sub-checkboxes + airport flag.
+  if(!mobile){
+    formData.travel_airport = false;
+    formData.travel_dinner  = false;
+    formData.travel_trips   = false;
+    formData.airport = '';
+    ['f_travel_airport','f_travel_dinner','f_travel_trips'].forEach(function(id){
+      var cb = document.getElementById(id); if(cb) cb.checked = false;
+    });
+    var fa = document.getElementById('f_airport'); if(fa) fa.value = '';
+  }
+}
+window.applyTravelVisibility = applyTravelVisibility;
+
+// Mobile sub-checkboxes (airport / dinner / trips) — independent flags.
+function initMobileSubChecks(){
+  [
+    { id: 'f_travel_airport', key: 'travel_airport', mirror: 'airport' },
+    { id: 'f_travel_dinner',  key: 'travel_dinner',  mirror: null },
+    { id: 'f_travel_trips',   key: 'travel_trips',   mirror: null }
+  ].forEach(function(m){
+    var cb = document.getElementById(m.id);
+    if(!cb) return;
+    cb.checked = !!formData[m.key];
+    cb.addEventListener('change', function(){
+      formData[m.key] = cb.checked;
+      // Mirror "I accept airport bookings" into the legacy f_airport
+      // select so the OS lady profile keeps reading the same column.
+      if(m.mirror){
+        formData[m.mirror] = cb.checked ? 'Yes' : '';
+        var leg = document.getElementById('f_' + m.mirror);
+        if(leg) leg.value = cb.checked ? 'Yes' : '';
+      }
+      scheduleAutoSave && scheduleAutoSave();
+    });
   });
 }
 
@@ -5200,11 +5318,11 @@ function loadDraft(){
       } else if(['offers_tantric','offers_escort'].includes(k)){
         formData[k] = d[k];
         if(d[k] === 'Yes'){
-          // Sync the new checkbox + module visibility via the same handler
-          // the live form uses, so the draft restore looks identical.
+          // Sync the new in-module confirm checkbox + body visibility via
+          // the same handler the live form uses.
           var lineKey = k === 'offers_tantric' ? 'tantric' : 'companions';
-          var pill = document.querySelector('#serviceLineRow .line-pill[data-line="' + lineKey + '"]');
-          var cb = pill && pill.querySelector('input[type="checkbox"]');
+          var cbId    = k === 'offers_tantric' ? 'f_confirm_tantric' : 'f_confirm_escort';
+          var cb = document.getElementById(cbId);
           if(cb){ cb.checked = true; }
           if(typeof toggleServiceLine === 'function') toggleServiceLine(lineKey, true);
         }
