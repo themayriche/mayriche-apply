@@ -774,7 +774,8 @@ html{scroll-behavior:smooth}
 .escort-svc .escort-svc-pills .pill{padding:6px 12px;font-size:11px;min-height:34px}
 
 /* Language pill list (language + level inline editor). */
-.lang-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.lang-list{display:flex;flex-direction:column;gap:6px;margin-top:0}
+.lang-list:not(:empty){margin-top:8px;margin-bottom:8px}
 .lang-row{display:flex;gap:8px;align-items:center;padding:10px 12px;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);transition:all .15s}
 .lang-row:hover{border-color:var(--acL)}
 .lang-row .lang-name{flex:1;font-weight:500;color:var(--tx);font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -959,9 +960,12 @@ html{scroll-behavior:smooth}
         <label class="field-lbl">Other Languages <span class="opt-note">Optional</span></label>
         <!-- Added languages render first; the "+ Add a language" picker
              sits below them, so once she adds French the affordance to
-             add another sits AFTER the French row, not above it. -->
-        <div class="lang-list" id="langList" style="margin-top:14px"></div>
-        <div class="lang-add-wrap" style="margin-top:10px">
+             add another sits AFTER the French row, not above it. The
+             list's own margin is 0 by default — it kicks in only once
+             a language row is added (via the .lang-list:not(:empty) rule)
+             so the button stays tight under the label on a fresh form. -->
+        <div class="lang-list" id="langList"></div>
+        <div class="lang-add-wrap" style="margin-top:8px">
           <select class="sel lang-add" id="langSelect"><option value="">+ Add a language</option></select>
         </div>
         <div class="field-hint" id="langHint" style="margin-top:6px;display:none">Add one more language if you speak more.</div>
