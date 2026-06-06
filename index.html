@@ -646,10 +646,16 @@ html{scroll-behavior:smooth}
 .phone-prefix-btn .phone-prefix-flag{font-size:16px;line-height:1}
 .phone-prefix-btn .phone-prefix-code{font-family:var(--fb);font-weight:600;letter-spacing:.02em}
 .phone-prefix-btn .phone-prefix-caret{font-size:10px;color:var(--mt);margin-left:2px}
-/* Popup panel with searchable country list. */
-.phone-prefix-panel{position:absolute;z-index:1000;background:var(--card);border:1px solid var(--brd2);border-radius:12px;box-shadow:0 12px 36px rgba(45,36,24,.18);padding:10px;display:none;max-height:60vh;overflow:hidden;display:flex;flex-direction:column}
+/* Popup panel with searchable country list. Positioned fixed so scroll
+   doesn't ever leave it stranded. */
+.phone-prefix-backdrop{position:fixed;inset:0;background:rgba(45,36,24,.18);z-index:999;display:none}
+.phone-prefix-backdrop.open{display:block}
+.phone-prefix-panel{position:fixed;z-index:1000;background:var(--card);border:1px solid var(--brd2);border-radius:12px;box-shadow:0 12px 36px rgba(45,36,24,.18);padding:10px;display:none;max-height:60vh;flex-direction:column}
 .phone-prefix-panel.open{display:flex}
-.phone-prefix-panel .phone-prefix-search{margin:0 0 8px;font-size:13px}
+.phone-prefix-panel .phone-prefix-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.phone-prefix-panel .phone-prefix-search{flex:1;font-size:13px;margin:0}
+.phone-prefix-panel .phone-prefix-close{flex-shrink:0;width:32px;height:32px;border-radius:8px;border:1px solid var(--brd);background:var(--bg);color:var(--mt);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.phone-prefix-panel .phone-prefix-close:hover{background:var(--sf);color:var(--tx);border-color:var(--ac)}
 .phone-prefix-list{overflow-y:auto;flex:1;min-height:0;max-height:50vh}
 .phone-prefix-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--tx)}
 .phone-prefix-row:hover{background:var(--sf)}
@@ -2905,15 +2911,32 @@ function buildPhonePicker(sel, ordered){
   btn.setAttribute('aria-expanded','false');
   btn.innerHTML = '<span class="phone-prefix-flag">🌐</span><span class="phone-prefix-code">+…</span><span class="phone-prefix-caret">▾</span>';
   sel.parentNode.insertBefore(btn, sel);
+  // Shared backdrop — one per page, behind every picker panel. Clicking
+  // it closes whichever panel is currently open.
+  let backdrop = document.getElementById('phonePickerBackdrop');
+  if(!backdrop){
+    backdrop = document.createElement('div');
+    backdrop.id = 'phonePickerBackdrop';
+    backdrop.className = 'phone-prefix-backdrop';
+    backdrop.addEventListener('click', () => {
+      document.querySelectorAll('.phone-prefix-panel.open').forEach(p => p.classList.remove('open'));
+      backdrop.classList.remove('open');
+    });
+    document.body.appendChild(backdrop);
+  }
   // Panel — appended to body so it can escape any overflow clipping.
   const panel = document.createElement('div');
   panel.className = 'phone-prefix-panel';
   panel.setAttribute('role','listbox');
-  panel.innerHTML = '<input type="text" class="phone-prefix-search inp" placeholder="Search country…" autocomplete="off">'
+  panel.innerHTML = '<div class="phone-prefix-head">'
+                  +   '<input type="text" class="phone-prefix-search inp" placeholder="Search country…" autocomplete="off">'
+                  +   '<button type="button" class="phone-prefix-close" aria-label="Close">×</button>'
+                  + '</div>'
                   + '<div class="phone-prefix-list"></div>';
   document.body.appendChild(panel);
   const list = panel.querySelector('.phone-prefix-list');
   const search = panel.querySelector('.phone-prefix-search');
+  const closeBtn = panel.querySelector('.phone-prefix-close');
   ordered.forEach(p => {
     const row = document.createElement('div');
     row.className = 'phone-prefix-row';
@@ -2932,44 +2955,52 @@ function buildPhonePicker(sel, ordered){
     list.appendChild(row);
   });
   const positionPanel = () => {
+    // Fixed positioning — viewport-relative. No scrollY math, never
+    // gets stranded by inner scroll containers.
     const r = btn.getBoundingClientRect();
     const w = Math.max(280, Math.min(360, window.innerWidth - 24));
     panel.style.width = w + 'px';
     let left = r.left;
     if(left + w > window.innerWidth - 12) left = window.innerWidth - w - 12;
+    if(left < 12) left = 12;
     panel.style.left = left + 'px';
-    panel.style.top = (r.bottom + 6 + window.scrollY) + 'px';
+    // If there's not enough room below the button, drop the panel above
+    // it so the list is always reachable.
+    const below = window.innerHeight - r.bottom;
+    if(below > 320 || below >= r.top){
+      panel.style.top = (r.bottom + 6) + 'px';
+      panel.style.bottom = 'auto';
+    } else {
+      panel.style.top = 'auto';
+      panel.style.bottom = (window.innerHeight - r.top + 6) + 'px';
+    }
   };
   const showPanel = () => {
+    // Close every other open panel first.
+    document.querySelectorAll('.phone-prefix-panel.open').forEach(p => {
+      if(p !== panel) p.classList.remove('open');
+    });
     positionPanel();
     panel.classList.add('open');
+    backdrop.classList.add('open');
     btn.setAttribute('aria-expanded','true');
     setTimeout(() => { try{ search.focus(); }catch(e){} }, 50);
   };
   const hidePanel = () => {
     panel.classList.remove('open');
+    backdrop.classList.remove('open');
     btn.setAttribute('aria-expanded','false');
     search.value = '';
     list.querySelectorAll('.phone-prefix-row').forEach(r => { r.style.display = ''; });
   };
-  btn.addEventListener('click', e => {
-    // Close every OTHER open phone-picker panel first, so clicking the
-    // WhatsApp prefix never leaves the Phone panel still hanging on top.
-    document.querySelectorAll('.phone-prefix-panel.open').forEach(p => {
-      if(p !== panel) p.classList.remove('open');
-    });
-    // We deliberately let this click bubble so the document listener
-    // below also closes any other open panels (belt + braces).
+  btn.addEventListener('click', () => {
     if(panel.classList.contains('open')) hidePanel(); else showPanel();
   });
-  document.addEventListener('click', e => {
-    if(!panel.classList.contains('open')) return;
-    // Stay open only when the click landed on this picker's own button
-    // or inside its panel. Any other click closes us.
-    if(e.target === btn || btn.contains(e.target) || panel.contains(e.target)) return;
-    hidePanel();
+  closeBtn.addEventListener('click', hidePanel);
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && panel.classList.contains('open')) hidePanel();
   });
-  window.addEventListener('scroll', () => { if(panel.classList.contains('open')) positionPanel(); }, true);
+  window.addEventListener('resize', () => { if(panel.classList.contains('open')) positionPanel(); });
   search.addEventListener('input', () => {
     const q = search.value.trim().toLowerCase();
     list.querySelectorAll('.phone-prefix-row').forEach(r => {
