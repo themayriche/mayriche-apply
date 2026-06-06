@@ -1516,32 +1516,36 @@ html{scroll-behavior:smooth}
 
       <!-- ─── WORKING LOCATION ─── Independent of the home address from
            Step 1: she may live in one city and work in another. -->
-      <div class="row" style="margin-top:18px;padding-top:18px;border-top:1px solid var(--brd)">
-        <div class="field">
-          <label class="field-lbl">Working Country <span class="req">*</span></label>
-          <select class="sel" id="f_work_country" data-sec="work"><option value="">Select country…</option></select>
+      <!-- Working base + in-house address — visible only when In-house
+           is the chosen travel mode. -->
+      <div id="workingBaseFields">
+        <div class="row" style="margin-top:18px;padding-top:18px;border-top:1px solid var(--brd)">
+          <div class="field">
+            <label class="field-lbl">Working Country <span class="req">*</span></label>
+            <select class="sel" id="f_work_country" data-sec="work"><option value="">Select country…</option></select>
+          </div>
+          <div class="field">
+            <label class="field-lbl">Working City <span class="req">*</span></label>
+            <select class="sel" id="f_work_city_select" disabled><option value="">Pick country first…</option></select>
+            <input type="text" class="inp" id="f_work_city" placeholder="Type your city" style="display:none;margin-top:8px">
+          </div>
         </div>
-        <div class="field">
-          <label class="field-lbl">Working City <span class="req">*</span></label>
-          <select class="sel" id="f_work_city_select" disabled><option value="">Pick country first…</option></select>
-          <input type="text" class="inp" id="f_work_city" placeholder="Type your city" style="display:none;margin-top:8px">
-        </div>
-      </div>
-      <div class="row-1" style="margin-top:14px">
-        <div class="field">
-          <label class="field-lbl"><span id="localAreaLabel">Working Area</span> <span class="req">*</span></label>
-          <div class="field-hint" style="margin:0 0 8px">The neighbourhood / zone you&rsquo;re mainly based in for work.</div>
-          <select class="sel" id="f_local_area" disabled><option value="">Pick city first…</option></select>
-          <input type="text" class="inp" id="f_local_area_work_text" placeholder="Type your working area" style="display:none;margin-top:8px">
+        <div class="row-1" style="margin-top:14px">
+          <div class="field">
+            <label class="field-lbl"><span id="localAreaLabel">Working Area</span> <span class="req">*</span></label>
+            <div class="field-hint" style="margin:0 0 8px">The neighbourhood / zone you&rsquo;re mainly based in for work.</div>
+            <select class="sel" id="f_local_area" disabled><option value="">Pick city first…</option></select>
+            <input type="text" class="inp" id="f_local_area_work_text" placeholder="Type your working area" style="display:none;margin-top:8px">
+          </div>
         </div>
       </div>
 
       <!-- ─── IN-HOUSE ADDRESS ─── In-house was ticked in the Travel block
            above, so the address fields appear directly. No "I don't have an
            in-house address" toggle here any more — the Travel pick replaces it. -->
-      <div class="row-1" style="margin-top:28px;padding-top:22px;border-top:1px solid var(--brd)">
+      <div class="row-1" id="inhouseAddrLabel" style="margin-top:28px;padding-top:22px;border-top:1px solid var(--brd)">
         <div class="field">
-          <label class="field-lbl">In-house Address</label>
+          <label class="field-lbl">In-house Address <span class="req">*</span></label>
           <div class="field-hint" style="margin-bottom:8px">Where you host clients. Kept strictly confidential — never shown to clients before booking is confirmed.</div>
         </div>
       </div>
@@ -1601,11 +1605,11 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
-    <div class="sec">
+    <div class="sec" id="additionalAreaSec" style="display:none">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20"/></svg></div>
-        <div class="sec-t">Additional Working Area</div>
-        <span class="sec-note">If you also live &amp; work somewhere else</span>
+        <div class="sec-t">Countries you travel to</div>
+        <span class="sec-note">Where you accept bookings when you travel</span>
       </div>
       <div class="field-hint" style="margin-bottom:10px">Add another country / city you&rsquo;re based in and work from — e.g. Paris, Milan, Rome. You can add up to two more.</div>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12.5px;color:var(--tx2);cursor:pointer">
@@ -1640,7 +1644,7 @@ html{scroll-behavior:smooth}
     <!-- ─── Mini map summary — city-level pins for her working city,
          each additional working country, and her seasonal destinations.
          Privacy: never plots her in-house street address. ─── -->
-    <div class="sec" id="applyMapSec">
+    <div class="sec" id="applyMapSec" style="display:none">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <div class="sec-t">Where you&rsquo;ll be available</div>
@@ -2828,7 +2832,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   const avG = document.getElementById('availGrid');
   if(avG) DAYS.forEach(day => {
     // Days start OFF — she taps each day she works ON (defaults 09:00–02:00).
-    formData.availability[day] = {enabled:false, from:'00:00', to:'23:59'};
+    formData.availability[day] = {enabled:false, from:'09:00', to:'09:00'};
     const cell = document.createElement('div');
     cell.className = 'avail-day off';
     cell.dataset.day = day;
@@ -4149,9 +4153,14 @@ function toggleServiceLine(line, on){
   // — Travel pills used to live inside Service Lines but were moved out
   // so that locations + travel sit together.
   var anyOn = t || c;
-  ['rightToRefuseWrap','ratesNote','moreLadiesBlock','workingAreaSec'].forEach(function(id){
+  ['rightToRefuseWrap','ratesNote','moreLadiesBlock','workingAreaSec','applyMapSec'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = anyOn ? '' : 'none';
   });
+  // Re-render the map once it becomes visible so the tiles paint at
+  // the correct size (Leaflet measures lazily).
+  if(anyOn && typeof renderApplyMap === 'function'){
+    setTimeout(function(){ try{ renderApplyMap(); }catch(e){} }, 60);
+  }
   scheduleAutoSave && scheduleAutoSave();
   updateProgress && updateProgress();
 }
@@ -4406,15 +4415,21 @@ function applyTravelVisibility(){
   var ms = document.getElementById('mobileSubBlock');
   var sd = document.getElementById('seasonalSec');
   var mz = document.getElementById('mobileZonesWrap');
-  // workingAreaSec is now controlled by toggleServiceLine (shown when she
-  // confirms a service line) — Travel pills live INSIDE it, so the parent
-  // section stays visible regardless of which pills she has ticked.
-  // The in-house address fields below the pills only show when In-house.
+  var aa = document.getElementById('additionalAreaSec');
+  var wb = document.getElementById('workingBaseFields');
+  var ihAddr = document.getElementById('inhouseAddrLabel');
+  // In-house ticked → working base (country / city / area) + in-house
+  // address fields + Location Walkthrough are visible. Mobile ticked →
+  // countries-you-travel-to + Seasonal Destinations + mobile sub-checks
+  // are visible. Map (rendered later) stays visible regardless.
   var inhouseFields = document.getElementById('inhouseFields');
+  if(wb)            wb.style.display            = inHouse ? '' : 'none';
   if(inhouseFields) inhouseFields.style.display = inHouse ? '' : 'none';
-  if(ms) ms.style.display = mobile  ? '' : 'none';
-  if(sd) sd.style.display = mobile  ? '' : 'none';
-  if(mz) mz.style.display = mobile  ? '' : 'none';
+  if(ihAddr)        ihAddr.style.display        = inHouse ? '' : 'none';
+  if(aa) aa.style.display = mobile ? '' : 'none';
+  if(ms) ms.style.display = mobile ? '' : 'none';
+  if(sd) sd.style.display = mobile ? '' : 'none';
+  if(mz) mz.style.display = mobile ? '' : 'none';
   // Re-render mobile coverage zones when Mobile is ticked, so the chip
   // grid is populated immediately.
   if(mobile && typeof renderMobileZones === 'function') renderMobileZones();
@@ -4825,11 +4840,11 @@ function toggleDay(day){
   formData.availability_touched = true;
   d.enabled = !d.enabled;
   if(d.enabled){
-    d.from = d.from || '00:00';
-    d.to   = d.to   || '23:59';
+    d.from = d.from || '09:00';
+    d.to   = d.to   || '09:00';
     cell.classList.remove('off');
     cell.classList.add('on');
-    cell.querySelector('.avail-day-hrs').textContent = is24h(d.from, d.to) ? '24h' : (d.from+' – '+d.to);
+    cell.querySelector('.avail-day-hrs').textContent = d.from + ' – ' + d.to;
     cell.querySelector('.time-inputs').style.display = 'flex';
     cell.querySelector('.avail-toggle').textContent = 'Tap to remove';
   } else {
@@ -4851,7 +4866,7 @@ function setAvailTime(day, kind, val){
   formData.availability[day][kind] = val;
   const cell = document.querySelector('[data-day="'+day+'"]');
   const d = formData.availability[day];
-  cell.querySelector('.avail-day-hrs').textContent = is24h(d.from, d.to) ? '24h' : ((d.from||'00:00')+' – '+(d.to||'23:59'));
+  cell.querySelector('.avail-day-hrs').textContent = (d.from || '09:00') + ' – ' + (d.to || '09:00');
 }
 
 // ═══════════ WORK NAME SUGGESTIONS ═══════════
@@ -5145,17 +5160,22 @@ function validateStepBeforeAdvance(currentStep){
         return false;
       }
     }
-    // Working Area fields are required only when at least one travel
-    // option is ticked (which is enforced above).
+    // Working base + in-house address are required ONLY when In-house is
+    // her chosen travel mode (those fields are hidden otherwise).
     const waMissing = [];
-    if(!formData.work_country) waMissing.push({key:'work_country', el:'f_work_country'});
-    if(!formData.work_city)    waMissing.push({key:'work_city',    el:'f_work_city_select'});
-    if(!formData.local_area)   waMissing.push({key:'local_area',   el:'f_local_area'});
-    // When In-house is ticked, the in-house address (street + flat + postcode)
-    // is mandatory too — that's what "in-house" actually means.
-    if((formData.travel||[]).indexOf('in_house') >= 0){
+    const isInHouse = (formData.travel||[]).indexOf('in_house') >= 0;
+    if(isInHouse){
+      if(!formData.work_country) waMissing.push({key:'work_country', el:'f_work_country'});
+      if(!formData.work_city)    waMissing.push({key:'work_city',    el:'f_work_city_select'});
+      if(!formData.local_area)   waMissing.push({key:'local_area',   el:'f_local_area'});
       if(!formData.inhouse_street)   waMissing.push({key:'inhouse_street',   el:'f_inhouse_street'});
       if(!formData.inhouse_postcode) waMissing.push({key:'inhouse_postcode', el:'f_inhouse_postcode'});
+    }
+    // When Mobile is ticked, she must declare at least one country she
+    // travels to (Additional Working Area entries).
+    const isMobile = (formData.travel||[]).indexOf('mobile') >= 0;
+    if(isMobile && (!formData.extra_locations || formData.extra_locations.length === 0) && !formData.no_second_country){
+      waMissing.push({key:'extra_locations', el:'addLocationBtn'});
     }
     if(waMissing.length){
       const w = waMissing[0];
