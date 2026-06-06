@@ -1690,7 +1690,7 @@ html{scroll-behavior:smooth}
         <div class="sec-t">Selfie Verification</div>
         <span class="sec-note" style="display:inline-flex;align-items:center;gap:5px;color:var(--rd);font-weight:600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Strictly confidential</span>
       </div>
-      <div class="field-hint" style="margin-bottom:14px">We will never post it online and never shown to clients without your permission. One clear face selfie + one full-body photo.</div>
+      <div class="field-hint" style="margin-bottom:14px">We will never post it online. Only for verification purposes.</div>
       <div class="upload" onclick="document.getElementById('file_selfie').click()">
         <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
         <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
@@ -4748,7 +4748,8 @@ const STEP_REQ = {
     // when she has ticked at least one Travel option (In-house or Mobile)
     // — handled inline below. Late hours stays optional now that mobile_30
     // + airport bookings are gone (covered by the Mobile sub-checkboxes).
-    {key:'days_week',    el:'f_days_week',         sec:'availability'}
+    {key:'days_week',    el:'f_days_week',         sec:'availability'},
+    {key:'late_hours',   el:'f_late_hours',        sec:'availability'}
   ],
   3: [], // Step 3 services validation runs in submitApplication
   4: []
