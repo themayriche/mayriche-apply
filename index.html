@@ -1243,10 +1243,14 @@ html{scroll-behavior:smooth}
     </div>
 
     <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
-        <div class="sec-t sec-t-lg">Service Lines</div>
-        <span class="sec-note">Promoted on a time-based model, in exchange for a fixed 40% commission.</span>
+      <!-- Service Lines uses the card-head layout (matches Public Profile
+           / Identity Verification visually) — big title + subtitle below,
+           accent icon block on the right. The inline overrides drop the
+           card-head's bottom border + margin so it nests cleanly inside
+           the Public Profile card. -->
+      <div class="card-head" style="padding-bottom:0;border-bottom:0;margin-bottom:14px">
+        <div><div class="card-t">Service Lines</div><div class="card-s">Promoted on a time-based model, in exchange for a fixed 40% commission.</div></div>
+        <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
       </div>
 
       <!-- ─── Disclaimer ─── styled box (same look as Tantric / Companions). -->
