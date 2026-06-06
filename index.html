@@ -158,7 +158,12 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
    it reads cleanly in both light and dark modes. */
 .stepper{position:sticky;top:78px;z-index:48;display:flex;justify-content:center;align-items:center;gap:0;margin:0 0 26px;padding:12px 18px;flex-wrap:wrap;background:linear-gradient(180deg,rgba(196,168,130,.18),rgba(196,168,130,.06));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--brd2);border-radius:var(--r);}
 :root[data-theme="dark"] .stepper{background:linear-gradient(180deg,rgba(201,176,132,.14),rgba(201,176,132,.05));}
-.step{display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer;opacity:.55;transition:all .3s cubic-bezier(.22,.61,.36,1);user-select:none;}
+.step{display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer;opacity:.55;transition:all .3s cubic-bezier(.22,.61,.36,1);user-select:none;border-radius:8px;}
+.step.done{opacity:.92}
+.step.done:hover{opacity:1;background:rgba(196,168,130,.10)}
+.step.done::after{content:"✎ edit";font-size:8.5px;letter-spacing:.20em;text-transform:uppercase;color:var(--ac);font-weight:600;opacity:0;transition:opacity .2s;margin-left:-4px}
+.step.done:hover::after{opacity:.9}
+@media(max-width:540px){.step.done::after{display:none}.step.done{opacity:.95}}
 .step:hover{opacity:.9}.step.active{opacity:1}.step.done{opacity:.85}
 .step-num{width:26px;height:26px;border-radius:50%;border:1px solid var(--brd2);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:12px;font-weight:600;color:var(--ac);background:var(--card);transition:all .3s;}
 .step.active .step-num{background:var(--acL);color:var(--tx);border-color:var(--acL);box-shadow:0 0 0 4px rgba(196,168,130,.18),0 4px 14px rgba(196,168,130,.30);}
@@ -329,6 +334,10 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .btn-primary:hover{background:#6d5a43;border-color:#6d5a43;}
 .btn-ghost{border-color:var(--brd2);color:var(--mt);}
 .btn-ghost:hover{background:var(--sf);color:var(--tx);border-color:var(--ac);}
+/* "Back to edit step N" — separate styling so it reads as navigation,
+   not as a Save / Continue action. Dashed border + accent text. */
+.btn-back{background:transparent;border:1px dashed var(--ac);color:var(--ac);font-size:11px;letter-spacing:.10em;text-transform:none;font-weight:600;padding:9px 16px;min-width:auto}
+.btn-back:hover{background:var(--sf);border-style:solid}
 
 .resume-banner{background:linear-gradient(90deg,rgba(196,168,130,.12),rgba(196,168,130,.03));border:1px solid var(--acL);border-radius:var(--r);padding:14px 20px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;animation:fadeIn .6s;}
 .resume-msg{font-size:12px;color:var(--tx);letter-spacing:.01em}
@@ -1686,7 +1695,7 @@ html{scroll-behavior:smooth}
     </div>
 
     <div class="actions">
-      <div class="actions-left"><button class="btn btn-ghost" onclick="goStep(1)">← Back</button></div>
+      <div class="actions-left"><button class="btn btn-back" onclick="goStep(1)">← Back to edit step 1</button></div>
       <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save for Later</button><button class="btn btn-primary" onclick="goStep(3)">Continue →</button></div>
     </div>
   </div>
@@ -1823,7 +1832,7 @@ html{scroll-behavior:smooth}
       <div class="submit-prog-bar"><div class="submit-prog-fill" id="submitProgFill" style="width:0%"></div></div>
     </div>
     <div class="actions">
-      <div class="actions-left"><button class="btn btn-ghost" onclick="goStep(2)">← Back</button></div>
+      <div class="actions-left"><button class="btn btn-back" onclick="goStep(2)">← Back to edit step 2</button></div>
       <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save for Later</button><button class="btn btn-primary" id="submitBtn" onclick="submitApplication()">Submit Application</button></div>
     </div>
   </div>
