@@ -334,9 +334,10 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .btn-primary:hover{background:#6d5a43;border-color:#6d5a43;}
 .btn-ghost{border-color:var(--brd2);color:var(--mt);}
 .btn-ghost:hover{background:var(--sf);color:var(--tx);border-color:var(--ac);}
-/* "Back to edit step N" — separate styling so it reads as navigation,
-   not as a Save / Continue action. Dashed border + accent text. */
-.btn-back{background:transparent;border:1px dashed var(--ac);color:var(--ac);font-size:11px;letter-spacing:.10em;text-transform:none;font-weight:600;padding:9px 16px;min-width:auto}
+/* "Back to previous step" — separate styling so it reads as navigation,
+   not as a Save / Continue action. Dashed border + accent text + a
+   touch more presence so it's actually noticed. */
+.btn-back{background:transparent;border:1.5px dashed var(--ac);color:var(--ac);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;padding:10px 18px;min-width:auto}
 .btn-back:hover{background:var(--sf);border-style:solid}
 
 .resume-banner{background:linear-gradient(90deg,rgba(196,168,130,.12),rgba(196,168,130,.03));border:1px solid var(--acL);border-radius:var(--r);padding:14px 20px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;animation:fadeIn .6s;}
@@ -1695,7 +1696,7 @@ html{scroll-behavior:smooth}
     </div>
 
     <div class="actions">
-      <div class="actions-left"><button class="btn btn-back" onclick="goStep(1)">← Back to edit step 1</button></div>
+      <div class="actions-left"><button class="btn btn-back" onclick="goStep(1)">← Back to previous step</button></div>
       <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save for Later</button><button class="btn btn-primary" onclick="goStep(3)">Continue →</button></div>
     </div>
   </div>
@@ -1832,7 +1833,7 @@ html{scroll-behavior:smooth}
       <div class="submit-prog-bar"><div class="submit-prog-fill" id="submitProgFill" style="width:0%"></div></div>
     </div>
     <div class="actions">
-      <div class="actions-left"><button class="btn btn-back" onclick="goStep(2)">← Back to edit step 2</button></div>
+      <div class="actions-left"><button class="btn btn-back" onclick="goStep(2)">← Back to previous step</button></div>
       <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save for Later</button><button class="btn btn-primary" id="submitBtn" onclick="submitApplication()">Submit Application</button></div>
     </div>
   </div>
