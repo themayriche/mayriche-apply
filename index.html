@@ -4563,13 +4563,10 @@ const STEP_REQ = {
     {key:'breast_type',  el:'f_breast_type',       sec:'physical'},
     {key:'photoshoot',   el:'f_photoshoot',        sec:'experience'},
     {key:'videoshoot',   el:'f_videoshoot',        sec:'experience'},
-    {key:'work_country', el:'f_work_country',      sec:'work'},
-    {key:'work_city',    el:'f_work_city_select',  sec:'work'},
-    {key:'local_area',   el:'f_local_area',        sec:'work'},
-    {key:'mobile',       el:'f_mobile',            sec:'work'},
-    {key:'mobile_30',    el:'f_mobile_30',         sec:'work'},
-    {key:'airport',      el:'f_airport',           sec:'work'},
-    {key:'late_hours',   el:'f_late_hours',        sec:'availability'},
+    // Working Area fields (country / city / local area) are only required
+    // when she has ticked at least one Travel option (In-house or Mobile)
+    // — handled inline below. Late hours stays optional now that mobile_30
+    // + airport bookings are gone (covered by the Mobile sub-checkboxes).
     {key:'days_week',    el:'f_days_week',         sec:'availability'}
   ],
   3: [], // Step 3 services validation runs in submitApplication
@@ -4688,14 +4685,37 @@ function validateStepBeforeAdvance(currentStep){
     }
   }
 
-  // Step 2: a travel choice is mandatory — at least one seasonal
-  // destination, "Other", or "I don't want to travel anywhere".
+  // Step 2: services + working area + availability checks.
   if(currentStep === 2 && missing.length === 0){
+    // Travel pick is mandatory — at least In-house or Mobile must be
+    // ticked. Without this, Working Area never opens and the OS profile
+    // has nothing to display.
+    if(!formData.travel || formData.travel.length === 0){
+      const tr = document.getElementById('travelRow');
+      if(tr){ tr.classList.add('field-missing'); try{ tr.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Please pick how you provide your services — In-house or Mobile','error');
+      return false;
+    }
+    // Working Area fields are required only when at least one travel
+    // option is ticked (which is enforced above).
+    const waMissing = [];
+    if(!formData.work_country) waMissing.push({key:'work_country', el:'f_work_country'});
+    if(!formData.work_city)    waMissing.push({key:'work_city',    el:'f_work_city_select'});
+    if(!formData.local_area)   waMissing.push({key:'local_area',   el:'f_local_area'});
+    if(waMissing.length){
+      const w = waMissing[0];
+      const el = document.getElementById(w.el);
+      if(el){ el.classList.add('field-missing'); try{ el.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Missing: ' + (FIELD_LABELS[w.key] || w.key.replace(/_/g,' ')), 'error');
+      return false;
+    }
+    // Minimum 3 days per week — explicit, so she knows exactly why she's
+    // blocked rather than just "Missing".
     const onDays = Object.keys(formData.availability||{}).filter(dy => formData.availability[dy] && formData.availability[dy].enabled).length;
-    if(onDays < 4){
+    if(onDays < 3){
       const ag = document.getElementById('availGrid');
-      if(ag){ try{ ag.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
-      showToast("You've selected too few days — we need at least 4 of 7.",'error');
+      if(ag){ ag.classList.add('field-missing'); try{ ag.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+      showToast('Choose minimum 3 days a week, otherwise your application might not be accepted','error');
       return false;
     }
     const pAge = parseInt(formData.profile_age, 10);
@@ -4705,10 +4725,12 @@ function validateStepBeforeAdvance(currentStep){
       showToast('Profile age must be 21 or over','error');
       return false;
     }
-    if(!formData.abroad || formData.abroad.length === 0){
+    // Seasonal destinations is only mandatory when Mobile is ticked (the
+    // section is only visible then) — handled inside that path.
+    if(formData.travel.indexOf('mobile') >= 0 && (!formData.abroad || formData.abroad.length === 0)){
       const ag = document.getElementById('abroadGrid');
       if(ag){ ag.classList.add('field-missing'); try{ ag.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
-      showToast('Please choose a travel option (or “I don’t want to travel anywhere”)','error');
+      showToast('Please choose a seasonal destination (or "I don’t want to travel anywhere beside London")','error');
       return false;
     }
     const flag2 = (sel, msg) => {
