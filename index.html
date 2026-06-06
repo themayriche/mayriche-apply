@@ -186,6 +186,11 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .sec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .sec-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--ac);flex-shrink:0;}
 .sec-t{font-family:var(--fd);font-size:17px;font-weight:500;color:var(--tx);letter-spacing:.01em;white-space:nowrap;}
+/* Hero-size section title — used for the big "Service Lines" header so
+   it reads at the same scale as "Public Profile" / "Identity Verification"
+   above it. Reduced on phones so it stays tidy. */
+.sec-t.sec-t-lg{font-size:26px;font-weight:600}
+@media(max-width:540px){.sec-t.sec-t-lg{font-size:22px}}
 .sec-note{font-size:10px;color:var(--mt);margin-left:auto;font-style:italic;letter-spacing:.02em;flex-shrink:1}
 @media(max-width:540px){.sec-note{margin-left:0;flex-basis:100%}}
 
@@ -634,6 +639,23 @@ html{scroll-behavior:smooth}
 /* Phone combo (country code prefix + number, side-by-side single row). */
 .phone-combo{display:flex;flex-direction:row;gap:8px;align-items:stretch;flex-wrap:nowrap}
 .phone-combo .phone-prefix{width:auto;min-width:130px;max-width:200px;flex-shrink:0;font-family:var(--fb);font-weight:500;padding-right:28px;background-position:right 10px center}
+/* Compact phone-prefix button — replaces the wide native <select>. */
+.phone-prefix-btn{flex-shrink:0;display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--brd);border-radius:var(--rs);padding:9px 10px 9px 12px;color:var(--tx);font-family:var(--fb);font-size:13px;cursor:pointer;transition:border-color .2s,background-color .2s;min-width:90px}
+.phone-prefix-btn:hover{border-color:var(--ac)}
+.phone-prefix-btn[aria-expanded="true"]{border-color:var(--ac);background:var(--card)}
+.phone-prefix-btn .phone-prefix-flag{font-size:16px;line-height:1}
+.phone-prefix-btn .phone-prefix-code{font-family:var(--fb);font-weight:600;letter-spacing:.02em}
+.phone-prefix-btn .phone-prefix-caret{font-size:10px;color:var(--mt);margin-left:2px}
+/* Popup panel with searchable country list. */
+.phone-prefix-panel{position:absolute;z-index:1000;background:var(--card);border:1px solid var(--brd2);border-radius:12px;box-shadow:0 12px 36px rgba(45,36,24,.18);padding:10px;display:none;max-height:60vh;overflow:hidden;display:flex;flex-direction:column}
+.phone-prefix-panel.open{display:flex}
+.phone-prefix-panel .phone-prefix-search{margin:0 0 8px;font-size:13px}
+.phone-prefix-list{overflow-y:auto;flex:1;min-height:0;max-height:50vh}
+.phone-prefix-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--tx)}
+.phone-prefix-row:hover{background:var(--sf)}
+.phone-prefix-row .ppr-flag{font-size:18px;line-height:1;flex-shrink:0;width:24px;text-align:center}
+.phone-prefix-row .ppr-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.phone-prefix-row .ppr-code{color:var(--mt);font-weight:600;font-family:var(--fb)}
 .phone-combo .phone-number{flex:1;min-width:0}
 .phone-combo .phone-valid{flex-shrink:0;width:28px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--gn);opacity:0;transition:opacity .2s}
 .phone-combo.is-valid .phone-valid{opacity:1}
@@ -652,12 +674,12 @@ html{scroll-behavior:smooth}
 /* ═══ SERVICE MODULES (Tantric / Escort) ═══ */
 .svc-mod{background:linear-gradient(180deg,rgba(196,168,130,.04),rgba(255,255,255,0));border:1px solid var(--brd2);border-radius:14px;padding:18px 20px;margin-bottom:12px;transition:border-color .25s}
 .svc-mod-head{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--brd)}
-.svc-mod-title{font-family:var(--fd);font-size:24px;font-weight:600;color:var(--tx);letter-spacing:.01em;margin-bottom:4px;line-height:1.15}
+.svc-mod-title{font-family:var(--fd);font-size:19px;font-weight:600;color:var(--tx);letter-spacing:.01em;margin-bottom:4px;line-height:1.2}
 .svc-mod-desc{font-size:12.5px;color:var(--mt);line-height:1.6;font-style:italic}
 /* "I confirm I provide..." checkbox card at the top of each service
    module. Styled like the availability day cell — red border while
    unticked, green once ticked. Reveals the body below it. */
-.svc-confirm{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--card);border:1.5px solid var(--rd);border-radius:12px;cursor:pointer;transition:border-color .2s,background .2s;margin-top:14px}
+.svc-confirm{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--card);border:1.5px solid var(--acL);border-radius:12px;cursor:pointer;transition:border-color .2s,background .2s;margin-top:14px;margin-bottom:6px}
 .svc-confirm input[type="checkbox"]{width:20px;height:20px;flex-shrink:0;cursor:pointer;accent-color:var(--gn);margin-top:2px}
 .svc-confirm .svc-confirm-body{flex:1;min-width:0}
 .svc-confirm .svc-confirm-ttl{font-family:var(--fd);font-weight:600;color:var(--tx);font-size:14px;margin-bottom:4px;letter-spacing:.01em}
@@ -689,6 +711,9 @@ html{scroll-behavior:smooth}
 .svc-mod-q{font-size:13px;color:var(--tx);font-weight:600;letter-spacing:.01em}
 .svc-mod-block{margin-top:14px;padding-top:14px;border-top:1px solid var(--brd)}
 .svc-mod-block:first-child{border-top:0;padding-top:0;margin-top:0}
+/* The reveal body (questions, level cards) sits directly under the
+   confirm card — give it some breathing space so it doesn't feel glued. */
+#tantricBody,#escortBody{padding-top:18px}
 
 /* Single-choice service-line pills (Tantric / Companions / Both) and the
    shared multi-select rows (More Ladies, Travel). Cards click as a unit;
@@ -969,7 +994,7 @@ html{scroll-behavior:smooth}
           </select>
         </div>
       </div>
-      <div class="field">
+      <div class="field" style="margin-top:14px">
         <label class="field-lbl">Other Languages <span class="opt-note">Optional</span></label>
         <!-- Added languages render first; the "+ Add a language" picker
              sits below them, so once she adds French the affordance to
@@ -1042,31 +1067,6 @@ html{scroll-behavior:smooth}
 
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
-        <div class="sec-t">Identity Verification</div>
-        <span class="sec-note" style="display:inline-flex;align-items:center;gap:5px;color:var(--rd);font-weight:600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Strictly confidential</span>
-      </div>
-      <div class="upload-list">
-        <div class="upload" id="upl_idcopy" onclick="document.getElementById('file_idcopy').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">ID Copy <span class="req">*</span></div><div class="upload-h">For identity verification — passport, driving licence or national ID. Clear scan or photo, both sides.</div></div>
-          <button class="upload-btn">Upload</button>
-        </div>
-        <input type="file" id="file_idcopy" accept="image/*,application/pdf" onchange="handleFileUpload(event,'idcopy')">
-        <div class="upload-prog" id="prog_idcopy"><div class="upload-prog-fill"></div></div>
-
-        <div class="upload" id="upl_bank" onclick="document.getElementById('file_bank').click()">
-          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 14h2M7 17h6"/></svg></div>
-          <div class="upload-info"><div class="upload-ttl">Proof of Bank Account <span class="req">*</span></div><div class="upload-h">For payouts and payments only — one bank statement confirming your account number.</div></div>
-          <button class="upload-btn">Upload</button>
-        </div>
-        <input type="file" id="file_bank" accept="image/*,application/pdf" onchange="handleFileUpload(event,'bank')">
-        <div class="upload-prog" id="prog_bank"><div class="upload-prog-fill"></div></div>
-      </div>
-    </div>
-
-    <div class="sec">
-      <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
         <div class="sec-t">Contact Details</div>
       </div>
@@ -1084,8 +1084,8 @@ html{scroll-behavior:smooth}
           <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--tx2);cursor:pointer">
             <input type="checkbox" id="f_phone_is_whatsapp" style="width:16px;height:16px;cursor:pointer"> This number is also my WhatsApp
           </label>
-          <div id="whatsappWrap" style="display:none;margin-top:14px">
-            <label class="field-lbl">What&rsquo;s your WhatsApp number? <span class="req">*</span></label>
+          <div id="whatsappWrap" style="display:none;margin-top:22px">
+            <label class="field-lbl">WhatsApp number <span class="req">*</span></label>
             <div class="phone-combo" id="whatsappCombo">
               <select class="sel phone-prefix" id="f_whatsapp_code" aria-label="WhatsApp country code">
                 <option value="">Add prefix</option>
@@ -1239,14 +1239,14 @@ html{scroll-behavior:smooth}
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a1 1 0 010 4h-4a1 1 0 000 4h6"/></svg></div>
-        <div class="sec-t">Service Lines</div>
-        <span class="sec-note">Promoted on time-based · 40% fee</span>
+        <div class="sec-t sec-t-lg">Service Lines</div>
+        <span class="sec-note">Promoted on a time-based model, in exchange for a fixed 40% commission.</span>
       </div>
 
       <!-- ─── Disclaimer ─── styled box (same look as Tantric / Companions). -->
       <div class="svc-disclaimer">
         <span class="svc-discl-label">Disclaimer</span>
-        <div class="svc-discl-body">We are not your employer! We only act as an introductory agency. Services below are priced on time, fees are for promoting your profile and for the session time booked through us. Anything beyond that is a private matter between two consenting adults.</div>
+        <div class="svc-discl-body">We are not your employer. We act strictly as an introduction agency. The services below are commissioned on the basis of session duration and the promotion of your profile on our platform(s). Anything beyond that is a private matter between two consenting adults.</div>
       </div>
 
       <!-- ─── Intro line above the two service modules (always visible) ─── -->
@@ -1256,12 +1256,11 @@ html{scroll-behavior:smooth}
            the top is the confirm; ticking it reveals the body. ─── -->
       <div class="svc-mod" id="modTantric" style="margin-top:18px">
         <div class="svc-mod-head">
-          <div class="svc-mod-title">Tantric Services</div>
+          <div class="svc-mod-title">Tantric Massage Services</div>
         </div>
         <label class="svc-confirm" data-line="tantric">
           <input type="checkbox" id="f_confirm_tantric" onchange="toggleServiceLine('tantric', this.checked)">
           <div class="svc-confirm-body">
-            <div class="svc-confirm-ttl">Tantric:</div>
             <div class="svc-confirm-txt">I confirm that I independently provide a premium tantric massage, with relaxing and sensual body-to-body techniques.</div>
           </div>
         </label>
@@ -1338,12 +1337,11 @@ html{scroll-behavior:smooth}
       <!-- ─── Companionship module — ALWAYS VISIBLE, same shape as Tantric ─── -->
       <div class="svc-mod" id="modEscort" style="margin-top:18px">
         <div class="svc-mod-head">
-          <div class="svc-mod-title">Companions Services</div>
+          <div class="svc-mod-title">Companionship Services</div>
         </div>
         <label class="svc-confirm" data-line="companions">
           <input type="checkbox" id="f_confirm_escort" onchange="toggleServiceLine('companions', this.checked)">
           <div class="svc-confirm-body">
-            <div class="svc-confirm-ttl">Companions:</div>
             <div class="svc-confirm-txt">I confirm that I independently provide refined company for the occasion: an evening, dinner, event or travel.</div>
           </div>
         </label>
@@ -1421,7 +1419,7 @@ html{scroll-behavior:smooth}
       <div id="rightToRefuseWrap" style="display:none;margin-top:18px;padding:14px 16px;background:var(--sf);border:1px solid var(--brd);border-radius:10px">
         <label style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--tx);cursor:pointer;line-height:1.5">
           <input type="checkbox" id="f_right_to_refuse" style="width:18px;height:18px;cursor:pointer;flex-shrink:0;margin-top:1px">
-          <span><b>I want to have the right to refuse any client who is not safe.</b></span>
+          <span>I confirm that I work independently, as a self-employed provider. I offer the service(s) I select above on my own terms, and I set my own boundaries. I can decline any booking, for any reason, at any time.</span>
         </label>
       </div>
 
@@ -1433,7 +1431,7 @@ html{scroll-behavior:smooth}
       <!-- ─── More Options (shared, shown when any service selected) ─── -->
       <div class="svc-mod-block" id="moreLadiesBlock" style="display:none;margin-top:18px">
         <div class="field-lbl" style="margin-bottom:8px">More Options <span class="req">*</span></div>
-        <div class="field-hint" style="margin-bottom:10px">Pick at least one. Priced on time at your standard rate.</div>
+        <div class="field-hint" style="margin-bottom:10px">Pick at least one. Each additional lady is charged on time, at her own level&rsquo;s rate (Premium, Elite, or First Class).</div>
         <div class="line-row line-row-multi" id="moreLadiesRow"></div>
       </div>
 
@@ -1549,7 +1547,7 @@ html{scroll-behavior:smooth}
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 010 20"/></svg></div>
-        <div class="sec-t">Second Working Country</div>
+        <div class="sec-t">Additional Working Area</div>
         <span class="sec-note">If you also live &amp; work somewhere else</span>
       </div>
       <div class="field-hint" style="margin-bottom:10px">Add another country / city you&rsquo;re based in and work from — e.g. Paris, Milan, Rome. You can add up to two more.</div>
@@ -1591,23 +1589,25 @@ html{scroll-behavior:smooth}
         <div class="field"><label class="field-lbl">How many days per week? <span class="req">*</span></label>
           <select class="sel" id="f_days_week" data-sec="availability"><option value="">Select...</option><option>3-4 days a week</option><option>5 days a week</option><option>6-7 days a week</option><option>Occasionally (on request only)</option></select>
         </div>
-        <div class="field"><label class="field-lbl">Late nights &amp; weekends?</label>
+        <div class="field"><label class="field-lbl">How much advanced notice do you need? <span class="req">*</span></label>
           <select class="sel" id="f_late_hours">
             <option value="">Select...</option>
-            <option value="No">No</option>
-            <option value="Yes always">Yes always</option>
-            <option value="Advance notice">Advance notice</option>
+            <option value="Always available ASAP">Always available ASAP</option>
+            <option value="Minimum 30 minutes">Minimum 30 minutes</option>
+            <option value="Minimum 1 hour">Minimum 1 hour</option>
+            <option value="Minimum 12 hours">Minimum 12 hours</option>
           </select>
         </div>
       </div>
       <div class="field-lbl" style="margin-bottom:6px">Choose your weekly availability <span class="req">*</span></div>
-      <div class="field-hint" style="margin:0 0 12px">Tap each day you work to switch it <b>ON</b> (9 AM – 2 AM by default — adjust as you like). <b>Minimum 3 days.</b></div>
+      <div class="field-hint" style="margin:0 0 12px">Tap each day you work to switch it <b style="color:var(--gn)">ON</b>. We operate 24h a day, 7 days a week — you choose your own schedule. More days and hours mean more chances of bookings.</div>
       <div class="avail-grid" id="availGrid"></div>
-      <div class="row-1" style="margin-top:10px">
-        <div class="field"><label class="field-lbl">Notes about Availability <span class="opt-note">Optional</span></label>
-          <textarea class="txa" id="f_avail_notes" rows="3" placeholder="e.g. I prefer 2 hours in advance, or 12 hours in advance."></textarea>
-        </div>
+      <div class="avail-warning" style="margin-top:12px;padding:11px 14px;border-left:3px solid var(--rd);background:rgba(192,96,96,.05);color:var(--rd);font-size:12px;line-height:1.6;border-radius:6px;font-weight:600">
+        Your availability is your responsibility — the more open you are, the more you earn.
       </div>
+      <!-- Avail notes are no longer collected — kept as a hidden field so the
+           submit handler / draft load still resolve without errors. -->
+      <textarea id="f_avail_notes" style="display:none"></textarea>
     </div>
 
     <div class="sec">
@@ -1707,6 +1707,32 @@ html{scroll-behavior:smooth}
       <div><div class="card-t">Identity Verification</div><div class="card-s">Final step. Verify your identity and location, then confirm agreements.</div></div>
       <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
     </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
+        <div class="sec-t">Identity Verification</div>
+        <span class="sec-note" style="display:inline-flex;align-items:center;gap:5px;color:var(--rd);font-weight:600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Strictly confidential</span>
+      </div>
+      <div class="upload-list">
+        <div class="upload" id="upl_idcopy" onclick="document.getElementById('file_idcopy').click()">
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 9h3M15 13h3M5 17h14"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">ID Copy <span class="req">*</span></div><div class="upload-h">For identity verification — passport, driving licence or national ID. Clear scan or photo, both sides.</div></div>
+          <button class="upload-btn">Upload</button>
+        </div>
+        <input type="file" id="file_idcopy" accept="image/*,application/pdf" onchange="handleFileUpload(event,'idcopy')">
+        <div class="upload-prog" id="prog_idcopy"><div class="upload-prog-fill"></div></div>
+
+        <div class="upload" id="upl_bank" onclick="document.getElementById('file_bank').click()">
+          <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 14h2M7 17h6"/></svg></div>
+          <div class="upload-info"><div class="upload-ttl">Proof of Bank Account <span class="req">*</span></div><div class="upload-h">For payouts and payments only — one bank statement confirming your account number.</div></div>
+          <button class="upload-btn">Upload</button>
+        </div>
+        <input type="file" id="file_bank" accept="image/*,application/pdf" onchange="handleFileUpload(event,'bank')">
+        <div class="upload-prog" id="prog_bank"><div class="upload-prog-fill"></div></div>
+      </div>
+    </div>
+
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
@@ -1753,12 +1779,18 @@ html{scroll-behavior:smooth}
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="consent-text">I confirm I am <b>over 21 years of age</b> and legally eligible to work.</div>
         </div>
+        <div class="consent" data-consent="self_employed" data-sec="consent">
+          <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="consent-text">I confirm I am <b>self-employed and independent</b>. I am responsible for my own taxes and earnings. This platform is not my employer.</div>
+        </div>
         <div class="consent" data-consent="gdpr" data-sec="consent">
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="consent-text">I consent to <b>data storage and processing</b> in accordance with GDPR.</div>
         </div>
-        <!-- NDA and professional photography consents removed — both are
-             discussed during the interview rather than upfront. -->
+        <div class="consent" data-consent="photo_release" data-sec="consent">
+          <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="consent-text">I consent to my <b>professional profile photos and video</b> being used to promote me on the platform&rsquo;s website(s) and channels. (My verification selfies are never published or shared.)</div>
+        </div>
         <div class="consent" data-consent="terms" data-sec="consent">
           <div class="consent-box"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="consent-text">I agree to the <b>terms and conditions</b> and confirm all information is accurate.</div>
@@ -2490,7 +2522,7 @@ let formData = {
   // the moment the applicant first types something into the field.
   signature_name:'', signature_signed_at:'',
   // NDA + photo consents removed; only age + gdpr + terms remain.
-  consents:{age:false, gdpr:false, terms:false},
+  consents:{age:false, self_employed:false, gdpr:false, photo_release:false, terms:false},
   // File slots split across Step 1 (identity bundle) + Step 4
   // (photos + media). idcopy = passport / driving licence / ID
   // scan uploaded at Step 1, separate from the Selfie+ID liveness
@@ -2510,7 +2542,7 @@ let formData = {
 
 const SEC_REQ = {
   personal: 7, physical: 3, experience: 1, work: 4,
-  services: 1, availability: 1, documents: 1, consent: 3
+  services: 1, availability: 1, documents: 1, consent: 5
 };
 
 // ═══════════ INIT ═══════════
@@ -2694,7 +2726,7 @@ document.addEventListener('DOMContentLoaded', async function(){
   const avG = document.getElementById('availGrid');
   if(avG) DAYS.forEach(day => {
     // Days start OFF — she taps each day she works ON (defaults 09:00–02:00).
-    formData.availability[day] = {enabled:false, from:'09:00', to:'02:00'};
+    formData.availability[day] = {enabled:false, from:'00:00', to:'23:59'};
     const cell = document.createElement('div');
     cell.className = 'avail-day off';
     cell.dataset.day = day;
@@ -2831,8 +2863,6 @@ function populatePhoneCodes(selectId){
   const sel = document.getElementById(selectId);
   if(!sel) return;
   sel.innerHTML = '<option value="">+...</option>';
-  // Sort by country name, but float UK + ES + RO + BR (likely markets) on top
-  // for faster picking.
   const top = ['United Kingdom','Spain','Romania','Brazil','Portugal','Italy','France','Germany'];
   const ordered = [
     ...PHONE_CODES.filter(p => top.includes(p.n)).sort((a,b) => top.indexOf(a.n) - top.indexOf(b.n)),
@@ -2841,12 +2871,101 @@ function populatePhoneCodes(selectId){
   ordered.forEach(p => {
     const opt = document.createElement('option');
     opt.value = p.c;
-    opt.textContent = p.f + ' ' + p.c + ' · ' + p.n;
+    // Store the flag + name in dataset so the custom dropdown can render
+    // the long label, while the option text stays compact for the legacy
+    // native picker fallback.
+    opt.textContent = p.f + ' ' + p.c;
+    opt.dataset.flag = p.f;
+    opt.dataset.name = p.n;
+    opt.dataset.prefix = p.c;
     sel.appendChild(opt);
   });
   sel.addEventListener('change', () => {
     if(selectId === 'f_phone_code') formData.phone_code = sel.value;
     if(selectId === 'f_em_phone_code') formData.em_phone_code = sel.value;
+    if(selectId === 'f_whatsapp_code') formData.whatsapp_code = sel.value;
+  });
+  // Wrap the select with a custom dropdown: a compact "🇬🇧 +44" button on
+  // the left of the phone input, and a popup panel with full country
+  // names that opens on tap. Mobile-first; no external library.
+  buildPhonePicker(sel, ordered);
+}
+
+function buildPhonePicker(sel, ordered){
+  if(sel.dataset.pickerBuilt === '1') return;
+  sel.dataset.pickerBuilt = '1';
+  sel.style.display = 'none';
+  // Trigger button rendered in place of the select. The select still
+  // exists (hidden) so form serialisation and the existing change-handler
+  // continue to work — we dispatch a "change" on it after every pick.
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'phone-prefix-btn';
+  btn.setAttribute('aria-haspopup','listbox');
+  btn.setAttribute('aria-expanded','false');
+  btn.innerHTML = '<span class="phone-prefix-flag">🌐</span><span class="phone-prefix-code">+…</span><span class="phone-prefix-caret">▾</span>';
+  sel.parentNode.insertBefore(btn, sel);
+  // Panel — appended to body so it can escape any overflow clipping.
+  const panel = document.createElement('div');
+  panel.className = 'phone-prefix-panel';
+  panel.setAttribute('role','listbox');
+  panel.innerHTML = '<input type="text" class="phone-prefix-search inp" placeholder="Search country…" autocomplete="off">'
+                  + '<div class="phone-prefix-list"></div>';
+  document.body.appendChild(panel);
+  const list = panel.querySelector('.phone-prefix-list');
+  const search = panel.querySelector('.phone-prefix-search');
+  ordered.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'phone-prefix-row';
+    row.dataset.prefix = p.c;
+    row.dataset.name = p.n.toLowerCase();
+    row.innerHTML = '<span class="ppr-flag">' + p.f + '</span>'
+                  + '<span class="ppr-name">' + p.n + '</span>'
+                  + '<span class="ppr-code">' + p.c + '</span>';
+    row.addEventListener('click', () => {
+      sel.value = p.c;
+      btn.querySelector('.phone-prefix-flag').textContent = p.f;
+      btn.querySelector('.phone-prefix-code').textContent = p.c;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      hidePanel();
+    });
+    list.appendChild(row);
+  });
+  const positionPanel = () => {
+    const r = btn.getBoundingClientRect();
+    const w = Math.max(280, Math.min(360, window.innerWidth - 24));
+    panel.style.width = w + 'px';
+    let left = r.left;
+    if(left + w > window.innerWidth - 12) left = window.innerWidth - w - 12;
+    panel.style.left = left + 'px';
+    panel.style.top = (r.bottom + 6 + window.scrollY) + 'px';
+  };
+  const showPanel = () => {
+    positionPanel();
+    panel.classList.add('open');
+    btn.setAttribute('aria-expanded','true');
+    setTimeout(() => { try{ search.focus(); }catch(e){} }, 50);
+  };
+  const hidePanel = () => {
+    panel.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+    search.value = '';
+    list.querySelectorAll('.phone-prefix-row').forEach(r => { r.style.display = ''; });
+  };
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if(panel.classList.contains('open')) hidePanel(); else showPanel();
+  });
+  document.addEventListener('click', e => {
+    if(panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn) hidePanel();
+  });
+  window.addEventListener('scroll', () => { if(panel.classList.contains('open')) positionPanel(); }, true);
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    list.querySelectorAll('.phone-prefix-row').forEach(r => {
+      const hit = !q || r.dataset.name.indexOf(q) >= 0 || r.dataset.prefix.indexOf(q) >= 0;
+      r.style.display = hit ? '' : 'none';
+    });
   });
 }
 
@@ -3221,16 +3340,12 @@ function buildExtraLocation(loc){
   // Restore existing values into the controls.
   cSel.value = loc.country || '';
   fillCities();
-  noInhouse.checked = !!loc.no_inhouse;
+  // The "I don't have an in-house address" checkbox was removed from the
+  // template (handled by the Travel pick now). Guard against the legacy
+  // querySelector returning null so the city cascade below still wires
+  // up cleanly.
+  if(noInhouse){ noInhouse.checked = !!loc.no_inhouse; }
   street.value = loc.inhouse_street || ''; apt.value = loc.inhouse_apt || ''; postcode.value = loc.inhouse_postcode || '';
-  const applyNoInhouse = () => {
-    loc.no_inhouse = noInhouse.checked;
-    inhouseWrap.style.opacity = noInhouse.checked ? '.45' : '1';
-    inhouseWrap.style.pointerEvents = noInhouse.checked ? 'none' : 'auto';
-    inhouseWrap.querySelectorAll('input').forEach(i => i.disabled = noInhouse.checked);
-    if(noInhouse.checked){ loc.inhouse_street = loc.inhouse_apt = loc.inhouse_postcode = ''; street.value = apt.value = postcode.value = ''; }
-  };
-  applyNoInhouse();
 
   cSel.addEventListener('change', () => { loc.country = cSel.value; loc.city = ''; loc.area = ''; fillCities(); scheduleAutoSave && scheduleAutoSave(); });
   citySel.addEventListener('change', () => {
@@ -3245,7 +3360,7 @@ function buildExtraLocation(loc){
     scheduleAutoSave && scheduleAutoSave();
   });
   areaFree.addEventListener('input', () => { loc.area = areaFree.value; scheduleAutoSave && scheduleAutoSave(); });
-  noInhouse.addEventListener('change', () => { applyNoInhouse(); scheduleAutoSave && scheduleAutoSave(); });
+  if(noInhouse) noInhouse.addEventListener('change', () => { scheduleAutoSave && scheduleAutoSave(); });
   street.addEventListener('input', () => { loc.inhouse_street = street.value; scheduleAutoSave && scheduleAutoSave(); });
   apt.addEventListener('input', () => { loc.inhouse_apt = apt.value; scheduleAutoSave && scheduleAutoSave(); });
   postcode.addEventListener('input', () => { loc.inhouse_postcode = postcode.value; scheduleAutoSave && scheduleAutoSave(); });
@@ -4398,11 +4513,11 @@ function toggleDay(day){
   formData.availability_touched = true;
   d.enabled = !d.enabled;
   if(d.enabled){
-    d.from = d.from || '09:00';
-    d.to = d.to || '02:00';
+    d.from = d.from || '00:00';
+    d.to   = d.to   || '23:59';
     cell.classList.remove('off');
     cell.classList.add('on');
-    cell.querySelector('.avail-day-hrs').textContent = d.from+' – '+d.to;
+    cell.querySelector('.avail-day-hrs').textContent = is24h(d.from, d.to) ? '24h' : (d.from+' – '+d.to);
     cell.querySelector('.time-inputs').style.display = 'flex';
     cell.querySelector('.avail-toggle').textContent = 'Tap to remove';
   } else {
@@ -4414,12 +4529,17 @@ function toggleDay(day){
   }
   updateProgress();
 }
+// A day counts as "24h" when from = 00:00 and to = 23:59 (our convention).
+// Used to render the friendly "24h" label instead of a literal time range.
+function is24h(from, to){
+  return (from === '00:00' || from === '0:00') && (to === '23:59' || to === '24:00');
+}
 function setAvailTime(day, kind, val){
   formData.availability_touched = true;
   formData.availability[day][kind] = val;
   const cell = document.querySelector('[data-day="'+day+'"]');
   const d = formData.availability[day];
-  cell.querySelector('.avail-day-hrs').textContent = (d.from||'09:00')+' – '+(d.to||'02:00');
+  cell.querySelector('.avail-day-hrs').textContent = is24h(d.from, d.to) ? '24h' : ((d.from||'00:00')+' – '+(d.to||'23:59'));
 }
 
 // ═══════════ WORK NAME SUGGESTIONS ═══════════
@@ -4687,18 +4807,7 @@ function validateStepBeforeAdvance(currentStep){
       showToast('Please tell us how you heard about us','error');
       return false;
     }
-    if(!formData.files.idcopy){
-      const u = document.getElementById('upl_idcopy');
-      if(u){ u.classList.add('field-missing'); try{ u.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
-      showToast('Please upload your ID Copy','error');
-      return false;
-    }
-    if(!formData.files.bank){
-      const u = document.getElementById('upl_bank');
-      if(u){ u.classList.add('field-missing'); try{ u.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
-      showToast('Please upload your Proof of Bank Account','error');
-      return false;
-    }
+    // (ID Copy + Proof of Bank moved to Step 3 — checked there + at submit.)
   }
 
   // Step 2: services + working area + availability checks.
@@ -4729,6 +4838,12 @@ function validateStepBeforeAdvance(currentStep){
     if(!formData.work_country) waMissing.push({key:'work_country', el:'f_work_country'});
     if(!formData.work_city)    waMissing.push({key:'work_city',    el:'f_work_city_select'});
     if(!formData.local_area)   waMissing.push({key:'local_area',   el:'f_local_area'});
+    // When In-house is ticked, the in-house address (street + flat + postcode)
+    // is mandatory too — that's what "in-house" actually means.
+    if((formData.travel||[]).indexOf('in_house') >= 0){
+      if(!formData.inhouse_street)   waMissing.push({key:'inhouse_street',   el:'f_inhouse_street'});
+      if(!formData.inhouse_postcode) waMissing.push({key:'inhouse_postcode', el:'f_inhouse_postcode'});
+    }
     if(waMissing.length){
       const w = waMissing[0];
       const el = document.getElementById(w.el);
@@ -5637,10 +5752,10 @@ const FIELD_LABELS = {
   work_city:   'Working city',
   local_area:  'Working area',
   inhouse:     'In-house availability',
+  inhouse_street:   'In-house street &amp; number',
+  inhouse_postcode: 'In-house postcode',
   mobile:      'Mobile availability',
-  mobile_30:   'Mobile 30+ min away',
-  airport:     'Airport bookings',
-  late_hours:  'Late nights & weekends',
+  late_hours:  'Advanced notice',
   photoshoot:  'Professional photoshoot',
   rate:        'Starting rate',
   days_week:   'Available days per week',
@@ -5867,12 +5982,12 @@ async function submitApplication(){
   // Step 1 identity bundle — all three are mandatory.
   if(!formData.files.idcopy){
     showToast('Please upload your ID Copy in Step 1','error');
-    jumpAndFlag(1, 'upl_idcopy');
+    jumpAndFlag(3, 'upl_idcopy');
     return;
   }
   if(!formData.files.bank){
     showToast('Please upload Proof of Bank Account in Step 1','error');
-    jumpAndFlag(1, 'upl_bank');
+    jumpAndFlag(3, 'upl_bank');
     return;
   }
   if(!formData.video){
@@ -6083,10 +6198,11 @@ async function submitApplication(){
     // Main client-facing photo = front body shot.
     profile_photo_url: (uploadedPaths.portfolio && uploadedPaths.portfolio[0]) || uploadedPaths.fullbody_front || uploadedPaths.fullbody || null,
     
-    // Consents (3 required: age + GDPR + terms; NDA & photo discussed at interview)
+    // Consents (5 required: age + self-employed + GDPR + photo release + terms).
     gdpr_signed: formData.consents.gdpr ? 'Yes' : 'Not yet',
     consent_form: formData.consents.terms ? 'Yes' : 'Not yet',
     consent_age_verified: !!formData.consents.age,
+    consent_photo_release: !!formData.consents.photo_release,
 
     // Digital signature — typed name + capture timestamp. Stored on
     // the ladies row so the audit trail travels with the applicant.
