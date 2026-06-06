@@ -1445,22 +1445,8 @@ html{scroll-behavior:smooth}
         <div class="line-row line-row-multi" id="moreLadiesRow"></div>
       </div>
 
-      <!-- ─── Travel (shared) — In-house and Mobile only. Ticking In-house
-           opens Working Area; ticking Mobile opens its sub-checkboxes
-           (airport / dinner / trips). ─── -->
-      <div class="svc-mod-block" id="travelBlock" style="display:none;margin-top:18px">
-        <div class="field-lbl" style="margin-bottom:8px">Travel <span class="req">*</span></div>
-        <div class="field-hint" style="margin-bottom:10px">Select how you provide your services: choose one or both.</div>
-        <div class="line-row line-row-2" id="travelRow"></div>
-        <!-- Mobile sub-checkboxes — only shown once Mobile is ticked. -->
-        <div id="mobileSubBlock" style="display:none;margin-top:14px;padding:14px 16px;background:var(--sf);border:1px solid var(--brd);border-radius:10px">
-          <div class="field-lbl" style="margin-bottom:8px;font-size:12px">When you travel to clients:</div>
-          <label class="rtr-line"><input type="checkbox" id="f_travel_airport"> I accept airport bookings <span class="opt-note">(travel cost covered by the client)</span></label>
-          <label class="rtr-line"><input type="checkbox" id="f_travel_dinner"> I accept dinner dates and events <span class="opt-note">(minimum two hours booking)</span></label>
-          <label class="rtr-line"><input type="checkbox" id="f_travel_trips"> I accept travel and trips <span class="opt-note">(all expenses covered by the client)</span></label>
-        </div>
-      </div>
-
+      <!-- Travel block moved out of Service Lines and into the new
+           "Working Locations" section below. -->
 
       <!-- Hidden legacy mounts kept so existing JS that targets them
            continues to work without breaking. The new UI controls these. -->
@@ -1473,14 +1459,31 @@ html{scroll-behavior:smooth}
 
 
     <div class="sec" id="workingAreaSec" style="display:none">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-        <div class="sec-t">Your Working Area</div>
+      <!-- "Working Locations" uses the big card-head layout to match
+           Service Lines / Public Profile visually. -->
+      <div class="card-head" style="padding-bottom:0;border-bottom:0;margin-bottom:14px">
+        <div><div class="card-t">Working Locations</div><div class="card-s">Where you actually work — pick how you provide your services, then add the address(es) below.</div></div>
+        <div class="card-head-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
       </div>
-      <span class="sec-note" style="margin:-4px 0 4px">Where you&rsquo;ll actually work &mdash; this can be different from your home address.</span>
+
+      <!-- ─── Travel pills (In-house / Mobile) — moved here from Service
+           Lines. Ticking In-house opens the in-house address fields
+           below; ticking Mobile opens the mobile sub-checkboxes. ─── -->
+      <div class="svc-mod-block" id="travelBlock" style="margin-top:0">
+        <div class="field-lbl" style="margin-bottom:8px">How do you provide your services? <span class="req">*</span></div>
+        <div class="field-hint" style="margin-bottom:10px">Choose one or both.</div>
+        <div class="line-row line-row-2" id="travelRow"></div>
+        <div id="mobileSubBlock" style="display:none;margin-top:14px;padding:14px 16px;background:var(--sf);border:1px solid var(--brd);border-radius:10px">
+          <div class="field-lbl" style="margin-bottom:8px;font-size:12px">When you travel to clients:</div>
+          <label class="rtr-line"><input type="checkbox" id="f_travel_airport"> I accept airport bookings <span class="opt-note">(travel cost covered by the client)</span></label>
+          <label class="rtr-line"><input type="checkbox" id="f_travel_dinner"> I accept dinner dates and events <span class="opt-note">(minimum two hours booking)</span></label>
+          <label class="rtr-line"><input type="checkbox" id="f_travel_trips"> I accept travel and trips <span class="opt-note">(all expenses covered by the client)</span></label>
+        </div>
+      </div>
+
       <!-- ─── WORKING LOCATION ─── Independent of the home address from
            Step 1: she may live in one city and work in another. -->
-      <div class="row" style="margin-top:6px">
+      <div class="row" style="margin-top:18px;padding-top:18px;border-top:1px solid var(--brd)">
         <div class="field">
           <label class="field-lbl">Working Country <span class="req">*</span></label>
           <select class="sel" id="f_work_country" data-sec="work"><option value="">Select country…</option></select>
@@ -1526,6 +1529,17 @@ html{scroll-behavior:smooth}
             <input type="text" class="inp" id="f_inhouse_postcode" placeholder="W1S 1SS" autocomplete="postal-code" autocapitalize="characters">
           </div>
         </div>
+        <!-- ─── Location Walkthrough video — per-address. Each in-house
+             address she lists gets its own walkthrough. ─── -->
+        <div class="video-box" id="locationBox" style="margin-top:6px">
+          <div class="video-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div class="video-box-ttl">Location Walkthrough <span class="req">*</span></div>
+          <div class="video-box-sub">One short video for this address showing, in this order: <strong style="color:var(--tx)">how to enter</strong> (from outside — the way in to the building / flat), then the <strong style="color:var(--tx)">room</strong> where you welcome clients, then the <strong style="color:var(--tx)">bathroom</strong>.</div>
+          <button class="btn btn-ghost" type="button" id="locationUploadBtn" onclick="document.getElementById('file_location').click()" style="margin-top:14px">Upload Location Video</button>
+          <video id="locationPreview" controls style="display:none;width:100%;max-width:480px;margin:14px auto 0;border-radius:8px"></video>
+        </div>
+        <input type="file" id="file_location" accept="video/*" onchange="handleLocationVideo(event)" style="display:none">
+        <div class="upload-prog" id="prog_location"><div class="upload-prog-fill"></div></div>
       </div>
       <!-- Legacy single-string field kept so the submit handler can still
            write in_house_address. -->
@@ -1620,90 +1634,8 @@ html{scroll-behavior:smooth}
       <textarea id="f_avail_notes" style="display:none"></textarea>
     </div>
 
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
-        <div class="sec-t">Professional Photoshoot</div>
-      </div>
-      <div class="row-1" style="margin-top:6px">
-        <div class="field"><label class="field-lbl">Do you have a professional photoshoot? <span class="req">*</span></label>
-          <select class="sel" id="f_photoshoot" data-sec="experience">
-            <option value="">Select...</option>
-            <option value="Yes I have">Yes, I have</option>
-            <option value="No but willing">No, but willing to make one</option>
-            <option value="Waiting">Not yet, I am waiting for my photos to be ready</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="sec" id="proPhotoSection" style="display:none">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
-        <div class="sec-t">Add Your Professional Photoshoot</div>
-        <span class="sec-note">Minimum 5 photos</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">Add at least 5 of your best professional photos. Make sure they are in a high-quality resolution, not screenshots or poor lighting.</div>
-      <div class="photo-grid" id="proPhotoGrid"></div>
-      <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
-      <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
-    </div>
-
-    <!-- Professional video shoot question + reveal (1 video) -->
-    <div class="sec">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="sec-t">Professional Video Shoot</div>
-      </div>
-      <div class="row-1" style="margin-top:6px">
-        <div class="field"><label class="field-lbl">Do you have a professional video? <span class="req">*</span></label>
-          <select class="sel" id="f_videoshoot" data-sec="experience">
-            <option value="">Select...</option>
-            <option value="Yes I have">Yes, I have</option>
-            <option value="No but willing">No, but willing to make one</option>
-            <option value="Waiting">Not yet, I am waiting for my video to be ready</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="sec" id="profVideoSection" style="display:none">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="sec-t">Add Your Professional Video</div>
-        <span class="sec-note">1 video</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">Upload one professional video. Make sure it&rsquo;s a high-quality resolution clip, not a screenshot or poor lighting.</div>
-      <div class="video-box" id="profVideoBox">
-        <video id="profVideoPreview" controls style="display:none"></video>
-        <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div class="video-box-ttl" id="profVideoTtl">Professional video</div>
-        <div class="video-box-sub">One clean, well-lit clip.</div>
-        <button class="btn btn-primary" type="button" id="profVideoBtn" onclick="document.getElementById('file_profvideo').click()" style="min-width:auto">Upload Video</button>
-        <div class="upload-prog" id="prog_profvideo"><div class="upload-prog-fill"></div></div>
-      </div>
-      <input type="file" id="file_profvideo" accept="video/*" onchange="handleProfVideo(event)">
-    </div>
-
-    <div class="sec" id="selfieBox">
-      <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 3-3"/></svg></div>
-        <div class="sec-t">Selfie Verification</div>
-        <span class="sec-note" style="display:inline-flex;align-items:center;gap:5px;color:var(--rd);font-weight:600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Strictly confidential</span>
-      </div>
-      <div class="field-hint" style="margin-bottom:14px">We will never post it online. Only for verification purposes.</div>
-      <div class="upload" onclick="document.getElementById('file_selfie').click()">
-        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
-        <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
-        <button type="button" class="upload-btn">Upload</button>
-      </div>
-      <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
-      <div class="upload" onclick="document.getElementById('file_fullbody').click()" style="margin-top:10px">
-        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v9m0 0l-3 5m3-5l3 5M7 9l5 1 5-1"/></svg></div>
-        <div class="upload-info"><div class="upload-ttl">Full-body photo <span class="req">*</span></div><div class="upload-h">One clear photo showing your full body, standing.</div><div id="fullbodyStatus" style="margin-top:4px"></div></div>
-        <button type="button" class="upload-btn">Upload</button>
-      </div>
-      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
-    </div>
+    <!-- (Professional Photoshoot / Professional Video Shoot / Selfie
+         Verification moved to Step 3 — right after Video Introduction.) -->
 
     <div class="actions">
       <div class="actions-left"><button class="btn btn-back" onclick="goStep(1)">← Back to previous step</button></div>
@@ -1759,24 +1691,91 @@ html{scroll-behavior:smooth}
       </div>
       <input type="file" id="videoUpload" accept="video/*" onchange="handleVideoUpload(event)">
     </div>
-    <!-- ─── LOCATION CHECK ─── New section per CEO request. Short video
-         walking through the room where clients are received and the
-         bathroom. Standards: clean, immaculate, white towels, lit. -->
+
+    <!-- ─── Photoshoot / Video Shoot / Selfie moved from Step 2 — they
+         all belong to the verification step now. ─── -->
     <div class="sec">
       <div class="sec-head">
-        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div>
-        <div class="sec-t">Location Verification <span class="req">*</span></div>
-        <span class="sec-note" style="color:var(--rd);font-weight:600">Prepare it professional &mdash; super clean, white towels, candles</span>
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <div class="sec-t">Professional Photoshoot</div>
       </div>
-      <div class="video-box" id="locationBox">
-        <div class="video-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-        <div class="video-box-ttl" id="locationTtl">Location Walkthrough</div>
-        <div class="video-box-sub" id="locationSub">One short video showing, in this order: <strong style="color:var(--tx)">how to enter</strong> (from outside &mdash; the way in to the building / flat), then the <strong style="color:var(--tx)">room</strong> where you welcome clients, then the <strong style="color:var(--tx)">bathroom</strong>.</div>
-        <button class="btn btn-ghost" type="button" id="locationUploadBtn" onclick="document.getElementById('file_location').click()" style="margin-top:14px">Upload Location Video</button>
-        <video id="locationPreview" controls style="display:none;width:100%;max-width:480px;margin:14px auto 0;border-radius:8px"></video>
+      <div class="row-1" style="margin-top:6px">
+        <div class="field"><label class="field-lbl">Do you have a professional photoshoot? <span class="req">*</span></label>
+          <select class="sel" id="f_photoshoot" data-sec="experience">
+            <option value="">Select...</option>
+            <option value="Yes I have">Yes, I have</option>
+            <option value="No but willing">No, but willing to make one</option>
+            <option value="Waiting">Not yet, I am waiting for my photos to be ready</option>
+          </select>
+        </div>
       </div>
-      <input type="file" id="file_location" accept="video/*" onchange="handleLocationVideo(event)" style="display:none">
-      <div class="upload-prog" id="prog_location"><div class="upload-prog-fill"></div></div>
+    </div>
+
+    <div class="sec" id="proPhotoSection" style="display:none">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        <div class="sec-t">Add Your Professional Photoshoot</div>
+        <span class="sec-note">Minimum 5 photos</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">Add at least 5 of your best professional photos. Make sure they are in a high-quality resolution, not screenshots or poor lighting.</div>
+      <div class="photo-grid" id="proPhotoGrid"></div>
+      <input type="file" id="file_portfolio" accept="image/*" multiple onchange="handleFileUpload(event,'portfolio')" style="display:none">
+      <div class="upload-prog" id="prog_portfolio"><div class="upload-prog-fill"></div></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="sec-t">Professional Video Shoot</div>
+      </div>
+      <div class="row-1" style="margin-top:6px">
+        <div class="field"><label class="field-lbl">Do you have a professional video? <span class="req">*</span></label>
+          <select class="sel" id="f_videoshoot" data-sec="experience">
+            <option value="">Select...</option>
+            <option value="Yes I have">Yes, I have</option>
+            <option value="No but willing">No, but willing to make one</option>
+            <option value="Waiting">Not yet, I am waiting for my video to be ready</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="sec" id="profVideoSection" style="display:none">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="sec-t">Add Your Professional Video</div>
+        <span class="sec-note">1 video</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">Upload one professional video. Make sure it&rsquo;s a high-quality resolution clip, not a screenshot or poor lighting.</div>
+      <div class="video-box" id="profVideoBox">
+        <video id="profVideoPreview" controls style="display:none"></video>
+        <div class="video-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="video-box-ttl" id="profVideoTtl">Professional video</div>
+        <div class="video-box-sub">One clean, well-lit clip.</div>
+        <button class="btn btn-primary" type="button" id="profVideoBtn" onclick="document.getElementById('file_profvideo').click()" style="min-width:auto">Upload Video</button>
+        <div class="upload-prog" id="prog_profvideo"><div class="upload-prog-fill"></div></div>
+      </div>
+      <input type="file" id="file_profvideo" accept="video/*" onchange="handleProfVideo(event)">
+    </div>
+
+    <div class="sec" id="selfieBox">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 3-3"/></svg></div>
+        <div class="sec-t">Selfie Verification</div>
+        <span class="sec-note" style="display:inline-flex;align-items:center;gap:5px;color:var(--rd);font-weight:600"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Strictly confidential</span>
+      </div>
+      <div class="field-hint" style="margin-bottom:14px">We will never post it online. Only for verification purposes.</div>
+      <div class="upload" onclick="document.getElementById('file_selfie').click()">
+        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
+        <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
+        <button type="button" class="upload-btn">Upload</button>
+      </div>
+      <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
+      <div class="upload" onclick="document.getElementById('file_fullbody').click()" style="margin-top:10px">
+        <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v9m0 0l-3 5m3-5l3 5M7 9l5 1 5-1"/></svg></div>
+        <div class="upload-info"><div class="upload-ttl">Full-body photo <span class="req">*</span></div><div class="upload-h">One clear photo showing your full body, standing.</div><div id="fullbodyStatus" style="margin-top:4px"></div></div>
+        <button type="button" class="upload-btn">Upload</button>
+      </div>
+      <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
     </div>
 
     <div class="sec">
@@ -4047,10 +4046,13 @@ function toggleServiceLine(line, on){
   // table appears without an extra tap. Skipped if she already has a tier.
   if(line === 'tantric' && on && !formData.tantric_tier){ setLevel('tantric', 'premium'); }
   if(line === 'companions' && on && !formData.escort_tier){ setLevel('escort', 'premium'); }
-  // Shared blocks (right-to-refuse, rates note, more options, travel) only
-  // show once at least one service is confirmed.
+  // Shared blocks (right-to-refuse, rates note, more options, working
+  // locations) only show once at least one service is confirmed.
+  // workingAreaSec wraps the Travel pills + addresses + walkthrough video
+  // — Travel pills used to live inside Service Lines but were moved out
+  // so that locations + travel sit together.
   var anyOn = t || c;
-  ['rightToRefuseWrap','ratesNote','moreLadiesBlock','travelBlock'].forEach(function(id){
+  ['rightToRefuseWrap','ratesNote','moreLadiesBlock','workingAreaSec'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = anyOn ? '' : 'none';
   });
   scheduleAutoSave && scheduleAutoSave();
@@ -4135,14 +4137,13 @@ function applyTravelVisibility(){
   var t = (formData.travel || []);
   var inHouse = t.indexOf('in_house') >= 0;
   var mobile  = t.indexOf('mobile')   >= 0;
-  var wa = document.getElementById('workingAreaSec');
   var ms = document.getElementById('mobileSubBlock');
   var sd = document.getElementById('seasonalSec');
   var mz = document.getElementById('mobileZonesWrap');
-  // Working Area opens with In-house OR Mobile — even mobile-only providers
-  // need to declare their base city / area for the OS to know where they
-  // operate. The in-house address fields inside only show when In-house.
-  if(wa) wa.style.display = (inHouse || mobile) ? '' : 'none';
+  // workingAreaSec is now controlled by toggleServiceLine (shown when she
+  // confirms a service line) — Travel pills live INSIDE it, so the parent
+  // section stays visible regardless of which pills she has ticked.
+  // The in-house address fields below the pills only show when In-house.
   var inhouseFields = document.getElementById('inhouseFields');
   if(inhouseFields) inhouseFields.style.display = inHouse ? '' : 'none';
   if(ms) ms.style.display = mobile  ? '' : 'none';
