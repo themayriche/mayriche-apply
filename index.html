@@ -745,8 +745,12 @@ html{scroll-behavior:smooth}
 .line-pill .line-title{font-size:14px;font-weight:600;color:var(--tx);letter-spacing:.01em}
 .line-pill .line-sub{font-size:11px;color:var(--mt);letter-spacing:.04em}
 .line-pill:hover{border-color:var(--ac)}
-.line-pill.selected,.line-pill input:checked ~ .line-title{border-color:var(--ac)}
-.line-pill.selected{background:linear-gradient(180deg,rgba(196,168,130,.10),rgba(196,168,130,.02));box-shadow:0 0 0 2px rgba(196,168,130,.18) inset}
+/* Selected state for More Options + Travel pills: switch from the
+   champagne accent to the platform green so the picked box reads as
+   "confirmed", matching the I confirm cards above. */
+.line-pill.selected,.line-pill input:checked ~ .line-title{border-color:var(--gn)}
+.line-pill.selected{background:linear-gradient(180deg,rgba(93,140,114,.12),rgba(93,140,114,.02));box-shadow:0 0 0 2px rgba(93,140,114,.20) inset;border-color:var(--gn)}
+.line-pill.selected .line-title{color:var(--gn)}
 @media (max-width:540px){.line-row{grid-template-columns:1fr}}
 
 /* Premium / Elite / First Class level cards. */
@@ -999,6 +1003,20 @@ html{scroll-behavior:smooth}
           <select class="sel" id="f_nationality" data-sec="personal" autocomplete="off"><option value="">Select...</option></select>
           <input type="text" class="inp" id="f_nationality_other" placeholder="Type your nationality" data-sec="personal" style="display:none;margin-top:8px">
         </div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <div class="field">
+          <label class="field-lbl">Gender <span class="req">*</span></label>
+          <select class="sel" id="f_gender" data-sec="personal">
+            <option value="" selected>Select…</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Trans">Trans</option>
+            <option value="Non-binary">Non-binary</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+        <div class="field"></div>
       </div>
       <div class="row-1">
         <div class="field">
@@ -1322,24 +1340,25 @@ html{scroll-behavior:smooth}
             </div>
           </div>
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Currency</div>
+            <div class="field-lbl" style="margin-bottom:4px">Currency</div>
+            <div class="field-hint" style="margin-bottom:10px">See how much you&rsquo;d earn.</div>
             <div class="currency-row" id="tantricCurrencyRow"></div>
 
             <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
             <div class="level-grid" id="tantricLevelGrid">
-              <div class="level-card selected" data-level="premium" onclick="setLevel('tantric','premium')">
+              <div class="level-card selected" data-level="premium" data-gbp="250" data-unit="hour" onclick="setLevel('tantric','premium')">
                 <div class="level-tier">◆ PREMIUM</div>
-                <div class="level-name">from £250 / hour</div>
+                <div class="level-name level-price">from £250 / hour</div>
                 <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
               </div>
-              <div class="level-card locked" data-level="elite" onclick="lockedLevelClick('elite')">
+              <div class="level-card locked" data-level="elite" data-gbp="350" data-unit="hour" onclick="lockedLevelClick('elite')">
                 <div class="level-tier">◆◆ ELITE</div>
-                <div class="level-name">from £350 / hour</div>
+                <div class="level-name level-price">from £350 / hour</div>
                 <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
               </div>
-              <div class="level-card locked" data-level="first_class" onclick="lockedLevelClick('first_class')">
+              <div class="level-card locked" data-level="first_class" data-gbp="450" data-unit="hour" onclick="lockedLevelClick('first_class')">
                 <div class="level-tier">◆◆◆ FIRST CLASS</div>
-                <div class="level-name">from £450 / hour</div>
+                <div class="level-name level-price">from £450 / hour</div>
                 <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
               </div>
             </div>
@@ -1403,24 +1422,25 @@ html{scroll-behavior:smooth}
             </div>
           </div>
           <div class="svc-mod-block">
-            <div class="field-lbl" style="margin-bottom:8px">Currency</div>
+            <div class="field-lbl" style="margin-bottom:4px">Currency</div>
+            <div class="field-hint" style="margin-bottom:10px">See how much you&rsquo;d earn.</div>
             <div class="currency-row" id="escortCurrencyRow"></div>
 
             <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
             <div class="level-grid" id="escortLevelGrid">
-              <div class="level-card selected" data-level="premium" onclick="setLevel('escort','premium')">
+              <div class="level-card selected" data-level="premium" data-gbp="350" data-unit="booking" onclick="setLevel('escort','premium')">
                 <div class="level-tier">◆ PREMIUM</div>
-                <div class="level-name">from £350 / booking</div>
+                <div class="level-name level-price">from £350 / booking</div>
                 <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
               </div>
-              <div class="level-card locked" data-level="elite" onclick="lockedLevelClick('elite')">
+              <div class="level-card locked" data-level="elite" data-gbp="550" data-unit="booking" onclick="lockedLevelClick('elite')">
                 <div class="level-tier">◆◆ ELITE</div>
-                <div class="level-name">from £550 / booking</div>
+                <div class="level-name level-price">from £550 / booking</div>
                 <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
               </div>
-              <div class="level-card locked" data-level="first_class" onclick="lockedLevelClick('first_class')">
+              <div class="level-card locked" data-level="first_class" data-gbp="900" data-unit="booking" onclick="lockedLevelClick('first_class')">
                 <div class="level-tier">◆◆◆ FIRST CLASS</div>
-                <div class="level-name">from £900 / booking</div>
+                <div class="level-name level-price">from £900 / booking</div>
                 <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
               </div>
             </div>
@@ -2261,12 +2281,29 @@ const ESCORT_EXTRA_ROWS = [
 ];
 
 // ─── Service tiers — applicant picks one card per service. The number
-//     here is the 60-minute baseline; the rate table builds out from it.
+//     here is the 60-minute GBP baseline; the rate table builds out from
+//     the converted price in her chosen currency.
 const LEVELS = {
   tantric:    { premium: 250, elite: 350, first_class: 450 },
   escort:     { premium: 350, elite: 550, first_class: 900 }
 };
 const LEVEL_LABEL = { premium: 'Premium', elite: 'Elite', first_class: 'First Class' };
+
+// ─── Currency conversion — round, friendly approximations of mid-market
+//     rates. They display in the rate cards and feed the rate table.
+//     Bands are deliberately stable so prices don't bounce day to day.
+const CONVERSION_RATES = { GBP: 1.00, EUR: 1.20, USD: 1.28 };
+const CURRENCY_SYMBOL  = { GBP: '£', EUR: '€', USD: '$' };
+// Rounds a GBP amount to the chosen currency, snapped to the nearest 5.
+function convertPrice(gbp, currency){
+  var rate = CONVERSION_RATES[currency] || 1.0;
+  var raw = gbp * rate;
+  return Math.round(raw / 5) * 5;
+}
+function formatPrice(gbp, currency, unit){
+  var sym = CURRENCY_SYMBOL[currency] || '£';
+  return 'from ' + sym + convertPrice(gbp, currency) + ' / ' + (unit || 'hour');
+}
 
 // ─── More Ladies (priced on time at standard rate, not per act). ──
 const MORE_LADIES_OPTIONS = [
@@ -2481,6 +2518,7 @@ function applyFallbackDefaults(){
 let curStep = 1;
 let formData = {
   fullname:'', dob_d:'', dob_m:'', dob_y:'',
+  gender:'',
   nationality:'', city:'', country:'', phone:'', phone_code:'', email:'', ig:'',
   // WhatsApp: phone_is_whatsapp defaults true (the phone above is reachable
   // on WhatsApp). If unticked, whatsapp_code + whatsapp capture a separate
@@ -2670,6 +2708,10 @@ document.addEventListener('DOMContentLoaded', async function(){
   });
   const rtr = document.getElementById('f_right_to_refuse');
   if(rtr) rtr.addEventListener('change', () => { formData.right_to_refuse = rtr.checked; scheduleAutoSave && scheduleAutoSave(); });
+  // Gender select — small, single field with no cascade, wire it
+  // straight to formData.
+  var gen = document.getElementById('f_gender');
+  if(gen){ gen.addEventListener('change', () => { formData.gender = gen.value; scheduleAutoSave && scheduleAutoSave(); }); }
 
   // Seasonal destinations grid (real spots + "Other"). "I don't want to
   // travel anywhere" is rendered separately AFTER the "Other" free-text
@@ -3989,6 +4031,10 @@ function renderCurrencyRows(){
         formData.currency = c.code;
         renderCurrencyRows();
         updateCurrencyDisplays();
+        // Refresh the level-card "from £X / hour" labels, then rebuild
+        // the starting price + rate table in the new currency.
+        updateLevelCardPrices();
+        reapplyLevelsAfterCurrencyChange();
         renderRateTable('tantric');
         renderRateTable('escort');
         scheduleAutoSave && scheduleAutoSave();
@@ -4124,8 +4170,12 @@ window.lockedLevelClick = lockedLevelClick;
 function setLevel(scope, level){
   var base = (LEVELS[scope] || {})[level];
   if(!base) return;
+  // Convert the GBP baseline to her currency, build the rate table from
+  // that, and re-stamp the level letter (applyStartingPrice sets tier
+  // to 'custom' as a side effect we don't want here).
+  var price = convertPrice(base, formData.currency || 'GBP');
+  applyStartingPrice(scope, price);
   formData[scope + '_tier'] = level;
-  applyStartingPrice(scope, base);
   document.querySelectorAll('#' + scope + 'LevelGrid .level-card').forEach(function(c){
     c.classList.toggle('selected', c.getAttribute('data-level') === level);
   });
@@ -4133,6 +4183,33 @@ function setLevel(scope, level){
   updateProgress && updateProgress();
 }
 window.setLevel = setLevel;
+
+// Refresh the "from £X / hour" text on each level card to match the
+// current currency. Called from the currency-change handler.
+function updateLevelCardPrices(){
+  document.querySelectorAll('.level-card[data-gbp]').forEach(function(card){
+    var gbp = parseFloat(card.getAttribute('data-gbp')) || 0;
+    var unit = card.getAttribute('data-unit') || 'hour';
+    var price = card.querySelector('.level-price');
+    if(price) price.textContent = formatPrice(gbp, formData.currency || 'GBP', unit);
+  });
+}
+// Re-apply whichever level she had picked, so the rate table refreshes
+// too once she swaps currency.
+function reapplyLevelsAfterCurrencyChange(){
+  ['tantric','escort'].forEach(function(scope){
+    // Read the currently selected card (it's the source of truth — the
+    // formData tier field gets clobbered to 'custom' by applyStartingPrice).
+    var sel = document.querySelector('#' + scope + 'LevelGrid .level-card.selected');
+    if(!sel) return;
+    var level = sel.getAttribute('data-level');
+    var gbp = parseFloat(sel.getAttribute('data-gbp')) || 0;
+    if(!level || !gbp) return;
+    var price = convertPrice(gbp, formData.currency || 'GBP');
+    applyStartingPrice(scope, price);
+    formData[scope + '_tier'] = level;
+  });
+}
 
 // ─── City → lat/lng lookup for the "Where you'll be available" mini
 // map. Privacy: ONLY plots at city granularity, never her in-house
@@ -4908,6 +4985,7 @@ const STEP_REQ = {
     {key:'dob_m',        el:'f_dob_m',            sec:'personal'},
     {key:'dob_y',        el:'f_dob_y',            sec:'personal'},
     {key:'nationality',  el:'f_nationality',      sec:'personal'},
+    {key:'gender',       el:'f_gender',           sec:'personal'},
     {key:'country',      el:'f_country',          sec:'personal'},
     {key:'city',         el:'f_city_select',      sec:'personal'},
     {key:'local_area_text', el:'f_local_area_select', sec:'personal'},
@@ -5968,6 +6046,7 @@ const FIELD_LABELS = {
   phone:       'Phone number',
   email:       'Email address',
   english:     'English level',
+  gender:      'Gender',
   profile_age: 'Profile age',
   height:      'Height',
   weight:      'Weight',
@@ -6010,6 +6089,7 @@ const FIELD_ELEMENT_IDS = {
   phone:       'f_phone',
   email:       'f_email',
   english:     'f_english',
+  gender:      'f_gender',
   profile_age: 'f_profile_age',
   height:      'f_height',
   weight:      'f_weight',
@@ -6044,7 +6124,7 @@ const FIELD_ELEMENT_IDS = {
 // final step can jump straight back to the right page.
 const FIELD_STEP = {
   fullname:1, nationality:1, country:1, city:1, home_street:1, home_postcode:1,
-  phone_code:1, phone:1, email:1, english:1, em_name:1, em_rel:1, em_phone_code:1, em_phone:1,
+  phone_code:1, phone:1, email:1, english:1, gender:1, em_name:1, em_rel:1, em_phone_code:1, em_phone:1,
   dob_d:1, dob_m:1, dob_y:1, local_area_text:1,
   profile_age:2, height:2, weight:2, body:2, dress:2, eye:2, hair:2, breast:2, breast_type:2,
   workname:2, photoshoot:2, videoshoot:2, work_country:2, work_city:2, local_area:2,
