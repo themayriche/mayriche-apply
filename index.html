@@ -149,7 +149,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
    loop flagged. Persists until the user types/picks something
    (cleared on focus + value-change in the wire-up below). */
 .inp.field-missing,.sel.field-missing,.txa.field-missing{border-color:var(--rd) !important;box-shadow:0 0 0 2px rgba(192,96,96,.14) !important;background:rgba(192,96,96,.04) !important}
-.upload.field-missing,.video-box.field-missing,.svc-mod.field-missing,.sec.field-missing,.offer-grid.field-missing,.escort-svc-list.field-missing{border-radius:10px;box-shadow:0 0 0 2px rgba(192,96,96,.30) !important;padding:6px}
+.upload.field-missing,.video-box.field-missing,.svc-mod.field-missing,.sec.field-missing,.offer-grid.field-missing,.escort-svc-list.field-missing,#mobileSubBlock.field-missing,#travelRow.field-missing,#availGrid.field-missing,#abroadGrid.field-missing{border-radius:10px;box-shadow:0 0 0 2px rgba(192,96,96,.30) !important}
 .pill-group.field-missing{box-shadow:0 0 0 2px rgba(192,96,96,.20);border-radius:8px;padding:2px}
 
 /* Sticky stepper — pinned below the progress header so the active
@@ -4019,6 +4019,12 @@ function initMobileSubChecks(){
         var leg = document.getElementById('f_' + m.mirror);
         if(leg) leg.value = cb.checked ? 'Yes' : '';
       }
+      // Clear the missing-sub-option flash once any of the three is ticked.
+      var anyOn = formData.travel_airport || formData.travel_dinner || formData.travel_trips;
+      if(anyOn){
+        var ms = document.getElementById('mobileSubBlock');
+        if(ms) ms.classList.remove('field-missing');
+      }
       scheduleAutoSave && scheduleAutoSave();
     });
   });
@@ -4695,6 +4701,17 @@ function validateStepBeforeAdvance(currentStep){
       if(tr){ tr.classList.add('field-missing'); try{ tr.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
       showToast('Please pick how you provide your services — In-house or Mobile','error');
       return false;
+    }
+    // When Mobile is ticked, at least one of the three "When you travel
+    // to clients" sub-checkboxes (airport / dinner / trips) is required.
+    if((formData.travel||[]).indexOf('mobile') >= 0){
+      const anyMobileSub = formData.travel_airport || formData.travel_dinner || formData.travel_trips;
+      if(!anyMobileSub){
+        const ms = document.getElementById('mobileSubBlock');
+        if(ms){ ms.classList.add('field-missing'); try{ ms.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} }
+        showToast('When you travel to clients, tick at least one option (airport, dinner, or travel and trips)','error');
+        return false;
+      }
     }
     // Working Area fields are required only when at least one travel
     // option is ticked (which is enforced above).
