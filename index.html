@@ -2953,11 +2953,21 @@ function buildPhonePicker(sel, ordered){
     list.querySelectorAll('.phone-prefix-row').forEach(r => { r.style.display = ''; });
   };
   btn.addEventListener('click', e => {
-    e.stopPropagation();
+    // Close every OTHER open phone-picker panel first, so clicking the
+    // WhatsApp prefix never leaves the Phone panel still hanging on top.
+    document.querySelectorAll('.phone-prefix-panel.open').forEach(p => {
+      if(p !== panel) p.classList.remove('open');
+    });
+    // We deliberately let this click bubble so the document listener
+    // below also closes any other open panels (belt + braces).
     if(panel.classList.contains('open')) hidePanel(); else showPanel();
   });
   document.addEventListener('click', e => {
-    if(panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn) hidePanel();
+    if(!panel.classList.contains('open')) return;
+    // Stay open only when the click landed on this picker's own button
+    // or inside its panel. Any other click closes us.
+    if(e.target === btn || btn.contains(e.target) || panel.contains(e.target)) return;
+    hidePanel();
   });
   window.addEventListener('scroll', () => { if(panel.classList.contains('open')) positionPanel(); }, true);
   search.addEventListener('input', () => {
