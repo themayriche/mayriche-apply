@@ -4948,13 +4948,9 @@ function validateStepBeforeAdvance(currentStep){
       showToast('Add a second working country, or tick “I don’t have a second working country”','error');
       return false;
     }
-    // Photoshoot / professional video uploads when "Yes, I have".
-    if(formData.photoshoot === 'Yes I have' && (formData.files.portfolio||[]).length < 5){ flag2('proPhotoGrid','Please add at least 5 professional photos'); return false; }
-    if(formData.videoshoot === 'Yes I have' && !formData.files.profvideo){ flag2('profVideoSection','Please add your professional video'); return false; }
-    // Selfie verification — both photos required.
-    if(!formData.files.selfie || !formData.files.fullbody){
-      flag2('selfieBox','Please add your face selfie and full-body photo'); return false;
-    }
+    // (Photoshoot / pro video / selfie / full-body uploads were all moved
+    // to Step 3 in the latest restructure — checked there + at final
+    // submit instead of blocking the step-2 advance.)
   }
 
   if(missing.length === 0) return true;
