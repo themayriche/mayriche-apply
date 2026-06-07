@@ -3436,6 +3436,14 @@ function buildExtraLocation(loc){
     '<div class="loc-inhouse" style="margin-top:12px">' +
       '<div class="row" style="margin-bottom:10px"><div class="field" style="grid-column:span 2"><label class="field-lbl">Street &amp; Number</label><input class="inp loc-street" placeholder="10 Bond Street"></div></div>' +
       '<div class="row"><div class="field"><label class="field-lbl">Flat number</label><input class="inp loc-apt" inputmode="numeric" placeholder="1"></div><div class="field"><label class="field-lbl">Postcode</label><input class="inp loc-postcode" placeholder="W1S 1SS"></div></div>' +
+      '<!-- Per-location walkthrough video — uploaded to storage at submit -->' +
+      '<div style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--brd2)">' +
+        '<label class="field-lbl">Location Walkthrough Video <span class="opt-note">For this address</span></label>' +
+        '<div class="field-hint" style="margin:4px 0 8px">Short video for THIS address showing: how to enter (building / flat) → the room where you welcome clients → the bathroom.</div>' +
+        '<button type="button" class="btn btn-ghost loc-video-btn" style="min-width:auto">Upload Location Video</button>' +
+        '<input type="file" class="loc-video-input" accept="video/*" style="display:none">' +
+        '<div class="loc-video-status" style="font-size:11px;color:var(--mt);margin-top:8px;font-style:italic"></div>' +
+      '</div>' +
     '</div>';
   wrap.appendChild(block);
 
@@ -3450,6 +3458,22 @@ function buildExtraLocation(loc){
   const street = block.querySelector('.loc-street');
   const apt = block.querySelector('.loc-apt');
   const postcode = block.querySelector('.loc-postcode');
+
+  // ─── Per-location walkthrough video ───────────────────────────────
+  // Keep the chosen File on the loc object so the submit handler can
+  // upload it alongside the primary walkthrough.
+  const vidBtn   = block.querySelector('.loc-video-btn');
+  const vidInput = block.querySelector('.loc-video-input');
+  const vidStat  = block.querySelector('.loc-video-status');
+  if(loc.video_file && vidStat){ vidStat.textContent = 'Selected: ' + loc.video_file.name; }
+  if(vidBtn) vidBtn.addEventListener('click', () => vidInput && vidInput.click());
+  if(vidInput) vidInput.addEventListener('change', (e) => {
+    const f = e.target.files && e.target.files[0];
+    if(!f) return;
+    loc.video_file = f;
+    if(vidStat) vidStat.textContent = 'Selected: ' + f.name;
+    scheduleAutoSave && scheduleAutoSave();
+  });
 
   function fillAreas(){
     const areas = loc.city ? LOCAL_AREAS_BY_CITY[loc.city] : null;
@@ -4845,7 +4869,7 @@ function toggleDay(day){
     d.to   = d.to   || '09:00';
     cell.classList.remove('off');
     cell.classList.add('on');
-    cell.querySelector('.avail-day-hrs').textContent = d.from + ' – ' + d.to;
+    cell.querySelector('.avail-day-hrs').textContent = (d.from === d.to) ? '24h' : (d.from + ' – ' + d.to);
     cell.querySelector('.time-inputs').style.display = 'flex';
     cell.querySelector('.avail-toggle').textContent = 'Tap to remove';
   } else {
@@ -4867,7 +4891,8 @@ function setAvailTime(day, kind, val){
   formData.availability[day][kind] = val;
   const cell = document.querySelector('[data-day="'+day+'"]');
   const d = formData.availability[day];
-  cell.querySelector('.avail-day-hrs').textContent = (d.from || '09:00') + ' – ' + (d.to || '09:00');
+  const f = d.from || '09:00', t = d.to || '09:00';
+  cell.querySelector('.avail-day-hrs').textContent = (f === t) ? '24h' : (f + ' – ' + t);
 }
 
 // ═══════════ WORK NAME SUGGESTIONS ═══════════
@@ -6394,6 +6419,14 @@ async function submitApplication(){
   (formData.files.portfolio||[]).forEach((p, i) => filesToUpload.push({k:'portfolio', type:'portfolio', index:i, label:'Portfolio photo '+(i+1), f:p}));
   if(formData.video)                filesToUpload.push({k:'video',          type:'video_intro',    label:'Video introduction',   f:formData.video});
   if(formData.files.profvideo)      filesToUpload.push({k:'profvideo',      type:'professional_video', label:'Professional video',  f:formData.files.profvideo});
+  // Per-location walkthrough videos — each Additional Working Area block
+  // can carry its own video. We tag them with an index so the upload
+  // pipeline writes location_check_2.mp4, location_check_3.mp4, etc.
+  (formData.extra_locations || []).forEach((loc, i) => {
+    if(loc && loc.video_file){
+      filesToUpload.push({k:'extra_location_'+i, type:'location_check', index:(i+2), label:'Location walkthrough ('+(i+2)+')', f:loc.video_file, extraIdx:i});
+    }
+  });
   // Total steps = file uploads + 1 (db insert) + 1 (notifications/email).
   const totalSteps = filesToUpload.length + 2;
   let stepDone = 0;
@@ -6429,6 +6462,11 @@ async function submitApplication(){
       if(item.k === 'portfolio') uploadedPaths.portfolio.push(path);
       else if(item.k === 'video') uploadedPaths.video = path;
       else uploadedPaths[item.k] = path;
+      // Stamp the per-additional-location walkthrough path onto its
+      // extra_locations entry so the OS lady profile can render it.
+      if(typeof item.extraIdx === 'number' && formData.extra_locations[item.extraIdx]){
+        formData.extra_locations[item.extraIdx].location_file = path;
+      }
     }
     stepDone++;
     setProgress('Uploaded ' + (i+1) + ' of ' + filesToUpload.length);
