@@ -153,6 +153,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .inp.field-missing,.sel.field-missing,.txa.field-missing{border-color:var(--rd) !important;box-shadow:0 0 0 2px rgba(192,96,96,.14) !important;background:rgba(192,96,96,.04) !important}
 .upload.field-missing,.video-box.field-missing,.svc-mod.field-missing,.sec.field-missing,.offer-grid.field-missing,.escort-svc-list.field-missing,#mobileSubBlock.field-missing,#travelRow.field-missing,#availGrid.field-missing,#abroadGrid.field-missing{border-radius:10px;box-shadow:0 0 0 2px rgba(192,96,96,.30) !important}
 .pill-group.field-missing{box-shadow:0 0 0 2px rgba(192,96,96,.20);border-radius:8px;padding:2px}
+.consent.field-missing{box-shadow:0 0 0 2px rgba(192,96,96,.40);border-radius:10px;padding:8px;background:rgba(192,96,96,.04)}
 
 /* Sticky stepper — pinned below the progress header so the active
    step stays visible on scroll. Width matches the cards (no
@@ -1819,13 +1820,13 @@ html{scroll-behavior:smooth}
       <div class="field-hint" style="margin-bottom:14px">We will never post it online. Only for verification purposes.</div>
       <div class="upload" onclick="document.getElementById('file_selfie').click()">
         <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg></div>
-        <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A clear, recent selfie of your face — no filters, good lighting.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
+        <div class="upload-info"><div class="upload-ttl">Face selfie <span class="req">*</span></div><div class="upload-h">A good quality, clear selfie of your face. No filters, no Photoshop.</div><div id="selfieStatus" style="margin-top:4px"></div></div>
         <button type="button" class="upload-btn">Upload</button>
       </div>
       <input type="file" id="file_selfie" accept="image/*" onchange="handleFileUpload(event,'selfie')">
       <div class="upload" onclick="document.getElementById('file_fullbody').click()" style="margin-top:10px">
         <div class="upload-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v9m0 0l-3 5m3-5l3 5M7 9l5 1 5-1"/></svg></div>
-        <div class="upload-info"><div class="upload-ttl">Full-body photo <span class="req">*</span></div><div class="upload-h">One clear photo showing your full body, standing.</div><div id="fullbodyStatus" style="margin-top:4px"></div></div>
+        <div class="upload-info"><div class="upload-ttl">Full-body photo <span class="req">*</span></div><div class="upload-h">One clear photo, head to toe, in black lingerie. Standing, natural light, no filters, no Photoshop.</div><div id="fullbodyStatus" style="margin-top:4px"></div></div>
         <button type="button" class="upload-btn">Upload</button>
       </div>
       <input type="file" id="file_fullbody" accept="image/*" onchange="handleFileUpload(event,'fullbody')">
@@ -3432,19 +3433,11 @@ function buildExtraLocation(loc){
       '<div class="field"><label class="field-lbl">Country</label><select class="sel loc-country"><option value="">Select country…</option></select></div>' +
       '<div class="field"><label class="field-lbl">City</label><select class="sel loc-city" disabled><option value="">Pick country first…</option></select><input class="inp loc-city-free" placeholder="Type your city" style="display:none;margin-top:8px"></div>' +
     '</div>' +
-    '<div class="row-1" style="margin-top:12px"><div class="field"><label class="field-lbl">Area</label><select class="sel loc-area" disabled><option value="">Pick city first…</option></select><input class="inp loc-area-free" placeholder="Type your area" style="display:none;margin-top:8px"></div></div>' +
-    '<div class="loc-inhouse" style="margin-top:12px">' +
-      '<div class="row" style="margin-bottom:10px"><div class="field" style="grid-column:span 2"><label class="field-lbl">Street &amp; Number</label><input class="inp loc-street" placeholder="10 Bond Street"></div></div>' +
-      '<div class="row"><div class="field"><label class="field-lbl">Flat number</label><input class="inp loc-apt" inputmode="numeric" placeholder="1"></div><div class="field"><label class="field-lbl">Postcode</label><input class="inp loc-postcode" placeholder="W1S 1SS"></div></div>' +
-      '<!-- Per-location walkthrough video — uploaded to storage at submit -->' +
-      '<div style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--brd2)">' +
-        '<label class="field-lbl">Location Walkthrough Video <span class="opt-note">For this address</span></label>' +
-        '<div class="field-hint" style="margin:4px 0 8px">Short video for THIS address showing: how to enter (building / flat) → the room where you welcome clients → the bathroom.</div>' +
-        '<button type="button" class="btn btn-ghost loc-video-btn" style="min-width:auto">Upload Location Video</button>' +
-        '<input type="file" class="loc-video-input" accept="video/*" style="display:none">' +
-        '<div class="loc-video-status" style="font-size:11px;color:var(--mt);margin-top:8px;font-style:italic"></div>' +
-      '</div>' +
-    '</div>';
+    '<div class="row-1" style="margin-top:12px"><div class="field"><label class="field-lbl">Area</label><select class="sel loc-area" disabled><option value="">Pick city first…</option></select><input class="inp loc-area-free" placeholder="Type your area" style="display:none;margin-top:8px"></div></div>';
+    // Mobile destinations do NOT collect street / flat / postcode or a
+    // walkthrough video — when she travels to clients, the address is
+    // theirs, not hers. Address + video live with the primary in-house
+    // block above (visible only when In-house is the chosen mode).
   wrap.appendChild(block);
 
   const cSel = block.querySelector('.loc-country');
@@ -3454,26 +3447,8 @@ function buildExtraLocation(loc){
   const areaSel = block.querySelector('.loc-area');
   const areaFree = block.querySelector('.loc-area-free');
   const noInhouse = block.querySelector('.loc-noinhouse');
-  const inhouseWrap = block.querySelector('.loc-inhouse');
-  const street = block.querySelector('.loc-street');
-  const apt = block.querySelector('.loc-apt');
-  const postcode = block.querySelector('.loc-postcode');
-
-  // ─── Per-location walkthrough video ───────────────────────────────
-  // Keep the chosen File on the loc object so the submit handler can
-  // upload it alongside the primary walkthrough.
-  const vidBtn   = block.querySelector('.loc-video-btn');
-  const vidInput = block.querySelector('.loc-video-input');
-  const vidStat  = block.querySelector('.loc-video-status');
-  if(loc.video_file && vidStat){ vidStat.textContent = 'Selected: ' + loc.video_file.name; }
-  if(vidBtn) vidBtn.addEventListener('click', () => vidInput && vidInput.click());
-  if(vidInput) vidInput.addEventListener('change', (e) => {
-    const f = e.target.files && e.target.files[0];
-    if(!f) return;
-    loc.video_file = f;
-    if(vidStat) vidStat.textContent = 'Selected: ' + f.name;
-    scheduleAutoSave && scheduleAutoSave();
-  });
+  // Mobile destinations don't carry an in-house address or a per-location
+  // walkthrough video — those live with the primary in-house block above.
 
   function fillAreas(){
     const areas = loc.city ? LOCAL_AREAS_BY_CITY[loc.city] : null;
@@ -3511,8 +3486,6 @@ function buildExtraLocation(loc){
   // querySelector returning null so the city cascade below still wires
   // up cleanly.
   if(noInhouse){ noInhouse.checked = !!loc.no_inhouse; }
-  street.value = loc.inhouse_street || ''; apt.value = loc.inhouse_apt || ''; postcode.value = loc.inhouse_postcode || '';
-
   cSel.addEventListener('change', () => { loc.country = cSel.value; loc.city = ''; loc.area = ''; fillCities(); scheduleAutoSave && scheduleAutoSave(); });
   citySel.addEventListener('change', () => {
     if(citySel.value && citySel.value.toLowerCase().startsWith('other')){ cityFree.style.display = 'block'; cityFree.focus(); loc.city = cityFree.value || ''; }
@@ -3526,10 +3499,6 @@ function buildExtraLocation(loc){
     scheduleAutoSave && scheduleAutoSave();
   });
   areaFree.addEventListener('input', () => { loc.area = areaFree.value; scheduleAutoSave && scheduleAutoSave(); });
-  if(noInhouse) noInhouse.addEventListener('change', () => { scheduleAutoSave && scheduleAutoSave(); });
-  street.addEventListener('input', () => { loc.inhouse_street = street.value; scheduleAutoSave && scheduleAutoSave(); });
-  apt.addEventListener('input', () => { loc.inhouse_apt = apt.value; scheduleAutoSave && scheduleAutoSave(); });
-  postcode.addEventListener('input', () => { loc.inhouse_postcode = postcode.value; scheduleAutoSave && scheduleAutoSave(); });
   block.querySelector('.loc-remove').addEventListener('click', () => {
     const i = formData.extra_locations.indexOf(loc);
     if(i >= 0) formData.extra_locations.splice(i, 1);
@@ -6336,59 +6305,78 @@ async function submitApplication(){
   // Step 4 mandatory uploads — surfaced as a soft block here so the
   // applicant can't submit without the three body angles + minimum
   // five professional photos. Selfie + ID stays required too.
-  // Step 1 identity bundle — all three are mandatory.
+  // Identity bundle (now on Step 3 — ID Copy + Bank Statement).
   if(!formData.files.idcopy){
-    showToast('Please upload your ID Copy in Step 1','error');
+    showToast('Step 3 → Identity Verification is missing your ID Copy.','error');
     jumpAndFlag(3, 'upl_idcopy');
     return;
   }
   if(!formData.files.bank){
-    showToast('Please upload Proof of Bank Account in Step 1','error');
+    showToast('Step 3 → Identity Verification is missing Proof of Bank Account.','error');
     jumpAndFlag(3, 'upl_bank');
     return;
   }
   if(!formData.video){
-    showToast('Please upload your video introduction — it is mandatory','error');
+    showToast('Step 3 → Video Introduction is missing. Please upload your 60-second clip.','error');
     jumpAndFlag(3, 'videoBox');
     return;
   }
-  if(!formData.files.location){
-    showToast('Please upload your location check video — it is mandatory','error');
-    jumpAndFlag(3, 'locationBox');
+  // Location walkthrough is only required when In-house is the chosen
+  // travel mode (mobile-only providers have no fixed address to film).
+  const wantsLocationVideo = (formData.travel || []).indexOf('in_house') >= 0;
+  if(wantsLocationVideo && !formData.files.location){
+    showToast('Step 2 → Working Locations is missing the Location Walkthrough video.','error');
+    jumpAndFlag(2, 'locationBox');
     return;
   }
-  // Photos / video / selfie live on Step 2 — jump back there + flag red.
-  const jumpToProfile = (sel) => jumpAndFlag(2, sel);
+  // Photoshoot / pro video / selfie all live on Step 3 now — jump there.
   if(formData.photoshoot === 'Yes I have' && (formData.files.portfolio||[]).length < 5){
-    showToast('Please add at least 5 professional photos','error');
-    jumpToProfile('proPhotoGrid');
+    showToast('Step 3 → Professional Photoshoot needs at least 5 photos.','error');
+    jumpAndFlag(3, 'proPhotoGrid');
     return;
   }
   if(formData.videoshoot === 'Yes I have' && !formData.files.profvideo){
-    showToast('Please add your professional video','error');
-    jumpToProfile('profVideoSection');
+    showToast('Step 3 → Professional Video Shoot is missing your clip.','error');
+    jumpAndFlag(3, 'profVideoSection');
     return;
   }
   if(!formData.files.selfie){
-    showToast('Please add a face selfie for verification','error');
-    jumpToProfile('selfieBox');
+    showToast('Step 3 → Selfie Verification is missing your face selfie.','error');
+    jumpAndFlag(3, 'selfieBox');
     return;
   }
   if(!formData.files.fullbody){
-    showToast('Please add a full-body photo for verification','error');
-    jumpToProfile('selfieBox');
+    showToast('Step 3 → Selfie Verification is missing your full-body photo.','error');
+    jumpAndFlag(3, 'selfieBox');
     return;
   }
   const allConsents = Object.values(formData.consents).every(v => v);
-  if(!allConsents){ showToast('Please accept all consents at the bottom of the form','error'); return; }
+  if(!allConsents){
+    // Find the first un-ticked consent + flag the whole list red so she
+    // sees exactly which one she's missing.
+    const consentEls = document.querySelectorAll('.consent');
+    let firstMissing = null;
+    Object.keys(formData.consents).forEach(k => {
+      if(!formData.consents[k] && !firstMissing){
+        firstMissing = document.querySelector('.consent[data-consent="' + k + '"]');
+      }
+    });
+    showToast('Step 3 → Consent & Agreements has an un-ticked box.','error');
+    if(firstMissing){
+      firstMissing.classList.add('field-missing');
+      try { firstMissing.scrollIntoView({behavior:'smooth',block:'center'}); } catch(e){}
+    }
+    return;
+  }
   // Digital signature mandatory — pairs with the consent checkboxes
   // to make the submission legally binding.
   if(!formData.signature_name || !formData.signature_name.trim()){
-    showToast('Please sign by typing your full legal name','error');
+    showToast('Step 3 → Digital Signature is missing. Type your full legal name.','error');
     const sigInput = document.getElementById('f_signature');
     if(sigInput){
       sigInput.classList.add('field-missing');
       try { sigInput.scrollIntoView({behavior:'smooth',block:'center'}); } catch(e){ sigInput.scrollIntoView(); }
+      try { sigInput.focus({preventScroll:true}); } catch(e){}
     }
     return;
   }
