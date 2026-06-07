@@ -340,6 +340,48 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .summary-map-wrap > div{height:240px;width:100%}
 .summary-map-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mt);background:var(--card);pointer-events:none;text-align:center;padding:0 20px}
 
+/* ═══ PRINT / SAVE-AS-PDF ═══
+   When the applicant taps "Download PDF" we want the OUTPUT to be the
+   success page (logo + thank-you + summary), not the 3-step form they
+   just submitted. Hide everything else; collapse the overlay's fixed
+   positioning so the browser prints it as flowing pages. */
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+  html, body { background: #ffffff !important; color: #1a1a1a !important; }
+  body > *:not(.success-overlay) { display: none !important; }
+  /* Strip the floating overlay back to inline flow so it prints from
+     page 1, top-left, instead of being a fixed-position hover layer. */
+  .success-overlay {
+    position: static !important;
+    inset: auto !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+    z-index: auto !important;
+    display: block !important;
+  }
+  .success-card {
+    transform: none !important;
+    opacity: 1 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+  /* Don't print the action buttons (Download / Share / Edit) or the
+     auto-save / resume bits — they have no value on paper. */
+  .success-actions, #toast, #autoSaveIndicator, .sec-strip, .resume-banner { display: none !important; }
+  /* The map needs a fixed pixel height to render in print (otherwise it
+     collapses because Leaflet sizes itself via JS based on its parent). */
+  .summary-map-wrap > div { height: 200px !important; }
+  /* Avoid breaking summary rows across pages mid-content. */
+  .summary-step, .summary-sec { page-break-after: avoid; break-after: avoid; }
+  .summary-row { page-break-inside: avoid; break-inside: avoid; }
+}
+
 .actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap;}
 .actions-left,.actions-right{display:flex;gap:10px;flex-wrap:wrap}
 /* Buttons — stable, no lift on hover (caused visible jitter when moving
@@ -1963,15 +2005,6 @@ html{scroll-behavior:smooth}
       <div class="success-mark" style="margin-bottom:18px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
       <div class="success-t">Application received</div>
       <div class="success-sub" id="successSub">Thank you. Your application has been received.</div>
-      <div class="success-ref" id="successRef">APP-…</div>
-      <!-- Permanent shareable link to this application -->
-      <div id="successLinkWrap" style="max-width:480px;margin:14px auto 0;display:none">
-        <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--champagne);margin-bottom:6px;text-align:center">Your application link</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input id="successLink" type="text" readonly class="inp" style="flex:1;min-width:0;font-size:12px;text-align:center" value="">
-          <button type="button" class="btn btn-ghost" style="flex-shrink:0;min-width:auto;padding:10px 14px" onclick="copyAppLink()">Copy</button>
-        </div>
-      </div>
       <div style="max-width:480px;margin:18px auto 0;text-align:left;font-size:13px;line-height:1.7;color:var(--tx2)">
         <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--champagne);margin-bottom:8px;text-align:center">What happens next</div>
         <div style="padding-left:14px">
@@ -1986,10 +2019,12 @@ html{scroll-behavior:smooth}
       <div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>
       <div id="summaryContent"></div>
     </div>
-    <div class="actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-ghost" onclick="editApplication()">Edit</button>
+    <div class="actions success-actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap">
       <button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button>
       <button class="btn btn-primary" onclick="shareAppLink()">Share link</button>
+    </div>
+    <div class="success-actions" style="margin-top:14px;display:flex;justify-content:center">
+      <button class="btn btn-back" style="width:100%;max-width:520px" onclick="editApplication()">Edit your application</button>
     </div>
   </div>
 </div>
@@ -6565,7 +6600,15 @@ async function submitApplication(){
   };
   setProgress('Preparing…', 2);
 
-  const applicationRef = 'APP-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  // Friendly lowercase reference: `app<DDMMYYYY>-<4-char>` so the link
+  // reads like `ella-b-app06072026-abcd` instead of an opaque base36
+  // blob. The 4-char suffix keeps it unique when several applications
+  // come in on the same day.
+  const _refDate = new Date();
+  const _pad2 = function(n){ return String(n).padStart(2,'0'); };
+  const _stamp = _pad2(_refDate.getDate()) + _pad2(_refDate.getMonth()+1) + _refDate.getFullYear();
+  const _rsfx = Math.random().toString(36).slice(2,6);
+  const applicationRef = 'app' + _stamp + '-' + _rsfx;
   const dob = formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0');
   const age = calculateAge(dob);
 
@@ -6852,16 +6895,11 @@ async function submitApplication(){
     if(subEl) subEl.textContent = 'Thank you, ' + firstName + '. Your application has been received.';
     const emailLine = document.getElementById('successEmailLine');
     if(emailLine && formData.email) emailLine.textContent = 'A copy of this application and your personal link have been sent to ' + formData.email + '.';
-    document.getElementById('successRef').textContent = applicationRef;
     window.__lastAppRef = applicationRef;
+    window.__lastAppName = formData.fullname;
     try {
-      var _lw = document.getElementById('successLinkWrap');
-      var _li = document.getElementById('successLink');
-      var _link = buildAppLink(applicationRef, formData.fullname);
-      if(_li){ _li.value = _link; }
-      if(_lw){ _lw.style.display = 'block'; }
       // Make the browser URL her own personal application link
-      // (apply.mayriche.co.uk/<name-slug>-APP-…).
+      // (apply.mayriche.co.uk/<name-slug>-app<DDMMYYYY>-<rand>).
       history.replaceState(null, '', '/' + appSlug(formData.fullname) + '-' + applicationRef);
     } catch(e){}
     renderSummary();
@@ -7017,14 +7055,21 @@ function buildAppLink(ref, name){
   var slug = appSlug(name);
   return 'https://apply.mayriche.co.uk/' + (slug ? slug + '-' : '') + ref;
 }
-// Pull the APP-… reference from either ?ref=APP-XXXX or a
-// /<name-slug>-APP-XXXX path so the shared link resolves either way.
+// Pull the app reference from either ?ref=… or a /<name-slug>-app… path.
+// Accepts BOTH formats:
+//   - New lowercase: `app06072026-abcd`
+//   - Legacy uppercase: `APP-MQ38GAYAUA` (kept so old shared links still work)
 function refFromUrl(){
   try {
     var q = new URLSearchParams(location.search).get('ref');
-    if(q && /^APP-[A-Za-z0-9-]{4,60}$/.test(q)) return q;
-    var m = (location.pathname||'').match(/(APP-[A-Za-z0-9]+-[A-Za-z0-9]+)\/?$/i);
-    if(m) return m[1].toUpperCase();
+    if(q && /^(?:app\d{8}-[a-z0-9]{2,8}|APP-[A-Za-z0-9-]{4,60})$/i.test(q)) return q;
+    var m = (location.pathname||'').match(/(app\d{8}-[a-z0-9]{2,8}|APP-[A-Za-z0-9]+-[A-Za-z0-9]+)\/?$/i);
+    if(m){
+      var raw = m[1];
+      return raw.toLowerCase().indexOf('app') === 0 && raw.indexOf('-') > 3
+        ? raw.toLowerCase()       // new format — preserve lowercase
+        : raw.toUpperCase();      // old `APP-…` format
+    }
   } catch(e){}
   return null;
 }
@@ -7191,7 +7236,8 @@ async function showApplicationCard(ref){
   var consents = [d.gdpr_signed?'GDPR':null, d.consent_age_verified?'Age verified':null, d.consent_photo_release?'Photo release':null].filter(Boolean);
   row('Consents accepted', v(consents.length?consents.join(', '):''));
 
-  var link = location.href;
+  // Remember the name + ref so Share Link can rebuild the canonical URL.
+  window.__lastAppName = d.lady_name || d.work_name || '';
   card.style.maxWidth = '620px'; card.style.textAlign = 'left';
   card.innerHTML =
     // Brand mark + wordmark + "Application Form" — mirrors the form
@@ -7201,19 +7247,12 @@ async function showApplicationCard(ref){
       '<div class="hero-wordmark">Mayriche</div>'+
       '<div class="hero-sub">Application Form</div>'+
     '</div>'+
-    '<div style="text-align:center;margin-bottom:18px">'+
+    '<div style="text-align:center;margin-bottom:22px">'+
       '<div class="success-t" style="font-size:36px;margin-top:4px">'+esc(d.work_name||d.profile_nickname||'Application')+'</div>'+
-      '<div class="success-sub">'+esc(d.stage||'Application received')+' · '+esc(d.application_ref||'')+'</div>'+
-      '<div id="successLinkWrap" style="max-width:480px;margin:14px auto 0">'+
-        '<div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mt);margin-bottom:6px;text-align:center">Your application link</div>'+
-        '<div style="display:flex;gap:8px;align-items:center">'+
-          '<input id="successLink" type="text" readonly class="inp" style="flex:1;min-width:0;font-size:12px;text-align:center" value="'+esc(link)+'">'+
-          '<button type="button" class="btn btn-ghost" style="flex-shrink:0;min-width:auto;padding:10px 14px" onclick="copyAppLink()">Copy</button>'+
-        '</div>'+
-      '</div>'+
+      '<div class="success-sub">'+esc(d.stage||'Application received')+'</div>'+
     '</div>'+
     '<div class="summary-card"><div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>'+body+'</div>'+
-    '<div class="actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap"><button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button><button class="btn btn-primary" onclick="shareAppLink()">Share link</button></div>';
+    '<div class="actions success-actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap"><button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button><button class="btn btn-primary" onclick="shareAppLink()">Share link</button></div>';
 }
 function editApplication(){
   var ov = document.getElementById('successOverlay');
@@ -7223,25 +7262,43 @@ function editApplication(){
   // keep the ?ref in the URL so a reload still finds the application
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+// Build the canonical share URL for the current application. After
+// submit, history.replaceState has already set location.href to the
+// pretty `/<slug>-app<DDMMYYYY>-<rand>` path, so location.href is the
+// right answer in both flows (post-submit overlay AND shared-link view).
+function currentAppUrl(){
+  if(window.__lastAppRef && window.__lastAppName){
+    return buildAppLink(window.__lastAppRef, window.__lastAppName);
+  }
+  return location.href;
+}
 function shareAppLink(){
-  var el = document.getElementById('successLink');
-  var url = (el && el.value) || (window.__lastAppRef ? ('https://apply.mayriche.co.uk/?ref=' + window.__lastAppRef) : location.href);
-  if(navigator.share){ navigator.share({ title: 'Mayriche application', url: url }).catch(function(){}); }
-  else { copyAppLink(); }
-}
-function copyAppLink(){
-  const el = document.getElementById('successLink');
-  if(!el) return;
-  const v = el.value;
+  var url = currentAppUrl();
+  if(navigator.share){
+    navigator.share({ title: 'Mayriche application', url: url }).catch(function(){});
+    return;
+  }
   try {
-    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(v); }
-    else { el.removeAttribute('readonly'); el.select(); document.execCommand('copy'); el.setAttribute('readonly','readonly'); }
-    showToast('Link copied','success');
-  } catch(e){ el.select(); showToast('Select & copy the link','error'); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url);
+      showToast('Link copied','success');
+    } else {
+      showToast(url,'success');
+    }
+  } catch(e){ showToast('Could not copy','error'); }
 }
+// Kept as a no-op shim in case anything in the wider system (email
+// templates, etc.) still calls into it — safer than letting a stale
+// onclick throw.
+function copyAppLink(){ shareAppLink(); }
 function downloadPdf(){
-  const ref = window.__lastAppRef || 'APP';
+  // Add `printing` to <html> so the @media print stylesheet has a
+  // hook to also work when Save-as-PDF dialogs render at screen
+  // resolution. Then call window.print() — the print CSS hides
+  // everything except .success-overlay.
+  document.documentElement.classList.add('printing');
   window.print();
+  setTimeout(function(){ document.documentElement.classList.remove('printing'); }, 1500);
 }
 
 // ═══════════ TOAST ═══════════
