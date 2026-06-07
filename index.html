@@ -324,12 +324,21 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 
 .summary-card{background:linear-gradient(180deg,rgba(196,168,130,.04),rgba(139,115,85,.02));border:1px solid var(--brd2);border-radius:var(--r);padding:22px 26px;margin-top:18px;}
 .summary-t{font-family:var(--fd);font-size:22px;color:var(--tx);margin-bottom:14px;font-weight:500;letter-spacing:.01em;display:flex;align-items:center;gap:10px;}
+.summary-step{font-family:var(--fd);font-size:26px;font-weight:500;color:var(--tx);margin:32px 0 4px;padding-top:18px;border-top:1px solid var(--brd2);letter-spacing:.01em;display:flex;align-items:baseline;gap:12px}
+.summary-step:first-child{margin-top:6px;padding-top:0;border-top:0}
+.summary-step-n{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ac);font-weight:600;font-family:var(--fb)}
 .summary-sec{font-family:var(--fd);font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ac);margin:18px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--brd2);}
-.summary-sec:first-child{margin-top:0}
-.summary-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12px;border-bottom:1px solid var(--brd);gap:16px;}
+.summary-sec:first-of-type{}
+.summary-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12px;border-bottom:1px solid var(--brd);gap:16px;align-items:center}
 .summary-row:last-child{border:0}
 .summary-key{color:var(--mt);letter-spacing:.05em}
-.summary-val{color:var(--tx);text-align:right;font-weight:500;max-width:60%}
+.summary-val{color:var(--tx);text-align:right;font-weight:500;max-width:60%;display:inline-flex;align-items:center;gap:6px;justify-content:flex-end}
+.summary-pending{display:inline-flex;align-items:center;gap:5px;color:var(--mt);font-style:italic;font-size:11px;opacity:.75}
+.summary-pending svg{width:12px;height:12px;animation:summarySpin 2.4s linear infinite}
+@keyframes summarySpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.summary-map-wrap{margin-top:10px;border:1px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--card);position:relative}
+.summary-map-wrap > div{height:240px;width:100%}
+.summary-map-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mt);background:var(--card);pointer-events:none;text-align:center;padding:0 20px}
 
 .actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap;}
 .actions-left,.actions-right{display:flex;gap:10px;flex-wrap:wrap}
@@ -356,9 +365,9 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .resume-btn:hover{border-color:var(--ac);color:var(--tx)}
 .resume-btn.primary{background:var(--ac);color:var(--card);border-color:var(--ac)}
 
-.success-overlay{position:fixed;inset:0;background:var(--bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .6s;overflow-y:auto}
+.success-overlay{position:fixed;inset:0;background:var(--bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:200;display:block;padding:40px 20px 60px;opacity:0;pointer-events:none;transition:opacity .6s;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .success-overlay.visible{opacity:1;pointer-events:auto}
-.success-card{max-width:560px;text-align:center;transform:translateY(20px);opacity:0;transition:all .8s .2s cubic-bezier(.22,.61,.36,1);}
+.success-card{max-width:620px;margin:0 auto;text-align:center;transform:translateY(20px);opacity:0;transition:all .8s .2s cubic-bezier(.22,.61,.36,1);}
 .success-overlay.visible .success-card{transform:translateY(0);opacity:1}
 .success-mark{width:86px;height:86px;border:1px solid var(--ac);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;position:relative;background:var(--card);}
 .success-mark::after{content:"";position:absolute;inset:-8px;border:1px solid rgba(139,115,85,.2);border-radius:50%;}
@@ -1938,11 +1947,23 @@ html{scroll-behavior:smooth}
 <!-- Success Overlay -->
 <div class="success-overlay" id="successOverlay">
   <div class="success-card" style="max-width:620px;text-align:left">
+    <!-- Same hero brand mark + wordmark as the form header so the
+         summary feels like one continuous Mayriche experience. -->
+    <div style="text-align:center;margin-bottom:18px">
+      <div class="hero-mark" aria-hidden="true" style="margin-bottom:6px">
+        <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:60px">
+          <circle cx="120" cy="120" r="106" fill="none" stroke="currentColor" stroke-width="0.9"/>
+          <text x="120" y="172" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="150" font-weight="300" fill="currentColor">M</text>
+        </svg>
+      </div>
+      <div class="hero-wordmark">Mayriche</div>
+      <div class="hero-sub">Application Form</div>
+    </div>
     <div style="text-align:center;margin-bottom:22px">
       <div class="success-mark" style="margin-bottom:18px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
       <div class="success-t">Application received</div>
       <div class="success-sub" id="successSub">Thank you. Your application has been received.</div>
-      <div class="success-ref" id="successRef">—</div>
+      <div class="success-ref" id="successRef">APP-…</div>
       <!-- Permanent shareable link to this application -->
       <div id="successLinkWrap" style="max-width:480px;margin:14px auto 0;display:none">
         <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--champagne);margin-bottom:6px;text-align:center">Your application link</div>
@@ -1961,7 +1982,7 @@ html{scroll-behavior:smooth}
         <div id="successEmailLine" style="margin-top:14px;text-align:center;color:var(--tx);font-size:12px"></div>
       </div>
     </div>
-    <div class="summary-card" style="max-height:50vh;overflow-y:auto">
+    <div class="summary-card">
       <div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>
       <div id="summaryContent"></div>
     </div>
@@ -5607,20 +5628,35 @@ function handleVideoUpload(ev){
 // every section the applicant filled in is shown back to her (and on her
 // personal link / email). Empty fields show "—" so she can see at a glance
 // what is still blank.
+// Inline clock SVG used in place of "—" for fields the applicant hasn't
+// filled yet — friendlier than a dash, hints at "pending".
+const SUMMARY_PENDING_HTML = '<span class="summary-pending" aria-label="pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>pending</span>';
+
 function renderSummary(){
   const f = formData;
   const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const v = x => (x===0||x) && String(x).trim() !== '' ? x : '—';
+  // Empty values render as a soft clock-loading pill instead of a flat dash.
+  const isEmpty = x => !((x===0||x) && String(x).trim() !== '');
+  const v = x => isEmpty(x) ? SUMMARY_PENDING_HTML : esc(x);
   const cur = (f.currency==='EUR'?'€':f.currency==='USD'?'$':'£');
   let html = '';
+  const stepHead = (n, t) => { html += '<div class="summary-step"><span class="summary-step-n">Step '+n+'</span><span>'+esc(t)+'</span></div>'; };
   const sec = t => { html += '<div class="summary-sec">'+esc(t)+'</div>'; };
-  const row = (k,val) => { html += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+esc(val)+'</span></div>'; };
+  // row() now accepts pre-escaped HTML for `val` (v() returns it).
+  const row = (k,val) => {
+    const display = val == null ? SUMMARY_PENDING_HTML
+                   : (typeof val === 'string' && val.indexOf('<') === 0 ? val : esc(String(val)));
+    html += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+display+'</span></div>';
+  };
 
-  // ── STEP 1 · About you ──
-  const dob = f.dob_d&&f.dob_m&&f.dob_y ? f.dob_y+'-'+String(f.dob_m).padStart(2,'0')+'-'+String(f.dob_d).padStart(2,'0') : '—';
+  // ═══════════ STEP 1 · About you ═══════════
+  stepHead(1, 'About you');
+
+  const dob = f.dob_d&&f.dob_m&&f.dob_y ? f.dob_y+'-'+String(f.dob_m).padStart(2,'0')+'-'+String(f.dob_d).padStart(2,'0') : '';
   sec('Personal information');
   row('Full legal name', v(f.fullname));
-  row('Date of birth', dob);
+  row('Gender', v(f.gender));
+  row('Date of birth', v(dob));
   row('Nationality', v(f.nationality));
 
   sec('Residential address');
@@ -5632,29 +5668,30 @@ function renderSummary(){
   row('Country', v(f.country));
 
   sec('Contact details');
-  row('Phone', ((f.phone_code||'')+' '+(f.phone||'')).trim()||'—');
-  row('WhatsApp', f.phone_is_whatsapp ? 'Same as phone' : (((f.whatsapp_code||'')+' '+(f.whatsapp||'')).trim()||'—'));
+  row('Phone', v(((f.phone_code||'')+' '+(f.phone||'')).trim()));
+  row('WhatsApp', f.phone_is_whatsapp ? 'Same as phone' : v(((f.whatsapp_code||'')+' '+(f.whatsapp||'')).trim()));
   row('Email', v(f.email));
   row('Social media', f.no_social ? 'None' : v(f.ig));
-  row('Emergency contact', [f.em_name, f.em_rel, ((f.em_phone_code||'')+' '+(f.em_phone||'')).trim()].filter(Boolean).join(' · ')||'—');
+  row('Emergency contact', v([f.em_name, f.em_rel, ((f.em_phone_code||'')+' '+(f.em_phone||'')).trim()].filter(Boolean).join(' · ')));
   row('How she heard of us', v(f.heard==='Other'?(f.heard_other||'Other'):f.heard));
 
-  // ── STEP 2 · Public profile ──
+  // ═══════════ STEP 2 · Public profile ═══════════
+  stepHead(2, 'Public profile');
+
   sec('Public profile');
   row('Working name', v(f.workname));
   row('Profile age', v(f.profile_age));
   row('English level', v(f.english));
-  row('Languages', (f.languages||[]).length ? f.languages.map(l => typeof l==='string'?l:(l.language+(l.level?' ('+l.level+')':''))).join(', ') : '—');
+  row('Languages', (f.languages||[]).length ? (f.languages.map(l => typeof l==='string'?l:(l.language+(l.level?' ('+l.level+')':''))).join(', ')) : v(''));
 
   sec('Physical');
-  row('Height', f.height?f.height+' cm':'—');
-  row('Weight', f.weight?f.weight+' kg':'—');
+  row('Height', f.height?(f.height+' cm'):v(''));
+  row('Weight', f.weight?(f.weight+' kg'):v(''));
   row('Body type', v(f.body));
   row('Dress size', v(f.dress));
-  row('Bust', [f.breast, f.breast_type].filter(Boolean).join(' · ')||'—');
-  row('Eyes / hair', [f.eye, f.hair].filter(Boolean).join(' · ')||'—');
+  row('Bust', v([f.breast, f.breast_type].filter(Boolean).join(' · ')));
+  row('Eyes / hair', v([f.eye, f.hair].filter(Boolean).join(' · ')));
 
-  // Service line (Tantric / Companions / Both) — time only, no per-act lists.
   if(f.service_line){
     sec('Service line');
     row('Offers', f.service_line === 'both' ? 'Tantric + Companions' : (f.service_line === 'tantric' ? 'Tantric' : 'Companions'));
@@ -5667,7 +5704,7 @@ function renderSummary(){
     if(f.tantric_exp_note) row('Experience notes', f.tantric_exp_note);
     row('With other agencies', v(f.tantric_competing));
     (f.tantric_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
-    (f.tantric_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
+    (f.tantric_rates||[]).forEach(r=>row(r.duration||'Rate', v([r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · '))));
   }
 
   if(f.offers_escort === 'Yes'){
@@ -5677,7 +5714,7 @@ function renderSummary(){
     if(f.escort_exp_note) row('Experience notes', f.escort_exp_note);
     row('With other agencies', v(f.competing||f.tantric_competing));
     (f.escort_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
-    (f.escort_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
+    (f.escort_rates||[]).forEach(r=>row(r.duration||'Rate', v([r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · '))));
   }
 
   if((f.more_ladies||[]).length){
@@ -5693,7 +5730,6 @@ function renderSummary(){
     row('Right to refuse unsafe clients', 'Yes');
   }
 
-  // Legacy generic services (still captured on some flows)
   if((f.services||[]).length || f.rate){
     sec('Services & rate');
     if((f.services||[]).length) row('Services selected', f.services.join(', '));
@@ -5701,41 +5737,116 @@ function renderSummary(){
     if(f.rate) row('Starting rate', cur+f.rate);
   }
 
-  sec('Working areas');
-  row('Working location', [f.work_city, f.work_country].filter(Boolean).join(', ')||'—');
+  sec('Working locations');
+  row('Travel mode', v(f.travel_mode));
+  row('Primary working location', v([f.work_city, f.work_country].filter(Boolean).join(', ')));
   row('Working neighbourhood', v(f.local_area));
   row('In-house available', f.no_inhouse?'No':v(f.inhouse));
-  if(!f.no_inhouse) row('In-house address', [f.inhouse_street, f.inhouse_apt, f.inhouse_postcode].filter(Boolean).join(', ')||v(f.inhouse_address));
+  if(!f.no_inhouse){
+    row('In-house address', v([f.inhouse_street, f.inhouse_apt, f.inhouse_postcode].filter(Boolean).join(', ') || f.inhouse_address));
+    row('Location walkthrough video', f.files && f.files.location ? 'Uploaded' : v(''));
+  }
   row('Mobile / outcall', v(f.mobile));
   if((f.mobile_zones||[]).length) row('Mobile zones', f.mobile_zones.join(', '));
-  (f.extra_locations||[]).forEach((loc,i)=>row('Also based in '+(i+1), [loc.city,loc.country].filter(Boolean).join(', ')||loc));
+  (f.extra_locations||[]).forEach((loc,i)=>{
+    const where = [loc.city, loc.country].filter(Boolean).join(', ') || (typeof loc==='string'?loc:'');
+    row('Also based in '+(i+1), v(where));
+    if(loc && loc.location_file) row('  · Walkthrough video '+(i+1), 'Uploaded');
+  });
   const seasonal = (f.abroad||[]).concat(f.abroad_custom||[]);
-  row('Seasonal destinations', seasonal.length?seasonal.join(', '):'—');
+  row('Seasonal destinations', seasonal.length?seasonal.join(', '):v(''));
   if(f.travel_other) row('Other travel', f.travel_other);
+
+  // Map of "Where you'll be available" — same city-level pins as the form.
+  html += '<div class="summary-sec">Where you&rsquo;ll be available</div>';
+  html += '<div class="summary-map-wrap"><div id="summaryMap"></div><div class="summary-map-empty" id="summaryMapEmpty">No working locations set.</div></div>';
 
   sec('Availability');
   const daysOn = Object.keys(f.availability||{}).filter(d => f.availability[d] && f.availability[d].enabled);
-  daysOn.forEach(d=>{ const dd=f.availability[d]; row(d, (dd.from||'09:00')+' – '+(dd.to||'02:00')); });
-  if(!daysOn.length) row('Days', '—');
+  daysOn.forEach(d=>{
+    const dd = f.availability[d];
+    const from = dd.from||'09:00', to = dd.to||'02:00';
+    const lbl = (from === to) ? '24h ('+from+')' : (from+' – '+to);
+    row(d, lbl);
+  });
+  if(!daysOn.length) row('Days', v(''));
+  row('Days per week', v(f.days_week));
+  row('Advance notice needed', v(f.late_hours));
   if(f.avail_notes) row('Notes', f.avail_notes);
 
-  // ── STEP 3 · Verification & files ──
+  // ═══════════ STEP 3 · Identity verification ═══════════
+  stepHead(3, 'Identity verification');
+
   sec('Photos, videos & documents');
-  row('Professional photos', (f.files.portfolio||[]).length+' uploaded');
-  row('Full-body photos', ['front','back','side'].filter(a=>f.files['fullbody_'+a]).length+' / 3');
-  row('Intro video', f.video?'Uploaded':'—');
-  row('Professional shoot video', f.files.profvideo?'Uploaded':'—');
-  row('Selfie verification', f.files.selfie?'Uploaded':'—');
-  row('Location walkthrough', f.files.location?'Uploaded':'—');
-  row('ID / passport copy', f.files.idcopy?'Uploaded':'—');
-  row('Bank statement', f.files.bank?'Uploaded':'—');
+  row('Professional photos', ((f.files.portfolio||[]).length ? ((f.files.portfolio||[]).length+' uploaded') : v('')));
+  row('Full-body photos', (['front','back','side'].filter(a=>f.files['fullbody_'+a]).length+' / 3'));
+  row('Intro video', f.video?'Uploaded':v(''));
+  row('Professional photoshoot', f.files.photoshoot?'Uploaded':v(''));
+  row('Professional video shoot', f.files.videoshoot || f.files.profvideo?'Uploaded':v(''));
+  row('Selfie verification', f.files.selfie?'Uploaded':v(''));
+  row('ID / passport copy', f.files.idcopy?'Uploaded':v(''));
+  row('Bank statement', f.files.bank?'Uploaded':v(''));
 
   sec('Verification');
   row('Signature', v(f.signature_name));
-  row('Signed at', f.signature_signed_at ? new Date(f.signature_signed_at).toLocaleString() : '—');
-  row('Consents accepted', Object.values(f.consents||{}).filter(Boolean).length+' / '+Object.keys(f.consents||{}).length);
+  row('Signed at', f.signature_signed_at ? new Date(f.signature_signed_at).toLocaleString() : v(''));
+  row('Consents accepted', (Object.values(f.consents||{}).filter(Boolean).length+' / '+Object.keys(f.consents||{}).length));
 
   document.getElementById('summaryContent').innerHTML = html;
+  // Render the city-level map after the DOM is in place. Reuses the same
+  // Leaflet helpers from the working-locations card so the visualisation
+  // matches exactly.
+  try { renderSummaryMap(); } catch(e){}
+}
+
+// ═══ Summary-page mini map (mirrors the form's "Where you'll be available") ═══
+let _summaryMap = null;
+let _summaryMapMarkers = [];
+function renderSummaryMap(){
+  if(typeof L === 'undefined'){ setTimeout(renderSummaryMap, 200); return; }
+  const el = document.getElementById('summaryMap');
+  if(!el) return;
+  // Always rebuild — the overlay can be opened multiple times.
+  if(_summaryMap){ try{ _summaryMap.remove(); }catch(e){} _summaryMap = null; _summaryMapMarkers = []; }
+  _summaryMap = L.map(el, {
+    zoomControl:false, attributionControl:true,
+    scrollWheelZoom:false, doubleClickZoom:false, dragging:false,
+    tap:false, keyboard:false
+  }).setView([46, 5], 3);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    maxZoom:11, minZoom:2, attribution:'© OSM · CARTO'
+  }).addTo(_summaryMap);
+  const f = formData;
+  const points = [];
+  const seen = new Set();
+  const add = (name, primary) => {
+    if(!name) return;
+    const key = String(name).trim();
+    if(!key || seen.has(key)) return;
+    const c = (typeof CITY_COORDS !== 'undefined') ? CITY_COORDS[key] : null;
+    if(!c) return;
+    seen.add(key);
+    points.push({ name:key, latlng:c, primary });
+  };
+  add(f.work_city, true);
+  (f.extra_locations || []).forEach(loc => add(loc && loc.city, false));
+  (f.abroad || []).forEach(name => add(name, false));
+  points.forEach(p => {
+    const icon = L.divIcon({
+      className: 'apply-pin-wrap',
+      html: '<div class="apply-pin' + (p.primary ? ' primary' : '') + '" title="' + p.name.replace(/"/g,'&quot;') + '"></div>',
+      iconSize: p.primary ? [16,16] : [14,14],
+      iconAnchor: p.primary ? [8,8] : [7,7]
+    });
+    const m = L.marker(p.latlng, { icon, title: p.name }).addTo(_summaryMap);
+    _summaryMapMarkers.push(m);
+  });
+  const empty = document.getElementById('summaryMapEmpty');
+  if(empty) empty.style.display = points.length === 0 ? '' : 'none';
+  if(points.length === 1) _summaryMap.setView(points[0].latlng, 6);
+  else if(points.length > 1) _summaryMap.fitBounds(L.latLngBounds(points.map(p=>p.latlng)), { padding:[24,24], maxZoom:6 });
+  else _summaryMap.setView([46, 5], 3);
+  setTimeout(() => { try{ _summaryMap.invalidateSize(); }catch(e){} }, 120);
 }
 
 // ═══════════ DRAFT (local cache only — form in progress) ═══════════
@@ -6006,7 +6117,11 @@ function checkDraft(){
 }
 
 // ═══════════ STORAGE UPLOAD (to Supabase Storage) ═══════════
-async function uploadFileToStorage(file, appRef, fileType, index){
+// onProgress receives a 0-100 percentage during the upload of THIS file —
+// driven by XHR upload progress events so it's a real measurement, not a
+// fake animation. The submit loop combines it with the file-index to show
+// an accurate overall percentage.
+async function uploadFileToStorage(file, appRef, fileType, index, onProgress){
   if(!sb || !file) return null;
   const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
   const safeName = index !== undefined ? fileType+'_'+index+'.'+ext : fileType+'.'+ext;
@@ -6016,7 +6131,7 @@ async function uploadFileToStorage(file, appRef, fileType, index){
     // uses the anon publishable key, which this project's Storage service
     // does NOT resolve to a role it will accept for inserts (direct anon
     // uploads fail with an RLS error). The sign-upload edge function mints a
-    // signed token with the service role; uploadToSignedUrl needs no role.
+    // signed token with the service role; the upload URL needs no role.
     const resp = await fetch(SUPABASE_URL + '/functions/v1/sign-upload', {
       method: 'POST',
       headers: {
@@ -6030,9 +6145,28 @@ async function uploadFileToStorage(file, appRef, fileType, index){
     const json = await resp.json();
     const entry = json && json.tokens && json.tokens[path];
     if(!entry || !entry.token){ throw new Error('no token returned for '+path); }
-    const res = await sb.storage.from('applications')
-      .uploadToSignedUrl(path, entry.token, file, { upsert: true });
-    if(res.error) throw res.error;
+    // Upload via raw XHR so we can subscribe to .upload.onprogress and
+    // surface a real percentage. This hits Supabase Storage's signed-upload
+    // endpoint directly; supabase-js's uploadToSignedUrl uses the same URL
+    // shape under the hood.
+    const uploadUrl = SUPABASE_URL + '/storage/v1/object/upload/sign/applications/' + path + '?token=' + encodeURIComponent(entry.token);
+    await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', uploadUrl, true);
+      xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+      xhr.setRequestHeader('x-upsert', 'true');
+      xhr.upload.onprogress = (ev) => {
+        if(!onProgress || !ev.lengthComputable) return;
+        try { onProgress(Math.min(99, Math.round((ev.loaded / ev.total) * 100))); } catch(_){}
+      };
+      xhr.onload = () => {
+        if(xhr.status >= 200 && xhr.status < 300){ resolve(); }
+        else { reject(new Error('upload HTTP '+xhr.status+': '+xhr.responseText)); }
+      };
+      xhr.onerror = () => reject(new Error('upload network error'));
+      xhr.send(file);
+    });
+    try { onProgress && onProgress(100); } catch(_){}
     console.log('[Storage] Uploaded:', path);
     return path;
   } catch(e){
@@ -6438,14 +6572,23 @@ async function submitApplication(){
   // ═══ UPLOAD FILES TO SUPABASE STORAGE ═══
   const uploadedPaths = { portfolio: [] };
 
-  for(let i = 0; i < filesToUpload.length; i++){
+  // Real per-file progress, driven by XHR onprogress. The overall % shown
+  // in the submit progress bar interpolates across all files so it rises
+  // smoothly from 0% to 100% — never stalling on the misleading "50% per
+  // file" jump it used to do.
+  const N = filesToUpload.length;
+  for(let i = 0; i < N; i++){
     const item = filesToUpload[i];
-    setProgress('Uploading ' + item.label + ' (' + (i+1) + ' of ' + filesToUpload.length + ')');
-    btn.textContent = 'Uploading ' + (i+1) + '/' + filesToUpload.length + '…';
-    // Per-file mini bar — show going to 50% on start, 100% on finish.
-    showUploadProgress(item.k, 50);
-    const path = await uploadFileToStorage(item.f, applicationRef, item.type, item.index);
-    showUploadProgress(item.k, 100);
+    const handleFileProgress = (filePct) => {
+      // Overall = previous files done (100% each) + current file's actual %.
+      const overall = Math.round(((i + (filePct/100)) / N) * 100);
+      setProgress('Uploading ' + item.label + ' — file ' + (i+1) + ' of ' + N, overall);
+      btn.textContent = 'Uploading ' + overall + '%';
+      showUploadProgress(item.k, filePct);
+    };
+    handleFileProgress(0);
+    const path = await uploadFileToStorage(item.f, applicationRef, item.type, item.index, handleFileProgress);
+    handleFileProgress(100);
     if(path){
       if(item.k === 'portfolio') uploadedPaths.portfolio.push(path);
       else if(item.k === 'video') uploadedPaths.video = path;
@@ -6457,7 +6600,6 @@ async function submitApplication(){
       }
     }
     stepDone++;
-    setProgress('Uploaded ' + (i+1) + ' of ' + filesToUpload.length);
   }
 
   btn.textContent = 'Saving…';
@@ -6671,8 +6813,18 @@ async function submitApplication(){
     setProgress('Saved · Notifying team…');
 
     try {
-      const newLady = (r.data && r.data[0]) || ladyRow;
-      if(newLady) await postSubmitRouting(newLady, formData);
+      // The anon insert can't .select() (RLS), so we look the row up by
+      // application_ref to get the new id. With it, postSubmitRouting can
+      // patch flags + write the apply_notifications row. Without it, we
+      // skip notifications silently — no console error.
+      let newLady = null;
+      try {
+        const back = await sb.from('ladies').select('id, application_ref, special_requests').eq('application_ref', applicationRef).limit(1).single();
+        if(back && back.data && back.data.id){
+          newLady = Object.assign({}, ladyRow, back.data);
+        }
+      } catch(_){ /* select may be blocked by RLS — ignore */ }
+      if(newLady && newLady.id) await postSubmitRouting(newLady, formData);
     } catch(e){
       console.warn('Post-submit routing failed (non-critical):', e);
     }
@@ -6894,13 +7046,21 @@ async function showApplicationCard(ref){
   window.__lastAppRef = d.application_ref || ref;
   var so = d.services_offering || {};
   var esc = function(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
-  var v = function(x){ return (x===0||x) && String(x).trim()!=='' ? x : '—'; };
+  var PENDING = (typeof SUMMARY_PENDING_HTML !== 'undefined') ? SUMMARY_PENDING_HTML : '—';
+  var isEmpty = function(x){ return !((x===0||x) && String(x).trim()!==''); };
+  var v = function(x){ return isEmpty(x) ? PENDING : esc(x); };
   var cur = (d.starting_rate_currency==='EUR'?'€':d.starting_rate_currency==='USD'?'$':'£');
   var body = '';
+  var stepHead = function(n,t){ body += '<div class="summary-step"><span class="summary-step-n">Step '+n+'</span><span>'+esc(t)+'</span></div>'; };
   var sec = function(t){ body += '<div class="summary-sec">'+esc(t)+'</div>'; };
-  var row = function(k,val){ body += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+esc(val)+'</span></div>'; };
-  var money = function(x){ return x!=null && x!=='' ? cur+x : '—'; };
+  var row = function(k,val){
+    var display = val == null ? PENDING
+                 : (typeof val === 'string' && val.indexOf('<') === 0 ? val : esc(String(val)));
+    body += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+display+'</span></div>';
+  };
+  var money = function(x){ return x!=null && x!=='' ? cur+x : PENDING; };
 
+  stepHead(1, 'About you');
   sec('Personal information');
   row('Full legal name', v(d.lady_name));
   row('Date of birth', v(d.date_of_birth));
@@ -6913,39 +7073,40 @@ async function showApplicationCard(ref){
   row('Country', v(d.country_residence));
 
   sec('Contact details');
-  row('Phone', ((d.phone_code||'')+' '+(d.phone_local||d.phone||'')).trim()||'—');
+  row('Phone', v(((d.phone_code||'')+' '+(d.phone_local||d.phone||'')).trim()));
   row('Email', v(d.email));
   row('Social media', v(d.social_media));
-  row('Emergency contact', [d.em_c_name, d.em_c_rel, d.em_c_phone].filter(Boolean).join(' · ') || v(d.emergency_contact));
+  row('Emergency contact', v([d.em_c_name, d.em_c_rel, d.em_c_phone].filter(Boolean).join(' · ') || d.emergency_contact));
   row('How she heard of us', v(d.source));
 
+  stepHead(2, 'Public profile');
   sec('Public profile');
   row('Working name', v(d.work_name || d.profile_nickname));
   row('Profile age', v(d.profile_age));
-  var langs = '—';
+  var langs = '';
   if(Array.isArray(d.languages_detail) && d.languages_detail.length){
     langs = d.languages_detail.map(function(l){ return typeof l==='string'?l:(l.language+(l.level?' ('+l.level+')':'')); }).join(', ');
   } else if(d.languages){ langs = d.languages; }
-  row('Languages', langs);
+  row('Languages', v(langs));
 
   sec('Physical');
-  row('Height', d.height_cm?d.height_cm+' cm':'—');
-  row('Weight', d.weight_kg?d.weight_kg+' kg':'—');
+  row('Height', d.height_cm?(d.height_cm+' cm'):v(''));
+  row('Weight', d.weight_kg?(d.weight_kg+' kg'):v(''));
   row('Body type', v(d.body_type));
   row('Dress size', v(d.dress_size));
-  row('Bust', [d.breast_size, d.breast_type].filter(Boolean).join(' · ')||'—');
-  row('Eyes / hair', [d.eye_colour, d.hair_colour].filter(Boolean).join(' · ')||'—');
+  row('Bust', v([d.breast_size, d.breast_type].filter(Boolean).join(' · ')));
+  row('Eyes / hair', v([d.eye_colour, d.hair_colour].filter(Boolean).join(' · ')));
 
   function renderModule(title, m){
     if(!m || m.offered===false) return;
     sec(title);
     row('Offered', m.offered?'Yes':v(m.offered));
-    if(m.level_label || m.tier) row('Level', m.level_label || (m.tier ? String(m.tier).replace(/_/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}) : '—'));
-    if(m.experience!=null) row('Experience', (m.experience===true?'Yes':v(m.experience))+(m.experience_years?' · '+m.experience_years+' yrs':''));
+    if(m.level_label || m.tier) row('Level', m.level_label || (m.tier ? String(m.tier).replace(/_/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}) : PENDING));
+    if(m.experience!=null) row('Experience', (m.experience===true?'Yes':String(m.experience))+(m.experience_years?' · '+m.experience_years+' yrs':''));
     if(m.experience_note) row('Experience notes', m.experience_note);
     if(m.competing!=null) row('With other agencies', v(m.competing));
     (m.agencies||[]).forEach(function(a,i){ row('Agency link '+(i+1), a); });
-    (m.rates||[]).forEach(function(r){ row(r.duration||'Rate', [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'); });
+    (m.rates||[]).forEach(function(r){ row(r.duration||'Rate', v([r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · '))); });
     if(m.starting_price!=null) row('From', money(m.starting_price));
     // Legacy per-act fields kept here so the read-only card still
     // renders applications submitted BEFORE the time-only switch. New
@@ -7006,31 +7167,41 @@ async function showApplicationCard(ref){
   if(d.availability_schedule && typeof d.availability_schedule==='object'){
     Object.keys(d.availability_schedule).forEach(function(day){
       var dd=d.availability_schedule[day]; if(!dd) return;
-      if(dd.enabled || dd.from || dd.to) row(day, (dd.from||'09:00')+' – '+(dd.to||'02:00'));
+      if(dd.enabled || dd.from || dd.to){
+        var from = dd.from||'09:00', to = dd.to||'02:00';
+        row(day, (from===to) ? ('24h ('+from+')') : (from+' – '+to));
+      }
     });
   }
   if(d.availability_notes) row('Notes', d.availability_notes);
 
+  stepHead(3, 'Identity verification');
   sec('Photos, videos & documents');
-  row('Professional photos', (d.file_portfolio||[]).length+' uploaded');
-  row('Full-body photos', ['front','back','side'].filter(function(a){ return d['file_fullbody_'+a]; }).length+' / 3');
-  row('Intro video', d.file_video_intro?'Uploaded':'—');
-  row('Selfie verification', d.file_selfie_kyc?'Uploaded':'—');
-  row('Location walkthrough', d.file_location_check?'Uploaded':'—');
-  row('ID / passport copy', d.copy_id?'Uploaded':'—');
-  row('Bank statement', d.file_bank_statement?'Uploaded':'—');
+  row('Professional photos', (d.file_portfolio||[]).length ? ((d.file_portfolio||[]).length+' uploaded') : v(''));
+  row('Full-body photos', (['front','back','side'].filter(function(a){ return d['file_fullbody_'+a]; }).length+' / 3'));
+  row('Intro video', d.file_video_intro?'Uploaded':v(''));
+  row('Selfie verification', d.file_selfie_kyc?'Uploaded':v(''));
+  row('Location walkthrough', d.file_location_check?'Uploaded':v(''));
+  row('ID / passport copy', d.copy_id?'Uploaded':v(''));
+  row('Bank statement', d.file_bank_statement?'Uploaded':v(''));
 
   sec('Verification');
   row('Signature', v(d.signature_name));
-  row('Signed at', d.signature_signed_at ? new Date(d.signature_signed_at).toLocaleString() : '—');
+  row('Signed at', d.signature_signed_at ? new Date(d.signature_signed_at).toLocaleString() : v(''));
   var consents = [d.gdpr_signed?'GDPR':null, d.consent_age_verified?'Age verified':null, d.consent_photo_release?'Photo release':null].filter(Boolean);
-  row('Consents accepted', consents.length?consents.join(', '):'—');
+  row('Consents accepted', v(consents.length?consents.join(', '):''));
 
   var link = location.href;
-  card.style.maxWidth = '640px'; card.style.textAlign = 'left';
+  card.style.maxWidth = '620px'; card.style.textAlign = 'left';
   card.innerHTML =
+    // Brand mark + wordmark + "Application Form" — mirrors the form
+    // header so the summary feels like one continuous Mayriche journey.
     '<div style="text-align:center;margin-bottom:18px">'+
-      '<div class="hero-wordmark" style="font-size:22px;margin-bottom:10px">MAYRICHE</div>'+
+      '<div class="hero-mark" aria-hidden="true" style="margin-bottom:6px"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:60px"><circle cx="120" cy="120" r="106" fill="none" stroke="currentColor" stroke-width="0.9"/><text x="120" y="172" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="150" font-weight="300" fill="currentColor">M</text></svg></div>'+
+      '<div class="hero-wordmark">Mayriche</div>'+
+      '<div class="hero-sub">Application Form</div>'+
+    '</div>'+
+    '<div style="text-align:center;margin-bottom:18px">'+
       '<div class="success-t" style="font-size:36px;margin-top:4px">'+esc(d.work_name||d.profile_nickname||'Application')+'</div>'+
       '<div class="success-sub">'+esc(d.stage||'Application received')+' · '+esc(d.application_ref||'')+'</div>'+
       '<div id="successLinkWrap" style="max-width:480px;margin:14px auto 0">'+
@@ -7041,7 +7212,7 @@ async function showApplicationCard(ref){
         '</div>'+
       '</div>'+
     '</div>'+
-    '<div class="summary-card" style="max-height:60vh;overflow-y:auto"><div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>'+body+'</div>'+
+    '<div class="summary-card"><div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>'+body+'</div>'+
     '<div class="actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap"><button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button><button class="btn btn-primary" onclick="shareAppLink()">Share link</button></div>';
 }
 function editApplication(){
