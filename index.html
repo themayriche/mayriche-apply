@@ -6672,6 +6672,7 @@ async function submitApplication(){
     date_of_birth: dob,
     birth_month: new Date(dob).toLocaleDateString('en-US',{month:'long'}),
     birth_year: formData.dob_y,
+    gender: formData.gender || null,
     nationality: formData.nationality,
     country_residence: formData.country,
     city: formData.city || null,
