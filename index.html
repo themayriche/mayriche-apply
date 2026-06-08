@@ -6725,6 +6725,11 @@ async function submitApplication(){
     // Rate
     current_rate: formData.rate ? '£'+formData.rate : null,
     
+    // Heard-from / source channel (DB has `source` column).
+    source: formData.heard==='Other' ? (formData.heard_other || 'Other') : (formData.heard || null),
+    // Boundaries text (DB column).
+    boundaries: formData.boundaries || null,
+
     // Files (Storage paths)
     file_selfie_kyc: uploadedPaths.selfie || null,
     // Legacy single full-body field — set to the front shot for
@@ -6786,6 +6791,160 @@ async function submitApplication(){
     duration_preferences: formData.dur_pref,
     starting_rate: parseFloat(formData.rate)||null,
     starting_rate_currency: formData.currency || 'GBP',
+
+    // ─── FULL APPLICATION SNAPSHOT ───
+    // The OS Application tab reads every field the applicant filled
+    // from this JSON so nothing the form collects is invisible to the
+    // founder. We include the file paths too so photos/videos render
+    // from signed URLs. The structured columns above are still kept for
+    // filtering / kanban / search; this is the "source of truth" for
+    // the per-step review screen.
+    application_payload: {
+      version: 2,
+      submitted_at: new Date().toISOString(),
+      step1: {
+        fullname: formData.fullname || null,
+        gender: formData.gender || null,
+        dob: dob,
+        age: age,
+        nationality: formData.nationality || null,
+        country: formData.country || null,
+        city: formData.city || null,
+        home_street: formData.home_street || null,
+        home_apt: formData.home_apt || null,
+        home_postcode: formData.home_postcode || null,
+        home_neighbourhood: formData.local_area_text || null,
+        home_address: formData.home_address || null,
+        phone_code: formData.phone_code || null,
+        phone: formData.phone || null,
+        phone_full: ((formData.phone_code||'') + ' ' + (formData.phone||'').trim()).trim(),
+        phone_is_whatsapp: !!formData.phone_is_whatsapp,
+        whatsapp_code: formData.whatsapp_code || null,
+        whatsapp: formData.whatsapp || null,
+        whatsapp_full: formData.phone_is_whatsapp
+          ? ((formData.phone_code||'') + ' ' + (formData.phone||'').trim()).trim()
+          : ((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim(),
+        email: formData.email || null,
+        no_social: !!formData.no_social,
+        social_media: formData.no_social ? null : (formData.ig || null),
+        emergency: {
+          name: formData.em_name || null,
+          relationship: formData.em_rel || null,
+          phone_code: formData.em_phone_code || null,
+          phone: formData.em_phone || null,
+          phone_full: ((formData.em_phone_code||'') + ' ' + (formData.em_phone||'').trim()).trim()
+        },
+        heard: formData.heard || null,
+        heard_other: formData.heard_other || null
+      },
+      step2: {
+        workname: formData.workname || null,
+        profile_age: parseInt(formData.profile_age)||null,
+        english: formData.english || null,
+        languages: (formData.languages||[]).map(l => typeof l === 'string' ? { language: l, level: 'Native' } : l),
+        height_cm: parseInt(formData.height)||null,
+        weight_kg: parseInt(formData.weight)||null,
+        body_type: formData.body || null,
+        dress_size: formData.dress || null,
+        eye_colour: formData.eye || null,
+        hair_colour: formData.hair || null,
+        breast_size: formData.breast || null,
+        breast_type: formData.breast_type || null,
+        years_experience: formData.years || null,
+        // Service Line (Tantric / Companions / Both) + per-line modules.
+        service_line: formData.service_line || null,
+        more_ladies: (formData.more_ladies || []).slice(),
+        travel: (formData.travel || []).slice(),
+        right_to_refuse: !!formData.right_to_refuse,
+        boundaries: formData.boundaries || null,
+        photoshoot: formData.photoshoot || null,
+        videoshoot: formData.videoshoot || null,
+        currency: formData.currency || 'GBP',
+        starting_rate: parseFloat(formData.rate)||null,
+        tantric: formData.offers_tantric === 'Yes' ? {
+          offered: true,
+          tier: formData.tantric_tier || null,
+          level_label: LEVEL_LABEL[formData.tantric_tier] || null,
+          experience: formData.tantric_experience === 'Yes',
+          experience_years: formData.tantric_exp_years || null,
+          experience_note: formData.tantric_exp_note || null,
+          competing: formData.tantric_competing || null,
+          agencies: (formData.tantric_agencies||[]).map(s => (s||'').trim()).filter(Boolean),
+          rates: formData.tantric_rates || []
+        } : { offered: false },
+        escort: formData.offers_escort === 'Yes' ? {
+          offered: true,
+          tier: formData.escort_tier || null,
+          level_label: LEVEL_LABEL[formData.escort_tier] || null,
+          experience: formData.escort_experience === 'Yes',
+          experience_years: formData.escort_exp_years || null,
+          experience_note: formData.escort_exp_note || null,
+          competing: formData.competing || formData.escort_competing || null,
+          agencies: (formData.escort_agencies||[]).map(s => (s||'').trim()).filter(Boolean),
+          rates: formData.escort_rates || []
+        } : { offered: false },
+        // Working locations
+        travel_mode: formData.travel_mode || null,
+        work_country: formData.work_country || null,
+        work_city: formData.work_city || null,
+        local_area: formData.local_area || null,
+        inhouse: formData.inhouse || null,
+        no_inhouse: !!formData.no_inhouse,
+        inhouse_street: formData.inhouse_street || null,
+        inhouse_apt: formData.inhouse_apt || null,
+        inhouse_postcode: formData.inhouse_postcode || null,
+        inhouse_address: formData.inhouse_address || null,
+        mobile: formData.mobile || null,
+        mobile_zones: (formData.mobile_zones||[]).slice(),
+        mobile_30: formData.mobile_30 || null,
+        mobile_30_note: formData.mobile_30_note || null,
+        airport: formData.airport || null,
+        airport_note: formData.airport_note || null,
+        extra_locations: (formData.extra_locations||[]).map(loc => loc && ({
+          country: loc.country || null,
+          city: loc.city || null,
+          area: loc.area || null,
+          inhouse_street: loc.inhouse_street || null,
+          inhouse_apt: loc.inhouse_apt || null,
+          inhouse_postcode: loc.inhouse_postcode || null,
+          no_inhouse: !!loc.no_inhouse,
+          location_file: loc.location_file || null
+        })),
+        no_second_country: !!formData.no_second_country,
+        abroad: (formData.abroad||[]).slice(),
+        abroad_custom: (formData.abroad_custom||[]).slice(),
+        travel_other: formData.travel_other || null,
+        days_per_week: formData.days_week || null,
+        advance_notice: formData.late_hours || null,
+        availability: formData.availability || null,
+        availability_notes: formData.avail_notes || null
+      },
+      step3: {
+        files: {
+          portfolio: uploadedPaths.portfolio || [],
+          fullbody_front: uploadedPaths.fullbody_front || null,
+          fullbody_back: uploadedPaths.fullbody_back || null,
+          fullbody_side: uploadedPaths.fullbody_side || null,
+          selfie_kyc: uploadedPaths.selfie || null,
+          video_intro: uploadedPaths.video || null,
+          location_check: uploadedPaths.location || null,
+          professional_video: uploadedPaths.profvideo || null,
+          professional_photoshoot: uploadedPaths.photoshoot || null,
+          id_copy: uploadedPaths.idcopy || null,
+          bank_statement: uploadedPaths.bank || null
+        },
+        consents: {
+          age: !!(formData.consents && formData.consents.age),
+          gdpr: !!(formData.consents && formData.consents.gdpr),
+          terms: !!(formData.consents && formData.consents.terms),
+          photo_release: !!(formData.consents && formData.consents.photo_release),
+          self_employed: !!(formData.consents && formData.consents.self_employed)
+        },
+        signature_name: formData.signature_name || null,
+        signature_signed_at: formData.signature_signed_at || null
+      }
+    },
+
     // Structured service offering: keeps the rich data so the lady profile
     // can render it. Two service "modules" each with tier + rate table +
     // their own extras.
