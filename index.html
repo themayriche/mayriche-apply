@@ -1193,7 +1193,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
     <div class="actions">
-      <div class="actions-left"><button class="btn btn-ghost" onclick="saveDraft()">Save for Later</button></div>
+      <div class="actions-left"><button class="btn btn-ghost" onclick="saveDraft()">Keep this tab open</button></div>
       <div class="actions-right"><button class="btn btn-primary" onclick="goStep(2)">Continue →</button></div>
     </div>
   </div>
@@ -1693,7 +1693,7 @@ html{scroll-behavior:smooth}
 
     <div class="actions">
       <div class="actions-left"><button class="btn btn-back" onclick="goStep(1)">← Back to previous step</button></div>
-      <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save for Later</button><button class="btn btn-primary" onclick="goStep(3)">Continue →</button></div>
+      <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Keep this tab open</button><button class="btn btn-primary" onclick="goStep(3)">Continue →</button></div>
     </div>
   </div>
 
@@ -1929,7 +1929,7 @@ html{scroll-behavior:smooth}
     </div>
     <div class="actions">
       <div class="actions-left"><button class="btn btn-back" onclick="goStep(2)">← Back to previous step</button></div>
-      <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Save for Later</button><button class="btn btn-primary" id="submitBtn" onclick="submitApplication()">Submit Application</button></div>
+      <div class="actions-right"><button class="btn btn-ghost" onclick="saveDraft()">Keep this tab open</button><button class="btn btn-primary" id="submitBtn" onclick="submitApplication()">Submit Application</button></div>
     </div>
   </div>
 
@@ -2434,9 +2434,9 @@ async function loadConfig(){
   if(!sb) return false;
   try {
     // Load services — try business_services table (from MC OS phase 3E)
-    const svcRes = await sb.from('business_services')
-      .select('service_id, name, description, is_extension')
-      .is('deleted_at', null);
+    const catalog = await sb.rpc('public_application_catalog');
+    if(catalog.error) throw catalog.error;
+    const svcRes = {data: catalog.data.services};
     if(svcRes.data && svcRes.data.length > 0){
       // Unique by name (some services exist per-brand)
       const seen = new Set();
@@ -2448,7 +2448,7 @@ async function loadConfig(){
     }
     
     // Load app_config for lists
-    const cfgRes = await sb.from('app_config').select('key, value');
+    const cfgRes = {data: catalog.data.config};
     if(cfgRes.data){
       const cfg = {};
       cfgRes.data.forEach(c => {
@@ -5757,13 +5757,8 @@ function flashAutoSave(){
   clearTimeout(el._t);
   el._t = setTimeout(() => el.classList.remove('visible'), 1800);
 }
-function silentSaveDraft(){
-  const d = {...formData};
-  delete d.files; delete d.video;
-  d.savedAt = new Date().toISOString();
-  try { localStorage.setItem('mayriche_apply_draft', JSON.stringify(d)); flashAutoSave(); }
-  catch(e){ /* quota exceeded — ignore silently */ }
-}
+function silentSaveDraft(){ /* Do not persist applicant data in browser storage. */ }
+
 function scheduleAutoSave(){
   if(autoSavePending) return;
   autoSavePending = true;
@@ -5773,13 +5768,8 @@ function scheduleAutoSave(){
     autoSavePending = false;
   }, 600); // debounce so we don't hammer localStorage on every keystroke
 }
-function saveDraft(){
-  const d = {...formData};
-  delete d.files; delete d.video;
-  d.savedAt = new Date().toISOString();
-  try { localStorage.setItem('mayriche_apply_draft', JSON.stringify(d)); showToast('Application saved — check your email', 'success'); }
-  catch(e){ showToast('Could not save', 'error'); }
-}
+function saveDraft(){ showToast('Keep this tab open. Your information is saved privately when you submit.','info'); }
+
 function loadDraft(){
   try {
     const raw = localStorage.getItem('mayriche_apply_draft');
@@ -6006,10 +5996,23 @@ function checkDraft(){
 }
 
 // ═══════════ STORAGE UPLOAD (to Supabase Storage) ═══════════
+// Application credentials stay in memory, scoped to this form submission.
+let intakeSession = null;
+const uploadedFileCache = new WeakMap();
+async function ensureIntakeSession(){
+  if(intakeSession && intakeSession.startedAt > Date.now()-50*60*1000) return intakeSession;
+  const r=await sb.functions.invoke('apply-intake',{body:{action:'start'}});
+  if(r.error || !r.data || !r.data.ref || !r.data.token) throw new Error('Could not start a private submission. Please retry.');
+  intakeSession={...r.data,startedAt:Date.now()};
+  return intakeSession;
+}
 async function uploadFileToStorage(file, appRef, fileType, index){
   if(!sb || !file) return null;
   const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
-  const safeName = index !== undefined ? fileType+'_'+index+'.'+ext : fileType+'.'+ext;
+  const previous=uploadedFileCache.get(file);
+  if(previous && previous.startsWith(appRef+'/'))return previous;
+  const nonce=crypto.randomUUID().replace(/-/g,'').slice(0,8);
+  const safeName=fileType+(index!==undefined?'_'+index:'')+'_'+nonce+'.'+ext;
   const path = appRef+'/'+safeName;
   try {
     // Uploads go through a server-minted SIGNED UPLOAD URL. The public form
@@ -6024,19 +6027,19 @@ async function uploadFileToStorage(file, appRef, fileType, index){
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
         'apikey': SUPABASE_ANON_KEY
       },
-      body: JSON.stringify({ ref: appRef, paths: [path] })
+      body: JSON.stringify({ ref: appRef, token: intakeSession.token, paths: [path] })
     });
     if(!resp.ok){ throw new Error('sign-upload HTTP '+resp.status); }
     const json = await resp.json();
     const entry = json && json.tokens && json.tokens[path];
     if(!entry || !entry.token){ throw new Error('no token returned for '+path); }
     const res = await sb.storage.from('applications')
-      .uploadToSignedUrl(path, entry.token, file, { upsert: true });
+      .uploadToSignedUrl(path, entry.token, file, { upsert: false });
     if(res.error) throw res.error;
-    console.log('[Storage] Uploaded:', path);
+    uploadedFileCache.set(file,path);
     return path;
   } catch(e){
-    console.warn('[Storage] Upload fail for '+fileType+':', e);
+    console.warn('[Storage] Upload unavailable');
     return null;
   }
 }
@@ -6431,7 +6434,10 @@ async function submitApplication(){
   };
   setProgress('Preparing…', 2);
 
-  const applicationRef = 'APP-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+  let session;
+  try { session=await ensureIntakeSession(); }
+  catch(e){showToast(e.message,'error');btn.disabled=false;btn.textContent='Submit Application';return;}
+  const applicationRef=session.ref;
   const dob = formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0');
   const age = calculateAge(dob);
 
@@ -6445,6 +6451,10 @@ async function submitApplication(){
     // Per-file mini bar — show going to 50% on start, 100% on finish.
     showUploadProgress(item.k, 50);
     const path = await uploadFileToStorage(item.f, applicationRef, item.type, item.index);
+    if(!path){
+      showToast('Upload failed. Your application has not been submitted. Please retry.','error');
+      btn.disabled=false;btn.textContent='Submit Application';return;
+    }
     showUploadProgress(item.k, 100);
     if(path){
       if(item.k === 'portfolio') uploadedPaths.portfolio.push(path);
@@ -6645,8 +6655,7 @@ async function submitApplication(){
       } : { offered: false }
     },
     
-    // Link to owner
-    user_id: '155edca8-551d-4516-891e-33e2348d638c'
+    // Ownership is assigned by the server.
   };
 
   try {
@@ -6654,7 +6663,7 @@ async function submitApplication(){
     // Insert WITHOUT .select() — the public (anon) key may insert but not
     // read the ladies table, so a returning-select would fail RLS. We
     // already hold the full row locally for post-submit routing.
-    const r = await sb.from('ladies').insert([ladyRow]);
+    const r = await sb.functions.invoke('apply-intake',{body:{action:'submit',ref:session.ref,token:session.token,application:ladyRow}});
     if(r.error) throw r.error;
 
     // ═══ POST-SUBMIT ROUTING (non-blocking) ═══
@@ -6670,18 +6679,12 @@ async function submitApplication(){
     stepDone++;
     setProgress('Saved · Notifying team…');
 
-    try {
-      const newLady = (r.data && r.data[0]) || ladyRow;
-      if(newLady) await postSubmitRouting(newLady, formData);
-    } catch(e){
-      console.warn('Post-submit routing failed (non-critical):', e);
-    }
-
     // ═══ SEND CONFIRMATION EMAIL ═══
+    let emailConfirmed=false;
     btn.textContent = 'Sending confirmation…';
     setProgress('Sending confirmation email…');
     try {
-      await sendConfirmationEmail(formData.email, formData.fullname, applicationRef);
+      emailConfirmed = await sendConfirmationEmail(formData.email, formData.fullname, applicationRef);
     } catch(e){
       console.warn('Email send failed (non-critical):', e);
     }
@@ -6699,23 +6702,14 @@ async function submitApplication(){
     const subEl = document.getElementById('successSub');
     if(subEl) subEl.textContent = 'Thank you, ' + firstName + '. Your application has been received.';
     const emailLine = document.getElementById('successEmailLine');
-    if(emailLine && formData.email) emailLine.textContent = 'A copy of this application and your personal link have been sent to ' + formData.email + '.';
+    if(emailLine)emailLine.textContent=emailConfirmed?'Confirmation email sent. Keep your reference for follow-up.':'Your application is saved. Email confirmation is pending; please keep your reference.';
     document.getElementById('successRef').textContent = applicationRef;
     window.__lastAppRef = applicationRef;
-    try {
-      var _lw = document.getElementById('successLinkWrap');
-      var _li = document.getElementById('successLink');
-      var _link = buildAppLink(applicationRef, formData.fullname);
-      if(_li){ _li.value = _link; }
-      if(_lw){ _lw.style.display = 'block'; }
-      // Make the browser URL her own personal application link
-      // (apply.mayriche.co.uk/<name-slug>-APP-…).
-      history.replaceState(null, '', '/' + appSlug(formData.fullname) + '-' + applicationRef);
-    } catch(e){}
+    document.getElementById('successLinkWrap')?.setAttribute('hidden','');
     renderSummary();
     document.getElementById('successOverlay').classList.add('visible');
   } catch(e){
-    console.error('Submit error', e);
+    console.error('Application submission unavailable');
     showToast('Submit failed: '+e.message, 'error');
     btn.disabled = false;
     btn.textContent = 'Submit Application';
@@ -6739,80 +6733,7 @@ async function submitApplication(){
 //
 // Every step is wrapped — any single failure is logged but never
 // blocks the applicant's success flow.
-async function postSubmitRouting(newLady, formData){
-  if(!sb || !newLady || !newLady.id) return;
-  const newLadyId = newLady.id;
-
-  // ── beginner detection ──
-  // Reads formData.years (the actual key — was looking at the non-existent
-  // formData.years_experience which meant this auto-flag never fired).
-  // Buckets match the exact option labels in the form (#f_years select),
-  // including the en-dash variant.
-  const beginnerBuckets = ['No prior experience', '0 – 1 year'];
-  const isBeginner = beginnerBuckets.indexOf((formData.years||'').trim()) >= 0;
-
-  // 1 — blocklist check (anon SELECT policy allows this)
-  let blockHit = null;
-  try {
-    // Match by email exact, OR by digits-only phone (so '+44 7700 900123'
-    // still matches '+447700900123' or '07700 900123' stored in blocklist).
-    const phoneDigits = ((formData.phone_code||'') + (formData.phone||'')).replace(/\D/g,'');
-    const emailLower  = (formData.email||'').trim().toLowerCase();
-    const filters = [];
-    if(emailLower) filters.push('email.eq.'+encodeURIComponent(emailLower));
-    if(phoneDigits) filters.push('phone.ilike.'+encodeURIComponent('%'+phoneDigits.slice(-9)+'%'));
-    if(filters.length>0){
-      const q = await sb.from('ladies_blocklist')
-        .select('id, name, removal_reason, removed_at')
-        .or(filters.join(','))
-        .limit(1);
-      if(!q.error && q.data && q.data.length>0) blockHit = q.data[0];
-    }
-  } catch(e){ console.warn('[postSubmit] blocklist check failed:', e); }
-
-  // 2 — patch the new lady row with flags + practice defaults
-  try {
-    const patch = {};
-    if(isBeginner){
-      patch.practice_mandatory = true;
-      patch.practice_tier = 'basic';
-    }
-    if(blockHit){
-      // Append the BLOCKLIST tag to whatever special_requests the INSERT
-      // already produced — DO NOT overwrite. Reading newLady.special_requests
-      // preserves the rich blob (experience, services, rates, agency info, etc.).
-      const prior = newLady.special_requests || '';
-      patch.special_requests = (prior ? prior + '\n\n' : '') +
-        '[BLOCKLIST MATCH] ' + (blockHit.removal_reason || 'reason not given');
-    }
-    if(Object.keys(patch).length>0){
-      await sb.from('ladies').update(patch).eq('id', newLadyId);
-    }
-  } catch(e){ console.warn('[postSubmit] lady patch failed:', e); }
-
-  // 3 — notification rows (anon INSERT policy allows new_application + blocklist_match)
-  try {
-    const rows = [{
-      lady_id: newLadyId,
-      notification_type: 'new_application',
-      message: 'New application from '+(formData.fullname||'(no name)')+
-               '. Beginner: '+(isBeginner?'YES':'no')+
-               '. Practice: '+(isBeginner?'basic (mandatory)':'tbd at interview')+'.',
-      sent_to_founder: true,
-      channel: 'all'
-    }];
-    if(blockHit){
-      rows.push({
-        lady_id: newLadyId,
-        notification_type: 'blocklist_match',
-        message: 'BLOCKLIST match on email/phone — review before proceeding. Prior reason: '+(blockHit.removal_reason||'unknown'),
-        sent_to_founder: true,
-        channel: 'all'
-      });
-    }
-    await sb.from('apply_notifications').insert(rows);
-  } catch(e){ console.warn('[postSubmit] notification insert failed:', e); }
-}
+// Routing and blocklist checks are performed privately on the server.
 
 // ═══════════ SEND CONFIRMATION EMAIL ═══════════
 // Uses Supabase Edge Function 'send-apply-email' (deploy alongside the
@@ -6821,33 +6742,11 @@ async function postSubmitRouting(newLady, formData){
 // The previous email_queue fallback is gone — that table doesn't exist
 // in this project, so the fallback was a silent no-op.
 async function sendConfirmationEmail(toEmail, fullName, appRef){
-  if(!sb || !toEmail) return;
-  try {
-    const phoneFull = ((formData.phone_code||'') + ' ' + (formData.phone||'')).trim();
-    const whatsappFull = formData.phone_is_whatsapp
-      ? phoneFull
-      : ((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'')).trim();
-    const res = await sb.functions.invoke('send-apply-email', {
-      body: {
-        to: toEmail,
-        name: fullName,
-        application_ref: appRef,
-        phone: phoneFull || null,
-        whatsapp: whatsappFull || null,
-        city: formData.city || null,
-        country: formData.country || null,
-        nationality: formData.nationality || null,
-        english_level: formData.english || null,
-        profile_age: formData.profile_age || null,
-        years: formData.years || null,
-        workname: formData.workname || null
-      }
-    });
-    if(res && res.error) throw res.error;
-    console.log('[apply] Confirmation email dispatched:', appRef);
-  } catch(e){
-    console.warn('[apply] Email Edge Function not available yet:', e && e.message);
-  }
+  if(!sb || !intakeSession)return false;
+  try{
+    const r=await sb.functions.invoke('send-apply-email',{body:{ref:appRef,token:intakeSession.token}});
+    return !r.error && r.data?.ok===true;
+  }catch(_){return false;}
 }
 
 function calculateAge(dob){
@@ -7084,3 +6983,4 @@ function showToast(msg, type){
 
 </body>
 </html>
+
