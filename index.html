@@ -1028,6 +1028,58 @@ html{scroll-behavior:smooth}
       <span>Safe &amp; Strictly Confidential</span>
     </div>
 
+    <!-- ═══ 18+ gate · Legal foundation (22 Oct 2026) §5 "Age and legality" ═══
+         Must be ticked before anything else. Blocks the submit, blocks the
+         Continue→ to Step 2. Row is highlighted red if left unchecked. -->
+    <div class="sec" id="ageGateSec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/></svg></div>
+        <div class="sec-t">Age confirmation</div>
+      </div>
+      <label id="ageGateLabel" for="f_age_confirmed" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--brd2);border-radius:10px;cursor:pointer;background:var(--card);transition:border-color .15s">
+        <input type="checkbox" id="f_age_confirmed" style="margin-top:3px;width:18px;height:18px;cursor:pointer;accent-color:var(--ac);flex-shrink:0">
+        <div style="font-size:13.5px;color:var(--tx);line-height:1.55">
+          <b style="font-weight:600">I confirm I am 18 or over.</b>
+          <div style="margin-top:3px;color:var(--mt);font-size:12px">The identity documents I upload will match this. Riche is strictly 18+ and does not endorse any illegal activity.</div>
+        </div>
+      </label>
+    </div>
+
+    <!-- ═══ Choose your path · Legal foundation (22 Oct 2026) §2 "Two contracts" ═══
+         She signs a Platform Agreement (Riche), an Agency Agreement
+         (VLVT brands: Posh / Gold / Isfahan), or both. This choice decides
+         which DocuSign contracts fire at the end. -->
+    <div class="sec" id="pathSec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v14l4-3 4 3V2H8z"/></svg></div>
+        <div class="sec-t">Your path with us</div>
+      </div>
+      <div class="field-hint" style="margin:0 0 14px">You can list on the Riche booking platform, join one of our agency brands (Posh / Gold / Isfahan), or do both. You can change your mind later.</div>
+      <div class="path-grid" id="pathGrid" style="display:grid;grid-template-columns:1fr;gap:10px">
+        <label class="path-card" data-path="platform" for="path_platform" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--brd2);border-radius:10px;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s">
+          <input type="radio" name="apply_path" value="platform" id="path_platform" style="margin-top:3px;width:16px;height:16px;cursor:pointer;accent-color:var(--ac);flex-shrink:0">
+          <div style="min-width:0;flex:1">
+            <div style="font-size:14px;font-weight:600;color:var(--tx)">Platform only (Riche)</div>
+            <div style="margin-top:3px;color:var(--mt);font-size:12.5px;line-height:1.5">List your profile on the Riche booking platform. You keep your own name — your profile belongs to you. Clients book you through Riche; we take a booking fee.</div>
+          </div>
+        </label>
+        <label class="path-card" data-path="agency" for="path_agency" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--brd2);border-radius:10px;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s">
+          <input type="radio" name="apply_path" value="agency" id="path_agency" style="margin-top:3px;width:16px;height:16px;cursor:pointer;accent-color:var(--ac);flex-shrink:0">
+          <div style="min-width:0;flex:1">
+            <div style="font-size:14px;font-weight:600;color:var(--tx)">Agency only (VLVT brands)</div>
+            <div style="margin-top:3px;color:var(--mt);font-size:12.5px;line-height:1.5">We market you under one of our agency brands — <b>Posh</b> (Mayfair), <b>Gold</b> (Knightsbridge) or <b>Isfahan</b> (Chelsea). We handle the brand site, Google presence and client intake. Commission on each booking.</div>
+          </div>
+        </label>
+        <label class="path-card" data-path="both" for="path_both" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--brd2);border-radius:10px;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s">
+          <input type="radio" name="apply_path" value="both" id="path_both" style="margin-top:3px;width:16px;height:16px;cursor:pointer;accent-color:var(--ac);flex-shrink:0">
+          <div style="min-width:0;flex:1">
+            <div style="font-size:14px;font-weight:600;color:var(--tx)">Both</div>
+            <div style="margin-top:3px;color:var(--mt);font-size:12.5px;line-height:1.5">Listed on Riche with your own name, and also marketed under one of our agency brands. Most of our professionals choose this.</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 016-6h4a6 6 0 016 6v2"/></svg></div>
@@ -1396,27 +1448,16 @@ html{scroll-behavior:smooth}
             <div class="field-hint" style="margin-bottom:10px">See how much you&rsquo;d earn.</div>
             <div class="currency-row" id="tantricCurrencyRow"></div>
 
-            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
-            <div class="level-grid" id="tantricLevelGrid">
-              <div class="level-card selected" data-level="premium" data-gbp="250" data-unit="hour" onclick="setLevel('tantric','premium')">
-                <div class="level-tier">◆ PREMIUM</div>
-                <div class="level-name level-price">from £250 / hour</div>
-                <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
-              </div>
-              <div class="level-card locked" data-level="elite" data-gbp="350" data-unit="hour" onclick="lockedLevelClick('elite')">
-                <div class="level-tier">◆◆ ELITE</div>
-                <div class="level-name level-price">from £350 / hour</div>
-                <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
-              </div>
-              <div class="level-card locked" data-level="first_class" data-gbp="450" data-unit="hour" onclick="lockedLevelClick('first_class')">
-                <div class="level-tier">◆◆◆ FIRST CLASS</div>
-                <div class="level-name level-price">from £450 / hour</div>
-                <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
-              </div>
+            <!-- Legal foundation (22 Oct 2026) §4: Riche does not set tiers.
+                 She sets her own prices in the rate table below. The level grid
+                 stays hidden so legacy JS that reads tantric_tier still works
+                 (defaults to 'premium' for rate rendering). -->
+            <div class="field-lbl" style="margin-bottom:4px;margin-top:14px">Your prices</div>
+            <div class="field-hint" style="margin-bottom:12px">You set your own rates — Riche does not use tiers or a price grid. Fill in each duration you offer (in-house / mobile).</div>
+            <div class="level-grid" id="tantricLevelGrid" style="display:none">
+              <div class="level-card selected" data-level="premium" data-gbp="250" data-unit="hour" onclick="setLevel('tantric','premium')"></div>
             </div>
-            <div class="level-warning" id="tantricLevelWarning">
-              Everyone starts at <b>Premium</b> level. It&rsquo;s your responsibility to receive 5★ reviews — that&rsquo;s what unlocks Elite or First Class. Repeated bad reviews (3★ and below) will get your profile removed.
-            </div>
+            <div class="level-warning" id="tantricLevelWarning" style="display:none"></div>
             <input type="hidden" id="tantricStartingPrice">
             <span id="tantricPriceCur" style="display:none">£</span>
             <div class="rate-table-wrap" id="tantricRateTableWrap">
@@ -1478,27 +1519,13 @@ html{scroll-behavior:smooth}
             <div class="field-hint" style="margin-bottom:10px">See how much you&rsquo;d earn.</div>
             <div class="currency-row" id="escortCurrencyRow"></div>
 
-            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
-            <div class="level-grid" id="escortLevelGrid">
-              <div class="level-card selected" data-level="premium" data-gbp="350" data-unit="booking" onclick="setLevel('escort','premium')">
-                <div class="level-tier">◆ PREMIUM</div>
-                <div class="level-name level-price">from £350 / booking</div>
-                <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
-              </div>
-              <div class="level-card locked" data-level="elite" data-gbp="550" data-unit="booking" onclick="lockedLevelClick('elite')">
-                <div class="level-tier">◆◆ ELITE</div>
-                <div class="level-name level-price">from £550 / booking</div>
-                <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
-              </div>
-              <div class="level-card locked" data-level="first_class" data-gbp="900" data-unit="booking" onclick="lockedLevelClick('first_class')">
-                <div class="level-tier">◆◆◆ FIRST CLASS</div>
-                <div class="level-name level-price">from £900 / booking</div>
-                <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
-              </div>
+            <!-- Legal foundation (22 Oct 2026) §4: no tier grid. -->
+            <div class="field-lbl" style="margin-bottom:4px;margin-top:14px">Your prices</div>
+            <div class="field-hint" style="margin-bottom:12px">You set your own rates — Riche does not use tiers or a price grid. Fill in each duration you offer (in-house / mobile).</div>
+            <div class="level-grid" id="escortLevelGrid" style="display:none">
+              <div class="level-card selected" data-level="premium" data-gbp="350" data-unit="booking" onclick="setLevel('escort','premium')"></div>
             </div>
-            <div class="level-warning" id="escortLevelWarning">
-              Everyone starts at <b>Premium</b> level. It&rsquo;s your responsibility to receive 5★ reviews — that&rsquo;s what unlocks Elite or First Class. Repeated bad reviews (3★ and below) will get your profile removed.
-            </div>
+            <div class="level-warning" id="escortLevelWarning" style="display:none"></div>
             <input type="hidden" id="escortStartingPrice">
             <span id="escortPriceCur" style="display:none">£</span>
             <div class="rate-table-wrap" id="escortRateTableWrap">
@@ -1526,7 +1553,7 @@ html{scroll-behavior:smooth}
       <!-- ─── More Options (shared, shown when any service selected) ─── -->
       <div class="svc-mod-block" id="moreLadiesBlock" style="display:none;margin-top:18px">
         <div class="field-lbl" style="margin-bottom:8px">More Options <span class="req">*</span></div>
-        <div class="field-hint" style="margin-bottom:10px">Pick at least one. Each additional lady is charged on time, at her own level&rsquo;s rate (Premium, Elite, or First Class).</div>
+        <div class="field-hint" style="margin-bottom:10px">Pick at least one. Each additional professional is charged on time, at her own rate.</div>
         <div class="line-row line-row-multi" id="moreLadiesRow"></div>
       </div>
 
@@ -2579,6 +2606,11 @@ function applyFallbackDefaults(){
 // ─────────── STATE ───────────
 let curStep = 1;
 let formData = {
+  // Legal foundation (22 Oct 2026): age gate + path choice ahead of
+  // everything else. The founder cannot accept an applicant who hasn't
+  // confirmed 18+ or chosen which agreement(s) she'll sign.
+  age_confirmed:false,
+  apply_path:'',   // 'platform' | 'agency' | 'both'
   fullname:'', dob_d:'', dob_m:'', dob_y:'',
   gender:'',
   nationality:'', city:'', country:'', phone:'', phone_code:'', email:'', ig:'',
@@ -2774,6 +2806,35 @@ document.addEventListener('DOMContentLoaded', async function(){
   // straight to formData.
   var gen = document.getElementById('f_gender');
   if(gen){ gen.addEventListener('change', () => { formData.gender = gen.value; scheduleAutoSave && scheduleAutoSave(); }); }
+
+  // ─── 18+ gate: boolean checkbox → formData.age_confirmed ─────────
+  var ageChk = document.getElementById('f_age_confirmed');
+  var ageLbl = document.getElementById('ageGateLabel');
+  if(ageChk){
+    ageChk.addEventListener('change', () => {
+      formData.age_confirmed = !!ageChk.checked;
+      if(ageLbl) ageLbl.style.borderColor = ageChk.checked ? 'var(--gn)' : 'var(--brd2)';
+      var sec = document.getElementById('ageGateSec');
+      if(sec) sec.classList.remove('field-missing');
+      scheduleAutoSave && scheduleAutoSave();
+    });
+  }
+
+  // ─── Path chooser: 3 radio cards → formData.apply_path ───────────
+  document.querySelectorAll('.path-card input[name="apply_path"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      formData.apply_path = radio.value;
+      // Repaint the 3 cards so the selected one shows a gold border.
+      document.querySelectorAll('.path-card').forEach(card => {
+        var on = card.querySelector('input[name="apply_path"]').checked;
+        card.style.borderColor = on ? 'var(--ac)' : 'var(--brd2)';
+        card.style.background  = on ? 'rgba(196,168,130,.06)' : 'var(--card)';
+      });
+      var sec = document.getElementById('pathSec');
+      if(sec) sec.classList.remove('field-missing');
+      scheduleAutoSave && scheduleAutoSave();
+    });
+  });
 
   // Seasonal destinations grid (real spots + "Other"). "I don't want to
   // travel anywhere" is rendered separately AFTER the "Other" free-text
@@ -5046,6 +5107,9 @@ async function renderSuggestions(){
 // jumping to a completed step is always allowed.
 const STEP_REQ = {
   1: [
+    // Legal foundation gate: 18+ confirmation + path choice first.
+    {key:'age_confirmed',el:'ageGateSec',         sec:'agegate'},
+    {key:'apply_path',   el:'pathSec',            sec:'path'},
     {key:'fullname',     el:'f_fullname',         sec:'personal'},
     {key:'dob_d',        el:'f_dob_d',            sec:'personal'},
     {key:'dob_m',        el:'f_dob_m',            sec:'personal'},
@@ -5269,12 +5333,8 @@ function validateStepBeforeAdvance(currentStep){
     if(!formData.service_line){
       flag2('serviceLineRow','Tick at least one — Tantric or Companions'); return false;
     }
-    if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){
-      flag2('tantricLevelGrid','Please choose your Tantric level (Premium / Elite / First Class)'); return false;
-    }
-    if(formData.offers_escort === 'Yes' && !formData.escort_tier){
-      flag2('escortLevelGrid','Please choose your Companions level (Premium / Elite / First Class)'); return false;
-    }
+    // Legal foundation (22 Oct 2026) §4: no tier choice to validate.
+    // The hidden tier is auto-set to 'premium' for rate rendering only.
     if((formData.more_ladies||[]).length === 0){
       flag2('moreLadiesRow','Pick at least one More Ladies option (Four Hands, Couples, or More Ladies)'); return false;
     }
@@ -6022,6 +6082,27 @@ function loadDraft(){
         formData[k] = d[k] || [];
       } else if(k === 'tantric_tier' || k === 'escort_tier'){
         formData[k] = d[k] || '';
+      } else if(k === 'age_confirmed'){
+        formData.age_confirmed = !!d[k];
+        const chk = document.getElementById('f_age_confirmed');
+        if(chk){
+          chk.checked = !!d[k];
+          const lbl = document.getElementById('ageGateLabel');
+          if(lbl) lbl.style.borderColor = chk.checked ? 'var(--gn)' : 'var(--brd2)';
+        }
+      } else if(k === 'apply_path'){
+        formData.apply_path = d[k] || '';
+        if(d[k]){
+          const r = document.getElementById('path_' + d[k]);
+          if(r){
+            r.checked = true;
+            document.querySelectorAll('.path-card').forEach(card => {
+              var on = card.querySelector('input[name="apply_path"]').checked;
+              card.style.borderColor = on ? 'var(--ac)' : 'var(--brd2)';
+              card.style.background  = on ? 'rgba(196,168,130,.06)' : 'var(--card)';
+            });
+          }
+        }
       } else {
         formData[k] = d[k];
         const el = document.getElementById('f_'+k);
@@ -6222,6 +6303,8 @@ function showUploadProgress(kind, pct){
 // Friendly field labels for validation errors (avoid showing raw keys
 // like "rtw" or "days_week" to applicants).
 const FIELD_LABELS = {
+  age_confirmed:'Confirm you are 18 or over',
+  apply_path:   'Choose your path (Platform / Agency / Both)',
   fullname:    'Full name (as on ID/passport)',
   nationality: 'Nationality',
   city:        'City of residence',
@@ -6265,6 +6348,8 @@ const FIELD_LABELS = {
 // Map field key -> DOM element id so we can scroll the user to the
 // missing field and visually highlight it.
 const FIELD_ELEMENT_IDS = {
+  age_confirmed:'ageGateSec',
+  apply_path:   'pathSec',
   fullname:    'f_fullname',
   nationality: 'f_nationality',
   city:        'f_city_select',
@@ -6307,6 +6392,7 @@ const FIELD_ELEMENT_IDS = {
 // Which step each required field lives on, so a submit error from the
 // final step can jump straight back to the right page.
 const FIELD_STEP = {
+  age_confirmed:1, apply_path:1,
   fullname:1, nationality:1, country:1, city:1, home_street:1, home_postcode:1,
   phone_code:1, phone:1, email:1, english:1, gender:1, em_name:1, em_rel:1, em_phone_code:1, em_phone:1,
   dob_d:1, dob_m:1, dob_y:1, local_area_text:1,
@@ -6428,19 +6514,10 @@ async function submitApplication(){
     jumpToService('[data-pill="tantric_experience"]');
     return;
   }
-  if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){
-    showToast('Please choose your Tantric level (Premium / Elite / First Class)','error');
-    jumpToService('tantricLevelGrid');
-    return;
-  }
+  // Legal foundation (22 Oct 2026) §4: no tier choice to validate.
   if(formData.offers_escort === 'Yes' && !formData.escort_experience){
     showToast('Please tell us if you have experience with Companions','error');
     jumpToService('[data-pill="escort_experience"]');
-    return;
-  }
-  if(formData.offers_escort === 'Yes' && !formData.escort_tier){
-    showToast('Please choose your Companions level (Premium / Elite / First Class)','error');
-    jumpToService('escortLevelGrid');
     return;
   }
   if((formData.more_ladies||[]).length === 0){
@@ -6673,6 +6750,9 @@ async function submitApplication(){
     birth_month: new Date(dob).toLocaleDateString('en-US',{month:'long'}),
     birth_year: formData.dob_y,
     gender: formData.gender || null,
+    // Legal foundation (22 Oct 2026) §2: Path lives inside
+    // application_payload (no dedicated column). The OS Application tab
+    // reads it from there and shows which contracts she'll sign.
     nationality: formData.nationality,
     country_residence: formData.country,
     city: formData.city || null,
@@ -6803,6 +6883,8 @@ async function submitApplication(){
       version: 2,
       submitted_at: new Date().toISOString(),
       step1: {
+        age_confirmed: !!formData.age_confirmed,
+        apply_path: formData.apply_path || null,
         fullname: formData.fullname || null,
         gender: formData.gender || null,
         dob: dob,
