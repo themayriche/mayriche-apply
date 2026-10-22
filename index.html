@@ -324,12 +324,63 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 
 .summary-card{background:linear-gradient(180deg,rgba(196,168,130,.04),rgba(139,115,85,.02));border:1px solid var(--brd2);border-radius:var(--r);padding:22px 26px;margin-top:18px;}
 .summary-t{font-family:var(--fd);font-size:22px;color:var(--tx);margin-bottom:14px;font-weight:500;letter-spacing:.01em;display:flex;align-items:center;gap:10px;}
+.summary-step{font-family:var(--fd);font-size:26px;font-weight:500;color:var(--tx);margin:32px 0 4px;padding-top:18px;border-top:1px solid var(--brd2);letter-spacing:.01em;display:flex;align-items:baseline;gap:12px}
+.summary-step:first-child{margin-top:6px;padding-top:0;border-top:0}
+.summary-step-n{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ac);font-weight:600;font-family:var(--fb)}
 .summary-sec{font-family:var(--fd);font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ac);margin:18px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--brd2);}
-.summary-sec:first-child{margin-top:0}
-.summary-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12px;border-bottom:1px solid var(--brd);gap:16px;}
+.summary-sec:first-of-type{}
+.summary-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12px;border-bottom:1px solid var(--brd);gap:16px;align-items:center}
 .summary-row:last-child{border:0}
 .summary-key{color:var(--mt);letter-spacing:.05em}
-.summary-val{color:var(--tx);text-align:right;font-weight:500;max-width:60%}
+.summary-val{color:var(--tx);text-align:right;font-weight:500;max-width:60%;display:inline-flex;align-items:center;gap:6px;justify-content:flex-end}
+.summary-pending{display:inline-flex;align-items:center;gap:5px;color:var(--mt);font-style:italic;font-size:11px;opacity:.75}
+.summary-pending svg{width:12px;height:12px;animation:summarySpin 2.4s linear infinite}
+@keyframes summarySpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.summary-map-wrap{margin-top:10px;border:1px solid var(--brd2);border-radius:12px;overflow:hidden;background:var(--card);position:relative}
+.summary-map-wrap > div{height:240px;width:100%}
+.summary-map-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mt);background:var(--card);pointer-events:none;text-align:center;padding:0 20px}
+
+/* ═══ PRINT / SAVE-AS-PDF ═══
+   When the applicant taps "Download PDF" we want the OUTPUT to be the
+   success page (logo + thank-you + summary), not the 3-step form they
+   just submitted. Hide everything else; collapse the overlay's fixed
+   positioning so the browser prints it as flowing pages. */
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+  html, body { background: #ffffff !important; color: #1a1a1a !important; }
+  body > *:not(.success-overlay) { display: none !important; }
+  /* Strip the floating overlay back to inline flow so it prints from
+     page 1, top-left, instead of being a fixed-position hover layer. */
+  .success-overlay {
+    position: static !important;
+    inset: auto !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+    z-index: auto !important;
+    display: block !important;
+  }
+  .success-card {
+    transform: none !important;
+    opacity: 1 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+  /* Don't print the action buttons (Download / Share / Edit) or the
+     auto-save / resume bits — they have no value on paper. */
+  .success-actions, #toast, #autoSaveIndicator, .sec-strip, .resume-banner { display: none !important; }
+  /* The map needs a fixed pixel height to render in print (otherwise it
+     collapses because Leaflet sizes itself via JS based on its parent). */
+  .summary-map-wrap > div { height: 200px !important; }
+  /* Avoid breaking summary rows across pages mid-content. */
+  .summary-step, .summary-sec { page-break-after: avoid; break-after: avoid; }
+  .summary-row { page-break-inside: avoid; break-inside: avoid; }
+}
 
 .actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap;}
 .actions-left,.actions-right{display:flex;gap:10px;flex-wrap:wrap}
@@ -356,9 +407,9 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area
 .resume-btn:hover{border-color:var(--ac);color:var(--tx)}
 .resume-btn.primary{background:var(--ac);color:var(--card);border-color:var(--ac)}
 
-.success-overlay{position:fixed;inset:0;background:var(--bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .6s;overflow-y:auto}
+.success-overlay{position:fixed;inset:0;background:var(--bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:200;display:block;padding:40px 20px 60px;opacity:0;pointer-events:none;transition:opacity .6s;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .success-overlay.visible{opacity:1;pointer-events:auto}
-.success-card{max-width:560px;text-align:center;transform:translateY(20px);opacity:0;transition:all .8s .2s cubic-bezier(.22,.61,.36,1);}
+.success-card{max-width:620px;margin:0 auto;text-align:center;transform:translateY(20px);opacity:0;transition:all .8s .2s cubic-bezier(.22,.61,.36,1);}
 .success-overlay.visible .success-card{transform:translateY(0);opacity:1}
 .success-mark{width:86px;height:86px;border:1px solid var(--ac);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;position:relative;background:var(--card);}
 .success-mark::after{content:"";position:absolute;inset:-8px;border:1px solid rgba(139,115,85,.2);border-radius:50%;}
@@ -977,6 +1028,58 @@ html{scroll-behavior:smooth}
       <span>Safe &amp; Strictly Confidential</span>
     </div>
 
+    <!-- ═══ 18+ gate · Legal foundation (22 Oct 2026) §5 "Age and legality" ═══
+         Must be ticked before anything else. Blocks the submit, blocks the
+         Continue→ to Step 2. Row is highlighted red if left unchecked. -->
+    <div class="sec" id="ageGateSec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/></svg></div>
+        <div class="sec-t">Age confirmation</div>
+      </div>
+      <label id="ageGateLabel" for="f_age_confirmed" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--brd2);border-radius:10px;cursor:pointer;background:var(--card);transition:border-color .15s">
+        <input type="checkbox" id="f_age_confirmed" style="margin-top:3px;width:18px;height:18px;cursor:pointer;accent-color:var(--ac);flex-shrink:0">
+        <div style="font-size:13.5px;color:var(--tx);line-height:1.55">
+          <b style="font-weight:600">I confirm I am 18 or over.</b>
+          <div style="margin-top:3px;color:var(--mt);font-size:12px">The identity documents I upload will match this. Riche is strictly 18+ and does not endorse any illegal activity.</div>
+        </div>
+      </label>
+    </div>
+
+    <!-- ═══ Choose your path · Legal foundation (22 Oct 2026) §2 "Two contracts" ═══
+         She signs a Platform Agreement (Riche), an Agency Agreement
+         (VLVT brands: Posh / Gold / Isfahan), or both. This choice decides
+         which DocuSign contracts fire at the end. -->
+    <div class="sec" id="pathSec">
+      <div class="sec-head">
+        <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v14l4-3 4 3V2H8z"/></svg></div>
+        <div class="sec-t">Your path with us</div>
+      </div>
+      <div class="field-hint" style="margin:0 0 14px">You can list on the Riche booking platform, join one of our agency brands (Posh / Gold / Isfahan), or do both. You can change your mind later.</div>
+      <div class="path-grid" id="pathGrid" style="display:grid;grid-template-columns:1fr;gap:10px">
+        <label class="path-card" data-path="platform" for="path_platform" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--brd2);border-radius:10px;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s">
+          <input type="radio" name="apply_path" value="platform" id="path_platform" style="margin-top:3px;width:16px;height:16px;cursor:pointer;accent-color:var(--ac);flex-shrink:0">
+          <div style="min-width:0;flex:1">
+            <div style="font-size:14px;font-weight:600;color:var(--tx)">Platform only (Riche)</div>
+            <div style="margin-top:3px;color:var(--mt);font-size:12.5px;line-height:1.5">List your profile on the Riche booking platform. You keep your own name — your profile belongs to you. Clients book you through Riche; we take a booking fee.</div>
+          </div>
+        </label>
+        <label class="path-card" data-path="agency" for="path_agency" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--brd2);border-radius:10px;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s">
+          <input type="radio" name="apply_path" value="agency" id="path_agency" style="margin-top:3px;width:16px;height:16px;cursor:pointer;accent-color:var(--ac);flex-shrink:0">
+          <div style="min-width:0;flex:1">
+            <div style="font-size:14px;font-weight:600;color:var(--tx)">Agency only (VLVT brands)</div>
+            <div style="margin-top:3px;color:var(--mt);font-size:12.5px;line-height:1.5">We market you under one of our agency brands — <b>Posh</b> (Mayfair), <b>Gold</b> (Knightsbridge) or <b>Isfahan</b> (Chelsea). We handle the brand site, Google presence and client intake. Commission on each booking.</div>
+          </div>
+        </label>
+        <label class="path-card" data-path="both" for="path_both" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--brd2);border-radius:10px;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s">
+          <input type="radio" name="apply_path" value="both" id="path_both" style="margin-top:3px;width:16px;height:16px;cursor:pointer;accent-color:var(--ac);flex-shrink:0">
+          <div style="min-width:0;flex:1">
+            <div style="font-size:14px;font-weight:600;color:var(--tx)">Both</div>
+            <div style="margin-top:3px;color:var(--mt);font-size:12.5px;line-height:1.5">Listed on Riche with your own name, and also marketed under one of our agency brands. Most of our professionals choose this.</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
     <div class="sec">
       <div class="sec-head">
         <div class="sec-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a6 6 0 016-6h4a6 6 0 016 6v2"/></svg></div>
@@ -1345,27 +1448,16 @@ html{scroll-behavior:smooth}
             <div class="field-hint" style="margin-bottom:10px">See how much you&rsquo;d earn.</div>
             <div class="currency-row" id="tantricCurrencyRow"></div>
 
-            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
-            <div class="level-grid" id="tantricLevelGrid">
-              <div class="level-card selected" data-level="premium" data-gbp="250" data-unit="hour" onclick="setLevel('tantric','premium')">
-                <div class="level-tier">◆ PREMIUM</div>
-                <div class="level-name level-price">from £250 / hour</div>
-                <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
-              </div>
-              <div class="level-card locked" data-level="elite" data-gbp="350" data-unit="hour" onclick="lockedLevelClick('elite')">
-                <div class="level-tier">◆◆ ELITE</div>
-                <div class="level-name level-price">from £350 / hour</div>
-                <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
-              </div>
-              <div class="level-card locked" data-level="first_class" data-gbp="450" data-unit="hour" onclick="lockedLevelClick('first_class')">
-                <div class="level-tier">◆◆◆ FIRST CLASS</div>
-                <div class="level-name level-price">from £450 / hour</div>
-                <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
-              </div>
+            <!-- Legal foundation (22 Oct 2026) §4: Riche does not set tiers.
+                 She sets her own prices in the rate table below. The level grid
+                 stays hidden so legacy JS that reads tantric_tier still works
+                 (defaults to 'premium' for rate rendering). -->
+            <div class="field-lbl" style="margin-bottom:4px;margin-top:14px">Your prices</div>
+            <div class="field-hint" style="margin-bottom:12px">You set your own rates — Riche does not use tiers or a price grid. Fill in each duration you offer (in-house / mobile).</div>
+            <div class="level-grid" id="tantricLevelGrid" style="display:none">
+              <div class="level-card selected" data-level="premium" data-gbp="250" data-unit="hour" onclick="setLevel('tantric','premium')"></div>
             </div>
-            <div class="level-warning" id="tantricLevelWarning">
-              Everyone starts at <b>Premium</b> level. It&rsquo;s your responsibility to receive 5★ reviews — that&rsquo;s what unlocks Elite or First Class. Repeated bad reviews (3★ and below) will get your profile removed.
-            </div>
+            <div class="level-warning" id="tantricLevelWarning" style="display:none"></div>
             <input type="hidden" id="tantricStartingPrice">
             <span id="tantricPriceCur" style="display:none">£</span>
             <div class="rate-table-wrap" id="tantricRateTableWrap">
@@ -1427,27 +1519,13 @@ html{scroll-behavior:smooth}
             <div class="field-hint" style="margin-bottom:10px">See how much you&rsquo;d earn.</div>
             <div class="currency-row" id="escortCurrencyRow"></div>
 
-            <div class="field-lbl" style="margin-bottom:8px;margin-top:14px">Choose your level <span class="req">*</span></div>
-            <div class="level-grid" id="escortLevelGrid">
-              <div class="level-card selected" data-level="premium" data-gbp="350" data-unit="booking" onclick="setLevel('escort','premium')">
-                <div class="level-tier">◆ PREMIUM</div>
-                <div class="level-name level-price">from £350 / booking</div>
-                <div class="level-desc">Beautiful, professional, meets the Riche standard. A great experience, every time.</div>
-              </div>
-              <div class="level-card locked" data-level="elite" data-gbp="550" data-unit="booking" onclick="lockedLevelClick('elite')">
-                <div class="level-tier">◆◆ ELITE</div>
-                <div class="level-name level-price">from £550 / booking</div>
-                <div class="level-desc">More professional, more experience, harder to book. For clients who want something a step above.</div>
-              </div>
-              <div class="level-card locked" data-level="first_class" data-gbp="900" data-unit="booking" onclick="lockedLevelClick('first_class')">
-                <div class="level-tier">◆◆◆ FIRST CLASS</div>
-                <div class="level-name level-price">from £900 / booking</div>
-                <div class="level-desc">The top ladies on Riche. The most exclusive, the most requested, the highest level. For clients who want the best, full stop.</div>
-              </div>
+            <!-- Legal foundation (22 Oct 2026) §4: no tier grid. -->
+            <div class="field-lbl" style="margin-bottom:4px;margin-top:14px">Your prices</div>
+            <div class="field-hint" style="margin-bottom:12px">You set your own rates — Riche does not use tiers or a price grid. Fill in each duration you offer (in-house / mobile).</div>
+            <div class="level-grid" id="escortLevelGrid" style="display:none">
+              <div class="level-card selected" data-level="premium" data-gbp="350" data-unit="booking" onclick="setLevel('escort','premium')"></div>
             </div>
-            <div class="level-warning" id="escortLevelWarning">
-              Everyone starts at <b>Premium</b> level. It&rsquo;s your responsibility to receive 5★ reviews — that&rsquo;s what unlocks Elite or First Class. Repeated bad reviews (3★ and below) will get your profile removed.
-            </div>
+            <div class="level-warning" id="escortLevelWarning" style="display:none"></div>
             <input type="hidden" id="escortStartingPrice">
             <span id="escortPriceCur" style="display:none">£</span>
             <div class="rate-table-wrap" id="escortRateTableWrap">
@@ -1475,7 +1553,7 @@ html{scroll-behavior:smooth}
       <!-- ─── More Options (shared, shown when any service selected) ─── -->
       <div class="svc-mod-block" id="moreLadiesBlock" style="display:none;margin-top:18px">
         <div class="field-lbl" style="margin-bottom:8px">More Options <span class="req">*</span></div>
-        <div class="field-hint" style="margin-bottom:10px">Pick at least one. Each additional lady is charged on time, at her own level&rsquo;s rate (Premium, Elite, or First Class).</div>
+        <div class="field-hint" style="margin-bottom:10px">Pick at least one. Each additional professional is charged on time, at her own rate.</div>
         <div class="line-row line-row-multi" id="moreLadiesRow"></div>
       </div>
 
@@ -1938,19 +2016,22 @@ html{scroll-behavior:smooth}
 <!-- Success Overlay -->
 <div class="success-overlay" id="successOverlay">
   <div class="success-card" style="max-width:620px;text-align:left">
+    <!-- Same hero brand mark + wordmark as the form header so the
+         summary feels like one continuous Mayriche experience. -->
+    <div style="text-align:center;margin-bottom:18px">
+      <div class="hero-mark" aria-hidden="true" style="margin-bottom:6px">
+        <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:60px">
+          <circle cx="120" cy="120" r="106" fill="none" stroke="currentColor" stroke-width="0.9"/>
+          <text x="120" y="172" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="150" font-weight="300" fill="currentColor">M</text>
+        </svg>
+      </div>
+      <div class="hero-wordmark">Mayriche</div>
+      <div class="hero-sub">Application Form</div>
+    </div>
     <div style="text-align:center;margin-bottom:22px">
       <div class="success-mark" style="margin-bottom:18px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
       <div class="success-t">Application received</div>
       <div class="success-sub" id="successSub">Thank you. Your application has been received.</div>
-      <div class="success-ref" id="successRef">—</div>
-      <!-- Permanent shareable link to this application -->
-      <div id="successLinkWrap" style="max-width:480px;margin:14px auto 0;display:none">
-        <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--champagne);margin-bottom:6px;text-align:center">Your application link</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input id="successLink" type="text" readonly class="inp" style="flex:1;min-width:0;font-size:12px;text-align:center" value="">
-          <button type="button" class="btn btn-ghost" style="flex-shrink:0;min-width:auto;padding:10px 14px" onclick="copyAppLink()">Copy</button>
-        </div>
-      </div>
       <div style="max-width:480px;margin:18px auto 0;text-align:left;font-size:13px;line-height:1.7;color:var(--tx2)">
         <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--champagne);margin-bottom:8px;text-align:center">What happens next</div>
         <div style="padding-left:14px">
@@ -1961,14 +2042,16 @@ html{scroll-behavior:smooth}
         <div id="successEmailLine" style="margin-top:14px;text-align:center;color:var(--tx);font-size:12px"></div>
       </div>
     </div>
-    <div class="summary-card" style="max-height:50vh;overflow-y:auto">
+    <div class="summary-card">
       <div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>
       <div id="summaryContent"></div>
     </div>
-    <div class="actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-ghost" onclick="editApplication()">Edit</button>
+    <div class="actions success-actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap">
       <button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button>
       <button class="btn btn-primary" onclick="shareAppLink()">Share link</button>
+    </div>
+    <div class="success-actions" style="margin-top:14px;display:flex;justify-content:center">
+      <button class="btn btn-back" style="width:100%;max-width:520px" onclick="editApplication()">Edit your application</button>
     </div>
   </div>
 </div>
@@ -2523,6 +2606,11 @@ function applyFallbackDefaults(){
 // ─────────── STATE ───────────
 let curStep = 1;
 let formData = {
+  // Legal foundation (22 Oct 2026): age gate + path choice ahead of
+  // everything else. The founder cannot accept an applicant who hasn't
+  // confirmed 18+ or chosen which agreement(s) she'll sign.
+  age_confirmed:false,
+  apply_path:'',   // 'platform' | 'agency' | 'both'
   fullname:'', dob_d:'', dob_m:'', dob_y:'',
   gender:'',
   nationality:'', city:'', country:'', phone:'', phone_code:'', email:'', ig:'',
@@ -2718,6 +2806,35 @@ document.addEventListener('DOMContentLoaded', async function(){
   // straight to formData.
   var gen = document.getElementById('f_gender');
   if(gen){ gen.addEventListener('change', () => { formData.gender = gen.value; scheduleAutoSave && scheduleAutoSave(); }); }
+
+  // ─── 18+ gate: boolean checkbox → formData.age_confirmed ─────────
+  var ageChk = document.getElementById('f_age_confirmed');
+  var ageLbl = document.getElementById('ageGateLabel');
+  if(ageChk){
+    ageChk.addEventListener('change', () => {
+      formData.age_confirmed = !!ageChk.checked;
+      if(ageLbl) ageLbl.style.borderColor = ageChk.checked ? 'var(--gn)' : 'var(--brd2)';
+      var sec = document.getElementById('ageGateSec');
+      if(sec) sec.classList.remove('field-missing');
+      scheduleAutoSave && scheduleAutoSave();
+    });
+  }
+
+  // ─── Path chooser: 3 radio cards → formData.apply_path ───────────
+  document.querySelectorAll('.path-card input[name="apply_path"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      formData.apply_path = radio.value;
+      // Repaint the 3 cards so the selected one shows a gold border.
+      document.querySelectorAll('.path-card').forEach(card => {
+        var on = card.querySelector('input[name="apply_path"]').checked;
+        card.style.borderColor = on ? 'var(--ac)' : 'var(--brd2)';
+        card.style.background  = on ? 'rgba(196,168,130,.06)' : 'var(--card)';
+      });
+      var sec = document.getElementById('pathSec');
+      if(sec) sec.classList.remove('field-missing');
+      scheduleAutoSave && scheduleAutoSave();
+    });
+  });
 
   // Seasonal destinations grid (real spots + "Other"). "I don't want to
   // travel anywhere" is rendered separately AFTER the "Other" free-text
@@ -4990,6 +5107,9 @@ async function renderSuggestions(){
 // jumping to a completed step is always allowed.
 const STEP_REQ = {
   1: [
+    // Legal foundation gate: 18+ confirmation + path choice first.
+    {key:'age_confirmed',el:'ageGateSec',         sec:'agegate'},
+    {key:'apply_path',   el:'pathSec',            sec:'path'},
     {key:'fullname',     el:'f_fullname',         sec:'personal'},
     {key:'dob_d',        el:'f_dob_d',            sec:'personal'},
     {key:'dob_m',        el:'f_dob_m',            sec:'personal'},
@@ -5213,12 +5333,8 @@ function validateStepBeforeAdvance(currentStep){
     if(!formData.service_line){
       flag2('serviceLineRow','Tick at least one — Tantric or Companions'); return false;
     }
-    if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){
-      flag2('tantricLevelGrid','Please choose your Tantric level (Premium / Elite / First Class)'); return false;
-    }
-    if(formData.offers_escort === 'Yes' && !formData.escort_tier){
-      flag2('escortLevelGrid','Please choose your Companions level (Premium / Elite / First Class)'); return false;
-    }
+    // Legal foundation (22 Oct 2026) §4: no tier choice to validate.
+    // The hidden tier is auto-set to 'premium' for rate rendering only.
     if((formData.more_ladies||[]).length === 0){
       flag2('moreLadiesRow','Pick at least one More Ladies option (Four Hands, Couples, or More Ladies)'); return false;
     }
@@ -5607,20 +5723,35 @@ function handleVideoUpload(ev){
 // every section the applicant filled in is shown back to her (and on her
 // personal link / email). Empty fields show "—" so she can see at a glance
 // what is still blank.
+// Inline clock SVG used in place of "—" for fields the applicant hasn't
+// filled yet — friendlier than a dash, hints at "pending".
+const SUMMARY_PENDING_HTML = '<span class="summary-pending" aria-label="pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>pending</span>';
+
 function renderSummary(){
   const f = formData;
   const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const v = x => (x===0||x) && String(x).trim() !== '' ? x : '—';
+  // Empty values render as a soft clock-loading pill instead of a flat dash.
+  const isEmpty = x => !((x===0||x) && String(x).trim() !== '');
+  const v = x => isEmpty(x) ? SUMMARY_PENDING_HTML : esc(x);
   const cur = (f.currency==='EUR'?'€':f.currency==='USD'?'$':'£');
   let html = '';
+  const stepHead = (n, t) => { html += '<div class="summary-step"><span class="summary-step-n">Step '+n+'</span><span>'+esc(t)+'</span></div>'; };
   const sec = t => { html += '<div class="summary-sec">'+esc(t)+'</div>'; };
-  const row = (k,val) => { html += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+esc(val)+'</span></div>'; };
+  // row() now accepts pre-escaped HTML for `val` (v() returns it).
+  const row = (k,val) => {
+    const display = val == null ? SUMMARY_PENDING_HTML
+                   : (typeof val === 'string' && val.indexOf('<') === 0 ? val : esc(String(val)));
+    html += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+display+'</span></div>';
+  };
 
-  // ── STEP 1 · About you ──
-  const dob = f.dob_d&&f.dob_m&&f.dob_y ? f.dob_y+'-'+String(f.dob_m).padStart(2,'0')+'-'+String(f.dob_d).padStart(2,'0') : '—';
+  // ═══════════ STEP 1 · About you ═══════════
+  stepHead(1, 'About you');
+
+  const dob = f.dob_d&&f.dob_m&&f.dob_y ? f.dob_y+'-'+String(f.dob_m).padStart(2,'0')+'-'+String(f.dob_d).padStart(2,'0') : '';
   sec('Personal information');
   row('Full legal name', v(f.fullname));
-  row('Date of birth', dob);
+  row('Gender', v(f.gender));
+  row('Date of birth', v(dob));
   row('Nationality', v(f.nationality));
 
   sec('Residential address');
@@ -5632,29 +5763,30 @@ function renderSummary(){
   row('Country', v(f.country));
 
   sec('Contact details');
-  row('Phone', ((f.phone_code||'')+' '+(f.phone||'')).trim()||'—');
-  row('WhatsApp', f.phone_is_whatsapp ? 'Same as phone' : (((f.whatsapp_code||'')+' '+(f.whatsapp||'')).trim()||'—'));
+  row('Phone', v(((f.phone_code||'')+' '+(f.phone||'')).trim()));
+  row('WhatsApp', f.phone_is_whatsapp ? 'Same as phone' : v(((f.whatsapp_code||'')+' '+(f.whatsapp||'')).trim()));
   row('Email', v(f.email));
   row('Social media', f.no_social ? 'None' : v(f.ig));
-  row('Emergency contact', [f.em_name, f.em_rel, ((f.em_phone_code||'')+' '+(f.em_phone||'')).trim()].filter(Boolean).join(' · ')||'—');
+  row('Emergency contact', v([f.em_name, f.em_rel, ((f.em_phone_code||'')+' '+(f.em_phone||'')).trim()].filter(Boolean).join(' · ')));
   row('How she heard of us', v(f.heard==='Other'?(f.heard_other||'Other'):f.heard));
 
-  // ── STEP 2 · Public profile ──
+  // ═══════════ STEP 2 · Public profile ═══════════
+  stepHead(2, 'Public profile');
+
   sec('Public profile');
   row('Working name', v(f.workname));
   row('Profile age', v(f.profile_age));
   row('English level', v(f.english));
-  row('Languages', (f.languages||[]).length ? f.languages.map(l => typeof l==='string'?l:(l.language+(l.level?' ('+l.level+')':''))).join(', ') : '—');
+  row('Languages', (f.languages||[]).length ? (f.languages.map(l => typeof l==='string'?l:(l.language+(l.level?' ('+l.level+')':''))).join(', ')) : v(''));
 
   sec('Physical');
-  row('Height', f.height?f.height+' cm':'—');
-  row('Weight', f.weight?f.weight+' kg':'—');
+  row('Height', f.height?(f.height+' cm'):v(''));
+  row('Weight', f.weight?(f.weight+' kg'):v(''));
   row('Body type', v(f.body));
   row('Dress size', v(f.dress));
-  row('Bust', [f.breast, f.breast_type].filter(Boolean).join(' · ')||'—');
-  row('Eyes / hair', [f.eye, f.hair].filter(Boolean).join(' · ')||'—');
+  row('Bust', v([f.breast, f.breast_type].filter(Boolean).join(' · ')));
+  row('Eyes / hair', v([f.eye, f.hair].filter(Boolean).join(' · ')));
 
-  // Service line (Tantric / Companions / Both) — time only, no per-act lists.
   if(f.service_line){
     sec('Service line');
     row('Offers', f.service_line === 'both' ? 'Tantric + Companions' : (f.service_line === 'tantric' ? 'Tantric' : 'Companions'));
@@ -5667,7 +5799,7 @@ function renderSummary(){
     if(f.tantric_exp_note) row('Experience notes', f.tantric_exp_note);
     row('With other agencies', v(f.tantric_competing));
     (f.tantric_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
-    (f.tantric_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
+    (f.tantric_rates||[]).forEach(r=>row(r.duration||'Rate', v([r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · '))));
   }
 
   if(f.offers_escort === 'Yes'){
@@ -5677,7 +5809,7 @@ function renderSummary(){
     if(f.escort_exp_note) row('Experience notes', f.escort_exp_note);
     row('With other agencies', v(f.competing||f.tantric_competing));
     (f.escort_agencies||[]).forEach((a,i)=>row('Agency link '+(i+1), a));
-    (f.escort_rates||[]).forEach(r=>row(r.duration, [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'));
+    (f.escort_rates||[]).forEach(r=>row(r.duration||'Rate', v([r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · '))));
   }
 
   if((f.more_ladies||[]).length){
@@ -5693,7 +5825,6 @@ function renderSummary(){
     row('Right to refuse unsafe clients', 'Yes');
   }
 
-  // Legacy generic services (still captured on some flows)
   if((f.services||[]).length || f.rate){
     sec('Services & rate');
     if((f.services||[]).length) row('Services selected', f.services.join(', '));
@@ -5701,41 +5832,116 @@ function renderSummary(){
     if(f.rate) row('Starting rate', cur+f.rate);
   }
 
-  sec('Working areas');
-  row('Working location', [f.work_city, f.work_country].filter(Boolean).join(', ')||'—');
+  sec('Working locations');
+  row('Travel mode', v(f.travel_mode));
+  row('Primary working location', v([f.work_city, f.work_country].filter(Boolean).join(', ')));
   row('Working neighbourhood', v(f.local_area));
   row('In-house available', f.no_inhouse?'No':v(f.inhouse));
-  if(!f.no_inhouse) row('In-house address', [f.inhouse_street, f.inhouse_apt, f.inhouse_postcode].filter(Boolean).join(', ')||v(f.inhouse_address));
+  if(!f.no_inhouse){
+    row('In-house address', v([f.inhouse_street, f.inhouse_apt, f.inhouse_postcode].filter(Boolean).join(', ') || f.inhouse_address));
+    row('Location walkthrough video', f.files && f.files.location ? 'Uploaded' : v(''));
+  }
   row('Mobile / outcall', v(f.mobile));
   if((f.mobile_zones||[]).length) row('Mobile zones', f.mobile_zones.join(', '));
-  (f.extra_locations||[]).forEach((loc,i)=>row('Also based in '+(i+1), [loc.city,loc.country].filter(Boolean).join(', ')||loc));
+  (f.extra_locations||[]).forEach((loc,i)=>{
+    const where = [loc.city, loc.country].filter(Boolean).join(', ') || (typeof loc==='string'?loc:'');
+    row('Also based in '+(i+1), v(where));
+    if(loc && loc.location_file) row('  · Walkthrough video '+(i+1), 'Uploaded');
+  });
   const seasonal = (f.abroad||[]).concat(f.abroad_custom||[]);
-  row('Seasonal destinations', seasonal.length?seasonal.join(', '):'—');
+  row('Seasonal destinations', seasonal.length?seasonal.join(', '):v(''));
   if(f.travel_other) row('Other travel', f.travel_other);
+
+  // Map of "Where you'll be available" — same city-level pins as the form.
+  html += '<div class="summary-sec">Where you&rsquo;ll be available</div>';
+  html += '<div class="summary-map-wrap"><div id="summaryMap"></div><div class="summary-map-empty" id="summaryMapEmpty">No working locations set.</div></div>';
 
   sec('Availability');
   const daysOn = Object.keys(f.availability||{}).filter(d => f.availability[d] && f.availability[d].enabled);
-  daysOn.forEach(d=>{ const dd=f.availability[d]; row(d, (dd.from||'09:00')+' – '+(dd.to||'02:00')); });
-  if(!daysOn.length) row('Days', '—');
+  daysOn.forEach(d=>{
+    const dd = f.availability[d];
+    const from = dd.from||'09:00', to = dd.to||'02:00';
+    const lbl = (from === to) ? '24h ('+from+')' : (from+' – '+to);
+    row(d, lbl);
+  });
+  if(!daysOn.length) row('Days', v(''));
+  row('Days per week', v(f.days_week));
+  row('Advance notice needed', v(f.late_hours));
   if(f.avail_notes) row('Notes', f.avail_notes);
 
-  // ── STEP 3 · Verification & files ──
+  // ═══════════ STEP 3 · Identity verification ═══════════
+  stepHead(3, 'Identity verification');
+
   sec('Photos, videos & documents');
-  row('Professional photos', (f.files.portfolio||[]).length+' uploaded');
-  row('Full-body photos', ['front','back','side'].filter(a=>f.files['fullbody_'+a]).length+' / 3');
-  row('Intro video', f.video?'Uploaded':'—');
-  row('Professional shoot video', f.files.profvideo?'Uploaded':'—');
-  row('Selfie verification', f.files.selfie?'Uploaded':'—');
-  row('Location walkthrough', f.files.location?'Uploaded':'—');
-  row('ID / passport copy', f.files.idcopy?'Uploaded':'—');
-  row('Bank statement', f.files.bank?'Uploaded':'—');
+  row('Professional photos', ((f.files.portfolio||[]).length ? ((f.files.portfolio||[]).length+' uploaded') : v('')));
+  row('Full-body photos', (['front','back','side'].filter(a=>f.files['fullbody_'+a]).length+' / 3'));
+  row('Intro video', f.video?'Uploaded':v(''));
+  row('Professional photoshoot', f.files.photoshoot?'Uploaded':v(''));
+  row('Professional video shoot', f.files.videoshoot || f.files.profvideo?'Uploaded':v(''));
+  row('Selfie verification', f.files.selfie?'Uploaded':v(''));
+  row('ID / passport copy', f.files.idcopy?'Uploaded':v(''));
+  row('Bank statement', f.files.bank?'Uploaded':v(''));
 
   sec('Verification');
   row('Signature', v(f.signature_name));
-  row('Signed at', f.signature_signed_at ? new Date(f.signature_signed_at).toLocaleString() : '—');
-  row('Consents accepted', Object.values(f.consents||{}).filter(Boolean).length+' / '+Object.keys(f.consents||{}).length);
+  row('Signed at', f.signature_signed_at ? new Date(f.signature_signed_at).toLocaleString() : v(''));
+  row('Consents accepted', (Object.values(f.consents||{}).filter(Boolean).length+' / '+Object.keys(f.consents||{}).length));
 
   document.getElementById('summaryContent').innerHTML = html;
+  // Render the city-level map after the DOM is in place. Reuses the same
+  // Leaflet helpers from the working-locations card so the visualisation
+  // matches exactly.
+  try { renderSummaryMap(); } catch(e){}
+}
+
+// ═══ Summary-page mini map (mirrors the form's "Where you'll be available") ═══
+let _summaryMap = null;
+let _summaryMapMarkers = [];
+function renderSummaryMap(){
+  if(typeof L === 'undefined'){ setTimeout(renderSummaryMap, 200); return; }
+  const el = document.getElementById('summaryMap');
+  if(!el) return;
+  // Always rebuild — the overlay can be opened multiple times.
+  if(_summaryMap){ try{ _summaryMap.remove(); }catch(e){} _summaryMap = null; _summaryMapMarkers = []; }
+  _summaryMap = L.map(el, {
+    zoomControl:false, attributionControl:true,
+    scrollWheelZoom:false, doubleClickZoom:false, dragging:false,
+    tap:false, keyboard:false
+  }).setView([46, 5], 3);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    maxZoom:11, minZoom:2, attribution:'© OSM · CARTO'
+  }).addTo(_summaryMap);
+  const f = formData;
+  const points = [];
+  const seen = new Set();
+  const add = (name, primary) => {
+    if(!name) return;
+    const key = String(name).trim();
+    if(!key || seen.has(key)) return;
+    const c = (typeof CITY_COORDS !== 'undefined') ? CITY_COORDS[key] : null;
+    if(!c) return;
+    seen.add(key);
+    points.push({ name:key, latlng:c, primary });
+  };
+  add(f.work_city, true);
+  (f.extra_locations || []).forEach(loc => add(loc && loc.city, false));
+  (f.abroad || []).forEach(name => add(name, false));
+  points.forEach(p => {
+    const icon = L.divIcon({
+      className: 'apply-pin-wrap',
+      html: '<div class="apply-pin' + (p.primary ? ' primary' : '') + '" title="' + p.name.replace(/"/g,'&quot;') + '"></div>',
+      iconSize: p.primary ? [16,16] : [14,14],
+      iconAnchor: p.primary ? [8,8] : [7,7]
+    });
+    const m = L.marker(p.latlng, { icon, title: p.name }).addTo(_summaryMap);
+    _summaryMapMarkers.push(m);
+  });
+  const empty = document.getElementById('summaryMapEmpty');
+  if(empty) empty.style.display = points.length === 0 ? '' : 'none';
+  if(points.length === 1) _summaryMap.setView(points[0].latlng, 6);
+  else if(points.length > 1) _summaryMap.fitBounds(L.latLngBounds(points.map(p=>p.latlng)), { padding:[24,24], maxZoom:6 });
+  else _summaryMap.setView([46, 5], 3);
+  setTimeout(() => { try{ _summaryMap.invalidateSize(); }catch(e){} }, 120);
 }
 
 // ═══════════ DRAFT (local cache only — form in progress) ═══════════
@@ -5866,6 +6072,27 @@ function loadDraft(){
         formData[k] = d[k] || [];
       } else if(k === 'tantric_tier' || k === 'escort_tier'){
         formData[k] = d[k] || '';
+      } else if(k === 'age_confirmed'){
+        formData.age_confirmed = !!d[k];
+        const chk = document.getElementById('f_age_confirmed');
+        if(chk){
+          chk.checked = !!d[k];
+          const lbl = document.getElementById('ageGateLabel');
+          if(lbl) lbl.style.borderColor = chk.checked ? 'var(--gn)' : 'var(--brd2)';
+        }
+      } else if(k === 'apply_path'){
+        formData.apply_path = d[k] || '';
+        if(d[k]){
+          const r = document.getElementById('path_' + d[k]);
+          if(r){
+            r.checked = true;
+            document.querySelectorAll('.path-card').forEach(card => {
+              var on = card.querySelector('input[name="apply_path"]').checked;
+              card.style.borderColor = on ? 'var(--ac)' : 'var(--brd2)';
+              card.style.background  = on ? 'rgba(196,168,130,.06)' : 'var(--card)';
+            });
+          }
+        }
       } else {
         formData[k] = d[k];
         const el = document.getElementById('f_'+k);
@@ -5997,6 +6224,10 @@ function checkDraft(){
 
 // ═══════════ STORAGE UPLOAD (to Supabase Storage) ═══════════
 // Application credentials stay in memory, scoped to this form submission.
+// The hardening PR (#33 / main) introduced the intake-session + file cache
+// so a public submission can't spoof an existing ref. We kept the XHR
+// `onProgress` hook on top so the applicant sees a real 0-100% bar instead
+// of a fake 50% → 100% jump.
 let intakeSession = null;
 const uploadedFileCache = new WeakMap();
 async function ensureIntakeSession(){
@@ -6006,7 +6237,7 @@ async function ensureIntakeSession(){
   intakeSession={...r.data,startedAt:Date.now()};
   return intakeSession;
 }
-async function uploadFileToStorage(file, appRef, fileType, index){
+async function uploadFileToStorage(file, appRef, fileType, index, onProgress){
   if(!sb || !file) return null;
   const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
   const previous=uploadedFileCache.get(file);
@@ -6019,7 +6250,7 @@ async function uploadFileToStorage(file, appRef, fileType, index){
     // uses the anon publishable key, which this project's Storage service
     // does NOT resolve to a role it will accept for inserts (direct anon
     // uploads fail with an RLS error). The sign-upload edge function mints a
-    // signed token with the service role; uploadToSignedUrl needs no role.
+    // signed token with the service role; the upload URL needs no role.
     const resp = await fetch(SUPABASE_URL + '/functions/v1/sign-upload', {
       method: 'POST',
       headers: {
@@ -6033,10 +6264,29 @@ async function uploadFileToStorage(file, appRef, fileType, index){
     const json = await resp.json();
     const entry = json && json.tokens && json.tokens[path];
     if(!entry || !entry.token){ throw new Error('no token returned for '+path); }
-    const res = await sb.storage.from('applications')
-      .uploadToSignedUrl(path, entry.token, file, { upsert: false });
-    if(res.error) throw res.error;
-    uploadedFileCache.set(file,path);
+    // Upload via raw XHR so we can subscribe to .upload.onprogress and
+    // surface a real percentage. This hits Supabase Storage's signed-upload
+    // endpoint directly; supabase-js's uploadToSignedUrl uses the same URL
+    // shape under the hood. `upsert:false` matches the hardening PR — a
+    // repeat submission under the same ref can't overwrite earlier files.
+    const uploadUrl = SUPABASE_URL + '/storage/v1/object/upload/sign/applications/' + path + '?token=' + encodeURIComponent(entry.token);
+    await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', uploadUrl, true);
+      xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+      xhr.upload.onprogress = (ev) => {
+        if(!onProgress || !ev.lengthComputable) return;
+        try { onProgress(Math.min(99, Math.round((ev.loaded / ev.total) * 100))); } catch(_){}
+      };
+      xhr.onload = () => {
+        if(xhr.status >= 200 && xhr.status < 300){ resolve(); }
+        else { reject(new Error('upload HTTP '+xhr.status+': '+xhr.responseText)); }
+      };
+      xhr.onerror = () => reject(new Error('upload network error'));
+      xhr.send(file);
+    });
+    try { onProgress && onProgress(100); } catch(_){}
+    uploadedFileCache.set(file, path);
     return path;
   } catch(e){
     console.warn('[Storage] Upload unavailable');
@@ -6056,6 +6306,8 @@ function showUploadProgress(kind, pct){
 // Friendly field labels for validation errors (avoid showing raw keys
 // like "rtw" or "days_week" to applicants).
 const FIELD_LABELS = {
+  age_confirmed:'Confirm you are 18 or over',
+  apply_path:   'Choose your path (Platform / Agency / Both)',
   fullname:    'Full name (as on ID/passport)',
   nationality: 'Nationality',
   city:        'City of residence',
@@ -6099,6 +6351,8 @@ const FIELD_LABELS = {
 // Map field key -> DOM element id so we can scroll the user to the
 // missing field and visually highlight it.
 const FIELD_ELEMENT_IDS = {
+  age_confirmed:'ageGateSec',
+  apply_path:   'pathSec',
   fullname:    'f_fullname',
   nationality: 'f_nationality',
   city:        'f_city_select',
@@ -6141,6 +6395,7 @@ const FIELD_ELEMENT_IDS = {
 // Which step each required field lives on, so a submit error from the
 // final step can jump straight back to the right page.
 const FIELD_STEP = {
+  age_confirmed:1, apply_path:1,
   fullname:1, nationality:1, country:1, city:1, home_street:1, home_postcode:1,
   phone_code:1, phone:1, email:1, english:1, gender:1, em_name:1, em_rel:1, em_phone_code:1, em_phone:1,
   dob_d:1, dob_m:1, dob_y:1, local_area_text:1,
@@ -6262,19 +6517,10 @@ async function submitApplication(){
     jumpToService('[data-pill="tantric_experience"]');
     return;
   }
-  if(formData.offers_tantric === 'Yes' && !formData.tantric_tier){
-    showToast('Please choose your Tantric level (Premium / Elite / First Class)','error');
-    jumpToService('tantricLevelGrid');
-    return;
-  }
+  // Legal foundation (22 Oct 2026) §4: no tier choice to validate.
   if(formData.offers_escort === 'Yes' && !formData.escort_experience){
     showToast('Please tell us if you have experience with Companions','error');
     jumpToService('[data-pill="escort_experience"]');
-    return;
-  }
-  if(formData.offers_escort === 'Yes' && !formData.escort_tier){
-    showToast('Please choose your Companions level (Premium / Elite / First Class)','error');
-    jumpToService('escortLevelGrid');
     return;
   }
   if((formData.more_ladies||[]).length === 0){
@@ -6434,28 +6680,43 @@ async function submitApplication(){
   };
   setProgress('Preparing…', 2);
 
+  // Hardening PR (#33 / main): the ref is minted server-side by the
+  // apply-intake edge function so a public client can't spoof it. The
+  // friendly lowercase format from the earlier draft moves to the edge
+  // function itself in a follow-up — we don't generate it here.
   let session;
-  try { session=await ensureIntakeSession(); }
-  catch(e){showToast(e.message,'error');btn.disabled=false;btn.textContent='Submit Application';return;}
-  const applicationRef=session.ref;
+  try { session = await ensureIntakeSession(); }
+  catch(e){ showToast(e.message, 'error'); btn.disabled = false; btn.textContent = 'Submit Application'; return; }
+  const applicationRef = session.ref;
   const dob = formData.dob_y+'-'+String(formData.dob_m).padStart(2,'0')+'-'+String(formData.dob_d).padStart(2,'0');
   const age = calculateAge(dob);
 
   // ═══ UPLOAD FILES TO SUPABASE STORAGE ═══
   const uploadedPaths = { portfolio: [] };
 
-  for(let i = 0; i < filesToUpload.length; i++){
+  // Real per-file progress, driven by XHR onprogress. The overall % shown
+  // in the submit progress bar interpolates across all files so it rises
+  // smoothly from 0% to 100% — never stalling on the misleading "50% per
+  // file" jump it used to do.
+  const N = filesToUpload.length;
+  for(let i = 0; i < N; i++){
     const item = filesToUpload[i];
-    setProgress('Uploading ' + item.label + ' (' + (i+1) + ' of ' + filesToUpload.length + ')');
-    btn.textContent = 'Uploading ' + (i+1) + '/' + filesToUpload.length + '…';
-    // Per-file mini bar — show going to 50% on start, 100% on finish.
-    showUploadProgress(item.k, 50);
-    const path = await uploadFileToStorage(item.f, applicationRef, item.type, item.index);
+    const handleFileProgress = (filePct) => {
+      // Overall = previous files done (100% each) + current file's actual %.
+      const overall = Math.round(((i + (filePct/100)) / N) * 100);
+      setProgress('Uploading ' + item.label + ' — file ' + (i+1) + ' of ' + N, overall);
+      btn.textContent = 'Uploading ' + overall + '%';
+      showUploadProgress(item.k, filePct);
+    };
+    handleFileProgress(0);
+    const path = await uploadFileToStorage(item.f, applicationRef, item.type, item.index, handleFileProgress);
     if(!path){
-      showToast('Upload failed. Your application has not been submitted. Please retry.','error');
-      btn.disabled=false;btn.textContent='Submit Application';return;
+      // Hardening PR (#33 / main): aborting the whole submission on
+      // any upload failure beats silently saving a half-complete row.
+      showToast('Upload failed. Your application has not been submitted. Please retry.', 'error');
+      btn.disabled = false; btn.textContent = 'Submit Application'; return;
     }
-    showUploadProgress(item.k, 100);
+    handleFileProgress(100);
     if(path){
       if(item.k === 'portfolio') uploadedPaths.portfolio.push(path);
       else if(item.k === 'video') uploadedPaths.video = path;
@@ -6467,7 +6728,6 @@ async function submitApplication(){
       }
     }
     stepDone++;
-    setProgress('Uploaded ' + (i+1) + ' of ' + filesToUpload.length);
   }
 
   btn.textContent = 'Saving…';
@@ -6497,6 +6757,10 @@ async function submitApplication(){
     date_of_birth: dob,
     birth_month: new Date(dob).toLocaleDateString('en-US',{month:'long'}),
     birth_year: formData.dob_y,
+    gender: formData.gender || null,
+    // Legal foundation (22 Oct 2026) §2: Path lives inside
+    // application_payload (no dedicated column). The OS Application tab
+    // reads it from there and shows which contracts she'll sign.
     nationality: formData.nationality,
     country_residence: formData.country,
     city: formData.city || null,
@@ -6549,6 +6813,11 @@ async function submitApplication(){
     // Rate
     current_rate: formData.rate ? '£'+formData.rate : null,
     
+    // Heard-from / source channel (DB has `source` column).
+    source: formData.heard==='Other' ? (formData.heard_other || 'Other') : (formData.heard || null),
+    // Boundaries text (DB column).
+    boundaries: formData.boundaries || null,
+
     // Files (Storage paths)
     file_selfie_kyc: uploadedPaths.selfie || null,
     // Legacy single full-body field — set to the front shot for
@@ -6610,6 +6879,162 @@ async function submitApplication(){
     duration_preferences: formData.dur_pref,
     starting_rate: parseFloat(formData.rate)||null,
     starting_rate_currency: formData.currency || 'GBP',
+
+    // ─── FULL APPLICATION SNAPSHOT ───
+    // The OS Application tab reads every field the applicant filled
+    // from this JSON so nothing the form collects is invisible to the
+    // founder. We include the file paths too so photos/videos render
+    // from signed URLs. The structured columns above are still kept for
+    // filtering / kanban / search; this is the "source of truth" for
+    // the per-step review screen.
+    application_payload: {
+      version: 2,
+      submitted_at: new Date().toISOString(),
+      step1: {
+        age_confirmed: !!formData.age_confirmed,
+        apply_path: formData.apply_path || null,
+        fullname: formData.fullname || null,
+        gender: formData.gender || null,
+        dob: dob,
+        age: age,
+        nationality: formData.nationality || null,
+        country: formData.country || null,
+        city: formData.city || null,
+        home_street: formData.home_street || null,
+        home_apt: formData.home_apt || null,
+        home_postcode: formData.home_postcode || null,
+        home_neighbourhood: formData.local_area_text || null,
+        home_address: formData.home_address || null,
+        phone_code: formData.phone_code || null,
+        phone: formData.phone || null,
+        phone_full: ((formData.phone_code||'') + ' ' + (formData.phone||'').trim()).trim(),
+        phone_is_whatsapp: !!formData.phone_is_whatsapp,
+        whatsapp_code: formData.whatsapp_code || null,
+        whatsapp: formData.whatsapp || null,
+        whatsapp_full: formData.phone_is_whatsapp
+          ? ((formData.phone_code||'') + ' ' + (formData.phone||'').trim()).trim()
+          : ((formData.whatsapp_code||'') + ' ' + (formData.whatsapp||'').trim()).trim(),
+        email: formData.email || null,
+        no_social: !!formData.no_social,
+        social_media: formData.no_social ? null : (formData.ig || null),
+        emergency: {
+          name: formData.em_name || null,
+          relationship: formData.em_rel || null,
+          phone_code: formData.em_phone_code || null,
+          phone: formData.em_phone || null,
+          phone_full: ((formData.em_phone_code||'') + ' ' + (formData.em_phone||'').trim()).trim()
+        },
+        heard: formData.heard || null,
+        heard_other: formData.heard_other || null
+      },
+      step2: {
+        workname: formData.workname || null,
+        profile_age: parseInt(formData.profile_age)||null,
+        english: formData.english || null,
+        languages: (formData.languages||[]).map(l => typeof l === 'string' ? { language: l, level: 'Native' } : l),
+        height_cm: parseInt(formData.height)||null,
+        weight_kg: parseInt(formData.weight)||null,
+        body_type: formData.body || null,
+        dress_size: formData.dress || null,
+        eye_colour: formData.eye || null,
+        hair_colour: formData.hair || null,
+        breast_size: formData.breast || null,
+        breast_type: formData.breast_type || null,
+        years_experience: formData.years || null,
+        // Service Line (Tantric / Companions / Both) + per-line modules.
+        service_line: formData.service_line || null,
+        more_ladies: (formData.more_ladies || []).slice(),
+        travel: (formData.travel || []).slice(),
+        right_to_refuse: !!formData.right_to_refuse,
+        boundaries: formData.boundaries || null,
+        photoshoot: formData.photoshoot || null,
+        videoshoot: formData.videoshoot || null,
+        currency: formData.currency || 'GBP',
+        starting_rate: parseFloat(formData.rate)||null,
+        tantric: formData.offers_tantric === 'Yes' ? {
+          offered: true,
+          tier: formData.tantric_tier || null,
+          level_label: LEVEL_LABEL[formData.tantric_tier] || null,
+          experience: formData.tantric_experience === 'Yes',
+          experience_years: formData.tantric_exp_years || null,
+          experience_note: formData.tantric_exp_note || null,
+          competing: formData.tantric_competing || null,
+          agencies: (formData.tantric_agencies||[]).map(s => (s||'').trim()).filter(Boolean),
+          rates: formData.tantric_rates || []
+        } : { offered: false },
+        escort: formData.offers_escort === 'Yes' ? {
+          offered: true,
+          tier: formData.escort_tier || null,
+          level_label: LEVEL_LABEL[formData.escort_tier] || null,
+          experience: formData.escort_experience === 'Yes',
+          experience_years: formData.escort_exp_years || null,
+          experience_note: formData.escort_exp_note || null,
+          competing: formData.competing || formData.escort_competing || null,
+          agencies: (formData.escort_agencies||[]).map(s => (s||'').trim()).filter(Boolean),
+          rates: formData.escort_rates || []
+        } : { offered: false },
+        // Working locations
+        travel_mode: formData.travel_mode || null,
+        work_country: formData.work_country || null,
+        work_city: formData.work_city || null,
+        local_area: formData.local_area || null,
+        inhouse: formData.inhouse || null,
+        no_inhouse: !!formData.no_inhouse,
+        inhouse_street: formData.inhouse_street || null,
+        inhouse_apt: formData.inhouse_apt || null,
+        inhouse_postcode: formData.inhouse_postcode || null,
+        inhouse_address: formData.inhouse_address || null,
+        mobile: formData.mobile || null,
+        mobile_zones: (formData.mobile_zones||[]).slice(),
+        mobile_30: formData.mobile_30 || null,
+        mobile_30_note: formData.mobile_30_note || null,
+        airport: formData.airport || null,
+        airport_note: formData.airport_note || null,
+        extra_locations: (formData.extra_locations||[]).map(loc => loc && ({
+          country: loc.country || null,
+          city: loc.city || null,
+          area: loc.area || null,
+          inhouse_street: loc.inhouse_street || null,
+          inhouse_apt: loc.inhouse_apt || null,
+          inhouse_postcode: loc.inhouse_postcode || null,
+          no_inhouse: !!loc.no_inhouse,
+          location_file: loc.location_file || null
+        })),
+        no_second_country: !!formData.no_second_country,
+        abroad: (formData.abroad||[]).slice(),
+        abroad_custom: (formData.abroad_custom||[]).slice(),
+        travel_other: formData.travel_other || null,
+        days_per_week: formData.days_week || null,
+        advance_notice: formData.late_hours || null,
+        availability: formData.availability || null,
+        availability_notes: formData.avail_notes || null
+      },
+      step3: {
+        files: {
+          portfolio: uploadedPaths.portfolio || [],
+          fullbody_front: uploadedPaths.fullbody_front || null,
+          fullbody_back: uploadedPaths.fullbody_back || null,
+          fullbody_side: uploadedPaths.fullbody_side || null,
+          selfie_kyc: uploadedPaths.selfie || null,
+          video_intro: uploadedPaths.video || null,
+          location_check: uploadedPaths.location || null,
+          professional_video: uploadedPaths.profvideo || null,
+          professional_photoshoot: uploadedPaths.photoshoot || null,
+          id_copy: uploadedPaths.idcopy || null,
+          bank_statement: uploadedPaths.bank || null
+        },
+        consents: {
+          age: !!(formData.consents && formData.consents.age),
+          gdpr: !!(formData.consents && formData.consents.gdpr),
+          terms: !!(formData.consents && formData.consents.terms),
+          photo_release: !!(formData.consents && formData.consents.photo_release),
+          self_employed: !!(formData.consents && formData.consents.self_employed)
+        },
+        signature_name: formData.signature_name || null,
+        signature_signed_at: formData.signature_signed_at || null
+      }
+    },
+
     // Structured service offering: keeps the rich data so the lady profile
     // can render it. Two service "modules" each with tier + rate table +
     // their own extras.
@@ -6679,6 +7104,24 @@ async function submitApplication(){
     stepDone++;
     setProgress('Saved · Notifying team…');
 
+    try {
+      // The anon insert can't .select() (RLS), so we look the row up by
+      // application_ref to get the new id. With it, postSubmitRouting can
+      // patch flags + write the apply_notifications row. Without it, we
+      // skip notifications silently — no console error.
+      let newLady = null;
+      try {
+        const back = await sb.from('ladies').select('id, application_ref, special_requests').eq('application_ref', applicationRef).limit(1).single();
+        if(back && back.data && back.data.id){
+          newLady = Object.assign({}, ladyRow, back.data);
+        }
+      } catch(_){ /* select may be blocked by RLS — ignore */ }
+      if(newLady && newLady.id) await postSubmitRouting(newLady, formData);
+    } catch(e){
+      console.warn('Post-submit routing failed (non-critical):', e);
+    }
+
+
     // ═══ SEND CONFIRMATION EMAIL ═══
     let emailConfirmed=false;
     btn.textContent = 'Sending confirmation…';
@@ -6702,10 +7145,22 @@ async function submitApplication(){
     const subEl = document.getElementById('successSub');
     if(subEl) subEl.textContent = 'Thank you, ' + firstName + '. Your application has been received.';
     const emailLine = document.getElementById('successEmailLine');
-    if(emailLine)emailLine.textContent=emailConfirmed?'Confirmation email sent. Keep your reference for follow-up.':'Your application is saved. Email confirmation is pending; please keep your reference.';
-    document.getElementById('successRef').textContent = applicationRef;
-    window.__lastAppRef = applicationRef;
+    if(emailLine) emailLine.textContent = emailConfirmed
+      ? 'Confirmation email sent to ' + formData.email + '. Keep your reference for follow-up.'
+      : 'Your application is saved. Email confirmation is pending; please keep your reference.';
+    // `successRef` and `successLinkWrap` were removed in an earlier draft
+    // of the success overlay — guard the lookups so a missing element
+    // never throws here.
+    var _refEl = document.getElementById('successRef');
+    if(_refEl) _refEl.textContent = applicationRef;
     document.getElementById('successLinkWrap')?.setAttribute('hidden','');
+    window.__lastAppRef = applicationRef;
+    window.__lastAppName = formData.fullname;
+    try {
+      // Make the browser URL her own personal application link
+      // (apply.mayriche.co.uk/<name-slug>-<ref>).
+      history.replaceState(null, '', '/' + appSlug(formData.fullname) + '-' + applicationRef);
+    } catch(e){}
     renderSummary();
     document.getElementById('successOverlay').classList.add('visible');
   } catch(e){
@@ -6764,14 +7219,21 @@ function buildAppLink(ref, name){
   var slug = appSlug(name);
   return 'https://apply.mayriche.co.uk/' + (slug ? slug + '-' : '') + ref;
 }
-// Pull the APP-… reference from either ?ref=APP-XXXX or a
-// /<name-slug>-APP-XXXX path so the shared link resolves either way.
+// Pull the app reference from either ?ref=… or a /<name-slug>-app… path.
+// Accepts BOTH formats:
+//   - New lowercase: `app06072026-abcd`
+//   - Legacy uppercase: `APP-MQ38GAYAUA` (kept so old shared links still work)
 function refFromUrl(){
   try {
     var q = new URLSearchParams(location.search).get('ref');
-    if(q && /^APP-[A-Za-z0-9-]{4,60}$/.test(q)) return q;
-    var m = (location.pathname||'').match(/(APP-[A-Za-z0-9]+-[A-Za-z0-9]+)\/?$/i);
-    if(m) return m[1].toUpperCase();
+    if(q && /^(?:app\d{8}-[a-z0-9]{2,8}|APP-[A-Za-z0-9-]{4,60})$/i.test(q)) return q;
+    var m = (location.pathname||'').match(/(app\d{8}-[a-z0-9]{2,8}|APP-[A-Za-z0-9]+-[A-Za-z0-9]+)\/?$/i);
+    if(m){
+      var raw = m[1];
+      return raw.toLowerCase().indexOf('app') === 0 && raw.indexOf('-') > 3
+        ? raw.toLowerCase()       // new format — preserve lowercase
+        : raw.toUpperCase();      // old `APP-…` format
+    }
   } catch(e){}
   return null;
 }
@@ -6793,13 +7255,21 @@ async function showApplicationCard(ref){
   window.__lastAppRef = d.application_ref || ref;
   var so = d.services_offering || {};
   var esc = function(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
-  var v = function(x){ return (x===0||x) && String(x).trim()!=='' ? x : '—'; };
+  var PENDING = (typeof SUMMARY_PENDING_HTML !== 'undefined') ? SUMMARY_PENDING_HTML : '—';
+  var isEmpty = function(x){ return !((x===0||x) && String(x).trim()!==''); };
+  var v = function(x){ return isEmpty(x) ? PENDING : esc(x); };
   var cur = (d.starting_rate_currency==='EUR'?'€':d.starting_rate_currency==='USD'?'$':'£');
   var body = '';
+  var stepHead = function(n,t){ body += '<div class="summary-step"><span class="summary-step-n">Step '+n+'</span><span>'+esc(t)+'</span></div>'; };
   var sec = function(t){ body += '<div class="summary-sec">'+esc(t)+'</div>'; };
-  var row = function(k,val){ body += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+esc(val)+'</span></div>'; };
-  var money = function(x){ return x!=null && x!=='' ? cur+x : '—'; };
+  var row = function(k,val){
+    var display = val == null ? PENDING
+                 : (typeof val === 'string' && val.indexOf('<') === 0 ? val : esc(String(val)));
+    body += '<div class="summary-row"><span class="summary-key">'+esc(k)+'</span><span class="summary-val">'+display+'</span></div>';
+  };
+  var money = function(x){ return x!=null && x!=='' ? cur+x : PENDING; };
 
+  stepHead(1, 'About you');
   sec('Personal information');
   row('Full legal name', v(d.lady_name));
   row('Date of birth', v(d.date_of_birth));
@@ -6812,39 +7282,40 @@ async function showApplicationCard(ref){
   row('Country', v(d.country_residence));
 
   sec('Contact details');
-  row('Phone', ((d.phone_code||'')+' '+(d.phone_local||d.phone||'')).trim()||'—');
+  row('Phone', v(((d.phone_code||'')+' '+(d.phone_local||d.phone||'')).trim()));
   row('Email', v(d.email));
   row('Social media', v(d.social_media));
-  row('Emergency contact', [d.em_c_name, d.em_c_rel, d.em_c_phone].filter(Boolean).join(' · ') || v(d.emergency_contact));
+  row('Emergency contact', v([d.em_c_name, d.em_c_rel, d.em_c_phone].filter(Boolean).join(' · ') || d.emergency_contact));
   row('How she heard of us', v(d.source));
 
+  stepHead(2, 'Public profile');
   sec('Public profile');
   row('Working name', v(d.work_name || d.profile_nickname));
   row('Profile age', v(d.profile_age));
-  var langs = '—';
+  var langs = '';
   if(Array.isArray(d.languages_detail) && d.languages_detail.length){
     langs = d.languages_detail.map(function(l){ return typeof l==='string'?l:(l.language+(l.level?' ('+l.level+')':'')); }).join(', ');
   } else if(d.languages){ langs = d.languages; }
-  row('Languages', langs);
+  row('Languages', v(langs));
 
   sec('Physical');
-  row('Height', d.height_cm?d.height_cm+' cm':'—');
-  row('Weight', d.weight_kg?d.weight_kg+' kg':'—');
+  row('Height', d.height_cm?(d.height_cm+' cm'):v(''));
+  row('Weight', d.weight_kg?(d.weight_kg+' kg'):v(''));
   row('Body type', v(d.body_type));
   row('Dress size', v(d.dress_size));
-  row('Bust', [d.breast_size, d.breast_type].filter(Boolean).join(' · ')||'—');
-  row('Eyes / hair', [d.eye_colour, d.hair_colour].filter(Boolean).join(' · ')||'—');
+  row('Bust', v([d.breast_size, d.breast_type].filter(Boolean).join(' · ')));
+  row('Eyes / hair', v([d.eye_colour, d.hair_colour].filter(Boolean).join(' · ')));
 
   function renderModule(title, m){
     if(!m || m.offered===false) return;
     sec(title);
     row('Offered', m.offered?'Yes':v(m.offered));
-    if(m.level_label || m.tier) row('Level', m.level_label || (m.tier ? String(m.tier).replace(/_/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}) : '—'));
-    if(m.experience!=null) row('Experience', (m.experience===true?'Yes':v(m.experience))+(m.experience_years?' · '+m.experience_years+' yrs':''));
+    if(m.level_label || m.tier) row('Level', m.level_label || (m.tier ? String(m.tier).replace(/_/g,' ').replace(/\b\w/g, function(c){return c.toUpperCase();}) : PENDING));
+    if(m.experience!=null) row('Experience', (m.experience===true?'Yes':String(m.experience))+(m.experience_years?' · '+m.experience_years+' yrs':''));
     if(m.experience_note) row('Experience notes', m.experience_note);
     if(m.competing!=null) row('With other agencies', v(m.competing));
     (m.agencies||[]).forEach(function(a,i){ row('Agency link '+(i+1), a); });
-    (m.rates||[]).forEach(function(r){ row(r.duration||'Rate', [r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · ')||'—'); });
+    (m.rates||[]).forEach(function(r){ row(r.duration||'Rate', v([r.in_house?cur+r.in_house+' in-house':null, r.mobile?cur+r.mobile+' mobile':null].filter(Boolean).join(' · '))); });
     if(m.starting_price!=null) row('From', money(m.starting_price));
     // Legacy per-act fields kept here so the read-only card still
     // renders applications submitted BEFORE the time-only switch. New
@@ -6905,43 +7376,47 @@ async function showApplicationCard(ref){
   if(d.availability_schedule && typeof d.availability_schedule==='object'){
     Object.keys(d.availability_schedule).forEach(function(day){
       var dd=d.availability_schedule[day]; if(!dd) return;
-      if(dd.enabled || dd.from || dd.to) row(day, (dd.from||'09:00')+' – '+(dd.to||'02:00'));
+      if(dd.enabled || dd.from || dd.to){
+        var from = dd.from||'09:00', to = dd.to||'02:00';
+        row(day, (from===to) ? ('24h ('+from+')') : (from+' – '+to));
+      }
     });
   }
   if(d.availability_notes) row('Notes', d.availability_notes);
 
+  stepHead(3, 'Identity verification');
   sec('Photos, videos & documents');
-  row('Professional photos', (d.file_portfolio||[]).length+' uploaded');
-  row('Full-body photos', ['front','back','side'].filter(function(a){ return d['file_fullbody_'+a]; }).length+' / 3');
-  row('Intro video', d.file_video_intro?'Uploaded':'—');
-  row('Selfie verification', d.file_selfie_kyc?'Uploaded':'—');
-  row('Location walkthrough', d.file_location_check?'Uploaded':'—');
-  row('ID / passport copy', d.copy_id?'Uploaded':'—');
-  row('Bank statement', d.file_bank_statement?'Uploaded':'—');
+  row('Professional photos', (d.file_portfolio||[]).length ? ((d.file_portfolio||[]).length+' uploaded') : v(''));
+  row('Full-body photos', (['front','back','side'].filter(function(a){ return d['file_fullbody_'+a]; }).length+' / 3'));
+  row('Intro video', d.file_video_intro?'Uploaded':v(''));
+  row('Selfie verification', d.file_selfie_kyc?'Uploaded':v(''));
+  row('Location walkthrough', d.file_location_check?'Uploaded':v(''));
+  row('ID / passport copy', d.copy_id?'Uploaded':v(''));
+  row('Bank statement', d.file_bank_statement?'Uploaded':v(''));
 
   sec('Verification');
   row('Signature', v(d.signature_name));
-  row('Signed at', d.signature_signed_at ? new Date(d.signature_signed_at).toLocaleString() : '—');
+  row('Signed at', d.signature_signed_at ? new Date(d.signature_signed_at).toLocaleString() : v(''));
   var consents = [d.gdpr_signed?'GDPR':null, d.consent_age_verified?'Age verified':null, d.consent_photo_release?'Photo release':null].filter(Boolean);
-  row('Consents accepted', consents.length?consents.join(', '):'—');
+  row('Consents accepted', v(consents.length?consents.join(', '):''));
 
-  var link = location.href;
-  card.style.maxWidth = '640px'; card.style.textAlign = 'left';
+  // Remember the name + ref so Share Link can rebuild the canonical URL.
+  window.__lastAppName = d.lady_name || d.work_name || '';
+  card.style.maxWidth = '620px'; card.style.textAlign = 'left';
   card.innerHTML =
+    // Brand mark + wordmark + "Application Form" — mirrors the form
+    // header so the summary feels like one continuous Mayriche journey.
     '<div style="text-align:center;margin-bottom:18px">'+
-      '<div class="hero-wordmark" style="font-size:22px;margin-bottom:10px">MAYRICHE</div>'+
-      '<div class="success-t" style="font-size:36px;margin-top:4px">'+esc(d.work_name||d.profile_nickname||'Application')+'</div>'+
-      '<div class="success-sub">'+esc(d.stage||'Application received')+' · '+esc(d.application_ref||'')+'</div>'+
-      '<div id="successLinkWrap" style="max-width:480px;margin:14px auto 0">'+
-        '<div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mt);margin-bottom:6px;text-align:center">Your application link</div>'+
-        '<div style="display:flex;gap:8px;align-items:center">'+
-          '<input id="successLink" type="text" readonly class="inp" style="flex:1;min-width:0;font-size:12px;text-align:center" value="'+esc(link)+'">'+
-          '<button type="button" class="btn btn-ghost" style="flex-shrink:0;min-width:auto;padding:10px 14px" onclick="copyAppLink()">Copy</button>'+
-        '</div>'+
-      '</div>'+
+      '<div class="hero-mark" aria-hidden="true" style="margin-bottom:6px"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" style="width:60px;height:60px"><circle cx="120" cy="120" r="106" fill="none" stroke="currentColor" stroke-width="0.9"/><text x="120" y="172" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="150" font-weight="300" fill="currentColor">M</text></svg></div>'+
+      '<div class="hero-wordmark">Mayriche</div>'+
+      '<div class="hero-sub">Application Form</div>'+
     '</div>'+
-    '<div class="summary-card" style="max-height:60vh;overflow-y:auto"><div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>'+body+'</div>'+
-    '<div class="actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap"><button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button><button class="btn btn-primary" onclick="shareAppLink()">Share link</button></div>';
+    '<div style="text-align:center;margin-bottom:22px">'+
+      '<div class="success-t" style="font-size:36px;margin-top:4px">'+esc(d.work_name||d.profile_nickname||'Application')+'</div>'+
+      '<div class="success-sub">'+esc(d.stage||'Application received')+'</div>'+
+    '</div>'+
+    '<div class="summary-card"><div class="summary-t"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Application Summary</div>'+body+'</div>'+
+    '<div class="actions success-actions" style="margin-top:20px;justify-content:center;flex-wrap:wrap"><button class="btn btn-ghost" onclick="downloadPdf()">Download PDF</button><button class="btn btn-primary" onclick="shareAppLink()">Share link</button></div>';
 }
 function editApplication(){
   var ov = document.getElementById('successOverlay');
@@ -6951,25 +7426,43 @@ function editApplication(){
   // keep the ?ref in the URL so a reload still finds the application
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+// Build the canonical share URL for the current application. After
+// submit, history.replaceState has already set location.href to the
+// pretty `/<slug>-app<DDMMYYYY>-<rand>` path, so location.href is the
+// right answer in both flows (post-submit overlay AND shared-link view).
+function currentAppUrl(){
+  if(window.__lastAppRef && window.__lastAppName){
+    return buildAppLink(window.__lastAppRef, window.__lastAppName);
+  }
+  return location.href;
+}
 function shareAppLink(){
-  var el = document.getElementById('successLink');
-  var url = (el && el.value) || (window.__lastAppRef ? ('https://apply.mayriche.co.uk/?ref=' + window.__lastAppRef) : location.href);
-  if(navigator.share){ navigator.share({ title: 'Mayriche application', url: url }).catch(function(){}); }
-  else { copyAppLink(); }
-}
-function copyAppLink(){
-  const el = document.getElementById('successLink');
-  if(!el) return;
-  const v = el.value;
+  var url = currentAppUrl();
+  if(navigator.share){
+    navigator.share({ title: 'Mayriche application', url: url }).catch(function(){});
+    return;
+  }
   try {
-    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(v); }
-    else { el.removeAttribute('readonly'); el.select(); document.execCommand('copy'); el.setAttribute('readonly','readonly'); }
-    showToast('Link copied','success');
-  } catch(e){ el.select(); showToast('Select & copy the link','error'); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url);
+      showToast('Link copied','success');
+    } else {
+      showToast(url,'success');
+    }
+  } catch(e){ showToast('Could not copy','error'); }
 }
+// Kept as a no-op shim in case anything in the wider system (email
+// templates, etc.) still calls into it — safer than letting a stale
+// onclick throw.
+function copyAppLink(){ shareAppLink(); }
 function downloadPdf(){
-  const ref = window.__lastAppRef || 'APP';
+  // Add `printing` to <html> so the @media print stylesheet has a
+  // hook to also work when Save-as-PDF dialogs render at screen
+  // resolution. Then call window.print() — the print CSS hides
+  // everything except .success-overlay.
+  document.documentElement.classList.add('printing');
   window.print();
+  setTimeout(function(){ document.documentElement.classList.remove('printing'); }, 1500);
 }
 
 // ═══════════ TOAST ═══════════
