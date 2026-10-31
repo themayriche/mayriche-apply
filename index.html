@@ -8,6 +8,14 @@
 <meta name="theme-color" content="#F4F2EB" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1F2329" media="(prefers-color-scheme: dark)">
 
+<!-- Installable to the home screen (PWA) -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<link rel="apple-touch-icon" href="/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Riche">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap">
@@ -101,6 +109,7 @@
 
   * { box-sizing: border-box; }
   html, body { height: 100%; }
+  html { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
   body {
     margin: 0;
     background: var(--bg);
@@ -111,6 +120,7 @@
     padding-left: max(16px, var(--safe-l));
     padding-right: max(16px, var(--safe-r));
     transition: background .4s var(--ease), color .4s var(--ease);
+    overflow-x: hidden;
   }
   body::before {
     content: ""; position: fixed; inset: 0 0 auto;
@@ -237,6 +247,7 @@
     font-size: 12px; color: var(--ink-3);
     margin: 8px 0 0; line-height: 1.5;
   }
+  /* 16px minimum font-size on form controls so iOS doesn't zoom in on focus. */
   .field input[type="text"],
   .field input[type="tel"],
   .field input[type="email"],
@@ -248,7 +259,7 @@
     border-radius: var(--rs);
     border: 1px solid var(--line);
     background: var(--surface); color: var(--ink);
-    font: 400 15px/1.5 var(--sans);
+    font: 400 16px/1.5 var(--sans);
     transition: border-color .2s var(--ease), background .2s var(--ease);
   }
   .field textarea { min-height: 110px; resize: vertical; font-family: var(--sans); }
@@ -489,6 +500,168 @@
   .toast.err { background: var(--err); color: #fff; }
   .toast.ok  { background: var(--ok);  color: #fff; }
 
+  /* ─ loading screen (shown while Supabase client inits) ─ */
+  .loading-veil {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--bg);
+    display: grid; place-items: center;
+    opacity: 1; transition: opacity .4s var(--ease);
+  }
+  .loading-veil.gone { opacity: 0; pointer-events: none; }
+  .loading-ring {
+    position: relative;
+    width: 72px; height: 72px;
+    color: var(--ink);
+  }
+  .loading-ring svg.mono { position: absolute; inset: 0; margin: auto; }
+  .loading-ring svg.arc  {
+    position: absolute; inset: -8px;
+    animation: ring-spin 1.2s linear infinite;
+    color: var(--accent);
+  }
+  @keyframes ring-spin { to { transform: rotate(360deg); } }
+
+  /* ─ translucent top bar (sticky inside the form) ─ */
+  .topbar {
+    position: sticky; top: var(--safe-t); z-index: 15;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+    margin: 0 calc(-1 * max(16px, var(--safe-l))) 20px calc(-1 * max(16px, var(--safe-r)));
+    padding: 10px max(16px, var(--safe-l));
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid var(--line);
+    min-height: 44px;
+  }
+  .topbar .tb-title {
+    flex: 1; min-width: 0;
+    text-align: center;
+    font: 400 10px/1 var(--sans);
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .topbar button {
+    appearance: none; border: 0; background: transparent;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: grid; place-items: center;
+    color: var(--accent-ink); cursor: pointer;
+    transition: background .2s var(--ease);
+  }
+  .topbar button:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+
+  /* ─ first-run guide overlay ─ */
+  .guide {
+    position: fixed; inset: 0; z-index: 150;
+    background: color-mix(in srgb, var(--charcoal-2) 72%, transparent);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: none;
+    align-items: center; justify-content: center;
+    padding: max(20px, var(--safe-l)) max(20px, var(--safe-r));
+    padding-top: calc(20px + var(--safe-t));
+    padding-bottom: calc(20px + var(--safe-b));
+  }
+  .guide.on { display: flex; }
+  .guide-card {
+    width: 100%; max-width: 420px;
+    background: var(--surface); color: var(--ink);
+    border-radius: var(--r);
+    padding: 32px 24px 24px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  }
+  .guide-close {
+    position: absolute; top: 12px; right: 12px;
+    appearance: none; border: 0; background: transparent;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: grid; place-items: center;
+    color: var(--ink-3); cursor: pointer;
+  }
+  .guide-close:hover { color: var(--ink); }
+  .guide h3 {
+    font-family: var(--serif); font-size: 24px; font-weight: 400;
+    margin: 0 0 10px; letter-spacing: -.015em;
+    text-align: center;
+  }
+  .guide p {
+    text-align: center;
+    font-size: 13.5px; color: var(--ink-2);
+    margin: 0 0 20px; line-height: 1.6;
+  }
+  .guide-stage {
+    aspect-ratio: 16 / 10;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: var(--rs);
+    margin-bottom: 18px;
+    display: grid; place-items: center;
+    overflow: hidden; position: relative;
+  }
+  .guide-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+  .guide-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--line-2);
+    transition: background .2s var(--ease);
+  }
+  .guide-dots span.on { background: var(--accent); width: 18px; border-radius: 3px; }
+  .guide-nav {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 10px;
+    align-items: center;
+  }
+  .guide-nav button {
+    padding: 10px 14px; border-radius: var(--rs);
+    border: 1px solid var(--line); background: transparent;
+    color: var(--ink-2); font: 400 11px/1 var(--sans);
+    letter-spacing: .14em; text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color .2s var(--ease);
+  }
+  .guide-nav button:hover { border-color: var(--accent); }
+  .guide-nav .replay { color: var(--ink-3); font-size: 10px; letter-spacing: .14em; }
+  .guide-nav .next {
+    background: var(--btn-bg); color: var(--btn-ink);
+    border-color: transparent; padding: 10px 20px;
+  }
+
+  /* Guide stage animations */
+  .guide-swipe-hand, .guide-tap-hand, .guide-hold-hand {
+    position: absolute;
+  }
+  .guide-swipe-hand {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent);
+    opacity: .9;
+    animation: swipe-h 2.6s var(--ease) infinite;
+  }
+  @keyframes swipe-h {
+    0%   { left: 20%; opacity: 0; }
+    10%  { opacity: 1; }
+    80%  { left: 72%; opacity: 1; }
+    100% { left: 72%; opacity: 0; }
+  }
+  .guide-swipe-rail {
+    position: absolute; top: 50%; left: 15%; right: 15%; height: 2px;
+    background: var(--line); transform: translateY(-50%);
+  }
+  .guide-tap-ring {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 2px solid var(--accent);
+    animation: tap-pulse 2s var(--ease) infinite;
+  }
+  @keyframes tap-pulse {
+    0%, 60%, 100% { transform: scale(1);   opacity: 1; }
+    30%           { transform: scale(1.4); opacity: 0; }
+  }
+  .guide-check {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--ok); color: #fff;
+    display: grid; place-items: center;
+    animation: check-pop .8s var(--ease);
+  }
+  @keyframes check-pop {
+    from { transform: scale(.5); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
   /* ─ autosave indicator ─ */
   .autosave {
     position: fixed; bottom: calc(14px + var(--safe-b));
@@ -546,6 +719,41 @@
 </head>
 <body>
 
+<!-- Loading veil: thin champagne arc around the Riche monogram.
+     Hidden as soon as the DOM is ready and the Supabase client has loaded. -->
+<div class="loading-veil" id="loading-veil" aria-hidden="true">
+  <div class="loading-ring">
+    <svg class="arc" width="88" height="88" viewBox="0 0 88 88" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <path d="M44 4 a40 40 0 0 1 36 24" opacity=".9"/>
+    </svg>
+    <svg class="mono" width="56" height="56" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width=".9">
+      <circle cx="24" cy="24" r="21"/>
+      <text x="24" y="34" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="30" font-weight="400" fill="currentColor" stroke="none">R</text>
+    </svg>
+  </div>
+</div>
+
+<!-- First-run guide: three plates (how the application works, how to save
+     and come back, what happens after submit). Shown once per device the
+     first time Begin is tapped. Replay available from any time via
+     window.showGuide() (also triggered from the top bar's info button). -->
+<div class="guide" id="guide" role="dialog" aria-labelledby="guide-title" aria-hidden="true">
+  <div class="guide-card">
+    <button class="guide-close" onclick="closeGuide()" aria-label="Close guide">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <h3 id="guide-title">Welcome</h3>
+    <p id="guide-copy">A short tour of how your application works.</p>
+    <div class="guide-stage" id="guide-stage"></div>
+    <div class="guide-dots" id="guide-dots"><span class="on"></span><span></span><span></span></div>
+    <div class="guide-nav">
+      <button class="replay" onclick="guidePage(0)">Replay</button>
+      <button onclick="guideBack()" id="guide-back-btn">Back</button>
+      <button class="next" onclick="guideNext()" id="guide-next-btn">Next</button>
+    </div>
+  </div>
+</div>
+
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
   <svg class="th-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 109.8 9.8z"/></svg>
 </button>
@@ -579,6 +787,18 @@
        2 · APPLY FORM (hidden until Begin)
        ═══════════════════════════════════════════════════════════════ -->
   <main class="apply" id="apply" hidden>
+
+    <!-- Translucent top bar: back arrow (restarts to intro), page title in
+         spaced capitals, info button that re-opens the first-run guide. -->
+    <div class="topbar" role="toolbar" aria-label="Application top bar">
+      <button onclick="confirmBackToIntro()" aria-label="Back to intro">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="tb-title" id="topbar-title">Application</div>
+      <button onclick="showGuide()" aria-label="How this works">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>
+      </button>
+    </div>
 
     <div class="progress" id="progress">
       <span class="on"></span><span></span><span></span><span></span>
@@ -1040,6 +1260,112 @@
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } })
     : null;
 
+  // ── Hide the loading veil as soon as the DOM is painted + Supabase
+  //    client exists. The veil is a soft fade so there is no sudden flash.
+  function hideLoadingVeil(){
+    const v = document.getElementById('loading-veil');
+    if(!v) return;
+    v.classList.add('gone');
+    setTimeout(() => { v.remove(); }, 500);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', () => setTimeout(hideLoadingVeil, 180));
+  } else {
+    setTimeout(hideLoadingVeil, 180);
+  }
+
+  // ── First-run guide ─────────────────────────────────────────
+  const GUIDE_KEY = 'riche_apply_seen_guide_v2';
+  const GUIDE_PAGES = [
+    {
+      t: 'Welcome',
+      c: 'Four short steps, about ten minutes. Everything you fill in is private — Riche never shares your real name, number or email with a client.',
+      stage: `<svg width="200" height="100" viewBox="0 0 200 100" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" style="color:var(--accent-ink)">
+        <rect x="24" y="24" width="36" height="52" rx="4" opacity=".4"/>
+        <rect x="68" y="24" width="36" height="52" rx="4" opacity=".4"/>
+        <rect x="112" y="24" width="36" height="52" rx="4" opacity=".4"/>
+        <rect x="156" y="24" width="36" height="52" rx="4" style="color:var(--accent)"/>
+        <text x="42" y="56" text-anchor="middle" font-family="Jost, sans-serif" font-size="13" font-weight="500" stroke="none" fill="currentColor">01</text>
+        <text x="86" y="56" text-anchor="middle" font-family="Jost, sans-serif" font-size="13" font-weight="500" stroke="none" fill="currentColor">02</text>
+        <text x="130" y="56" text-anchor="middle" font-family="Jost, sans-serif" font-size="13" font-weight="500" stroke="none" fill="currentColor">03</text>
+        <text x="174" y="56" text-anchor="middle" font-family="Jost, sans-serif" font-size="13" font-weight="500" stroke="none" fill="currentColor">04</text>
+      </svg>`
+    },
+    {
+      t: 'Save and come back',
+      c: 'Your answers are saved on this device every few seconds. Close the tab, come back later — you pick up where you left off. If you need another device, write to us for your personal link.',
+      stage: `<div style="display:flex;align-items:center;gap:10px;color:var(--accent-ink)">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <div style="font:400 11px/1.4 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)">Saved · just now</div>
+      </div>`
+    },
+    {
+      t: 'After you send',
+      c: 'A copy lands in your inbox. We review every application personally and come back to you in 24–48 hours, by email or on Signal. We tell you straight away if your building isn\'t one we accept.',
+      stage: `<div class="guide-check">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>`
+    }
+  ];
+  let guideIdx = 0;
+  function guidePage(i){
+    guideIdx = Math.max(0, Math.min(GUIDE_PAGES.length - 1, i));
+    const p = GUIDE_PAGES[guideIdx];
+    document.getElementById('guide-title').textContent = p.t;
+    document.getElementById('guide-copy').textContent = p.c;
+    document.getElementById('guide-stage').innerHTML = p.stage;
+    const dots = document.getElementById('guide-dots').children;
+    for(let k = 0; k < dots.length; k++) dots[k].classList.toggle('on', k === guideIdx);
+    document.getElementById('guide-back-btn').disabled = guideIdx === 0;
+    document.getElementById('guide-back-btn').style.opacity = guideIdx === 0 ? '.4' : '1';
+    document.getElementById('guide-next-btn').textContent = guideIdx === GUIDE_PAGES.length - 1 ? 'Get started' : 'Next';
+  }
+  function guideNext(){
+    if(guideIdx < GUIDE_PAGES.length - 1) guidePage(guideIdx + 1);
+    else closeGuide();
+  }
+  function guideBack(){ guidePage(guideIdx - 1); }
+  function showGuide(){
+    guidePage(0);
+    document.getElementById('guide').classList.add('on');
+    document.getElementById('guide').setAttribute('aria-hidden', 'false');
+  }
+  function closeGuide(){
+    document.getElementById('guide').classList.remove('on');
+    document.getElementById('guide').setAttribute('aria-hidden', 'true');
+    try { localStorage.setItem(GUIDE_KEY, '1'); } catch(e){}
+  }
+  // Keyboard: Esc closes, arrows navigate.
+  document.addEventListener('keydown', (e) => {
+    if(!document.getElementById('guide').classList.contains('on')) return;
+    if(e.key === 'Escape') closeGuide();
+    if(e.key === 'ArrowRight') guideNext();
+    if(e.key === 'ArrowLeft') guideBack();
+  });
+  window.guideNext = guideNext;
+  window.guideBack = guideBack;
+  window.guidePage = guidePage;
+  window.showGuide = showGuide;
+  window.closeGuide = closeGuide;
+
+  // ── Confirm back to intro when the form has content ─────────
+  function confirmBackToIntro(){
+    const hasContent = formData.fullname.trim() || formData.email.trim() || formData.workname.trim();
+    if(hasContent && !window.confirm('Go back to the intro? Your answers stay saved on this device.')) return;
+    goStep(0);
+  }
+  window.confirmBackToIntro = confirmBackToIntro;
+
+  // ── beforeunload warning when there are unsaved changes ─────
+  window.addEventListener('beforeunload', (e) => {
+    if(!document.getElementById('apply').hidden &&
+       (formData.fullname.trim() || formData.email.trim() || formData.workname.trim())){
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    }
+  });
+
   // ── Theme toggle (persisted in localStorage) ────────────────
   (function initTheme(){
     try {
@@ -1140,6 +1466,10 @@
     renderDynamic();
     applyDraftToInputs();
     goStep(1);
+    // Show the first-run guide once per device.
+    try {
+      if(!localStorage.getItem(GUIDE_KEY)) setTimeout(showGuide, 350);
+    } catch(e){}
   }
   window.startApply = startApply;
 
@@ -1162,6 +1492,10 @@
     // progress
     const spans = document.querySelectorAll('#progress span');
     spans.forEach((sp, i) => sp.classList.toggle('on', i < n));
+    // top bar title reflects the current step
+    const titles = { 1: '01 · About You', 2: '02 · Location & Availability', 3: '03 · Your Work', 4: '04 · Verification' };
+    const tbt = document.getElementById('topbar-title');
+    if(tbt) tbt.textContent = titles[n] || 'Application';
     window.scrollTo({ top:0, behavior:'smooth' });
   }
   window.goStep = goStep;
