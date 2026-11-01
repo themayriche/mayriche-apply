@@ -57,6 +57,15 @@
     --btn-bg:     var(--charcoal);
     --btn-ink:    var(--ivory);
 
+    /* Soft category tints · pulled from the OS dashboard (business/
+       personal dots). Used as decorative accents only — one per step,
+       on the progress bar, the eyebrow stripe, and a faint wash behind
+       section heads. CTAs and body text always stay charcoal/ivory. */
+    --tint-butter: #FFEAB2;  /* step 1 — About You */
+    --tint-blue:   #B8CEE1;  /* step 2 — Location & Availability */
+    --tint-rose:   #F2C8C8;  /* step 3 — Your Work */
+    --tint-sage:   #C9D5BE;  /* step 4 — Verification */
+
     --serif: 'Cormorant Garamond', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
     --sans:  'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 
@@ -151,7 +160,16 @@
     font: 400 10px/1.4 var(--sans);
     letter-spacing: .18em; text-transform: uppercase; color: var(--accent-ink);
   }
-  .eyebrow::before { content: ""; display: block; width: 26px; height: 1px; background: var(--accent); }
+  .eyebrow::before {
+    content: ""; display: block; width: 26px; height: 2px;
+    background: var(--eyebrow-tint, var(--accent));
+    border-radius: 1px;
+  }
+  /* Per-step eyebrow tint — one of the four soft category colours. */
+  .step[data-step="1"] .eyebrow { --eyebrow-tint: var(--tint-butter); }
+  .step[data-step="2"] .eyebrow { --eyebrow-tint: var(--tint-blue);   }
+  .step[data-step="3"] .eyebrow { --eyebrow-tint: var(--tint-rose);   }
+  .step[data-step="4"] .eyebrow { --eyebrow-tint: var(--tint-sage);   }
 
   .lead {
     color: var(--ink-2); font-size: 15px; line-height: 1.7;
@@ -206,7 +224,16 @@
   .btn.ghost:hover:not(:disabled) { border-color: var(--accent); }
   .btn.small { padding: 10px 16px; min-height: 40px; font-size: 10px; }
 
-  /* ─ opening ─ */
+  /* ─ opening — soft butter halo behind the headline, same warmth
+     as the dashboard "GOOD EVENING." greeting in the OS. ─ */
+  .opening { position: relative; }
+  .opening::before {
+    content: ""; position: absolute; z-index: -1;
+    top: 10%; left: 50%; transform: translateX(-50%);
+    width: min(640px, 110%); height: 180px;
+    background: radial-gradient(ellipse at center, color-mix(in srgb, var(--tint-butter) 32%, transparent), transparent 68%);
+    pointer-events: none;
+  }
   .opening .wordmark { margin-bottom: 32px; }
   .opening h1 em { font-style: italic; font-weight: 300; }
   .opening ul { list-style: none; padding: 0; margin: 24px 0 32px; }
@@ -220,15 +247,24 @@
     font-size: 12px; color: var(--ink-3);
   }
 
-  /* ─ progress bar at top of form ─ */
+  /* ─ progress bar at top of form ─
+     Each segment carries its own tint (butter · blue · rose · sage) and
+     the active one gets its full colour. Unvisited segments are a very
+     soft tint-wash so the four colours whisper even before the applicant
+     reaches them. */
   .progress {
     display: flex; gap: 4px; margin: 24px 0 32px;
   }
   .progress span {
-    flex: 1; height: 2px; background: var(--line);
-    border-radius: 2px; transition: background .3s var(--ease);
+    flex: 1; height: 3px; border-radius: 2px;
+    transition: background .35s var(--ease), opacity .35s var(--ease);
+    opacity: .35;
   }
-  .progress span.on { background: var(--accent); }
+  .progress span.on { opacity: 1; }
+  .progress span:nth-child(1) { background: var(--tint-butter); }
+  .progress span:nth-child(2) { background: var(--tint-blue);   }
+  .progress span:nth-child(3) { background: var(--tint-rose);   }
+  .progress span:nth-child(4) { background: var(--tint-sage);   }
 
   /* ─ step shell ─ */
   .step { display: none; }
@@ -434,27 +470,41 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* ─ stop banner (Elsewhere area) ─ */
+  /* ─ stop banner (Elsewhere area) — soft rose, not harsh red. Reads
+     as "we care but can't right now" rather than a system error. ─ */
   .stop-banner {
     padding: 16px 18px;
-    border-left: 3px solid var(--err);
-    background: color-mix(in srgb, var(--err) 6%, var(--surface));
+    border-left: 3px solid color-mix(in srgb, var(--tint-rose) 70%, var(--ink));
+    background: color-mix(in srgb, var(--tint-rose) 18%, var(--surface));
     border-radius: 0 var(--rs) var(--rs) 0;
     font-size: 14px; color: var(--ink);
     margin: 0 0 20px;
   }
-  .stop-banner b { color: var(--err); }
+  .stop-banner b { color: color-mix(in srgb, var(--tint-rose) 55%, var(--ink)); }
   .stop-banner p { margin: 6px 0 0; font-size: 13px; color: var(--ink-2); }
 
   /* ─ success overlay ─ */
   .success {
     position: fixed; inset: 0;
-    background: var(--bg); z-index: 50;
+    background:
+      radial-gradient(ellipse at 50% 22%, color-mix(in srgb, var(--tint-sage) 24%, transparent), transparent 60%),
+      var(--bg);
+    z-index: 50;
     overflow-y: auto;
     opacity: 0; pointer-events: none;
     transition: opacity .4s var(--ease);
   }
   .success.on { opacity: 1; pointer-events: auto; }
+  .success .ref {
+    display: inline-block;
+    padding: 8px 20px;
+    border: 1px solid color-mix(in srgb, var(--tint-sage) 42%, var(--line));
+    background: color-mix(in srgb, var(--tint-sage) 12%, transparent);
+    border-radius: var(--rs);
+    font: 400 12px/1 var(--sans); letter-spacing: .22em;
+    color: var(--ink-2);
+    margin-top: 10px;
+  }
   .success-inner {
     max-width: 580px; margin: 0 auto;
     padding: calc(56px + var(--safe-t)) max(20px, var(--safe-l)) calc(56px + var(--safe-b)) max(20px, var(--safe-r));
@@ -464,14 +514,6 @@
     font-size: clamp(38px, 8vw, 54px);
     font-style: italic; font-weight: 300;
     margin: 24px 0 14px;
-  }
-  .success .ref {
-    display: inline-block;
-    padding: 8px 20px;
-    border: 1px solid var(--line); border-radius: var(--rs);
-    font: 400 12px/1 var(--sans); letter-spacing: .22em;
-    color: var(--ink-2);
-    margin-top: 10px;
   }
   .success .what {
     text-align: left; margin: 32px 0 24px;
