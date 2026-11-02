@@ -176,10 +176,13 @@
     max-width: 54ch; margin: 0 0 22px;
   }
 
-  /* ─ layout ─ */
+  /* ─ layout — more generous air than iteration 1. ─ */
   .page {
     max-width: 640px; margin: 0 auto;
-    padding: calc(36px + var(--safe-t)) 0 calc(60px + var(--safe-b));
+    padding: calc(44px + var(--safe-t)) 0 calc(72px + var(--safe-b));
+  }
+  @media (min-width: 720px) {
+    .page { padding-top: calc(60px + var(--safe-t)); padding-bottom: calc(96px + var(--safe-b)); }
   }
 
   /* ─ brand mark + wordmark ─ */
@@ -235,6 +238,54 @@
     pointer-events: none;
   }
   .opening .wordmark { margin-bottom: 32px; }
+
+  /* ─ editorial hero panel on the opening screen. A deep charcoal
+     canvas with a thin champagne frame, a very low-opacity R monogram
+     set behind, a butter corner-glow, and a small all-caps caption at
+     the bottom. Reads as "a window into Mayfair" — placeholder for a
+     real editorial photograph that can be dropped in later by setting
+     `background-image` on `.hero-image`. ─ */
+  .hero-image {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    margin: 32px 0 40px;
+    border-radius: var(--r);
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 20% 15%, color-mix(in srgb, var(--tint-butter) 20%, transparent), transparent 55%),
+      radial-gradient(ellipse at 85% 90%, color-mix(in srgb, var(--gold) 15%, transparent), transparent 50%),
+      linear-gradient(165deg, var(--charcoal-3) 0%, var(--charcoal) 55%, var(--charcoal-2) 100%);
+    display: grid; place-items: end center;
+    isolation: isolate;
+  }
+  @media (min-width: 540px) { .hero-image { aspect-ratio: 3 / 2; } }
+  .hero-image::before {
+    content: ""; position: absolute; inset: 14px;
+    border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+    border-radius: 6px;
+    pointer-events: none;
+  }
+  .hero-image-mono {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-family: var(--serif); font-weight: 300;
+    font-size: clamp(160px, 44vw, 240px); line-height: 1;
+    color: color-mix(in srgb, var(--ivory) 7%, transparent);
+    pointer-events: none; user-select: none; z-index: 0;
+  }
+  .hero-image-caption {
+    position: relative; z-index: 2;
+    padding: 0 24px 22px;
+    font: 400 10px/1 var(--sans);
+    letter-spacing: .34em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--butter) 92%, transparent);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .hero-image-caption::before,
+  .hero-image-caption::after {
+    content: ""; width: 24px; height: 1px;
+    background: color-mix(in srgb, var(--butter) 60%, transparent);
+  }
   .opening h1 em { font-style: italic; font-weight: 300; }
   .opening ul { list-style: none; padding: 0; margin: 24px 0 32px; }
   .opening li {
@@ -266,13 +317,14 @@
   .progress span:nth-child(3) { background: var(--tint-rose);   }
   .progress span:nth-child(4) { background: var(--tint-sage);   }
 
-  /* ─ step shell ─ */
+  /* ─ step shell — more breathing room between the title and the fields. ─ */
   .step { display: none; }
   .step.on { display: block; }
-  .step-head { margin: 0 0 28px; }
+  .step-head { margin: 0 0 40px; }
+  .step-head .lead { margin-bottom: 0; }
 
   /* ─ field ─ */
-  .field { margin-bottom: 22px; }
+  .field { margin-bottom: 26px; }
   .field > label, .field-label {
     display: block;
     font: 400 10px/1.4 var(--sans);
@@ -426,6 +478,18 @@
     background: var(--surface); color: var(--ink);
     font: 400 14px/1 var(--sans);
     text-align: right;
+  }
+
+  /* ─ h3 sub-heads inside a step (e.g. "Photos & videos", "Consents") ─ */
+  .step h3 {
+    position: relative;
+    padding-top: 12px;
+    margin-top: 36px;
+    margin-bottom: 18px;
+  }
+  .step h3::before {
+    content: ""; position: absolute; top: 0; left: 0;
+    width: 36px; height: 1px; background: var(--accent);
   }
 
   /* ─ consent rows ─ */
@@ -813,6 +877,18 @@
       </svg>
     </div>
     <div class="wordmark">Riche</div>
+
+    <!-- Editorial hero panel. Replace with a real Mayfair interior
+         photograph by swapping the background on `.hero-image` to
+         `url(/hero.webp) center/cover` or similar. The current
+         placeholder is a charcoal + champagne panel with a very low
+         opacity R monogram, so the opening screen never reads blank
+         while the photography is being commissioned. -->
+    <div class="hero-image" aria-hidden="true">
+      <div class="hero-image-mono">R</div>
+      <div class="hero-image-caption"><span>By invitation</span></div>
+    </div>
+
     <div class="eyebrow"><span>Application</span></div>
     <h1><em>An invitation,<br>not a contract.</em></h1>
     <p class="lead">Riche is a private booking platform for independent professionals in Mayfair. We don't employ you. We don't promise bookings. We list the women who meet our standard, and we work only with those who host from their own venue in Mayfair, or exceptionally in Marylebone.</p>
